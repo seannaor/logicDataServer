@@ -11,7 +11,7 @@ public class ManagementUser {
     private String bgu_username;
     private String bgu_password;
     private String user_email;
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "management_users_permissions",
             joinColumns = {@JoinColumn(name = "bgu_username")},
@@ -19,7 +19,7 @@ public class ManagementUser {
     )
     private Set<Permission> permissions = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "management_users_to_experiments",
             joinColumns = {@JoinColumn(name = "bgu_username")},

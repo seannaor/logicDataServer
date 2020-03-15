@@ -19,6 +19,7 @@ public class Question {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "stage_index"),
-            @JoinColumn(name = "experiment_id")})
+            @JoinColumn(name = "experiment_id")
+    })
     private QuestionnaireStage questionnaireStage;
 }

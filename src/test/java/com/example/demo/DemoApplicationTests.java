@@ -32,9 +32,15 @@ class DemoApplicationTests {
 
 	@BeforeEach
 	void clean() {
-		JpaRepository[] reps = {experimenteeRep, stageRep, experimentRep,
-				graderRep,managementUserRep, participantRep,
-				permissionRep};
+		JpaRepository[] reps = {
+				managementUserRep,
+				experimenteeRep,
+				graderRep,
+				participantRep,
+				stageRep,
+				experimentRep,
+				permissionRep
+		};
 		for (JpaRepository rep : reps)
 			rep.deleteAll();
 	}
