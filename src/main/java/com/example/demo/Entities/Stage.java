@@ -6,7 +6,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "stages")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Stage {
+public abstract class Stage {
 
     @Embeddable
     public static class StageID implements Serializable {

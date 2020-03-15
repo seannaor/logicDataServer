@@ -32,9 +32,9 @@ class DemoApplicationTests {
 
 	@BeforeEach
 	void clean() {
-		JpaRepository[] reps = {experimenteeRep, experimentRep, graderRep,
-				managementUserRep, participantRep, permissionRep,
-				stageRep};
+		JpaRepository[] reps = {experimenteeRep, stageRep, experimentRep,
+				graderRep,managementUserRep, participantRep,
+				permissionRep};
 		for (JpaRepository rep : reps)
 			rep.deleteAll();
 	}
@@ -86,10 +86,10 @@ class DemoApplicationTests {
 	}
 
 	@Test
-	public void stageTest() {
+	public void questionnaireStageTest() {
 		Experiment e1 = new Experiment("My Exp");
-		Stage s1 = new Stage(e1, 1),
-				s2 = new Stage(e1, 2);
+		Stage s1 = new QuestionnaireStage(e1, 1),
+				s2 = new QuestionnaireStage(e1, 2);
 		experimentRep.save(e1);
 		stageRep.save(s1);
 		stageRep.save(s2);

@@ -15,5 +15,10 @@ public class Question {
 
     @EmbeddedId
     private QuestionID questionID;
-
+    @MapsId("stageID")
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "stage_index"),
+            @JoinColumn(name = "experiment_id")})
+    private QuestionnaireStage questionnaireStage;
 }

@@ -75,7 +75,7 @@ CREATE TABLE `stages`
 (
     `stage_index`   int NOT NULL,
     `experiment_id` int NOT NULL,
-    FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`),
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );
 
@@ -133,9 +133,9 @@ CREATE TABLE `info_stages`
 
 CREATE TABLE `questionnaire_stages`
 (
-    `stage_index`   int NOT NULL,
-    `experiment_id` int NOT NULL,
-    FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES stages (`stage_index`, `experiment_id`) ON DELETE CASCADE,
+    `stage_index`   int NOT NULL REFERENCES stages(`stage_index`),
+    `experiment_id` int NOT NULL REFERENCES stages(`stage_index`),
+#     FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES stages (`stage_index`, `experiment_id`) ON DELETE CASCADE,
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );
 
