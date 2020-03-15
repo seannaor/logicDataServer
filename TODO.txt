@@ -1,0 +1,2 @@
+* Discuss ON DELETE CASCADE
+* tagging_stages create: maybe redundant: FOREIGN KEY (`appropriate_coding_stage_index`, `experiment_id`) REFERENCES code_stages (`stage_index`, `experiment_id`)
