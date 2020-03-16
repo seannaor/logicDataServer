@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import com.example.demo.Entities.*;
+import com.example.demo.Entities.Stages.QuestionnaireStage;
+import com.example.demo.Entities.Stages.Stage;
 import com.example.demo.Reps.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

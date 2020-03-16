@@ -1,5 +1,7 @@
 package com.example.demo.Entities;
 
+import com.example.demo.Entities.Stages.Stage;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

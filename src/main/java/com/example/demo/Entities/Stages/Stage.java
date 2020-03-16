@@ -1,4 +1,6 @@
-package com.example.demo.Entities;
+package com.example.demo.Entities.Stages;
+
+import com.example.demo.Entities.Experiment;
 
 import javax.persistence.*;
 import java.io.Serializable;
