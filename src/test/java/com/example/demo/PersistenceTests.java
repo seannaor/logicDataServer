@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 @SpringBootTest
-class DemoApplicationTests {
+class PersistenceTests {
 
 	@Autowired
 	ExperimenteeRep experimenteeRep;
