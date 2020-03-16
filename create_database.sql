@@ -82,10 +82,10 @@ CREATE TABLE `stages`
 CREATE TABLE `grading_tasks`
 (
     `grading_task_id`    int NOT NULL AUTO_INCREMENT,
-    `experiment_id`      int NOT NULL,
+    `grading_experiment`      int NOT NULL,
     `base_experiment`    int NOT NULL,
     `general_experiment` int,
-    FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`),
+    FOREIGN KEY (`grading_experiment`) REFERENCES experiments (`experiment_id`),
     FOREIGN KEY (`base_experiment`) REFERENCES experiments (`experiment_id`),
     FOREIGN KEY (`general_experiment`) REFERENCES experiments (`experiment_id`),
     PRIMARY KEY (`grading_task_id`)
@@ -104,22 +104,22 @@ CREATE TABLE `stages_of_grading_task`
 CREATE TABLE `graders_to_grading_tasks`
 (
     `grading_task_id`    int          NOT NULL,
-    `email`              varchar(255) NOT NULL,
+    `grader_email`              varchar(255) NOT NULL,
     `grader_access_code` varchar(255) NOT NULL,
     FOREIGN KEY (`grading_task_id`) REFERENCES grading_tasks (`grading_task_id`) ,
-    FOREIGN KEY (`email`) REFERENCES graders (`grader_email`) ,
-    PRIMARY KEY (`grading_task_id`, `email`)
+    FOREIGN KEY (`grader_email`) REFERENCES graders (`grader_email`) ,
+    PRIMARY KEY (`grading_task_id`, `grader_email`)
 );
 
 CREATE TABLE `graders_grading_tasks_to_participants`
 (
     `grading_task_id` int          NOT NULL,
-    `email`           varchar(255) NOT NULL,
+    `grader_email`           varchar(255) NOT NULL,
     `participant_id`  int          NOT NULL,
     `grading_state`   boolean      NOT NULL,
-    FOREIGN KEY (`grading_task_id`, `email`) REFERENCES graders_to_grading_tasks (`grading_task_id`, `email`) ,
+    FOREIGN KEY (`grading_task_id`, `grader_email`) REFERENCES graders_to_grading_tasks (`grading_task_id`, `grader_email`) ,
     FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ,
-    PRIMARY KEY (`grading_task_id`, `email`, `participant_id`)
+    PRIMARY KEY (`grading_task_id`, `grader_email`, `participant_id`)
 );
 
 CREATE TABLE `info_stages`
@@ -188,7 +188,7 @@ CREATE TABLE `requirement_tags`
     PRIMARY KEY (`participant_id`, `start_char_loc`)
 );
 
-CREATE TABLE `requirments_to_requirement_tags`
+CREATE TABLE `requirements_to_requirement_tags`
 (
     `requirement_index` int NOT NULL,
     `experiment_id`     int NOT NULL,
