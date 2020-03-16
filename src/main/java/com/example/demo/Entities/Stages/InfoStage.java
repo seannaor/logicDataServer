@@ -1,4 +1,4 @@
-package com.example.demo.Entities;
+package com.example.demo.Entities.Stages;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;

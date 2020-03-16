@@ -6,8 +6,10 @@ import javax.persistence.*;
 @Table(name = "experimentees")
 public class Experimentee {
     @Id
-    private String access_code;
-    private String experimentee_email;
+    @Column(name = "access_code")
+    private String accessCode;
+    @Column(name = "experimentee_email")
+    private String experimenteeEmail;
     @OneToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
@@ -15,25 +17,25 @@ public class Experimentee {
     public Experimentee() {
     }
 
-    public Experimentee(String access_code, String experimentee_email) {
-        this.access_code = access_code;
-        this.experimentee_email = experimentee_email;
+    public Experimentee(String accessCode, String experimenteeEmail) {
+        this.accessCode = accessCode;
+        this.experimenteeEmail = experimenteeEmail;
     }
 
-    public String getAccess_code() {
-        return access_code;
+    public String getAccessCode() {
+        return accessCode;
     }
 
-    public void setAccess_code(String access_code) {
-        this.access_code = access_code;
+    public void setAccessCode(String access_code) {
+        this.accessCode = access_code;
     }
 
-    public String getExperimentee_email() {
-        return experimentee_email;
+    public String getExperimenteeEmail() {
+        return experimenteeEmail;
     }
 
-    public void setExperimentee_email(String experimentee_email) {
-        this.experimentee_email = experimentee_email;
+    public void setExperimenteeEmail(String experimentee_email) {
+        this.experimenteeEmail = experimentee_email;
     }
 
     public Participant getParticipant() {

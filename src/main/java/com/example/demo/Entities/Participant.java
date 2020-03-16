@@ -7,7 +7,8 @@ import javax.persistence.*;
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int participant_id;
+    @Column(name = "participant_id")
+    private int participantId;
     @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;

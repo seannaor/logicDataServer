@@ -9,32 +9,34 @@ import java.util.Set;
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int permission_id;
-    private String permission_name;
+    @Column(name = "permission_id")
+    private int permissionId;
+    @Column(name = "permission_name")
+    private String permissionName;
     @ManyToMany(mappedBy = "permissions")
     private Set<ManagementUser> managementUsers = new HashSet<>();
 
     public Permission() {
     }
 
-    public Permission(String permission_name) {
-        this.permission_name = permission_name;
+    public Permission(String permissionName) {
+        this.permissionName = permissionName;
     }
 
-    public int getPermission_id() {
-        return permission_id;
+    public int getPermissionId() {
+        return permissionId;
     }
 
-    public void setPermission_id(int permission_id) {
-        this.permission_id = permission_id;
+    public void setPermissionId(int permission_id) {
+        this.permissionId = permission_id;
     }
 
-    public String getPermission_name() {
-        return permission_name;
+    public String getPermissionName() {
+        return permissionName;
     }
 
-    public void setPermission_name(String permission_name) {
-        this.permission_name = permission_name;
+    public void setPermissionName(String permission_name) {
+        this.permissionName = permission_name;
     }
 
     public Set<ManagementUser> getManagementUsers() {
