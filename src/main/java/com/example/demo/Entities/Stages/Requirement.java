@@ -11,7 +11,7 @@ import java.util.Set;
 public class Requirement {
     @Embeddable
     public static class RequirementID implements Serializable {
-        private int requirement_index;
+        private int requirementIndex;
         private Stage.StageID stageID;
     }
 

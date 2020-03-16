@@ -13,13 +13,13 @@ import java.util.Set;
 public class RequirementTag {
     @Embeddable
     public static class RequirementTagID implements Serializable {
-        private int participant_id;
-        private int start_char_loc;
+        private int participantId;
+        private int startCharLoc;
     }
 
     @EmbeddedId
     private RequirementTagID requirementTagID;
-    @MapsId("participant_id")
+    @MapsId("participantId")
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;

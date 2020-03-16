@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Table(name = "grading_tasks")
 public class GradingTask {
     @Id
-    private int grading_task_id;
+    @Column(name = "grading_task_id")
+    private int gradingTaskId;
     @OneToOne
     @JoinColumn(name = "base_experiment", referencedColumnName = "experiment_id")
     private Experiment baseExperiment;

@@ -10,7 +10,7 @@ public class Question {
     @Embeddable
     public static class QuestionID implements Serializable {
         private Stage.StageID stageID;
-        int question_index;
+        int questionIndex;
     }
 
     @EmbeddedId

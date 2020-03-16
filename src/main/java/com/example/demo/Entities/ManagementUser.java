@@ -8,9 +8,12 @@ import java.util.Set;
 @Table(name = "management_users")
 public class ManagementUser {
     @Id
-    private String bgu_username;
-    private String bgu_password;
-    private String user_email;
+    @Column(name = "bgu_username")
+    private String bguUsername;
+    @Column(name = "bgu_password")
+    private String bguPassword;
+    @Column(name = "user_email")
+    private String userEmail;
     @ManyToMany
     @JoinTable(
             name = "management_users_permissions",
@@ -27,37 +30,37 @@ public class ManagementUser {
     )
     private Set<Experiment> experiments = new HashSet<>();
 
-    public ManagementUser(String bgu_username, String bgu_password, String user_email) {
-        this.bgu_username = bgu_username;
-        this.bgu_password = bgu_password;
-        this.user_email = user_email;
+    public ManagementUser(String bguUsername, String bguPassword, String userEmail) {
+        this.bguUsername = bguUsername;
+        this.bguPassword = bguPassword;
+        this.userEmail = userEmail;
     }
 
     public ManagementUser() {
     }
 
-    public String getBgu_username() {
-        return bgu_username;
+    public String getBguUsername() {
+        return bguUsername;
     }
 
-    public void setBgu_username(String bgu_username) {
-        this.bgu_username = bgu_username;
+    public void setBguUsername(String bgu_username) {
+        this.bguUsername = bgu_username;
     }
 
-    public String getBgu_password() {
-        return bgu_password;
+    public String getBguPassword() {
+        return bguPassword;
     }
 
-    public void setBgu_password(String bgu_password) {
-        this.bgu_password = bgu_password;
+    public void setBguPassword(String bgu_password) {
+        this.bguPassword = bgu_password;
     }
 
-    public String getUser_email() {
-        return user_email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUser_email(String user_email) {
-        this.user_email = user_email;
+    public void setUserEmail(String user_email) {
+        this.userEmail = user_email;
     }
 
     public Set<Permission> getPermissions() {

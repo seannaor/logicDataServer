@@ -13,13 +13,13 @@ import java.io.Serializable;
 public class CodeResult {
     @Embeddable
     public static class CodeResultID implements Serializable {
-        private int participant_id;
+        private int participantId;
         private Stage.StageID stageID;
     }
 
     @EmbeddedId
     private CodeResultID codeResultID;
-    @MapsId("participant_id")
+    @MapsId("participantId")
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;

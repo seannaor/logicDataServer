@@ -12,13 +12,13 @@ public class Answer {
 
     @Embeddable
     public static class AnswerID implements Serializable {
-        private int participant_id;
+        private int participantId;
         private Question.QuestionID questionID;
     }
 
     @EmbeddedId
     private AnswerID answerID;
-    @MapsId("participant_id")
+    @MapsId("participantId")
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;

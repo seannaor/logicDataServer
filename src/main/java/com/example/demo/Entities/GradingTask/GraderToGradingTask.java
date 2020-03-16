@@ -12,21 +12,22 @@ import java.util.Set;
 public class GraderToGradingTask {
     @Embeddable
     public static class GraderToGradingTaskID implements Serializable {
-        private int grading_task_id;
-        private int grader_email;
+        private int gradingTaskId;
+        private int graderEmail;
     }
 
     @EmbeddedId
     private GraderToGradingTaskID graderToGradingTaskID;
-    @MapsId("grading_task_id")
+    @MapsId("gradingTaskId")
     @ManyToOne
     @JoinColumn(name = "grading_task_id")
     private GradingTask gradingTask;
-    @MapsId("grader_email")
+    @MapsId("graderEmail")
     @ManyToOne
     @JoinColumn(name = "grader_email")
     private Grader grader;
-    private String grader_access_code;
+    @Column(name = "grader_access_code")
+    private String graderAccessCode;
     @ManyToMany
     @JoinTable(
             name = "graders_grading_tasks_to_participants",
