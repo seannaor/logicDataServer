@@ -23,10 +23,27 @@ public class CodeStage extends Stage {
         super(experiment, stage_index);
     }
 
+<<<<<<< Updated upstream:src/main/java/com/example/demo/BusinessLayer/Entities/Stages/CodeStage.java
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
         super(experiment);
         this.description=desc;
         this.template=template;
         //TODO: add requirements field - this.requirements = requirements;
+=======
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+>>>>>>> Stashed changes:src/main/java/com/example/demo/Entities/Stages/CodeStage.java
     }
 }

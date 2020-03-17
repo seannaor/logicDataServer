@@ -25,4 +25,12 @@ public class TaggingStage extends Stage {
     public TaggingStage(Experiment experiment, int stage_index) {
         super(experiment, stage_index);
     }
+
+    public CodeStage getCodeStage() {
+        return codeStage;
+    }
+
+    public void setCodeStage(CodeStage codeStage) {
+        this.codeStage = codeStage;
+    }
 }
