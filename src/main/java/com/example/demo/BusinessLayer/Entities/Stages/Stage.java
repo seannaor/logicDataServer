@@ -39,13 +39,13 @@ public abstract class Stage {
 
     public Stage(Experiment experiment){
         this.experiment = experiment;
-        this.stageID = new StageID(experiment.getStages().size());
+        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
         experiment.addStage(this);
     }
 
     public Stage(Experiment experiment, int stage_index) {
 //        this.stage_id = new StageID(experiment.getExperiment_id(), stage_index);
-        this.stageID = new StageID(stage_index);
+        this.stageID = new StageID(experiment.getExperimentId(), stage_index);
         this.experiment = experiment;
         experiment.addStage(this);
     }

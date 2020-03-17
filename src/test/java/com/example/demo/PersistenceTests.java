@@ -1,7 +1,10 @@
 package com.example.demo;
 
 import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
+import net.minidev.json.JSONObject;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,11 +41,9 @@ class PersistenceTests {
 	@Autowired
 	InfoStageRep infoStageRep;
 	@Autowired
-	QuestionnaireStageRep questionnaireStageRep;
-	@Autowired
 	CodeStageRep codeStageRep;
 	@Autowired
-	TaggingStageRep taggingStageRep;
+	QuestionRep questionRep;
 	@Autowired
 	AnswerRep answerRep;
 	@Autowired
@@ -58,11 +62,10 @@ class PersistenceTests {
 				experimentRep,
 				permissionRep,
 				infoStageRep,
-				questionnaireStageRep,
 				codeStageRep,
-				taggingStageRep,
+				questionRep,
 				answerRep,
-				codeStageRep,
+				codeResultRep,
 				requirementTagRep
 		};
 		for (JpaRepository rep : reps)
@@ -156,23 +159,64 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void answersCRUDTest() {
+	void questionsAndAnswersCRUDTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		JSONObject jsonQuestion = new JSONObject();
+		jsonQuestion.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		List<JSONObject> questions = new ArrayList<>();
+		questions.add(jsonQuestion);
+		Stage s = new QuestionnaireStage(e);
+		stageRep.save(s);
+		assertEquals(questionRep.count(), 0);
+		assertEquals(stageRep.count(), 1);
+		int QIdx = 1;
+		for (JSONObject JQuestion : questions) {
+			Question q = new Question(QIdx, (QuestionnaireStage) s, JQuestion);
+			questionRep.save(q);
+			((QuestionnaireStage) s).addQuestion(q);
+			QIdx++;
+		}
+		String x = questions.get(0).toJSONString();
+		assertEquals(questionRep.count(), 1);
+		//Question q = questionRep.findAll().get(0);
+//		for (int i = 0; i < ((QuestionnaireStage) s).getQuestions().size(); i++) {
+//			Question q = (Question)((QuestionnaireStage) s).getQuestions().toArray()[i];
+//			questionRep.save(q);
+//		}
 
 	}
 
-//	@Test
-//	@Transactional
-//	void stagesCRUDTest() {
-//		Experiment e = new Experiment("hi");
-//		experimentRep.save(e);
-//		Stage s1 = new InfoStage(e, 1);
-//		stageRep.save(s1);
-//		Experiment ex = experimentRep.findAll().get(0);
-//		Stage x = stageRep.findAll().get(0);
-//		((InfoStage)s1).setInfo("aa");
-//		infoStageRep.save((InfoStage)s1);
-//		String a = infoStageRep.findAll().get(0).getInfo();
-//	}
+	@Test
+	void stagesCRUDTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		Stage s = new InfoStage("hello", e);
+		Stage s1 = new QuestionnaireStage(new ArrayList<>(), e);
+		stageRep.save(s);
+		stageRep.save(s1);
+		assertEquals(stageRep.count(), 2);
+		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hello");
+		((InfoStage) s).setInfo("hi there");
+		stageRep.save(s);
+		assertEquals(stageRep.count(), 2);
+		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hi there");
+		Stage s2 = new CodeStage("hello", "", new ArrayList<>(), e);
+		//Stage s3 = new TaggingStage((CodeStage) s2, e);
+		stageRep.save(s2);
+		//stageRep.save(s3);
+		//assertEquals(stageRep.count(), 4);
+		assertEquals(stageRep.count(), 3);
+		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "");
+		((CodeStage) s2).setTemplate("int main() {");
+		stageRep.save(s2);
+		assertEquals(stageRep.count(), 3);
+		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "int main() {");
+		stageRep.deleteAll();
+		assertEquals(stageRep.count(), 0);
+		assertEquals(infoStageRep.count(), 0);
+		assertEquals(codeStageRep.count(), 0);
+	}
 
 	@Test
 	@Transactional

@@ -1,6 +1,8 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import net.minidev.json.JSONObject;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,6 +27,7 @@ public class Question {
 
     @EmbeddedId
     private QuestionID questionID;
+
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
@@ -39,6 +42,7 @@ public class Question {
     public Question(int qIdx, QuestionnaireStage questionnaireStage, JSONObject jQuestion) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
         this.questionnaireStage = questionnaireStage;
+
 //        this.question_json = question_json.toJSONString();
 //        answer = new ArrayList<>();
     }
