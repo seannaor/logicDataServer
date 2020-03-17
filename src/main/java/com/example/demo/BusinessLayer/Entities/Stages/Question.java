@@ -14,6 +14,9 @@ public class Question {
         private Stage.StageID stageID;
         int questionIndex;
 
+        public QuestionID() {
+        }
+
         public QuestionID(int questionIndex, Stage.StageID stageID) {
             this.questionIndex = questionIndex;
             this.stageID = stageID;
@@ -29,6 +32,9 @@ public class Question {
             @JoinColumn(name = "experiment_id")
     })
     private QuestionnaireStage questionnaireStage;
+
+    public Question() {
+    }
 
     public Question(int qIdx, QuestionnaireStage questionnaireStage, JSONObject jQuestion) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());

@@ -12,8 +12,11 @@ public class InfoStage extends Stage {
     @Lob
     private String info;
 
+    public InfoStage() {
+    }
+
     public InfoStage(String info, Experiment experiment) {
         super(experiment);
-        this.info =info;
+        this.info = info;
     }
 }
