@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import net.minidev.json.JSONObject;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +33,8 @@ public class Question {
             @JoinColumn(name = "experiment_id")
     })
     private QuestionnaireStage questionnaireStage;
+    @Column(name = "question_json", columnDefinition = "json")
+    private String question_json;
 
     public Question() {
     }
