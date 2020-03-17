@@ -157,35 +157,35 @@ class PersistenceTests {
 		assertEquals(experimenteeRep.count(), 0);
 	}
 
-	@Test
-	@Transactional
-	void questionsAndAnswersCRUDTest() {
-		Experiment e = new Experiment("hi");
-		experimentRep.save(e);
-		JSONObject jsonQuestion = new JSONObject();
-		jsonQuestion.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
-		List<JSONObject> questions = new ArrayList<>();
-		questions.add(jsonQuestion);
-		Stage s = new QuestionnaireStage(e);
-		stageRep.save(s);
-		assertEquals(questionRep.count(), 0);
-		assertEquals(stageRep.count(), 1);
-		int QIdx = 1;
-		for (JSONObject JQuestion : questions) {
-			Question q = new Question(QIdx, (QuestionnaireStage) s, JQuestion);
-			questionRep.save(q);
-			((QuestionnaireStage) s).addQuestion(q);
-			QIdx++;
-		}
-		String x = questions.get(0).toJSONString();
-		assertEquals(questionRep.count(), 1);
-		//Question q = questionRep.findAll().get(0);
-//		for (int i = 0; i < ((QuestionnaireStage) s).getQuestions().size(); i++) {
-//			Question q = (Question)((QuestionnaireStage) s).getQuestions().toArray()[i];
-//			questionRep.save(q);
-//		}
-
-	}
+////	@Test
+////	@Transactional
+////	void questionsAndAnswersCRUDTest() {
+////		Experiment e = new Experiment("hi");
+////		experimentRep.save(e);
+////		JSONObject jsonQuestion = new JSONObject();
+////		jsonQuestion.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+////		List<JSONObject> questions = new ArrayList<>();
+////		questions.add(jsonQuestion);
+////		Stage s = new QuestionnaireStage(e);
+////		stageRep.save(s);
+////		assertEquals(questionRep.count(), 0);
+////		assertEquals(stageRep.count(), 1);
+////		int QIdx = 1;
+////		for (JSONObject JQuestion : questions) {
+////			Question q = new Question(QIdx, (QuestionnaireStage) s, JQuestion);
+////			questionRep.save(q);
+////			((QuestionnaireStage) s).addQuestion(q);
+////			QIdx++;
+////		}
+////		String x = questions.get(0).toJSONString();
+////		assertEquals(questionRep.count(), 1);
+////		//Question q = questionRep.findAll().get(0);
+//////		for (int i = 0; i < ((QuestionnaireStage) s).getQuestions().size(); i++) {
+//////			Question q = (Question)((QuestionnaireStage) s).getQuestions().toArray()[i];
+//////			questionRep.save(q);
+//////		}
+//
+//	}
 
 	@Test
 	void stagesCRUDTest() {
