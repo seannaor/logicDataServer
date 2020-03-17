@@ -5,6 +5,8 @@
 * Participants: consider inheritance ("is a" relationship)
 * ERD: PARTICIPANTS --- n --- <> --- 0...1 --- GRADERS
 * GradingTask: forgot about the concensus, HAVE TO REVIEW
+* Maybe mediator between controllers
+
 
 SHAHAR IS ASKING:
 CodeStage should have a list of Requirement
