@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import net.minidev.json.JSONObject;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,9 @@ public class Question {
     public static class QuestionID implements Serializable {
         private Stage.StageID stageID;
         int questionIndex;
+
+        public QuestionID() {
+        }
 
         public QuestionID(int questionIndex, Stage.StageID stageID) {
             this.questionIndex = questionIndex;
@@ -29,6 +33,11 @@ public class Question {
             @JoinColumn(name = "experiment_id")
     })
     private QuestionnaireStage questionnaireStage;
+    @Column(name = "question_json", columnDefinition = "json")
+    private String question_json;
+
+    public Question() {
+    }
 
     public Question(int qIdx, QuestionnaireStage questionnaireStage, JSONObject jQuestion) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
