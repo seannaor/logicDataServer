@@ -2,6 +2,8 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import net.minidev.json.JSONObject;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -15,6 +17,7 @@ import java.util.Set;
 public class QuestionnaireStage extends Stage {
 
     @OneToMany(mappedBy = "questionnaireStage")
+    //@NotFound(action= NotFoundAction.IGNORE)
     private Set<Question> questions;
 
     public QuestionnaireStage() {
@@ -23,6 +26,11 @@ public class QuestionnaireStage extends Stage {
 
     public QuestionnaireStage(Experiment experiment, int stage_index) {
         super(experiment, stage_index);
+    }
+
+    public QuestionnaireStage(Experiment experiment) {
+        super(experiment);
+        questions = new HashSet<>();
     }
 
     public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
@@ -34,5 +42,17 @@ public class QuestionnaireStage extends Stage {
             questions.add(q);
             QIdx++;
         }
+    }
+
+    public Set<Question> getQuestions() {
+        return this.questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
+    public void addQuestion(Question question) {
+        this.questions.add(question);
     }
 }

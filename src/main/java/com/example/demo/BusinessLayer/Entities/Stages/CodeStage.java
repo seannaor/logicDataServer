@@ -29,4 +29,20 @@ public class CodeStage extends Stage {
         this.template=template;
         //TODO: add requirements field - this.requirements = requirements;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
 }

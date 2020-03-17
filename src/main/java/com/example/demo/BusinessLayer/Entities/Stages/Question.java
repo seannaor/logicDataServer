@@ -26,6 +26,7 @@ public class Question {
 
     @EmbeddedId
     private QuestionID questionID;
+
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
@@ -42,6 +43,7 @@ public class Question {
     public Question(int qIdx, QuestionnaireStage questionnaireStage, JSONObject jQuestion) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
         this.questionnaireStage = questionnaireStage;
+
 //        this.question_json = question_json.toJSONString();
 //        answer = new ArrayList<>();
     }

@@ -19,4 +19,12 @@ public class InfoStage extends Stage {
         super(experiment);
         this.info = info;
     }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
 }
