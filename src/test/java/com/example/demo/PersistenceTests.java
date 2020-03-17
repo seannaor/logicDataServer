@@ -3,16 +3,24 @@ package com.example.demo;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.test.context.jdbc.Sql;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import static org.junit.Assert.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
+import static org.junit.Assert.assertEquals;
+
+
+@Sql({"/create_database.sql"})
 @SpringBootTest
 class PersistenceTests {
 
