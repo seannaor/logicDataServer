@@ -44,7 +44,6 @@ public abstract class Stage {
     }
 
     public Stage(Experiment experiment, int stage_index) {
-<<<<<<< Updated upstream:src/main/java/com/example/demo/BusinessLayer/Entities/Stages/Stage.java
 //        this.stage_id = new StageID(experiment.getExperiment_id(), stage_index);
         this.stageID = new StageID(stage_index);
         this.experiment = experiment;
@@ -64,10 +63,6 @@ public abstract class Stage {
     }
 
     public void setExperiment(Experiment experiment) {
-=======
-        this.stage_id = new StageID(experiment.getExperiment_id(), stage_index);
- //       this.stage_id = new StageID(stage_index);
->>>>>>> Stashed changes:src/main/java/com/example/demo/Entities/Stages/Stage.java
         this.experiment = experiment;
     }
 }
