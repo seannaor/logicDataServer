@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class CodeResult {
     @Embeddable
     public static class CodeResultID implements Serializable {
+        @Column(name = "participant_id")
         private int participantId;
         private Stage.StageID stageID;
     }
@@ -26,10 +27,14 @@ public class CodeResult {
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "stage_index"),
-            @JoinColumn(name = "experiment_id")
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
     })
     private CodeStage codeStage;
+
+    @Lob
+    @Column(name = "user_code")
+    private String userCode;
 
     public CodeResult() {
     }

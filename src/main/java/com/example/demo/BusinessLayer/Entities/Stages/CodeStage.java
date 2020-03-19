@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -12,8 +13,10 @@ import java.util.List;
 public class CodeStage extends Stage {
 
     @Lob
+    @Column(name = "description")
     private String description;
     @Lob
+    @Column(name = "template")
     private String template;
 
     public CodeStage() {

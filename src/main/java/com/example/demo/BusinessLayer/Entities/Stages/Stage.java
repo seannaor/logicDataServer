@@ -11,8 +11,10 @@ import java.io.Serializable;
 public abstract class Stage {
     @Embeddable
     public static class StageID implements Serializable {
-        private int experimentId;
+        @Column(name = "stage_index")
         private int stageIndex;
+        @Column(name = "experiment_id")
+        private int experimentId;
 
         public StageID() {
         }

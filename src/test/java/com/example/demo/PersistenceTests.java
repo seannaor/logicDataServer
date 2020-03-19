@@ -1,11 +1,13 @@
 package com.example.demo;
 
 import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
 import net.minidev.json.JSONObject;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +17,9 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -41,6 +45,8 @@ class PersistenceTests {
 	@Autowired
 	InfoStageRep infoStageRep;
 	@Autowired
+	QuestionnaireStageRep questionnaireStageRep;
+	@Autowired
 	CodeStageRep codeStageRep;
 	@Autowired
 	QuestionRep questionRep;
@@ -62,6 +68,7 @@ class PersistenceTests {
 				experimentRep,
 				permissionRep,
 				infoStageRep,
+				questionnaireStageRep,
 				codeStageRep,
 				questionRep,
 				answerRep,
@@ -157,60 +164,105 @@ class PersistenceTests {
 		assertEquals(experimenteeRep.count(), 0);
 	}
 
-////	@Test
-////	@Transactional
-////	void questionsAndAnswersCRUDTest() {
-////		Experiment e = new Experiment("hi");
-////		experimentRep.save(e);
-////		JSONObject jsonQuestion = new JSONObject();
-////		jsonQuestion.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
-////		List<JSONObject> questions = new ArrayList<>();
-////		questions.add(jsonQuestion);
-////		Stage s = new QuestionnaireStage(e);
-////		stageRep.save(s);
-////		assertEquals(questionRep.count(), 0);
-////		assertEquals(stageRep.count(), 1);
-////		int QIdx = 1;
-////		for (JSONObject JQuestion : questions) {
-////			Question q = new Question(QIdx, (QuestionnaireStage) s, JQuestion);
-////			questionRep.save(q);
-////			((QuestionnaireStage) s).addQuestion(q);
-////			QIdx++;
-////		}
-////		String x = questions.get(0).toJSONString();
-////		assertEquals(questionRep.count(), 1);
-////		//Question q = questionRep.findAll().get(0);
-//////		for (int i = 0; i < ((QuestionnaireStage) s).getQuestions().size(); i++) {
-//////			Question q = (Question)((QuestionnaireStage) s).getQuestions().toArray()[i];
-//////			questionRep.save(q);
-//////		}
-//
-//	}
+	@Test
+	@Transactional
+	void questionsAndAnswersCRUDTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		JSONObject jsonQuestion1 = new JSONObject();
+		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		JSONObject jsonQuestion2 = new JSONObject();
+		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
+		List<JSONObject> questions = new ArrayList<>();
+		questions.add(jsonQuestion1);
+		questions.add(jsonQuestion2);
+		QuestionnaireStage s = new QuestionnaireStage(e);
+		stageRep.save(s);
+		assertEquals(questionRep.count(), 0);
+		assertEquals(stageRep.count(), 1);
+		assertEquals(questionnaireStageRep.count(), 1);
+		int QIdx = 1;
+		for (JSONObject JQuestion : questions) {
+			Question q = new Question(QIdx, s, JQuestion.toJSONString());
+			questionRep.save(q);
+			s.addQuestion(q);
+			QIdx++;
+		}
+		stageRep.save(s);
+		assertEquals(questionRep.count(), 2);
+		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
+		JSONObject updatedJsonQuestion = new JSONObject();
+		updatedJsonQuestion.put("how old are you?", new String[] {"10-20", "21-30", "31-40", "41+"});
+		Question q = (Question) s.getQuestions().toArray()[0];
+		q.setQuestionJson(updatedJsonQuestion.toJSONString());
+		//TODO: check this, trying to update a question but first we have to update the stage, not very nice
+		s.addQuestion(q);
+		stageRep.save(s);
+		questionRep.save(q);
+		assertEquals(questionRep.count(), 2);
+		assertEquals(questionRep.findAll().get(0).getQuestionJson(), updatedJsonQuestion.toJSONString());
+		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
+		Participant p1 = new Participant(experimentRep.findAll().get(0));
+		experimentRep.findAll().get(0).getParticipants().add(p1);
+		expee1.setParticipant(p1);
+		participantRep.save(p1);
+		experimenteeRep.save(expee1);
+		Answer answer1 = new Answer(2, (Question)s.getQuestions().toArray()[0], p1);
+		answerRep.save(answer1);
+		Answer answer2 = new Answer(3, (Question)s.getQuestions().toArray()[1], p1);
+		answerRep.save(answer2);
+		assertEquals(answerRep.count(), 2);
+		Set<Question> updated = new HashSet<>(s.getQuestions());
+		Question toRemove = (Question)s.getQuestions().toArray()[0];
+		updated.remove(toRemove);
+		s.setQuestions(updated);
+		stageRep.save(s);
+		answerRep.delete(answer1);
+		assertEquals(answerRep.count(), 1);
+		questionRep.deleteById(toRemove.getQuestionID());
+		assertEquals(questionRep.count(), 1);
+		answerRep.delete(answer2);
+		assertEquals(answerRep.count(), 0);
+		Question toRemove1 = (Question)s.getQuestions().toArray()[0];
+		s.setQuestions(new HashSet<>());
+		stageRep.save(s);
+		questionRep.delete(toRemove1);
+		assertEquals(questionRep.count(), 0);
+		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 0);
+	}
+
+	@Test
+	@Transactional
+	void codeStageAndTaggingCRUDTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		//CodeStage codeStage = new CodeStage()
+
+	}
 
 	@Test
 	void stagesCRUDTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		Stage s = new InfoStage("hello", e);
-		Stage s1 = new QuestionnaireStage(new ArrayList<>(), e);
+		InfoStage s = new InfoStage("hello", e);
+		QuestionnaireStage s1 = new QuestionnaireStage(e);
 		stageRep.save(s);
 		stageRep.save(s1);
 		assertEquals(stageRep.count(), 2);
 		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hello");
-		((InfoStage) s).setInfo("hi there");
+		s.setInfo("hi there");
 		stageRep.save(s);
 		assertEquals(stageRep.count(), 2);
 		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hi there");
-		Stage s2 = new CodeStage("hello", "", new ArrayList<>(), e);
-		//Stage s3 = new TaggingStage((CodeStage) s2, e);
+		CodeStage s2 = new CodeStage("hello", "", new ArrayList<>(), e);
+		TaggingStage s3 = new TaggingStage(s2, e);
 		stageRep.save(s2);
-		//stageRep.save(s3);
-		//assertEquals(stageRep.count(), 4);
-		assertEquals(stageRep.count(), 3);
+		stageRep.save(s3);
+		assertEquals(stageRep.count(), 4);
 		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "");
-		((CodeStage) s2).setTemplate("int main() {");
+		s2.setTemplate("int main() {");
 		stageRep.save(s2);
-		assertEquals(stageRep.count(), 3);
+		assertEquals(stageRep.count(), 4);
 		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "int main() {");
 		stageRep.deleteAll();
 		assertEquals(stageRep.count(), 0);
@@ -220,7 +272,7 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void createExperimentTest() {
+	void createExperimentsTest() {
 		addExperiments();
 		assertEquals(experimentRep.count(), 2);
 		addManagementUsersToExperiments();
@@ -233,10 +285,10 @@ class PersistenceTests {
 		assertEquals(participantRep.count(), 3);
 		assertEquals(experimentRep.findAll().get(0).getParticipants().size(), 2);
 		assertEquals(experimentRep.findAll().get(1).getParticipants().size(), 1);
-//		assignStagesToExperiments();
-//		assertEquals(stageRep.count(), 10);
-//		assertEquals(experimentRep.findAll().get(0).getStages().size(), 5);
-//		assertEquals(experimentRep.findAll().get(1).getStages().size(), 5);
+		assignStagesToExperiments();
+		assertEquals(stageRep.count(), 10);
+		assertEquals(experimentRep.findAll().get(0).getStages().size(), 5);
+		assertEquals(experimentRep.findAll().get(1).getStages().size(), 5);
 	}
 
 	private void addExperiments() {
@@ -278,58 +330,36 @@ class PersistenceTests {
 		experimenteeRep.save(expee3);
 	}
 
-//	private void assignStagesToExperiments() {
-//		Stage s11 = new InfoStage(experimentRep.findAll().get(0), 1),
-//				s21 = new QuestionnaireStage(experimentRep.findAll().get(0), 2),
-//				s31 = new InfoStage(experimentRep.findAll().get(0), 3),
-//				s41 = new CodeStage(experimentRep.findAll().get(0), 4),
-//				s51 = new TaggingStage(experimentRep.findAll().get(0), 5);
-//		Stage s12 = new InfoStage(experimentRep.findAll().get(1), 1),
-//				s22 = new QuestionnaireStage(experimentRep.findAll().get(1), 2),
-//				s32 = new InfoStage(experimentRep.findAll().get(1), 3),
-//				s42 = new CodeStage(experimentRep.findAll().get(1), 4),
-//				s52 = new TaggingStage(experimentRep.findAll().get(1), 5);
-//		stageRep.save(s11);
-//
-//		((InfoStage)s11).setInfo("aa");
-//		((InfoStage)s31).setInfo("bb");
-//		((CodeStage)s41).setDescription("hello");
-//		((CodeStage)s41).setTemplate("public static void main(string[] args) {");
-//		((TaggingStage)s51).setCodeStage((CodeStage)s41);
-//		((InfoStage)s12).setInfo("aa");
-//		((InfoStage)s32).setInfo("bb");
-//		((CodeStage)s42).setDescription("hello");
-//		((CodeStage)s42).setTemplate("public static void main(string[] args) {");
-//		((TaggingStage)s52).setCodeStage((CodeStage)s42);
-//		experimentRep.findAll().get(0).getStages().add(s11);
-//		experimentRep.findAll().get(0).getStages().add(s21);
-//		experimentRep.findAll().get(0).getStages().add(s31);
-//		experimentRep.findAll().get(0).getStages().add(s41);
-//		experimentRep.findAll().get(0).getStages().add(s51);
-//		experimentRep.findAll().get(1).getStages().add(s12);
-//		experimentRep.findAll().get(1).getStages().add(s22);
-//		experimentRep.findAll().get(1).getStages().add(s32);
-//		experimentRep.findAll().get(1).getStages().add(s42);
-//		experimentRep.findAll().get(1).getStages().add(s52);
-//		stageRep.save(s11);
-//		infoStageRep.save((InfoStage)s11);
-//		stageRep.save(s21);
-//		questionnaireStageRep.save((QuestionnaireStage)s21);
-//		stageRep.save(s31);
-//		infoStageRep.save((InfoStage)s31);
-//		stageRep.save(s41);
-//		codeStageRep.save((CodeStage) s41);
-//		stageRep.save(s51);
-//		taggingStageRep.save((TaggingStage) s51);
-//		stageRep.save(s12);
-//		infoStageRep.save((InfoStage)s12);
-//		stageRep.save(s22);
-//		questionnaireStageRep.save((QuestionnaireStage)s22);
-//		stageRep.save(s32);
-//		infoStageRep.save((InfoStage)s32);
-//		stageRep.save(s42);
-//		codeStageRep.save((CodeStage) s42);
-//		stageRep.save(s52);
-//		codeStageRep.save((CodeStage) s42);
-//	}
+	private void assignStagesToExperiments() {
+		InfoStage s11 = new InfoStage("hello", experimentRep.findAll().get(0));
+		QuestionnaireStage s21 = new QuestionnaireStage(experimentRep.findAll().get(0));
+		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
+		CodeStage s41 = new CodeStage("enter your code", "", new ArrayList<>(), experimentRep.findAll().get(0));
+		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
+		InfoStage s12 = new InfoStage("hello", experimentRep.findAll().get(1));
+		QuestionnaireStage s22 = new QuestionnaireStage(experimentRep.findAll().get(1));
+		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
+		CodeStage s42 = new CodeStage("enter your code", "", new ArrayList<>(), experimentRep.findAll().get(1));
+		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
+		stageRep.save(s11);
+		stageRep.save(s21);
+		stageRep.save(s31);
+		stageRep.save(s41);
+		stageRep.save(s51);
+		stageRep.save(s12);
+		stageRep.save(s22);
+		stageRep.save(s32);
+		stageRep.save(s42);
+		stageRep.save(s52);
+		experimentRep.findAll().get(0).getStages().add(s11);
+		experimentRep.findAll().get(0).getStages().add(s21);
+		experimentRep.findAll().get(0).getStages().add(s31);
+		experimentRep.findAll().get(0).getStages().add(s41);
+		experimentRep.findAll().get(0).getStages().add(s51);
+		experimentRep.findAll().get(1).getStages().add(s12);
+		experimentRep.findAll().get(1).getStages().add(s22);
+		experimentRep.findAll().get(1).getStages().add(s32);
+		experimentRep.findAll().get(1).getStages().add(s42);
+		experimentRep.findAll().get(1).getStages().add(s52);
+	}
 }
