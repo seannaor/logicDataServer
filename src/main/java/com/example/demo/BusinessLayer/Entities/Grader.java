@@ -11,4 +11,10 @@ public class Grader {
     @OneToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
+
+    public String getGraderEmail() {
+        return graderEmail;
+    }
+
+    public Experiment getExperiment(){return participant.getExperiment();}
 }
