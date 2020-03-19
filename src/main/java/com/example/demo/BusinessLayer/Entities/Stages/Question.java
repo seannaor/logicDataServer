@@ -10,22 +10,6 @@ import java.io.Serializable;
 @Table(name = "questions")
 public class Question {
 
-    public QuestionID getQuestionID() {
-        return questionID;
-    }
-
-    public void setQuestionID(QuestionID questionID) {
-        this.questionID = questionID;
-    }
-
-    public String getQuestionJson() {
-        return questionJson;
-    }
-
-    public void setQuestionJson(String questionJson) {
-        this.questionJson = questionJson;
-    }
-
     @Embeddable
     public static class QuestionID implements Serializable {
         @Column(name = "question_index")
@@ -64,5 +48,21 @@ public class Question {
         this.questionJson = questionJson;
 
 //        answer = new ArrayList<>();
+    }
+
+    public QuestionID getQuestionID() {
+        return questionID;
+    }
+
+    public void setQuestionID(QuestionID questionID) {
+        this.questionID = questionID;
+    }
+
+    public String getQuestionJson() {
+        return questionJson;
+    }
+
+    public void setQuestionJson(String questionJson) {
+        this.questionJson = questionJson;
     }
 }
