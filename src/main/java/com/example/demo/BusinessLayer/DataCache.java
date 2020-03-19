@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataCache {
+
     /*
     This class purpose is to be the channel witch we can add or get data.
     If data not found, we should look for it in the database.
      */
 
-    private static DataCache instance = null;
+    private static DataCache instance;
     private List<ManagementUser> managers;
     private List<Experimentee> experimentees;
     private List<Grader> graders;
@@ -84,5 +85,7 @@ public class DataCache {
         experimentees.add(expee);
     }
 
-
+    public void flash(){
+        instance = new DataCache();
+    }
 }
