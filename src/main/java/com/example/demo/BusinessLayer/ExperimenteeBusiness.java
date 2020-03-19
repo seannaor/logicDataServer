@@ -5,21 +5,18 @@ import net.minidev.json.JSONObject;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
 
+    private DataCache cache = DataCache.getInstance();
+
     @Override
     public boolean beginParticipation(String accessCode) {
-        return getExperimentee(accessCode) != null;
+        return cache.getExpeeByCode(accessCode) != null;
     }
 
     @Override
     public boolean fillInStage(String accessCode, JSONObject data) {
-        Experimentee expee = getExperimentee(accessCode);
+        Experimentee expee = cache.getExpeeByCode(accessCode);
 //        expee.getExperiment();
         return false;
     }
 
-    //TODO: implements
-    // if @accessCode legal, return experimentee, else null
-    private Experimentee getExperimentee(String accessCode){
-        return null;
-    }
 }

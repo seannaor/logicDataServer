@@ -11,16 +11,19 @@ import net.minidev.json.JSONObject;
 import java.util.List;
 
 public class CreatorBusiness implements ICreatorBusiness {
+
+    private DataCache cache = DataCache.getInstance();
+
     @Override
     public boolean researcherLogin(String username, String password) {
-        ManagementUser c = getCreator(username);
+        ManagementUser c = cache.getManagerByName(username);
         if(c==null) return false;
         return c.getBguPassword().equals(password);
     }
 
     @Override
     public boolean addStageToExperiment(String researcherName, String expName, JSONObject stage) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         Experiment exp = c.getExperiment(expName);
 
@@ -29,83 +32,79 @@ public class CreatorBusiness implements ICreatorBusiness {
 
     @Override
     public boolean saveExperiment(String researcherName, String expName) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addExperiment(String researcherName, String expName, List<JSONObject> stages) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addGradingTask(String researcherName, String expName, String gradTaskName, List<JSONObject> ExpeeExp, List<Integer> stagesToCheck, List<JSONObject> personalExp) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addToPersonal(String researcherName, String expName, String gradTaskName, JSONObject stage) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addToResultsExp(String researcherName, String expName, String gradTaskName, JSONObject stage) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean setStagesToCheck(String researcherName, String expName, String gradTaskName, List<Integer> stagesToCheck) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean saveGradingTask(String researcherName, String expName, String gradTaskName) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c =cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addAllie(String researcherName, String expName, String allieMail, String permissions) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addGrader(String researcherName, String expName, String gradTaskName, String graderMail) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addExperimentee(String researcherName, String expName, String ExpeeMail) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
     }
 
     @Override
     public boolean addExpeeToGrader(String researcherName, String expName, String gradTaskName, String graderMail, String ExpeeMail) {
-        ManagementUser c = getCreator(researcherName);
+        ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
-    }
-
-    private ManagementUser getCreator(String name){
-        return null;
     }
 
     //UC 1.1.*

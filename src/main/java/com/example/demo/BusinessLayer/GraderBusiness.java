@@ -1,16 +1,11 @@
 package com.example.demo.BusinessLayer;
 
-import com.example.demo.BusinessLayer.Entities.Grader;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class GraderBusiness implements IGraderBusiness {
 
-    private List<Grader> graders=new ArrayList<>();
+    private DataCache cache = DataCache.getInstance();
 
     @Override
     public boolean beginGrading(String accessCode) {
-        return false;
+        return cache.getGraderByCode(accessCode)!=null;
     }
 }
