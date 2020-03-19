@@ -17,7 +17,6 @@ import java.util.Set;
 public class QuestionnaireStage extends Stage {
 
     @OneToMany(mappedBy = "questionnaireStage")
-    //@NotFound(action= NotFoundAction.IGNORE)
     private Set<Question> questions;
 
     public QuestionnaireStage() {
@@ -30,19 +29,19 @@ public class QuestionnaireStage extends Stage {
 
     public QuestionnaireStage(Experiment experiment) {
         super(experiment);
-        questions = new HashSet<>();
+        this.questions = new HashSet<>();
     }
 
-    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
-        super(experiment);
-        questions = new HashSet<>();
-        int QIdx = 1;
-        for (JSONObject JQuestion : JQuestions) {
-            Question q = new Question(QIdx, this, JQuestion);
-            questions.add(q);
-            QIdx++;
-        }
-    }
+//    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
+//        super(experiment);
+//        questions = new HashSet<>();
+//        int QIdx = 1;
+//        for (JSONObject JQuestion : JQuestions) {
+//            Question q = new Question(QIdx, this, JQuestion);
+//            questions.add(q);
+//            QIdx++;
+//        }
+//    }
 
     public Set<Question> getQuestions() {
         return this.questions;

@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Requirement {
     @Embeddable
     public static class RequirementID implements Serializable {
+        @Column(name = "requirement_index")
         private int requirementIndex;
         private Stage.StageID stageID;
     }
@@ -17,11 +18,12 @@ public class Requirement {
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "stage_index"),
-            @JoinColumn(name = "experiment_id")
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
     })
     private CodeStage codeStage;
     @Lob
+    @Column(name = "text")
     private String text;
 //    @ManyToMany(mappedBy = "requirements")
 //    private Set<RequirementTag> requirementTags;

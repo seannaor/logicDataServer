@@ -166,7 +166,7 @@ CREATE TABLE `tagging_stages`
 (
     `stage_index`                    int NOT NULL REFERENCES stages (`stage_index`),
     `experiment_id`                  int NOT NULL REFERENCES stages (`experiment_id`),
-    `appropriate_coding_stage_index` int NOT NULL,
+    `appropriate_coding_stage_index` int,
     FOREIGN KEY (`appropriate_coding_stage_index`, `experiment_id`) REFERENCES code_stages (`stage_index`, `experiment_id`),
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );

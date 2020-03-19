@@ -10,10 +10,27 @@ import java.io.Serializable;
 @Table(name = "questions")
 public class Question {
 
+    public QuestionID getQuestionID() {
+        return questionID;
+    }
+
+    public void setQuestionID(QuestionID questionID) {
+        this.questionID = questionID;
+    }
+
+    public String getQuestionJson() {
+        return questionJson;
+    }
+
+    public void setQuestionJson(String questionJson) {
+        this.questionJson = questionJson;
+    }
+
     @Embeddable
     public static class QuestionID implements Serializable {
-        private Stage.StageID stageID;
+        @Column(name = "question_index")
         int questionIndex;
+        private Stage.StageID stageID;
 
         public QuestionID() {
         }
@@ -30,21 +47,22 @@ public class Question {
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "stage_index"),
-            @JoinColumn(name = "experiment_id")
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
     })
     private QuestionnaireStage questionnaireStage;
+
     @Column(name = "question_json", columnDefinition = "json")
-    private String question_json;
+    private String questionJson;
 
     public Question() {
     }
 
-    public Question(int qIdx, QuestionnaireStage questionnaireStage, JSONObject jQuestion) {
+    public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
         this.questionnaireStage = questionnaireStage;
+        this.questionJson = questionJson;
 
-//        this.question_json = question_json.toJSONString();
 //        answer = new ArrayList<>();
     }
 }

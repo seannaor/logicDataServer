@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 @Table(name = "info_stages")
 public class InfoStage extends Stage {
     @Lob
+    @Column(name = "info")
     private String info;
 
     public InfoStage() {

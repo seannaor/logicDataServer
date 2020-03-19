@@ -12,8 +12,18 @@ public class Answer {
 
     @Embeddable
     public static class AnswerID implements Serializable {
+        @Column(name = "participant_id")
         private int participantId;
         private Question.QuestionID questionID;
+
+        public AnswerID() {
+        }
+
+        public AnswerID(int participantId, Question.QuestionID questionID) {
+            this.participantId = participantId;
+            this.questionID = questionID;
+
+        }
     }
 
     @EmbeddedId
@@ -25,9 +35,34 @@ public class Answer {
     @MapsId("questionID")
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "stage_index"),
-            @JoinColumn(name = "experiment_id"),
-            @JoinColumn(name = "question_index")
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id"),
+            @JoinColumn(name = "question_index", referencedColumnName = "question_index")
     })
     private Question question;
+
+    @Lob
+    @Column(name = "textual_answer")
+    private String textualAnswer;
+
+    @Column(name = "numeral_answer")
+    private Integer numeralAnswer;
+
+    public Answer (){ }
+
+    public Answer (String textualAnswer, Question question, Participant participant) {
+        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
+        this.textualAnswer = textualAnswer;
+        this.numeralAnswer = null;
+        this.question = question;
+        this.participant = participant;
+    }
+
+    public Answer (Integer numeralAnswer, Question question, Participant participant) {
+        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
+        this.textualAnswer = null;
+        this.numeralAnswer = numeralAnswer;
+        this.question = question;
+        this.participant = participant;
+    }
 }

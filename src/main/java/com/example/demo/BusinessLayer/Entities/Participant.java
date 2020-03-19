@@ -23,4 +23,12 @@ public class Participant {
     public Experiment getExperiment() {
         return experiment;
     }
+
+    public int getParticipantId() {
+        return participantId;
+    }
+
+    public void setParticipantId(int participantId) {
+        this.participantId = participantId;
+    }
 }
