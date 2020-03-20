@@ -11,9 +11,7 @@ import java.io.Serializable;
 public abstract class Stage {
     @Embeddable
     public static class StageID implements Serializable {
-        @Column(name = "stage_index")
         private int stageIndex;
-        @Column(name = "experiment_id")
         private int experimentId;
 
         public StageID() {
@@ -30,7 +28,12 @@ public abstract class Stage {
     }
 
     @EmbeddedId
+    @AttributeOverrides({
+            @AttributeOverride(name = "stageIndex", column = @Column(name = "stage_index")),
+            @AttributeOverride(name = "experimentId", column = @Column(name = "experiment_id"))
+    })
     private StageID stageID;
+
     @MapsId("experimentId")
     @ManyToOne
     @JoinColumn(name = "experiment_id")
@@ -39,7 +42,7 @@ public abstract class Stage {
     public Stage() {
     }
 
-    public Stage(Experiment experiment){
+    public Stage(Experiment experiment) {
         this.experiment = experiment;
         this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
         experiment.addStage(this);
