@@ -9,9 +9,11 @@ public interface ICreatorBusiness {
     //Login
     boolean researcherLogin(String username, String password);
 
+    boolean createExperiment(String researcherName, String expName);
+
     //UC 1.1 - one choice (PARTS)
-    boolean addStageToExperiment(String researcherName, String expName, JSONObject stage);
-    boolean saveExperiment(String researcherName, String expName);
+    boolean addStageToExperiment(String researcherName, int id, JSONObject stage);
+    boolean saveExperiment(String researcherName, int id);
 
     //UC 1.1 - second choice (ALL)
     boolean addExperiment(String researcherName, String expName, List<JSONObject> stages);

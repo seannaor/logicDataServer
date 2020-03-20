@@ -32,16 +32,16 @@ public class QuestionnaireStage extends Stage {
         this.questions = new HashSet<>();
     }
 
-//    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
-//        super(experiment);
-//        questions = new HashSet<>();
-//        int QIdx = 1;
-//        for (JSONObject JQuestion : JQuestions) {
-//            Question q = new Question(QIdx, this, JQuestion);
-//            questions.add(q);
-//            QIdx++;
-//        }
-//    }
+    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
+        super(experiment);
+        questions = new HashSet<>();
+        int QIdx = 1;
+        for (JSONObject JQuestion : JQuestions) {
+            Question q = new Question(QIdx, this, JQuestion.toString());
+            questions.add(q);
+            QIdx++;
+        }
+    }
 
     public Set<Question> getQuestions() {
         return this.questions;

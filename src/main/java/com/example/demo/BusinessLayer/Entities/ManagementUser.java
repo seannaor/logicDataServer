@@ -79,10 +79,17 @@ public class ManagementUser {
         this.experiments = experiments;
     }
 
-    public Experiment getExperiment(String name) {
+    public Experiment getExperiment(int id) {
         for (Experiment exp : experiments) {
-            if(exp.getExperimentName().equals(name)) return exp;
+            if (exp.getExperimentId() == id) return exp;
         }
         return null;
+    }
+
+    public boolean hasExperiment(String name){
+        for (Experiment exp : experiments) {
+            if (exp.getExperimentName().equals(name)) return true;
+        }
+        return false;
     }
 }

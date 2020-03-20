@@ -22,16 +22,25 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public boolean addStageToExperiment(String researcherName, String expName, JSONObject stage) {
+    public boolean createExperiment(String researcherName, String expName) {
+        ManagementUser c = cache.getManagerByName(researcherName);
+        if(c.hasExperiment(expName)) return false;
+        return true;
+        //TODO: implements! (not complete)
+    }
+
+
+    @Override
+    public boolean addStageToExperiment(String researcherName, int id, JSONObject stage) {
         ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
-        Experiment exp = c.getExperiment(expName);
+        Experiment exp = c.getExperiment(id);
 
         return false;
     }
 
     @Override
-    public boolean saveExperiment(String researcherName, String expName) {
+    public boolean saveExperiment(String researcherName, int id) {
         ManagementUser c = cache.getManagerByName(researcherName);
         if(c==null) return false;
         return false;
@@ -117,8 +126,8 @@ public class CreatorBusiness implements ICreatorBusiness {
                 String template = (String) stage.get("template");
                 List<String> requirements = (List<String>) stage.get("requirements");
                 return new CodeStage(desc, template, requirements, experiment);
-//            case "questionnaire":
-//                return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
+            case "questionnaire":
+                return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
         }
         return null;
     }
