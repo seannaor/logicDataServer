@@ -9,6 +9,8 @@
 * maybe replace Set collection with List (no access)
 
 
-SHAHAR IS ASKING:
+SHAHAR IS ASKING FOR:
 CodeStage should have a list of Requirement
 Question should have field - text (the question itself)
+GradingTask should have a list of indexes of stages, that will be available to the grader to see
+Permissions should be between manager to experiment, but there are system permissions too...

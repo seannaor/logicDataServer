@@ -1,5 +1,6 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
@@ -27,7 +28,11 @@ public class Experiment {
 
     public Experiment(String experimentName) {
         this.experimentName = experimentName;
+    }
 
+    public Experiment(String experimentName,ManagementUser creator) {
+        this.experimentName = experimentName;
+        this.managementUsers.add(creator);
     }
 
     public int getExperimentId() {
@@ -70,7 +75,14 @@ public class Experiment {
         this.stages = stages;
     }
 
+    //=========================== end of setters getters ===============================
+
     public void addStage(Stage stage) {
         stages.add(stage);
     }
+
+    public void addManagementUser(ManagementUser mu){
+        this.managementUsers.add(mu);
+    }
+
 }

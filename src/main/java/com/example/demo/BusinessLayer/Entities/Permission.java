@@ -23,6 +23,11 @@ public class Permission {
         this.permissionName = permissionName;
     }
 
+    public Permission(String permissionName,ManagementUser man) {
+        this.permissionName = permissionName;
+        managementUsers.add(man);
+    }
+
     public int getPermissionId() {
         return permissionId;
     }

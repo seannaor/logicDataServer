@@ -43,7 +43,7 @@ public class BusinessLayerTests {
     @Test
     public void addAllExperiment(){
         String expName = "testExp";
-        List<JSONObject> stages =new ArrayList<>();
+        List<JSONObject> stages =Utils.buildStages();
         
 
     }

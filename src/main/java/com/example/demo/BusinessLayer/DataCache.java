@@ -4,6 +4,7 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
 
 import java.util.ArrayList;
@@ -73,6 +74,17 @@ public class DataCache {
         return null;
     }
 
+    public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) {
+        ManagementUser man = getManagerByName(researcherName);
+        Experiment exp = man.getExperiment(expId);
+        for (GraderToGradingTask gtgt : gradingTasks) {
+            GradingTask gt = gtgt.getGradingTask();
+            if(gt.getBaseExperiment().equals(exp))
+                return gt;
+        }
+        return null;
+    }
+
     public void addManager(ManagementUser manager) {
         managers.add(manager);
     }
@@ -85,7 +97,11 @@ public class DataCache {
         experimentees.add(expee);
     }
 
-    public void flash(){
+    public void addGradingTask(GraderToGradingTask gtgt) {
+        gradingTasks.add(gtgt);
+    }
+
+    public void flash() {
         instance = new DataCache();
     }
 }

@@ -39,6 +39,10 @@ public class GraderToGradingTask {
     )
     private Set<Participant> participants;
 
+    public GraderToGradingTask(GradingTask gradingTask) {
+        this.gradingTask = gradingTask;
+    }
+
     public String getGraderAccessCode() {
         return graderAccessCode;
     }
