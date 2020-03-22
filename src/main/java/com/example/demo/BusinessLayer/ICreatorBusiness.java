@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ICreatorBusiness {
 
+    //TODO: each return value would change from bool to string or something more meaningful
+
     //Login
     boolean researcherLogin(String username, String password);
 

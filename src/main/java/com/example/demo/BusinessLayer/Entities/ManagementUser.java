@@ -88,6 +88,13 @@ public class ManagementUser {
         return null;
     }
 
+    public Experiment getExperimentByName(String name){
+        for (Experiment exp : experiments) {
+            if (exp.getExperimentName().equals(name)) return exp;
+        }
+        return null;
+    }
+
     public boolean hasExperiment(String name) {
         for (Experiment exp : experiments) {
             if (exp.getExperimentName().equals(name)) return true;

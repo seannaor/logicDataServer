@@ -29,11 +29,11 @@ public class CreatorBusiness implements ICreatorBusiness {
     @Override
     public boolean createExperiment(String researcherName, String expName) {
         ManagementUser c = cache.getManagerByName(researcherName);
-        if (c.hasExperiment(expName)) return false;
+        if (c == null || c.hasExperiment(expName)) return false;
         Experiment exp = new Experiment(expName, c);
         c.addExperiment(exp);
         return true;
-        //TODO: test
+        //TODO: return value?
     }
 
     @Override
@@ -41,9 +41,10 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser c = cache.getManagerByName(researcherName);
         if (c == null) return false;
         Experiment exp = c.getExperiment(id);
+        if (exp == null) return false;
         Stage s = parseStage(stage, exp);
         return s != null;
-        //TODO: test
+        //TODO: return value?
     }
 
     @Override
@@ -57,10 +58,10 @@ public class CreatorBusiness implements ICreatorBusiness {
     @Override
     public boolean addExperiment(String researcherName, String expName, List<JSONObject> stages) {
         ManagementUser c = cache.getManagerByName(researcherName);
-        if (c.hasExperiment(expName)) return false;
+        if (c == null || c.hasExperiment(expName)) return false;
         Experiment exp = buildExperiment(stages, expName, c);
         return exp != null;
-        //TODO: test
+        //TODO: return value?
     }
 
     @Override
@@ -71,10 +72,11 @@ public class CreatorBusiness implements ICreatorBusiness {
         if (exp == null) return false;
         Experiment personal = buildExperiment(personalExp, gradTaskName, c);
         Experiment forExpee = buildExperiment(ExpeeExp, gradTaskName, c);
+        if (personal == null || forExpee == null) return false;
         GradingTask gt = new GradingTask(exp, personal, forExpee);
         cache.addGradingTask(new GraderToGradingTask(gt));
         return true;
-        //TODO: test
+        //TODO: return value? and do something with stagesToCheck
     }
 
     @Override
@@ -84,6 +86,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
         if (gt == null) return false;
         Experiment personal = gt.getGeneralExperiment();
+        if(personal==null) return false;
         Stage s = parseStage(stage, personal);
         return s != null;
         //TODO: test
@@ -125,11 +128,11 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser c = cache.getManagerByName(researcherName);
         if (c == null) return false;
         Experiment exp = c.getExperiment(expId);
-        if(exp==null) return false;
+        if (exp == null) return false;
 
         ManagementUser ally = new ManagementUser();
         ally.setUserEmail(allieMail);
-        ally.setPermissions(Set.of(new Permission(permissions,ally)));
+        ally.setPermissions(Set.of(new Permission(permissions, ally)));
         return true;
         //TODO: check
     }
@@ -160,18 +163,21 @@ public class CreatorBusiness implements ICreatorBusiness {
 
     //UC 1.1.* generate the stage and add him to the experiment
     private static Stage parseStage(JSONObject stage, Experiment experiment) {
-        switch ((String) stage.get("type")) {
-            case "info":
-                return new InfoStage((String) stage.get("info"), experiment);
+        try {
+            switch ((String) stage.get("type")) {
+                case "info":
+                    return new InfoStage((String) stage.get("info"), experiment);
 
-            case "code":
-                String desc = (String) stage.get("description");
-                String template = (String) stage.get("template");
-                List<String> requirements = (List<String>) stage.get("requirements");
-                return new CodeStage(desc, template, requirements, experiment);
+                case "code":
+                    String desc = (String) stage.get("description");
+                    String template = (String) stage.get("template");
+                    List<String> requirements = (List<String>) stage.get("requirements");
+                    return new CodeStage(desc, template, requirements, experiment);
 
-            case "questionnaire":
-                return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
+                case "questionnaire":
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
+            }
+        } catch (Exception ignore) {
         }
         return null;
     }

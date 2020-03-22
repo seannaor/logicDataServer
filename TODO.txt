@@ -8,6 +8,7 @@
 * Maybe mediator between controllers
 * maybe replace Set collection with List (no access)
 
++ in business layer, each return value would change from bool to string or something more meaningful
 
 SHAHAR IS ASKING FOR:
 CodeStage should have a list of Requirement
