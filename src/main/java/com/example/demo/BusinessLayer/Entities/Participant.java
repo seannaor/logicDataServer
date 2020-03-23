@@ -31,4 +31,5 @@ public class Participant {
     public void setParticipantId(int participantId) {
         this.participantId = participantId;
     }
+
 }

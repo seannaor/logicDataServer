@@ -1,5 +1,6 @@
 package com.example.demo.RoutingLayer;
 
+import com.example.demo.ServiceLayer.CreatorService;
 import com.sun.net.httpserver.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -52,13 +53,12 @@ class Router {
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         int serverPort = 8000;
-        //===================================================================
-
-        //HttpServer server = createHttpsServer(8000);
+        CreatorService creator = new CreatorService();
+        //HttpServer server = createHttpsServer(serverPort);
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
 
-        server.createContext("/api/post", (exchange -> {
-            System.out.println("someone is trying to connect to /api/post");
+        server.createContext("/manager", (exchange -> {
+            System.out.println("someone is trying to connect to /manager");
             if (!exchange.getRequestMethod().equals("POST")) {
                 throw new UnsupportedOperationException();
             }
@@ -72,9 +72,12 @@ class Router {
             while ((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
                 out.append(buffer, 0, charsRead);
             }
-            String res = out.toString();
-            JSONObject json = stringToJson(res);
-            System.out.println("got: " + json.toJSONString());
+            String req = out.toString();
+            JSONObject jsonReq = stringToJson(req);
+            System.out.println("request: " + jsonReq.toJSONString());
+            JSONObject jsonRes = creator.requestProcessor(jsonReq);
+            String res = jsonRes.toJSONString();
+            System.out.println("response: "+res);
 
             exchange.sendResponseHeaders(200, res.getBytes().length);
             OutputStream output = exchange.getResponseBody();

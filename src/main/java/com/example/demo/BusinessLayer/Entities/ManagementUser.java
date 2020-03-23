@@ -95,13 +95,6 @@ public class ManagementUser {
         return null;
     }
 
-    public boolean hasExperiment(String name) {
-        for (Experiment exp : experiments) {
-            if (exp.getExperimentName().equals(name)) return true;
-        }
-        return false;
-    }
-
     public void addExperiment(Experiment exp) {
         experiments.add(exp);
         exp.addManagementUser(this);

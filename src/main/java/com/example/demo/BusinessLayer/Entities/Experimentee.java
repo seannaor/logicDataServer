@@ -17,6 +17,11 @@ public class Experimentee {
     public Experimentee() {
     }
 
+    public Experimentee(String experimenteeEmail, Experiment exp) {
+        this.experimenteeEmail = experimenteeEmail;
+        this.participant = new Participant(exp);
+    }
+
     public Experimentee(String accessCode, String experimenteeEmail) {
         this.accessCode = accessCode;
         this.experimenteeEmail = experimenteeEmail;

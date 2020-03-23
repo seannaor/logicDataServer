@@ -1,11 +1,8 @@
 package com.example.demo.BusinessLayer;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Experimentee;
-import com.example.demo.BusinessLayer.Entities.Grader;
+import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.ManagementUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +18,15 @@ public class DataCache {
     private List<ManagementUser> managers;
     private List<Experimentee> experimentees;
     private List<Grader> graders;
-    private List<GraderToGradingTask> gradingTasks;
+    private List<GradingTask> gradingTasks;
+    private List<GraderToGradingTask> graderToGradingTasks;
 
     private DataCache() {
         managers = new ArrayList<>();
         experimentees = new ArrayList<>();
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();
+        graderToGradingTasks = new ArrayList<>();
     }
 
     public static DataCache getInstance() {
@@ -56,7 +55,7 @@ public class DataCache {
     }
 
     public Grader getGraderByCode(String code) {
-        for (GraderToGradingTask g2gt : gradingTasks)
+        for (GraderToGradingTask g2gt : graderToGradingTasks)
             if (g2gt.getGraderAccessCode().equals(code)) return g2gt.getGrader();
 
         return null;
@@ -74,16 +73,24 @@ public class DataCache {
         return null;
     }
 
+    public Experimentee getExpeeByMailAndExp(String email, int expId) {
+        for (Experimentee expee : experimentees)
+            if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
+                return expee;
+        return null;
+    }
+
     public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) {
         ManagementUser man = getManagerByName(researcherName);
         Experiment exp = man.getExperiment(expId);
-        for (GraderToGradingTask gtgt : gradingTasks) {
-            GradingTask gt = gtgt.getGradingTask();
-            if(gt.getBaseExperiment().equals(exp))
+        for (GradingTask gt : gradingTasks) {
+            if (gt.getBaseExperiment().equals(exp) && gt.getGeneralExperiment().getExperimentName().equals(gradName))
                 return gt;
         }
         return null;
     }
+
+    //=======================================================================
 
     public void addManager(ManagementUser manager) {
         managers.add(manager);
@@ -97,8 +104,33 @@ public class DataCache {
         experimentees.add(expee);
     }
 
-    public void addGradingTask(GraderToGradingTask gtgt) {
-        gradingTasks.add(gtgt);
+    public void addGradingTask(GradingTask gt) {
+        gradingTasks.add(gt);
+    }
+
+    public void addGraderToGradingTask(GradingTask gt, Grader g) {
+        graderToGradingTasks.add(new GraderToGradingTask(gt, g));
+        //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
+    }
+
+    public void addExpeeToGradingTask(GradingTask gt, Grader grader, Participant participant) {
+        for (GraderToGradingTask gtgt : graderToGradingTasks) {
+            if (gtgt.getGrader().equals(grader) && gtgt.getGradingTask().equals(gt)) {
+                gtgt.addParticipant(participant);
+                return;
+            }
+        }
+        GraderToGradingTask gtgt = new GraderToGradingTask(gt, grader);
+        gtgt.addParticipant(participant);
+    }
+    //=======================================================================
+
+    public boolean isExpeeInExperiment(String email, int expId) {
+        for (Experimentee expee : experimentees) {
+            if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
+                return true;
+        }
+        return false;
     }
 
     public void flash() {
