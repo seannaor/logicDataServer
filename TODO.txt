@@ -8,7 +8,13 @@
 * Maybe mediator between controllers
 * maybe replace Set collection with List (no access)
 
++ in business layer, each return value would change from bool to string or something more meaningful
 
-SHAHAR IS ASKING:
+SHAHAR IS ASKING FOR:
 CodeStage should have a list of Requirement
 Question should have field - text (the question itself)
+GradingTask should have a list of indexes of stages, that will be available to the grader to see
+Permissions should be between manager to experiment, but there are system permissions too...
+Participant should have an index indicating the last stage they filled in the experiment
+Result interface to be implemented by the different results
+Maybe a participant can hold a set of results for his experiment

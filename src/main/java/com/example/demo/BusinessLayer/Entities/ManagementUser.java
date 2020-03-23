@@ -79,10 +79,33 @@ public class ManagementUser {
         this.experiments = experiments;
     }
 
-    public Experiment getExperiment(String name) {
+    //======================= end of setters and getters =======================
+
+    public Experiment getExperiment(int id) {
         for (Experiment exp : experiments) {
-            if(exp.getExperimentName().equals(name)) return exp;
+            if (exp.getExperimentId() == id) return exp;
         }
         return null;
+    }
+
+    public Experiment getExperimentByName(String name){
+        for (Experiment exp : experiments) {
+            if (exp.getExperimentName().equals(name)) return exp;
+        }
+        return null;
+    }
+
+    public void addExperiment(Experiment exp) {
+        experiments.add(exp);
+        exp.addManagementUser(this);
+    }
+
+    public void removeExp(String expName) {
+        Experiment toRemove = null;
+        for (Experiment exp : experiments)
+            if (exp.getExperimentName().equals(expName)) {
+                experiments.remove(exp);
+                break;
+            }
     }
 }

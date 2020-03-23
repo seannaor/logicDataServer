@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -37,7 +38,16 @@ public class GraderToGradingTask {
                     @JoinColumn(name = "grader_email")},
             inverseJoinColumns = {@JoinColumn(name = "participant_id")}
     )
-    private Set<Participant> participants;
+    private Set<Participant> participants = new HashSet<>();
+
+    public GraderToGradingTask(GradingTask gradingTask) {
+        this.gradingTask = gradingTask;
+    }
+
+    public GraderToGradingTask(GradingTask gradingTask,Grader grader) {
+        this.gradingTask = gradingTask;
+        this.grader=grader;
+    }
 
     public String getGraderAccessCode() {
         return graderAccessCode;
@@ -49,5 +59,9 @@ public class GraderToGradingTask {
 
     public GradingTask getGradingTask() {
         return gradingTask;
+    }
+
+    public void addParticipant(Participant p){
+        participants.add(p);
     }
 }

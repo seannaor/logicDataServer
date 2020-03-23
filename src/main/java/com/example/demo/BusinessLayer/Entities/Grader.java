@@ -12,6 +12,11 @@ public class Grader {
     @JoinColumn(name = "participant_id")
     private Participant participant;
 
+    public Grader(String graderEmail, Experiment exp) {
+        this.graderEmail = graderEmail;
+        this.participant = new Participant(exp);
+    }
+
     public String getGraderEmail() {
         return graderEmail;
     }

@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer;
-
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
 
 public interface IExperimenteeBusiness {
 
@@ -8,5 +7,5 @@ public interface IExperimenteeBusiness {
     boolean beginParticipation(String accessCode);
 
     //UC 2.2.*
-    boolean fillInStage(String accessCode, JSONObject data);
+    String fillInStage(String accessCode, JSONObject data);
 }
