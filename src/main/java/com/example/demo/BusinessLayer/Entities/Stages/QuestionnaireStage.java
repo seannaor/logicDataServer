@@ -17,7 +17,7 @@ import java.util.Set;
 public class QuestionnaireStage extends Stage {
 
     @OneToMany(mappedBy = "questionnaireStage")
-    private Set<Question> questions;
+    private Set<Question> questions = new HashSet<>();
 
     public QuestionnaireStage() {
         super();
@@ -29,7 +29,6 @@ public class QuestionnaireStage extends Stage {
 
     public QuestionnaireStage(Experiment experiment) {
         super(experiment);
-        this.questions = new HashSet<>();
     }
 
 //    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {

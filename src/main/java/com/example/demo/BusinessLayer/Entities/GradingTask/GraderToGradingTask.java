@@ -10,10 +10,20 @@ import java.util.Set;
 @Entity
 @Table(name = "graders_to_grading_tasks")
 public class GraderToGradingTask {
+
     @Embeddable
     public static class GraderToGradingTaskID implements Serializable {
+        @Column(name = "grading_task_id")
         private int gradingTaskId;
-        private int graderEmail;
+        @Column(name = "grader_email")
+        private String graderEmail;
+
+        public GraderToGradingTaskID() { }
+
+        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
+            this.gradingTaskId = gradingTaskId;
+            this.graderEmail = graderEmail;
+        }
     }
 
     @EmbeddedId
@@ -37,4 +47,26 @@ public class GraderToGradingTask {
             inverseJoinColumns = {@JoinColumn(name = "participant_id")}
     )
     private Set<Participant> participants;
+
+    public GraderToGradingTask() { }
+
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, Set<Participant> participants) {
+        this.graderToGradingTaskID = new GraderToGradingTaskID(gradingTask.getGradingTaskId(), grader.getGraderEmail());
+        this.gradingTask = gradingTask;
+        this.grader = grader;
+        this.graderAccessCode = graderAccessCode;
+        this.participants = participants;
+    }
+
+    public GraderToGradingTaskID getGraderToGradingTaskID() {
+        return graderToGradingTaskID;
+    }
+
+    public Set<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<Participant> participants) {
+        this.participants = participants;
+    }
 }

@@ -1,12 +1,12 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "code_stages")
@@ -19,6 +19,9 @@ public class CodeStage extends Stage {
     @Column(name = "template")
     private String template;
 
+    @OneToMany(mappedBy = "codeStage")
+    private Set<Requirement> requirements = new HashSet<>();
+
     public CodeStage() {
     }
 
@@ -26,11 +29,10 @@ public class CodeStage extends Stage {
         super(experiment, stage_index);
     }
 
-    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
+    public CodeStage(String desc, String template, Experiment experiment) {
         super(experiment);
         this.description=desc;
         this.template=template;
-        //TODO: add requirements field - this.requirements = requirements;
     }
 
     public String getDescription() {
@@ -47,5 +49,13 @@ public class CodeStage extends Stage {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public Set<Requirement> getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(Set<Requirement> requirements) {
+        this.requirements = requirements;
     }
 }

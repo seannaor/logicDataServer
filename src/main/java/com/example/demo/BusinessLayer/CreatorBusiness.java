@@ -113,11 +113,11 @@ public class CreatorBusiness implements ICreatorBusiness {
         switch ((String) stage.get("type")) {
             case "info":
                 return new InfoStage((String) stage.get("info"), experiment);
-            case "code":
-                String desc = (String) stage.get("description");
-                String template = (String) stage.get("template");
-                List<String> requirements = (List<String>) stage.get("requirements");
-                return new CodeStage(desc, template, requirements, experiment);
+//            case "code":
+//                String desc = (String) stage.get("description");
+//                String template = (String) stage.get("template");
+//                List<String> requirements = (List<String>) stage.get("requirements");
+//                return new CodeStage(desc, template, requirements, experiment);
 //            case "questionnaire":
 //                return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
         }
