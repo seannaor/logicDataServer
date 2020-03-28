@@ -5,26 +5,23 @@ import com.example.demo.BusinessLayer.IGraderBusiness;
 import org.json.simple.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 public class GraderService implements IService {
 
     private IGraderBusiness graderBusiness = new GraderBusiness();
 
-    private JSONObject beginGrading(String code){
-        JSONObject res = new JSONObject();
-        res.put("response", graderBusiness.beginGrading(code));
-        return res;
+    private Map<String,Object> beginGrading(String code){
+        return Map.of("response", graderBusiness.beginGrading(code));
     }
 
-    public JSONObject requestProcessor(JSONObject map) {
+    public Map<String,Object> requestProcessor(Map<String,Object> map) {
         String op = (String) map.get("operation");
         switch (op) {
             case "beginGrading":
                 return beginGrading((String) map.get("code"));
             default:
-                JSONObject res = new JSONObject();
-                res.put("response","operation not found");
-                return res;
+                return Map.of("response","operation not found");
         }
     }
 }
