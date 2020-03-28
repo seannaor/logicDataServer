@@ -1,7 +1,7 @@
 package com.example.demo.ServiceLayer;
 
-import org.json.simple.JSONObject;
+import java.util.Map;
 
 public interface IService {
-    JSONObject requestProcessor(JSONObject request);
+    Map<String,Object> requestProcessor(Map<String,Object> request);
 }
