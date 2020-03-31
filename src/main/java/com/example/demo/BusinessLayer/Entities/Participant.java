@@ -12,6 +12,8 @@ public class Participant {
     @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
+//    @OneToMany(mappedBy = "")
+//    private List<Result> results;
 
     public Participant() {
     }

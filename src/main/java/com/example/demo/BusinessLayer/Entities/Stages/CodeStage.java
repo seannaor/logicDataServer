@@ -2,10 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -18,6 +15,8 @@ public class CodeStage extends Stage {
     @Lob
     @Column(name = "template")
     private String template;
+    @OneToMany(mappedBy = "codeStage")
+    private List<Requirement> requirements;
 
     public CodeStage() {
     }

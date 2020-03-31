@@ -20,18 +20,17 @@ import java.util.Map;
 @RequestMapping("/")
 public class MainRouter {
 
-
-    private Map<String, IService> serviceMap=new HashMap<String,IService>() {{
+    private Map<String, IService> serviceMap = new HashMap<String, IService>() {{
         put("manager", new CreatorService());
         put("grader", new GraderService());
-        put("expeerimentee", new ExperimenteeService());
+        put("experimentee", new ExperimenteeService());
     }};
 
     @RequestMapping("/{service}")
-    public Map<String,Object> requestProcessor(@PathVariable String service, @RequestParam Map<String, String> req){
+    public Map<String, Object> requestProcessor(@PathVariable String service, @RequestParam Map<String, String> req) {
         System.out.println("received: " + req);
         JSONObject jsonReq = mapToJSON(req);
-        if(!serviceMap.containsKey(service)) return Map.of("response","no such entity "+service);
+        if (!serviceMap.containsKey(service)) return Map.of("response", "no such entity " + service);
         return serviceMap.get(service).requestProcessor(jsonReq);
     }
 
