@@ -42,9 +42,9 @@ public class GraderToGradingTask {
     @JoinTable(
             name = "graders_grading_tasks_to_participants",
             joinColumns = {
-                    @JoinColumn(name = "grading_task_id"),
-                    @JoinColumn(name = "grader_email")},
-            inverseJoinColumns = {@JoinColumn(name = "participant_id")}
+                    @JoinColumn(name = "grading_task_id", referencedColumnName = "grading_task_id"),
+                    @JoinColumn(name = "grader_email", referencedColumnName = "grader_email")},
+            inverseJoinColumns = {@JoinColumn(name = "participant_id", referencedColumnName = "participant_id")}
     )
     private Set<Participant> participants;
 

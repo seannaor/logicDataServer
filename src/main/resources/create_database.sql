@@ -89,12 +89,12 @@ CREATE TABLE `grading_tasks`
 
 CREATE TABLE `stages_of_grading_task`
 (
+    `grading_task_id` int NOT NULL,
     `stage_index`     int NOT NULL,
     `experiment_id`   int NOT NULL,
-    `grading_task_id` int NOT NULL,
-    FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES stages (`stage_index`, `experiment_id`),
     FOREIGN KEY (`grading_task_id`) REFERENCES grading_tasks (`grading_task_id`),
-    PRIMARY KEY (`stage_index`, `experiment_id`, `grading_task_id`)
+    FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES stages (`stage_index`, `experiment_id`),
+    PRIMARY KEY (`grading_task_id`, `stage_index`, `experiment_id`)
 );
 
 CREATE TABLE `graders_to_grading_tasks`
