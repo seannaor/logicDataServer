@@ -4,8 +4,8 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "grading_tasks")
@@ -24,7 +24,7 @@ public class GradingTask {
     @JoinColumn(name = "grading_experiment", referencedColumnName = "experiment_id")
     private Experiment gradingExperiment;
     @OneToMany(mappedBy = "gradingTask")
-    private Set<GraderToGradingTask> assignedGradingTasks = new HashSet<>();
+    private List<GraderToGradingTask> assignedGradingTasks = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "stages_of_grading_task",
@@ -35,11 +35,17 @@ public class GradingTask {
                     @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
                     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
     )
-    private Set<Stage> stages;
+    private List<Stage> stages;
 
     public GradingTask() { }
 
-    public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, Set<Stage> stages) {
+    public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment) {
+        this.baseExperiment = baseExperiment;
+        this.generalExperiment = generalExperiment;
+        this.gradingExperiment = gradingExperiment;
+    }
+
+    public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
         this.baseExperiment = baseExperiment;
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
@@ -50,19 +56,31 @@ public class GradingTask {
         return gradingTaskId;
     }
 
-    public Set<Stage> getStages() {
+    public List<Stage> getStages() {
         return stages;
     }
 
-    public void setStages(Set<Stage> stages) {
+    public void setStages(List<Stage> stages) {
         this.stages = stages;
     }
 
-    public Set<GraderToGradingTask> getAssignedGradingTasks() {
+    public List<GraderToGradingTask> getAssignedGradingTasks() {
         return assignedGradingTasks;
     }
 
     public void addAssignedGradingTasks(GraderToGradingTask assignedGradingTask) {
         this.assignedGradingTasks.add(assignedGradingTask);
+    }
+
+    public Experiment getBaseExperiment() {
+        return baseExperiment;
+    }
+
+    public Experiment getGeneralExperiment() {
+        return generalExperiment;
+    }
+
+    public Experiment getGradingExperiment() {
+        return gradingExperiment;
     }
 }

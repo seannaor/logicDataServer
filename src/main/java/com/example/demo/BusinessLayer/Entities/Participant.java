@@ -20,6 +20,7 @@ public class Participant {
 
     public Participant(Experiment experiment) {
         this.experiment = experiment;
+        experiment.addParticipant(this);
     }
 
     public Experiment getExperiment() {

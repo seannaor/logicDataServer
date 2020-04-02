@@ -20,6 +20,11 @@ public class Grader {
 
     public Grader() { }
 
+    public Grader(String graderEmail, Experiment exp) {
+        this.graderEmail = graderEmail;
+        this.participant = new Participant(exp);
+    }
+
     public Grader(String graderEmail, Participant participant) {
         this.graderEmail = graderEmail;
         this.participant = participant;

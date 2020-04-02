@@ -1,8 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "management_users")
@@ -20,7 +20,7 @@ public class ManagementUser {
             joinColumns = {@JoinColumn(name = "bgu_username")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")}
     )
-    private Set<Permission> permissions = new HashSet<>();
+    private List<Permission> permissions = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -28,7 +28,7 @@ public class ManagementUser {
             joinColumns = {@JoinColumn(name = "bgu_username")},
             inverseJoinColumns = {@JoinColumn(name = "experiment_id")}
     )
-    private Set<Experiment> experiments = new HashSet<>();
+    private List<Experiment> experiments = new ArrayList<>();
 
     public ManagementUser(String bguUsername, String bguPassword, String userEmail) {
         this.bguUsername = bguUsername;
@@ -63,19 +63,19 @@ public class ManagementUser {
         this.userEmail = user_email;
     }
 
-    public Set<Permission> getPermissions() {
+    public List<Permission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Set<Permission> permissions) {
+    public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
 
-    public Set<Experiment> getExperiments() {
+    public List<Experiment> getExperiments() {
         return experiments;
     }
 
-    public void setExperiments(Set<Experiment> experiments) {
+    public void setExperiments(List<Experiment> experiments) {
         this.experiments = experiments;
     }
 

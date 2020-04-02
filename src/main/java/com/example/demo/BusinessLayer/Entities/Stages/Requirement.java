@@ -4,8 +4,8 @@ import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "requirements")
@@ -40,7 +40,7 @@ public class Requirement {
     private String text;
 
     @ManyToMany(mappedBy = "requirements")
-    private Set<RequirementTag> requirementTags = new HashSet<>();
+    private List<RequirementTag> requirementTags = new ArrayList<>();
 
     public Requirement() { }
 
@@ -54,11 +54,11 @@ public class Requirement {
         return requirementID;
     }
 
-    public Set<RequirementTag> getRequirementTags() {
+    public List<RequirementTag> getRequirementTags() {
         return requirementTags;
     }
 
-    public void setRequirementTags(Set<RequirementTag> requirementTags) {
+    public void setRequirementTags(List<RequirementTag> requirementTags) {
         this.requirementTags = requirementTags;
     }
 

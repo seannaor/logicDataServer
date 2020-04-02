@@ -1,11 +1,10 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "experiments")
@@ -17,11 +16,11 @@ public class Experiment {
     @Column(name = "experiment_name")
     private String experimentName;
     @ManyToMany(mappedBy = "experiments")
-    private Set<ManagementUser> managementUsers = new HashSet<>();
+    private List<ManagementUser> managementUsers = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
-    private Set<Participant> participants = new HashSet<>();
+    private List<Participant> participants = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
-    private Set<Stage> stages = new HashSet<>();
+    private List<Stage> stages = new ArrayList<>();
 
     public Experiment() {
     }
@@ -51,19 +50,19 @@ public class Experiment {
         this.experimentName = experiment_name;
     }
 
-    public Set<ManagementUser> getManagementUsers() {
+    public List<ManagementUser> getManagementUsers() {
         return managementUsers;
     }
 
-    public void setManagementUsers(Set<ManagementUser> managementUsers) {
+    public void setManagementUsers(List<ManagementUser> managementUsers) {
         this.managementUsers = managementUsers;
     }
 
-    public Set<Participant> getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Set<Participant> participants) {
+    public void setParticipants(List<Participant> participants) {
         this.participants = participants;
     }
 
@@ -71,11 +70,11 @@ public class Experiment {
         this.participants.add(participant);
     }
 
-    public Set<Stage> getStages() {
+    public List<Stage> getStages() {
         return stages;
     }
 
-    public void setStages(Set<Stage> stages) {
+    public void setStages(List<Stage> stages) {
         this.stages = stages;
     }
 
