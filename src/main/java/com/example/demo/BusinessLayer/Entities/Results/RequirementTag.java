@@ -6,7 +6,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "requirement_tags")
@@ -49,11 +49,11 @@ public class RequirementTag {
                     @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
                     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
     )
-    private Set<Requirement> requirements;
+    private List<Requirement> requirements;
 
     public RequirementTag() { }
 
-    public RequirementTag(int startCharLoc, int length, Participant participant, Set<Requirement> requirements) {
+    public RequirementTag(int startCharLoc, int length, Participant participant, List<Requirement> requirements) {
         this.requirementTagID = new RequirementTagID(participant.getParticipantId(), startCharLoc);
         this.length = length;
         this.participant = participant;

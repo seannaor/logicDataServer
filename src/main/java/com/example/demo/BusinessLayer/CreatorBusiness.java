@@ -139,7 +139,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser ally = new ManagementUser();
         ally.setUserEmail(allieMail);
 
-        Set<Permission> pers = new HashSet<>();
+        List<Permission> pers = new ArrayList<>();
         for (String per : permissions) {
             pers.add(new Permission(per,ally));
         }

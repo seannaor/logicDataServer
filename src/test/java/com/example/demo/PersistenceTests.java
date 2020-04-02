@@ -19,9 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -328,7 +326,7 @@ class PersistenceTests {
 		Answer answer2 = new Answer(3, (Question)s.getQuestions().toArray()[1], p1);
 		answerRep.save(answer2);
 		assertEquals(answerRep.count(), 2);
-		Set<Question> updated = new HashSet<>(s.getQuestions());
+		List<Question> updated = new ArrayList<>(s.getQuestions());
 		Question toRemove = (Question)s.getQuestions().toArray()[0];
 		updated.remove(toRemove);
 		s.setQuestions(updated);
@@ -340,7 +338,7 @@ class PersistenceTests {
 		answerRep.delete(answer2);
 		assertEquals(answerRep.count(), 0);
 		Question toRemove1 = (Question)s.getQuestions().toArray()[0];
-		s.setQuestions(new HashSet<>());
+		s.setQuestions(new ArrayList<>());
 		stageRep.save(s);
 		questionRep.delete(toRemove1);
 		assertEquals(questionRep.count(), 0);
@@ -357,7 +355,7 @@ class PersistenceTests {
 		stageRep.save(codeStage);
 		assertEquals(stageRep.count(), 1);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
-		Set<Requirement> requirements = new HashSet<>();
+		List<Requirement> requirements = new ArrayList<>();
 		Requirement r1 = new Requirement(codeStage, "write a function that prints Hello World!");
 		requirements.add(r1);
 		requirementRep.save(r1);
@@ -395,11 +393,11 @@ class PersistenceTests {
 		TaggingStage taggingStage = new TaggingStage(codeStage, e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
-		Set<Requirement> requirementsFor_rt1 = new HashSet<>();
+		List<Requirement> requirementsFor_rt1 = new ArrayList<>();
 		requirementsFor_rt1.add(r1);
 		requirementsFor_rt1.add(r2);
 		RequirementTag rt1 = new RequirementTag(0, 10, p1, requirementsFor_rt1);
-		Set<Requirement> requirementsFor_rt2 = new HashSet<>();
+		List<Requirement> requirementsFor_rt2 = new ArrayList<>();
 		requirementsFor_rt2.add(r1);
 		RequirementTag rt2 = new RequirementTag(10, 15, p1, requirementsFor_rt2);
 		requirementTagRep.save(rt1);
@@ -412,7 +410,7 @@ class PersistenceTests {
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 13);
 		requirementTagRep.deleteById(rt1.getRequirementTagID());
 		assertEquals(requirementTagRep.count(), 1);
-		Set<Requirement> updated = new HashSet<>();
+		List<Requirement> updated = new ArrayList<>();
 		updated.add(r1);
 		codeStage.setRequirements(updated);
 		requirementRep.deleteById(r2.getRequirementID());
@@ -469,9 +467,6 @@ class PersistenceTests {
 		Participant p1 = new Participant(experimentRep.findAll().get(0)),
 				p2 = new Participant(experimentRep.findAll().get(0)),
 				p3 = new Participant(experimentRep.findAll().get(1));
-		experimentRep.findAll().get(0).getParticipants().add(p1);
-		experimentRep.findAll().get(0).getParticipants().add(p2);
-		experimentRep.findAll().get(1).getParticipants().add(p3);
 		expee1.setParticipant(p1);
 		expee2.setParticipant(p2);
 		expee3.setParticipant(p3);
@@ -504,15 +499,5 @@ class PersistenceTests {
 		stageRep.save(s32);
 		stageRep.save(s42);
 		stageRep.save(s52);
-		experimentRep.findAll().get(0).getStages().add(s11);
-		experimentRep.findAll().get(0).getStages().add(s21);
-		experimentRep.findAll().get(0).getStages().add(s31);
-		experimentRep.findAll().get(0).getStages().add(s41);
-		experimentRep.findAll().get(0).getStages().add(s51);
-		experimentRep.findAll().get(1).getStages().add(s12);
-		experimentRep.findAll().get(1).getStages().add(s22);
-		experimentRep.findAll().get(1).getStages().add(s32);
-		experimentRep.findAll().get(1).getStages().add(s42);
-		experimentRep.findAll().get(1).getStages().add(s52);
 	}
 }

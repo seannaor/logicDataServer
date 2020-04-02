@@ -1,8 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "permissions")
@@ -14,7 +14,7 @@ public class Permission {
     @Column(name = "permission_name")
     private String permissionName;
     @ManyToMany(mappedBy = "permissions")
-    private Set<ManagementUser> managementUsers = new HashSet<>();
+    private List<ManagementUser> managementUsers = new ArrayList<>();
 
     public Permission() {
     }
@@ -44,11 +44,11 @@ public class Permission {
         this.permissionName = permission_name;
     }
 
-    public Set<ManagementUser> getManagementUsers() {
+    public List<ManagementUser> getManagementUsers() {
         return managementUsers;
     }
 
-    public void setManagementUsers(Set<ManagementUser> managementUsers) {
+    public void setManagementUsers(List<ManagementUser> managementUsers) {
         this.managementUsers = managementUsers;
     }
 }

@@ -5,13 +5,11 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "graders_to_grading_tasks")
 public class GraderToGradingTask {
-
     @Embeddable
     public static class GraderToGradingTaskID implements Serializable {
         @Column(name = "grading_task_id")
@@ -47,11 +45,16 @@ public class GraderToGradingTask {
                     @JoinColumn(name = "grader_email", referencedColumnName = "grader_email")},
             inverseJoinColumns = {@JoinColumn(name = "participant_id", referencedColumnName = "participant_id")}
     )
-    private Set<Participant> participants;
+    private List<Participant> participants;
 
     public GraderToGradingTask() { }
 
-    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, Set<Participant> participants) {
+    public GraderToGradingTask(GradingTask gradingTask,Grader grader) {
+        this.gradingTask = gradingTask;
+        this.grader=grader;
+    }
+
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, List<Participant> participants) {
         this.graderToGradingTaskID = new GraderToGradingTaskID(gradingTask.getGradingTaskId(), grader.getGraderEmail());
         this.gradingTask = gradingTask;
         this.grader = grader;
@@ -63,11 +66,27 @@ public class GraderToGradingTask {
         return graderToGradingTaskID;
     }
 
-    public Set<Participant> getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Set<Participant> participants) {
+    public void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }
+
+    public void addParticipant(Participant p){
+        participants.add(p);
+    }
+
+    public GradingTask getGradingTask() {
+        return gradingTask;
+    }
+
+    public Grader getGrader() {
+        return grader;
+    }
+
+    public String getGraderAccessCode() {
+        return graderAccessCode;
     }
 }

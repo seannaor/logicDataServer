@@ -4,8 +4,8 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "code_stages")
@@ -18,12 +18,16 @@ public class CodeStage extends Stage {
     @Column(name = "template")
     private String template;
     @OneToMany(mappedBy = "codeStage")
-    private List<Requirement> requirements;
-
-    @OneToMany(mappedBy = "codeStage")
-    private Set<Requirement> requirements = new HashSet<>();
+    private List<Requirement> requirements = new ArrayList<>();
 
     public CodeStage() {
+    }
+
+    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
+        super(experiment);
+        this.description=desc;
+        this.template=template;
+        //TODO: add requirements field - this.requirements = requirements;
     }
 
     public CodeStage(Experiment experiment, int stage_index) {
@@ -52,11 +56,11 @@ public class CodeStage extends Stage {
         this.template = template;
     }
 
-    public Set<Requirement> getRequirements() {
+    public List<Requirement> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(Set<Requirement> requirements) {
+    public void setRequirements(List<Requirement> requirements) {
         this.requirements = requirements;
     }
 }
