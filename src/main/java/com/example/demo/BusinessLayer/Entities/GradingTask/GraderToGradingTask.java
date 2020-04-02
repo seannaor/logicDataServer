@@ -14,8 +14,17 @@ public class GraderToGradingTask {
 
     @Embeddable
     public static class GraderToGradingTaskID implements Serializable {
+        @Column(name = "grading_task_id")
         private int gradingTaskId;
-        private int graderEmail;
+        @Column(name = "grader_email")
+        private String graderEmail;
+
+        public GraderToGradingTaskID() { }
+
+        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
+            this.gradingTaskId = gradingTaskId;
+            this.graderEmail = graderEmail;
+        }
     }
 
     @EmbeddedId
@@ -34,34 +43,31 @@ public class GraderToGradingTask {
     @JoinTable(
             name = "graders_grading_tasks_to_participants",
             joinColumns = {
-                    @JoinColumn(name = "grading_task_id"),
-                    @JoinColumn(name = "grader_email")},
-            inverseJoinColumns = {@JoinColumn(name = "participant_id")}
+                    @JoinColumn(name = "grading_task_id", referencedColumnName = "grading_task_id"),
+                    @JoinColumn(name = "grader_email", referencedColumnName = "grader_email")},
+            inverseJoinColumns = {@JoinColumn(name = "participant_id", referencedColumnName = "participant_id")}
     )
-    private Set<Participant> participants = new HashSet<>();
+    private Set<Participant> participants;
 
-    public GraderToGradingTask(GradingTask gradingTask) {
+    public GraderToGradingTask() { }
+
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, Set<Participant> participants) {
+        this.graderToGradingTaskID = new GraderToGradingTaskID(gradingTask.getGradingTaskId(), grader.getGraderEmail());
         this.gradingTask = gradingTask;
+        this.grader = grader;
+        this.graderAccessCode = graderAccessCode;
+        this.participants = participants;
     }
 
-    public GraderToGradingTask(GradingTask gradingTask,Grader grader) {
-        this.gradingTask = gradingTask;
-        this.grader=grader;
+    public GraderToGradingTaskID getGraderToGradingTaskID() {
+        return graderToGradingTaskID;
     }
 
-    public String getGraderAccessCode() {
-        return graderAccessCode;
+    public Set<Participant> getParticipants() {
+        return participants;
     }
 
-    public Grader getGrader() {
-        return grader;
-    }
-
-    public GradingTask getGradingTask() {
-        return gradingTask;
-    }
-
-    public void addParticipant(Participant p){
-        participants.add(p);
+    public void setParticipants(Set<Participant> participants) {
+        this.participants = participants;
     }
 }

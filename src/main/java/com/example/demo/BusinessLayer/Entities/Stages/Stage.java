@@ -1,9 +1,13 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "stages")

@@ -11,19 +11,29 @@ import java.io.Serializable;
 @Entity
 @Table(name = "code_results")
 public class CodeResult {
+
     @Embeddable
     public static class CodeResultID implements Serializable {
         @Column(name = "participant_id")
         private int participantId;
         private Stage.StageID stageID;
+
+        public CodeResultID() { }
+
+        public CodeResultID(int participantId, Stage.StageID stageID) {
+            this.participantId = participantId;
+            this.stageID = stageID;
+        }
     }
 
     @EmbeddedId
     private CodeResultID codeResultID;
+
     @MapsId("participantId")
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
+
     @MapsId("stageID")
     @ManyToOne
     @JoinColumns({
@@ -36,6 +46,24 @@ public class CodeResult {
     @Column(name = "user_code")
     private String userCode;
 
-    public CodeResult() {
+    public CodeResult() { }
+
+    public CodeResult(Participant participant, CodeStage codeStage, String userCode) {
+        this.codeResultID = new CodeResultID(participant.getParticipantId(), codeStage.getStageID());
+        this.participant = participant;
+        this.codeStage = codeStage;
+        this.userCode = userCode;
+    }
+
+    public CodeResultID getCodeResultID() {
+        return codeResultID;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 }

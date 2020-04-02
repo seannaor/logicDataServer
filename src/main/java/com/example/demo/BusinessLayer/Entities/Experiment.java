@@ -67,6 +67,10 @@ public class Experiment {
         this.participants = participants;
     }
 
+    public void addParticipant(Participant participant) {
+        this.participants.add(participant);
+    }
+
     public Set<Stage> getStages() {
         return stages;
     }

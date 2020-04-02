@@ -11,12 +11,20 @@ import java.util.Set;
 @Entity
 @Table(name = "requirement_tags")
 public class RequirementTag {
+
     @Embeddable
     public static class RequirementTagID implements Serializable {
         @Column(name = "participant_id")
         private int participantId;
         @Column(name = "start_char_loc")
         private int startCharLoc;
+
+        public RequirementTagID() { }
+
+        public RequirementTagID(int participantId, int startCharLoc) {
+            this.participantId = participantId;
+            this.startCharLoc = startCharLoc;
+        }
     }
 
     @EmbeddedId
@@ -25,8 +33,10 @@ public class RequirementTag {
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
+
     @Column(name = "length")
     private int length;
+
     @ManyToMany
     @JoinTable(
             name = "requirements_to_requirement_tags",
@@ -40,4 +50,25 @@ public class RequirementTag {
                     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
     )
     private Set<Requirement> requirements;
+
+    public RequirementTag() { }
+
+    public RequirementTag(int startCharLoc, int length, Participant participant, Set<Requirement> requirements) {
+        this.requirementTagID = new RequirementTagID(participant.getParticipantId(), startCharLoc);
+        this.length = length;
+        this.participant = participant;
+        this.requirements = requirements;
+    }
+
+    public RequirementTagID getRequirementTagID() {
+        return requirementTagID;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
 }
