@@ -1,7 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -54,13 +54,5 @@ public class CodeStage extends Stage {
 
     public void setTemplate(String template) {
         this.template = template;
-    }
-
-    public List<Requirement> getRequirements() {
-        return requirements;
-    }
-
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
     }
 }

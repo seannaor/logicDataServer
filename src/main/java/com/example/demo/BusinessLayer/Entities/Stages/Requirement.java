@@ -70,4 +70,8 @@ public class Requirement {
         this.text = text;
     }
 
+
+    public String getText() {
+        return text;
+    }
 }

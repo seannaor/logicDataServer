@@ -1,8 +1,11 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "tagging_stages")
@@ -36,5 +39,11 @@ public class TaggingStage extends Stage {
 
     public void setCodeStage(CodeStage codeStage) {
         this.codeStage = codeStage;
+    }
+
+    public JSONObject getJson() {
+        JSONObject jStage = new org.json.simple.JSONObject();
+        jStage.put("type","tag");
+        return jStage;
     }
 }

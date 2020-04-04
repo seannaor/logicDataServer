@@ -5,7 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

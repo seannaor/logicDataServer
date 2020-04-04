@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer;
 
-import net.minidev.json.JSONObject;
+
+import org.json.simple.JSONObject;
 
 import java.util.List;
 

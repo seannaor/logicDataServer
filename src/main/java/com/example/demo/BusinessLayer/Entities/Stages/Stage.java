@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import org.json.simple.JSONObject;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Table(name = "stages")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Stage {
+
     @Embeddable
     public static class StageID implements Serializable {
         private int stageIndex;
@@ -74,4 +76,8 @@ public abstract class Stage {
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
+
+    public abstract JSONObject getJson();
+
+//    public abstract void fillIn(JSONObject data);
 }

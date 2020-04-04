@@ -7,7 +7,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -211,7 +211,7 @@ public class CreatorBusiness implements ICreatorBusiness {
                     return new CodeStage(desc, template, requirements, experiment);
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questionnaire"), experiment);
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), experiment);
             }
         } catch (Exception ignore) {
         }
