@@ -66,7 +66,7 @@ public class Utils {
         answers.add("we both");
         q2.put("answers", answers);
         questions.add(q2);
-        questionnaire.put("questionnaire", questions);
+        questionnaire.put("questions", questions);
         return questionnaire;
     }
 }
