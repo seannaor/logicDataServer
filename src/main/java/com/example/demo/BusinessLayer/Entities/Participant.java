@@ -1,5 +1,7 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,6 +34,14 @@ public class Participant {
 
     public void setParticipantId(int participantId) {
         this.participantId = participantId;
+    }
+
+    public Stage getCurrStage() {
+        return null;
+    }
+
+    public Stage getNextStage() {
+        return null;
     }
 
 }

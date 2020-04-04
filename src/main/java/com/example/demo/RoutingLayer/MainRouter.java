@@ -1,13 +1,17 @@
 package com.example.demo.RoutingLayer;
 
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.ServiceLayer.CreatorService;
 import com.example.demo.ServiceLayer.ExperimenteeService;
 import com.example.demo.ServiceLayer.GraderService;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +50,23 @@ public class MainRouter {
 
     @RequestMapping("/experimentee")
     public Map<String, Object> expeeLogin(@RequestParam String code) {
+        System.out.println("code: "+code);
         return expee.beginParticipation(code);
     }
 
     @RequestMapping("/experimentee/fill_stage")
-    public Map<String, Object> expeeLogin(@RequestParam String code, @RequestParam Map<String, String> data) {
-        return expee.fillInStage(code, mapToJSON(data));
+    public Map<String, Object> expeeLogin(@RequestParam String code, @RequestParam String data) {
+        return expee.fillInStage(code, strToJSON(data));
+    }
+
+    @RequestMapping("/experimentee/next_stage")
+    public Map<String, Object> nextStage(@RequestParam String code) {
+        return expee.getNextStage(code);
+    }
+
+    @RequestMapping("/experimentee/current_stage")
+    public Map<String, Object> currStage(@RequestParam String code) {
+        return expee.getCurrentStage(code);
     }
 
     @RequestMapping("/manager")
@@ -65,8 +80,8 @@ public class MainRouter {
     }
 
     @RequestMapping("/manager/add_stage")
-    public Map<String, Object> addStage(@RequestParam String username, @RequestParam int exp_id, @RequestParam Map<String, String> stage) {
-        return creator.addStageToExperiment(username, exp_id, mapToJSON(stage));
+    public Map<String, Object> addStage(@RequestParam String username, @RequestParam int exp_id, @RequestParam String stage) {
+        return creator.addStageToExperiment(username, exp_id, strToJSON(stage));
     }
 
     @RequestMapping("/manager/save_exp")
@@ -75,36 +90,36 @@ public class MainRouter {
     }
 
     @RequestMapping("/manager/add_exp")
-    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<Map<String, String>> stages) {
+    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
         List<JSONObject> jStages = new ArrayList<>();
-        for (Map<String, String> stage : stages) {
-            jStages.add(mapToJSON(stage));
+        for (String stage : stages) {
+            jStages.add(strToJSON(stage));
         }
         return creator.addExperiment(username, exp_name, jStages);
     }
 
     @RequestMapping("/manager/add_grading_task")
     public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam
-            List<Map<String, String>> expee_stages, @RequestParam List<Integer> exp_indexes, @RequestParam List<Map<String, String>> personal_stages) {
+            List<String> expee_stages, @RequestParam List<Integer> exp_indexes, @RequestParam List<String> personal_stages) {
         List<JSONObject> jStages_personal = new ArrayList<>();
-        for (Map<String, String> stage : personal_stages) {
-            jStages_personal.add(mapToJSON(stage));
+        for (String stage : personal_stages) {
+            jStages_personal.add(strToJSON(stage));
         }
         List<JSONObject> jStages_expee = new ArrayList<>();
-        for (Map<String, String> stage : expee_stages) {
-            jStages_expee.add(mapToJSON(stage));
+        for (String stage : expee_stages) {
+            jStages_expee.add(strToJSON(stage));
         }
         return creator.addGradingTask(username, exp_id, task_name, jStages_expee, exp_indexes, jStages_personal);
     }
 
     @RequestMapping("/manager/add_to_personal")
-    public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam Map<String, String> stage) {
-        return creator.addToPersonal(username, exp_id, task_name, mapToJSON(stage));
+    public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam String stage) {
+        return creator.addToPersonal(username, exp_id, task_name, strToJSON(stage));
     }
 
     @RequestMapping("/manager/addToResultsExp")
-    public Map<String, Object> addToResultsExp(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam Map<String, String> stage) {
-        return creator.addToResultsExp(username, exp_id, task_name, mapToJSON(stage));
+    public Map<String, Object> addToResultsExp(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam String stage) {
+        return creator.addToResultsExp(username, exp_id, task_name, strToJSON(stage));
     }
 
     @RequestMapping("/manager/setStagesToCheck")
@@ -138,9 +153,9 @@ public class MainRouter {
     }
 
 //    @RequestMapping("/{service}")
-//    public Map<String, Object> requestProcessor(@PathVariable String service, @RequestParam Map<String, String> req) {
+//    public Map<String, Object> requestProcessor(@PathVariable String service, @RequestParam String req) {
 //        System.out.println("received: " + req);
-//        JSONObject jsonReq = mapToJSON(req);
+//        JSONObject jsonReq = strToJSON(req);
 //        if (!serviceMap.containsKey(service)) return Map.of("response", "no such entity " + service);
 //        return serviceMap.get(service).requestProcessor(jsonReq);
 //    }
@@ -152,6 +167,17 @@ public class MainRouter {
             ret.put(key, req.get(key));
         }
         return ret;
+    }
+
+    private static JSONObject strToJSON(String req) {
+        JSONObject ret = new JSONObject();
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject) parser.parse(req);
+        }
+        catch (Exception ignore){
+            return new JSONObject();
+        }
     }
 
     @Controller

@@ -1,14 +1,15 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
-import net.minidev.json.JSONObject;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.json.simple.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -53,5 +54,16 @@ public class QuestionnaireStage extends Stage {
 
     public void addQuestion(Question question) {
         this.questions.add(question);
+    }
+
+    public JSONObject getJson() {
+        JSONObject jStage = new org.json.simple.JSONObject();
+        jStage.put("type","questionnaire");
+        List<String> jQuestions = new LinkedList<>();
+        for (Question q : questions) {
+            jQuestions.add(q.getQuestionJson());
+        }
+        jStage.put("questions", jQuestions);
+        return jStage;
     }
 }

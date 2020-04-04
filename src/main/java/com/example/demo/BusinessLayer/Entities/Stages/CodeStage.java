@@ -1,8 +1,10 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -46,5 +48,18 @@ public class CodeStage extends Stage {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public JSONObject getJson(){
+        JSONObject jStage = new JSONObject();
+        jStage.put("type","code");
+        jStage.put("description",this.description);
+        jStage.put("template",this.template);
+        List<String> jRequirements = new LinkedList<>();
+        for (Requirement r : requirements) {
+            jRequirements.add(r.getText());
+        }
+        jStage.put("requirements",jRequirements);
+        return jStage;
     }
 }

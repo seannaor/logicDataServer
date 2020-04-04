@@ -28,4 +28,8 @@ public class Requirement {
 //    @ManyToMany(mappedBy = "requirements")
 //    private Set<RequirementTag> requirementTags;
 
+
+    public String getText() {
+        return text;
+    }
 }
