@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+out/production/.mvn/maven-wrapper.jar
+
+out/production/.mvn/maven-wrapper.properties
