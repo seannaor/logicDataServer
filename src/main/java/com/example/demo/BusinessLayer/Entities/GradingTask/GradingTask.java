@@ -14,13 +14,13 @@ public class GradingTask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grading_task_id")
     private int gradingTaskId;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "base_experiment", referencedColumnName = "experiment_id")
     private Experiment baseExperiment;
     @OneToOne
     @JoinColumn(name = "general_experiment", referencedColumnName = "experiment_id")
     private Experiment generalExperiment;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "grading_experiment", referencedColumnName = "experiment_id")
     private Experiment gradingExperiment;
     @OneToMany(mappedBy = "gradingTask")

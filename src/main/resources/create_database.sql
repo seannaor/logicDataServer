@@ -46,6 +46,8 @@ CREATE TABLE `participants`
 (
     `participant_id` int NOT NULL AUTO_INCREMENT,
     `experiment_id`  int NOT NULL,
+    `curr_stage`     int NOT NULL,
+    `is_done`        boolean,
     FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`),
     PRIMARY KEY (`participant_id`)
 );

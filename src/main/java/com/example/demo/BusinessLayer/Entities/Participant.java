@@ -1,8 +1,13 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "participants")
@@ -11,11 +16,19 @@ public class Participant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participant_id")
     private int participantId;
+    @Column(name = "curr_stage")
+    private int currStage;
+    @Column(name = "is_done")
+    private boolean isDone;
     @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
-//    @OneToMany(mappedBy = "")
-//    private List<Result> results;
+    @OneToMany(mappedBy = "participant")
+    private List<Answer> answers;
+    @OneToMany(mappedBy = "participant")
+    private List<CodeResult> codeResults;
+    @OneToMany(mappedBy = "participant")
+    private List<RequirementTag> requirementTags;
 
     public Participant() {
     }
