@@ -12,12 +12,12 @@ public class ExperimenteeService implements IService {
     private IExperimenteeBusiness experimenteeBusiness = new ExperimenteeBusiness();
 
     //UC 2.1 - Login
-    private Map<String,Object> beginParticipation(String accessCode){
+    public Map<String,Object> beginParticipation(String accessCode){
         return Map.of("response", experimenteeBusiness.beginParticipation(accessCode));
     }
 
     //UC 2.2.*
-    private Map<String,Object> fillInStage(String accessCode, JSONObject data){
+    public Map<String,Object> fillInStage(String accessCode, JSONObject data){
         JSONObject res = new JSONObject();
 
         return res;

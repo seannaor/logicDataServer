@@ -11,7 +11,7 @@ public class GraderService implements IService {
 
     private IGraderBusiness graderBusiness = new GraderBusiness();
 
-    private Map<String,Object> beginGrading(String code){
+    public Map<String,Object> beginGrading(String code){
         return Map.of("response", graderBusiness.beginGrading(code));
     }
 
