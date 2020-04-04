@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,19 @@ public class CodeStage extends Stage {
         super(experiment, stage_index);
     }
 
+    public JSONObject getJson(){
+        JSONObject jStage = new JSONObject();
+        jStage.put("type","code");
+        jStage.put("description",this.description);
+        jStage.put("template",this.template);
+        List<String> jRequirements = new LinkedList<>();
+        for (Requirement r : requirements) {
+            jRequirements.add(r.getText());
+        }
+        jStage.put("requirements",jRequirements);
+        return jStage;
+    }
+
     public CodeStage(String desc, String template, Experiment experiment) {
         super(experiment);
         this.description=desc;
@@ -42,6 +56,14 @@ public class CodeStage extends Stage {
 
     public String getDescription() {
         return description;
+    }
+
+    public List<Requirement> getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
     }
 
     public void setDescription(String description) {

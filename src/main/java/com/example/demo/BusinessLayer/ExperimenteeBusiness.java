@@ -11,8 +11,8 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
 
     @Override
     public boolean beginParticipation(String accessCode) {
-//        return cache.getExpeeByCode(accessCode)!=null;
-        return true;
+        return cache.getExpeeByCode(accessCode)!=null;
+//        return true;
     }
 
     @Override
