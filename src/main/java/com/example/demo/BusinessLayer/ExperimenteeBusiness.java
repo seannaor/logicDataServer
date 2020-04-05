@@ -10,9 +10,10 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     private DataCache cache = DataCache.getInstance();
 
     @Override
-    public boolean beginParticipation(String accessCode) {
-        return cache.getExpeeByCode(accessCode)!=null;
-//        return true;
+    public String beginParticipation(String accessCode) {
+        Experimentee expee = cache.getExpeeByCode(accessCode);
+        if(expee==null) return "code is not valid";
+        return (String) expee.getParticipant().getCurrStage().getJson().get("type");
     }
 
     @Override
