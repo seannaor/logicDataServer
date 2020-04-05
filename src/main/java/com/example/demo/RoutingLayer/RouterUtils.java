@@ -40,16 +40,4 @@ public class RouterUtils {
         }
     }
 
-    @Controller
-    public class IndexController implements ErrorController {
-        @Override
-        @RequestMapping("/error")
-        @ResponseBody
-        public String getErrorPath() {
-            // TODO Auto-generated method stub
-            return "sorry your request could not be processed :(";
-        }
-
-    }
-
 }

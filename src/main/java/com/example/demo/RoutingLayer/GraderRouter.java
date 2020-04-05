@@ -18,7 +18,7 @@ import java.util.Map;
 import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/grader")
 public class GraderRouter {
 
     private GraderService grader = new GraderService();
@@ -29,7 +29,7 @@ public class GraderRouter {
 //        put("experimentee", new ExperimenteeService());
 //    }};
 
-    @RequestMapping("/grader")
+    @RequestMapping("")
     public Map<String, Object> graderLogin(@RequestParam String code) {
         return grader.beginGrading(code);
     }

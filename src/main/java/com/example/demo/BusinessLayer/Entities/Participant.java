@@ -51,11 +51,16 @@ public class Participant {
     }
 
     public Stage getCurrStage() {
-        return null;
+        return experiment.getStages().get(currStage);
     }
 
     public Stage getNextStage() {
-        return null;
+        currStage++;
+        if (currStage >= experiment.getStages().size()) {
+            isDone = true;
+            return null;
+        }
+        return getCurrStage();
     }
 
 }
