@@ -77,4 +77,9 @@ public class CodeStage extends Stage {
     public void setTemplate(String template) {
         this.template = template;
     }
+
+    public void addRequirement(Requirement requirement) {
+        this.requirements.add(requirement);
+    }
+
 }
