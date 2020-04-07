@@ -145,30 +145,22 @@ class PersistenceTests {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		Experimentee expee1 = new Experimentee("123asd", "a@a.com"),
-				expee2 = new Experimentee("vxcf", "b@a.com"),
-				expee3 = new Experimentee("asdiiji", "c@a.com");
+				expee2 = new Experimentee("vxcf", "b@a.com");
 		Participant p1 = new Participant(e),
-				p2 = new Participant(e),
-				p3 = new Participant(e);
+				p2 = new Participant(e);
 		expee1.setParticipant(p1);
 		expee2.setParticipant(p2);
-		expee3.setParticipant(p3);
 		participantRep.save(p1);
 		participantRep.save(p2);
-		participantRep.save(p3);
 		experimenteeRep.save(expee1);
 		experimenteeRep.save(expee2);
-		experimenteeRep.save(expee3);
-		assertEquals(experimenteeRep.count(), 3);
+		assertEquals(experimenteeRep.count(), 2);
 		expee1.setExperimenteeEmail("aa@aa.com");
 		expee2.setExperimenteeEmail("bb@bb.com");
-		expee3.setExperimenteeEmail("cc@cc.com");
 		experimenteeRep.save(expee1);
 		experimenteeRep.save(expee2);
-		experimenteeRep.save(expee3);
 		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "aa@aa.com");
 		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "bb@bb.com");
-		assertEquals(experimenteeRep.findById("asdiiji").orElse(null).getExperimenteeEmail(), "cc@cc.com");
 		experimenteeRep.deleteAll();
 		assertEquals(experimenteeRep.count(), 0);
 	}
@@ -213,19 +205,19 @@ class PersistenceTests {
 //		assertEquals(stageRep.count(), 2);
 //		Experiment baseExp = new Experiment("baseExp");
 //		experimentRep.save(baseExp);
-//		Set<Stage> stagesForGT1 = new HashSet<>();
+//		List<Stage> stagesForGT1 = new ArrayList<>();
 //		stagesForGT1.add(infoStage1);
 // 		GradingTask gt1 = new GradingTask(e, e, e, stagesForGT1);
 //		gradingTaskRep.save(gt1);
 //		assertEquals(gradingTaskRep.count(), 1);
-//		Set<Stage> stagesForGT2 = new HashSet<>();
+//		List<Stage> stagesForGT2 = new ArrayList<>();
 //		stagesForGT2.add(infoStage2);
 //		GradingTask gt2 = new GradingTask(e, e, e, stagesForGT2);
 //		gradingTaskRep.save(gt2);
 //		assertEquals(gradingTaskRep.count(), 2);
 //		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getStages().size(), 1);
-//		Set<Participant> participantsFor1 = new HashSet<>();
-//		Set<Participant> participantsFor2 = new HashSet<>();
+//		List<Participant> participantsFor1 = new ArrayList<>();
+//		List<Participant> participantsFor2 = new ArrayList<>();
 //		participantsFor1.add(pOfExpee1);
 //		participantsFor2.add(pOfExpee2);
 //		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1, "1", participantsFor1);
@@ -283,18 +275,62 @@ class PersistenceTests {
 	void questionsAndAnswersCRUDTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		JSONObject jsonQuestion1 = new JSONObject();
-		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
-		JSONObject jsonQuestion2 = new JSONObject();
-		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
-		List<JSONObject> questions = new ArrayList<>();
-		questions.add(jsonQuestion1);
-		questions.add(jsonQuestion2);
+		List<JSONObject> questions = createQuestionJsons();
 		QuestionnaireStage s = new QuestionnaireStage(e);
 		stageRep.save(s);
 		assertEquals(questionRep.count(), 0);
 		assertEquals(stageRep.count(), 1);
 		assertEquals(questionnaireStageRep.count(), 1);
+		createAndSaveQuestions(questions, s);
+		stageRep.save(s);
+		assertEquals(questionRep.count(), 2);
+		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
+		JSONObject updatedJsonQuestion = new JSONObject();
+		updatedJsonQuestion.put("how old are you?", new String[] {"10-20", "21-30", "31-40", "41+"});
+		Question q = s.getQuestions().get(0);
+		q.setQuestionJson(updatedJsonQuestion.toJSONString());
+		stageRep.save(s);
+		questionRep.save(q);
+		assertEquals(questionRep.count(), 2);
+		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toJSONString());
+		Participant p1 = createExpeeAndParticipant();
+		addAnswers(s, p1);
+		assertEquals(answerRep.count(), 2);
+		Question toRemove = s.getQuestions().get(0);
+		s.getQuestions().remove(toRemove);
+		stageRep.save(s);
+		answerRep.delete(answerRep.findAll().get(0));
+		assertEquals(answerRep.count(), 1);
+		questionRep.deleteById(toRemove.getQuestionID());
+		assertEquals(questionRep.count(), 1);
+		answerRep.delete(answerRep.findAll().get(0));
+		assertEquals(answerRep.count(), 0);
+		Question toRemove1 = s.getQuestions().get(0);
+		s.getQuestions().remove(toRemove1);
+		stageRep.save(s);
+		questionRep.delete(toRemove1);
+		assertEquals(questionRep.count(), 0);
+		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 0);
+	}
+
+	private void addAnswers(QuestionnaireStage s, Participant p1) {
+		Answer answer1 = new Answer(2, s.getQuestions().get(0), p1);
+		answerRep.save(answer1);
+		Answer answer2 = new Answer(3, s.getQuestions().get(1), p1);
+		answerRep.save(answer2);
+	}
+
+	private Participant createExpeeAndParticipant() {
+		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
+		Participant p1 = new Participant(experimentRep.findAll().get(0));
+		experimentRep.findAll().get(0).getParticipants().add(p1);
+		expee1.setParticipant(p1);
+		participantRep.save(p1);
+		experimenteeRep.save(expee1);
+		return p1;
+	}
+
+	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
 		int QIdx = 1;
 		for (JSONObject JQuestion : questions) {
 			Question q = new Question(QIdx, s, JQuestion.toJSONString());
@@ -302,47 +338,17 @@ class PersistenceTests {
 			s.addQuestion(q);
 			QIdx++;
 		}
-		stageRep.save(s);
-		assertEquals(questionRep.count(), 2);
-		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
-		JSONObject updatedJsonQuestion = new JSONObject();
-		updatedJsonQuestion.put("how old are you?", new String[] {"10-20", "21-30", "31-40", "41+"});
-		Question q = (Question) s.getQuestions().toArray()[0];
-		q.setQuestionJson(updatedJsonQuestion.toJSONString());
-		//TODO: check this, trying to update a question but first we have to update the stage, not very nice
-		s.addQuestion(q);
-		stageRep.save(s);
-		questionRep.save(q);
-		assertEquals(questionRep.count(), 2);
-		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toJSONString());
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
-		Participant p1 = new Participant(experimentRep.findAll().get(0));
-		experimentRep.findAll().get(0).getParticipants().add(p1);
-		expee1.setParticipant(p1);
-		participantRep.save(p1);
-		experimenteeRep.save(expee1);
-		Answer answer1 = new Answer(2, (Question)s.getQuestions().toArray()[0], p1);
-		answerRep.save(answer1);
-		Answer answer2 = new Answer(3, (Question)s.getQuestions().toArray()[1], p1);
-		answerRep.save(answer2);
-		assertEquals(answerRep.count(), 2);
-		List<Question> updated = new ArrayList<>(s.getQuestions());
-		Question toRemove = (Question)s.getQuestions().toArray()[0];
-		updated.remove(toRemove);
-		s.setQuestions(updated);
-		stageRep.save(s);
-		answerRep.delete(answer1);
-		assertEquals(answerRep.count(), 1);
-		questionRep.deleteById(toRemove.getQuestionID());
-		assertEquals(questionRep.count(), 1);
-		answerRep.delete(answer2);
-		assertEquals(answerRep.count(), 0);
-		Question toRemove1 = (Question)s.getQuestions().toArray()[0];
-		s.setQuestions(new ArrayList<>());
-		stageRep.save(s);
-		questionRep.delete(toRemove1);
-		assertEquals(questionRep.count(), 0);
-		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 0);
+	}
+
+	private List<JSONObject> createQuestionJsons() {
+		JSONObject jsonQuestion1 = new JSONObject();
+		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		JSONObject jsonQuestion2 = new JSONObject();
+		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
+		List<JSONObject> questions = new ArrayList<>();
+		questions.add(jsonQuestion1);
+		questions.add(jsonQuestion2);
+		return questions;
 	}
 
 	@Test
@@ -355,31 +361,16 @@ class PersistenceTests {
 		stageRep.save(codeStage);
 		assertEquals(stageRep.count(), 1);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
-		List<Requirement> requirements = new ArrayList<>();
-		Requirement r1 = new Requirement(codeStage, "write a function that prints Hello World!");
-		requirements.add(r1);
-		requirementRep.save(r1);
-		codeStage.setRequirements(requirements);
-		stageRep.save(codeStage);
+		addRequirements(codeStage);
+		assertEquals(requirementRep.count(), 2);
 		assertEquals(requirementRep.findAll().get(0).getText(), "write a function that prints Hello World!");
-		r1.setText("please blabla write a function that prints Hello World!");
-		requirementRep.save(r1);
+		codeStage.getRequirements().get(0).setText("please blabla write a function that prints Hello World!");
+		requirementRep.save(codeStage.getRequirements().get(0));
 		stageRep.save(codeStage);
 		assertEquals(requirementRep.findAll().get(0).getText(), "please blabla write a function that prints Hello World!");
-		assertEquals(((Requirement)codeStageRep.findAll().get(0).getRequirements().toArray()[0]).getText(), "please blabla write a function that prints Hello World!");
-		Requirement r2 = new Requirement(codeStage, "function must have 1 line");
-		requirements.add(r2);
-		requirementRep.save(r2);
-		assertEquals(requirementRep.count(), 2);
-		codeStage.setRequirements(requirements);
-		stageRep.save(codeStage);
+		assertEquals(codeStageRep.findAll().get(0).getRequirements().get(0).getText(), "please blabla write a function that prints Hello World!");
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 2);
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
-		Participant p1 = new Participant(experimentRep.findAll().get(0));
-		experimentRep.findAll().get(0).getParticipants().add(p1);
-		expee1.setParticipant(p1);
-		participantRep.save(p1);
-		experimenteeRep.save(expee1);
+		Participant p1 = createExpeeAndParticipant();
 		assertEquals(participantRep.count(), 1);
 		assertEquals(experimenteeRep.count(), 1);
 		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
@@ -393,32 +384,47 @@ class PersistenceTests {
 		TaggingStage taggingStage = new TaggingStage(codeStage, e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
-		List<Requirement> requirementsFor_rt1 = new ArrayList<>();
-		requirementsFor_rt1.add(r1);
-		requirementsFor_rt1.add(r2);
-		RequirementTag rt1 = new RequirementTag(0, 10, p1, requirementsFor_rt1);
-		List<Requirement> requirementsFor_rt2 = new ArrayList<>();
-		requirementsFor_rt2.add(r1);
-		RequirementTag rt2 = new RequirementTag(10, 15, p1, requirementsFor_rt2);
-		requirementTagRep.save(rt1);
-		requirementTagRep.save(rt2);
+		addRequirementTags(codeStage, p1);
 		assertEquals(requirementTagRep.count(), 2);
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 10);
-		rt1.setLength(13);
-		requirementTagRep.save(rt1);
+		RequirementTag req = requirementTagRep.findAll().get(0);
+		req.setLength(13);
+		requirementTagRep.save(req);
 		assertEquals(requirementTagRep.count(), 2);
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 13);
-		requirementTagRep.deleteById(rt1.getRequirementTagID());
+		requirementTagRep.deleteById(req.getRequirementTagID());
 		assertEquals(requirementTagRep.count(), 1);
-		List<Requirement> updated = new ArrayList<>();
-		updated.add(r1);
-		codeStage.setRequirements(updated);
-		requirementRep.deleteById(r2.getRequirementID());
+		Requirement toRem = codeStage.getRequirements().get(1);
+		codeStage.getRequirements().remove(1);
+		requirementRep.deleteById(toRem.getRequirementID());
 		assertEquals(requirementRep.count(), 1);
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 1);
 		codeResultRep.deleteById(codeResult.getCodeResultID());
 		assertEquals(codeResultRep.count(), 0);
+	}
+
+	private void addRequirementTags(CodeStage codeStage, Participant p1) {
+		List<Requirement> requirementsFor_rt1 = new ArrayList<>();
+		requirementsFor_rt1.add(codeStage.getRequirements().get(0));
+		requirementsFor_rt1.add(codeStage.getRequirements().get(1));
+		RequirementTag rt1 = new RequirementTag(0, 10, p1, requirementsFor_rt1);
+		List<Requirement> requirementsFor_rt2 = new ArrayList<>();
+		requirementsFor_rt2.add(codeStage.getRequirements().get(0));
+		RequirementTag rt2 = new RequirementTag(10, 15, p1, requirementsFor_rt2);
+		requirementTagRep.save(rt1);
+		requirementTagRep.save(rt2);
+	}
+
+	private void addRequirements(CodeStage codeStage) {
+		Requirement r1 = new Requirement(codeStage, "write a function that prints Hello World!");
+		codeStage.addRequirement(r1);
+		requirementRep.save(r1);
+		stageRep.save(codeStage);
+		Requirement r2 = new Requirement(codeStage, "function must have 1 line");
+		codeStage.addRequirement(r2);
+		requirementRep.save(r2);
+		stageRep.save(codeStage);
 	}
 
 	@Test
