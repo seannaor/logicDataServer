@@ -43,7 +43,17 @@ public class TaggingStage extends Stage {
 
     public JSONObject getJson() {
         JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type","tag");
+        jStage.put("type","tagging");
         return jStage;
+    }
+
+    @Override
+    public String getType() {
+        return "tagging";
+    }
+
+    @Override
+    public void fillIn(JSONObject data) {
+        //TODO: return Requirement list or TaggingResult
     }
 }

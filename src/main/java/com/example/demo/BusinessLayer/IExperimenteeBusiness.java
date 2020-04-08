@@ -1,16 +1,18 @@
 package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import org.json.simple.JSONObject;
 
 public interface IExperimenteeBusiness {
 
     //UC 2.1 - Login
-    String beginParticipation(String accessCode);
+    Stage beginParticipation(String accessCode) throws Exception;
 
     //UC 2.2.*
-    String fillInStage(String accessCode, JSONObject data);
+    void fillInStage(String accessCode, JSONObject data) throws Exception;
 
-    Stage getNextStage(String accessCode);
+    Stage getNextStage(String accessCode) throws Exception;
 
-    Stage getCurrentStage(String accessCode);
+    Stage getCurrentStage(String accessCode) throws Exception;
 }

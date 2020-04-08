@@ -79,5 +79,7 @@ public abstract class Stage {
 
     public abstract JSONObject getJson();
 
-//    public abstract void fillIn(JSONObject data);
+    public abstract String getType();
+
+    public abstract void fillIn(JSONObject data);
 }

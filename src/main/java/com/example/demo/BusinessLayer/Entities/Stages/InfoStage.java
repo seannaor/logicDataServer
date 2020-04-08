@@ -37,4 +37,12 @@ public class InfoStage extends Stage {
         jStage.put("info",info);
         return jStage;
     }
+
+    @Override
+    public String getType() {
+        return "info";
+    }
+
+    @Override
+    public void fillIn(JSONObject data) {}
 }

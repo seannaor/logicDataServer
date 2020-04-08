@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 
 import javax.persistence.*;
 import java.util.List;
@@ -50,17 +51,21 @@ public class Participant {
         this.participantId = participantId;
     }
 
-    public Stage getCurrStage() {
+    public Stage getCurrStage() throws ExpEndException {
+        if(isDone) throw new ExpEndException();
         return experiment.getStages().get(currStage);
     }
 
-    public Stage getNextStage() {
-        currStage++;
-        if (currStage >= experiment.getStages().size()) {
-            isDone = true;
-            return null;
-        }
+    public Stage getNextStage() throws ExpEndException {
+        advanceStage();
+        if(isDone) throw new ExpEndException();
         return getCurrStage();
+    }
+
+    private void advanceStage(){
+        currStage++;
+        if (currStage >= experiment.getStages().size())
+            isDone = true;
     }
 
 }

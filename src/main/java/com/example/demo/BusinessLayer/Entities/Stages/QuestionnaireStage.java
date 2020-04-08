@@ -65,4 +65,14 @@ public class QuestionnaireStage extends Stage {
         jStage.put("questions", jQuestions);
         return jStage;
     }
+
+    @Override
+    public String getType() {
+        return "questionnaire";
+    }
+
+    @Override
+    public void fillIn(JSONObject data) {
+        //TODO: return Answer list or QuestionnaireStage
+    }
 }

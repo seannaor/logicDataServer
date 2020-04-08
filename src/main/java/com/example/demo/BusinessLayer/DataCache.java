@@ -3,6 +3,7 @@ package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Exceptions.CodeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,10 @@ public class DataCache {
         return null;
     }
 
-    public Grader getGraderByCode(String code) {
+    public Grader getGraderByCode(String code) throws CodeException {
         for (GraderToGradingTask g2gt : graderToGradingTasks)
             if (g2gt.getGraderAccessCode().equals(code)) return g2gt.getGrader();
-
-        return null;
+        throw new CodeException(code);
     }
 
     public Experimentee getExpeeByEMail(String email) {
@@ -67,10 +67,10 @@ public class DataCache {
         return null;
     }
 
-    public Experimentee getExpeeByCode(String code) {
+    public Experimentee getExpeeByCode(String code) throws CodeException {
         for (Experimentee expee : experimentees)
             if (expee.getAccessCode().equals(code)) return expee;
-        return null;
+        throw new CodeException(code);
     }
 
     public Experimentee getExpeeByMailAndExp(String email, int expId) {

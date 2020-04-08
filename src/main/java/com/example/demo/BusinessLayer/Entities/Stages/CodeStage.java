@@ -48,6 +48,16 @@ public class CodeStage extends Stage {
         return jStage;
     }
 
+    @Override
+    public String getType() {
+        return "code";
+    }
+
+    @Override
+    public void fillIn(JSONObject data) {
+        //TODO: return CodeResult
+    }
+
     public CodeStage(String desc, String template, Experiment experiment) {
         super(experiment);
         this.description=desc;

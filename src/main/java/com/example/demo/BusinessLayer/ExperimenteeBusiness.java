@@ -3,6 +3,8 @@ package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import org.json.simple.JSONObject;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
@@ -10,32 +12,27 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     private DataCache cache = DataCache.getInstance();
 
     @Override
-    public String beginParticipation(String accessCode) {
+    public Stage beginParticipation(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        if(expee==null) return "code is not valid";
-        return (String) expee.getParticipant().getCurrStage().getJson().get("type");
+        return expee.getParticipant().getCurrStage();
     }
 
     @Override
-    public String fillInStage(String accessCode, JSONObject data) {
+    public void fillInStage(String accessCode, JSONObject data) throws CodeException, ExpEndException{
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        if (expee == null) return "code is not valid";
         Stage currStage = expee.getCurrStage();
-//        currStage.fillIn(data);
-        //fill in a stage at the experiment and return next stage
-        return "TODO: ExperimenteeBusiness.fillInStage";
+        currStage.fillIn(data);
     }
 
     @Override
-    public Stage getCurrentStage(String accessCode) {
+    public Stage getCurrentStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
     }
 
     @Override
-    public Stage getNextStage(String accessCode) {
+    public Stage getNextStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getNextStage();
     }
-
 }
