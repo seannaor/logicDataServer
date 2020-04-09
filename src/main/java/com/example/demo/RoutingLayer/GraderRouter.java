@@ -23,12 +23,6 @@ public class GraderRouter {
 
     private GraderService grader = new GraderService();
 
-//    private Map<String, IService> serviceMap = new HashMap<String, IService>() {{
-//        put("manager", new CreatorService());
-//        put("grader", new GraderService());
-//        put("experimentee", new ExperimenteeService());
-//    }};
-
     @RequestMapping("")
     public Map<String, Object> graderLogin(@RequestParam String code) {
         return grader.beginGrading(code);

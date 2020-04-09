@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -46,6 +47,19 @@ public class CodeStage extends Stage {
         }
         jStage.put("requirements",jRequirements);
         return jStage;
+    }
+
+    @Override
+    public String getType() {
+        return "code";
+    }
+
+    @Override
+    public CodeResult fillCode(JSONObject data) {
+        CodeResult res = new CodeResult();
+        res.setCodeStage(this);
+        res.setUserCode((String) data.get("userCode"));
+        return res;
     }
 
     public CodeStage(String desc, String template, Experiment experiment) {

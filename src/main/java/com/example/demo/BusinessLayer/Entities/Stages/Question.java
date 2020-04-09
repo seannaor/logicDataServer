@@ -1,7 +1,11 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
-import net.minidev.json.JSONObject;
+import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.Type;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -50,6 +54,10 @@ public class Question {
 //        answer = new ArrayList<>();
     }
 
+    public int getIndex() {
+        return questionID.questionIndex;
+    }
+
     public QuestionID getQuestionID() {
         return questionID;
     }
@@ -64,5 +72,24 @@ public class Question {
 
     public void setQuestionJson(String questionJson) {
         this.questionJson = questionJson;
+    }
+
+    public Answer answer(JSONObject data) throws ParseException, FormatException {
+        JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
+        Answer ans = new Answer();
+        ans.setQuestion(this);
+
+        switch ((String) jQuestion.get("type")){
+            case "open":
+                ans.setTextualAnswer((String) jQuestion.get("text"));
+                return ans;
+            case "american":
+                ans.setNumeralAnswer((int) jQuestion.get("#"));
+                return ans;
+
+                //TODO: add types of questions like multichoise
+            default:
+                throw new FormatException("american or open question");
+        }
     }
 }

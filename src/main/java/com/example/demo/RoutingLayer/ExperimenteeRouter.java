@@ -17,7 +17,6 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 public class ExperimenteeRouter {
 
     private ExperimenteeService expee = new ExperimenteeService();
-    private int count =0;
 
     @RequestMapping("")
     public Map<String, Object> expeeLogin(@RequestParam String code) {

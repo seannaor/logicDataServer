@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,5 +69,17 @@ public class Requirement {
 
     public String getText() {
         return text;
+    }
+
+    public int getIndex(){
+        return this.requirementID.requirementIndex;
+    }
+
+    public RequirementTag tag(JSONObject data){
+        RequirementTag tag = new RequirementTag();
+        tag.setRequirement(this);
+        tag.setStart((int) data.get("start_loc"));
+        tag.setLength((int) data.get("length"));
+        return tag;
     }
 }
