@@ -1,5 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,18 +84,18 @@ public class ManagementUser {
 
     //======================= end of setters and getters =======================
 
-    public Experiment getExperiment(int id) {
+    public Experiment getExperiment(int id) throws NotExistException {
         for (Experiment exp : experiments) {
             if (exp.getExperimentId() == id) return exp;
         }
-        return null;
+        throw new NotExistException("experiment",String.valueOf(id));
     }
 
-    public Experiment getExperimentByName(String name){
+    public Experiment getExperimentByName(String name) throws NotExistException {
         for (Experiment exp : experiments) {
             if (exp.getExperimentName().equals(name)) return exp;
         }
-        return null;
+        throw new NotExistException("experiment",name);
     }
 
     public void addExperiment(Experiment exp) {

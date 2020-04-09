@@ -5,6 +5,10 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.aspectj.weaver.ast.Not;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +34,7 @@ public class BusinessLayerTests {
     //private Grader grader = new Grader();
 
     @BeforeEach
-    private void init() {
+    private void init() throws NotExistException, FormatException, ExistException {
         cache.flash();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         expee = new Experimentee("giliCode", "gili@post.bgu.ac.il");
@@ -38,7 +42,7 @@ public class BusinessLayerTests {
         cache.addExperimentee(expee);
         List<JSONObject> stages = Utils.buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
-        experiment =manager.getExperimentByName("The Experiment");
+        experiment = manager.getExperimentByName("The Experiment");
         experiment.setExperimentId(1);
     }
 
@@ -55,16 +59,32 @@ public class BusinessLayerTests {
 
         //new experiment should pass
         int expNum = manager.getExperiments().size();
-        Assert.assertTrue(creatorBusiness.addExperiment(manager.getBguUsername(), expName, stages).contains("was created"));
-        Assert.assertEquals(manager.getExperiments().size(), expNum+1);
-        Experiment exp = (Experiment) manager.getExperimentByName(expName);
-        Assert.assertTrue(exp.getManagementUsers().contains(manager));
+        try {
+            creatorBusiness.addExperiment(manager.getBguUsername(), expName, stages);
+            Assert.assertEquals(manager.getExperiments().size(), expNum + 1);
+            Experiment exp = manager.getExperimentByName(expName);
+            Assert.assertTrue(exp.getManagementUsers().contains(manager));
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
-        //same name should fail
-        Assert.assertTrue(creatorBusiness.addExperiment(manager.getBguUsername(), expName, new ArrayList<>()).contains("already exist"));
-        //creator name not exist should fail
-        Assert.assertTrue(creatorBusiness.addExperiment("not exist name", expName, new ArrayList<>()).contains("not exist"));
+        try {
+            //same name should fail
+            creatorBusiness.addExperiment(manager.getBguUsername(), expName, new ArrayList<>());
+            Assert.fail();
+        } catch (FormatException | NotExistException e) {
+            Assert.fail();
+        } catch (ExistException e) {
+        }
 
+        try {
+            //creator name not exist should fail
+            creatorBusiness.addExperiment("not exist name", expName, new ArrayList<>());
+            Assert.fail();
+        } catch (FormatException | ExistException e) {
+            Assert.fail();
+        } catch (NotExistException e) {
+        }
     }
 
     @Test
@@ -73,63 +93,127 @@ public class BusinessLayerTests {
 
         //new experiment should pass
         int expNum = manager.getExperiments().size();
-        Assert.assertTrue(creatorBusiness.createExperiment(manager.getBguUsername(), expName).contains("was created"));
-        Assert.assertEquals(manager.getExperiments().size(), expNum+1);
-        Experiment exp = (Experiment) manager.getExperimentByName(expName);
-        Assert.assertTrue(exp.getManagementUsers().contains(manager));
-        Assert.assertEquals(exp.getStages().size(), 0);
+        try {
+            creatorBusiness.createExperiment(manager.getBguUsername(), expName);
+            Assert.assertEquals(manager.getExperiments().size(), expNum + 1);
+            Experiment exp = manager.getExperimentByName(expName);
+            Assert.assertTrue(exp.getManagementUsers().contains(manager));
+            Assert.assertEquals(exp.getStages().size(), 0);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
-        //same name should fail
-        Assert.assertTrue(creatorBusiness.createExperiment(manager.getBguUsername(), expName).contains("already exist"));
-        //creator name not exist should fail
-        Assert.assertTrue(creatorBusiness.createExperiment("not exist name", expName).contains("not exist"));
+        try {
+            //same name should fail
+            creatorBusiness.createExperiment(manager.getBguUsername(), expName);
+            Assert.fail();
+        } catch (ExistException ignore) {
+        } catch (NotExistException e) {
+            Assert.fail();
+        }
+
+        try {
+            //creator name not exist should fail
+            creatorBusiness.createExperiment("not exist name", expName);
+            Assert.fail();
+        } catch (NotExistException e) {
+        } catch (ExistException e) {
+            Assert.fail();
+        }
     }
 
     @Test
     public void addStage() {
         String expName = "testExp";
-        creatorBusiness.createExperiment(manager.getBguUsername(), expName);
-        Experiment exp = (Experiment) manager.getExperimentByName(expName);
-        exp.setExperimentId(666);
+        Experiment exp = new Experiment();
         List<JSONObject> stages = Utils.buildStages();
+        try {
+            creatorBusiness.createExperiment(manager.getBguUsername(), expName);
+            exp = manager.getExperimentByName(expName);
+            exp.setExperimentId(666);
 
-        // adding legal stages should pass
-        int i = 1;
-        for (JSONObject jStage : stages) {
-            Assert.assertTrue(creatorBusiness.addStageToExperiment(manager.getBguUsername(), exp.getExperimentId(), jStage).contains("was added"));
-            Assert.assertEquals(exp.getStages().size(), i);
-            i++;
+            // adding legal stages should pass
+            int i = 1;
+            for (JSONObject jStage : stages) {
+                creatorBusiness.addStageToExperiment(manager.getBguUsername(), exp.getExperimentId(), jStage);
+                Assert.assertEquals(exp.getStages().size(), i);
+                i++;
+            }
+        } catch (Exception e) {
+            Assert.fail();
         }
 
-        //creator name not exist should fail
-        String res = creatorBusiness.addStageToExperiment("not exist name", exp.getExperimentId(), stages.get(0));
-        Assert.assertTrue(res.contains("not exist"));
+        //VVVVVVVV should fails VVVVVVVV
 
-        //experiment id not exist
-        res = creatorBusiness.addStageToExperiment(manager.getBguUsername(), -1, stages.get(0));
-        Assert.assertTrue(res.contains("not found"));
+        try {
+            //creator name not exist
+            creatorBusiness.addStageToExperiment("not exist name", exp.getExperimentId(), stages.get(0));
+            Assert.fail();
+        } catch (FormatException | ExistException e) {
+            Assert.fail();
+        } catch (NotExistException ignore) {
+        }
 
-        //not a valid stage
-        res = creatorBusiness.addStageToExperiment(manager.getBguUsername(), exp.getExperimentId(), new JSONObject());
-        Assert.assertTrue(res.contains("not in the right format"));
 
+        try {
+            //experiment id not exist
+            creatorBusiness.addStageToExperiment(manager.getBguUsername(), -1, stages.get(0));
+            Assert.fail();
+        } catch (FormatException | ExistException e) {
+            Assert.fail();
+        } catch (NotExistException ignore) {
+        }
+
+
+        try {
+            //not a valid stage
+            creatorBusiness.addStageToExperiment(manager.getBguUsername(), exp.getExperimentId(), new JSONObject());
+            Assert.fail();
+        } catch (NotExistException | ExistException e) {
+            Assert.fail();
+        } catch (FormatException ignore) {
+        }
     }
 
     @Test
-    public void addGradingTask(){
-        //not exist manager
-        Assert.assertTrue(creatorBusiness.addGradingTask("not exist",experiment.getExperimentId(),"grading task",new ArrayList<>(),new ArrayList<>(),new ArrayList<>()).contains("not exist"));
-        //not exist experiment
-        Assert.assertTrue(creatorBusiness.addGradingTask(manager.getBguUsername(),-1,"grading task",new ArrayList<>(),new ArrayList<>(),new ArrayList<>()).contains("not found"));
-        //not legal personal & result experiments
-        List<JSONObject> stagesIlegal = new ArrayList<>();
-        stagesIlegal.add(new JSONObject());
-        Assert.assertTrue(creatorBusiness.addGradingTask(manager.getBguUsername(),experiment.getExperimentId(),"grading task",stagesIlegal,new ArrayList<>(),stagesIlegal).contains("not in the right format"));
+    public void addGradingTask() {
+        try {
+            //not exist manager
+            creatorBusiness.addGradingTask("not exist", experiment.getExperimentId(), "grading task", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            Assert.fail();
+        } catch (NotExistException ignored) {
+        } catch (FormatException e) {
+            Assert.fail();
+        }
+
+        try {
+            //not exist experiment
+            creatorBusiness.addGradingTask(manager.getBguUsername(), -1, "grading task", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            Assert.fail();
+        } catch (NotExistException ignored) {
+        } catch (FormatException e) {
+            Assert.fail();
+        }
+
+
+        try {
+            //not legal personal & result experiments
+            List<JSONObject> stagesIllegal = List.of(new JSONObject());
+            creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", stagesIllegal, new ArrayList<>(), stagesIllegal);
+            Assert.fail();
+        } catch (FormatException ignored) {
+        } catch (NotExistException e) {
+            Assert.fail();
+        }
+
+
         //illegal indexes to check
         //Assert.assertFalse(creatorBusiness.addGradingTask(manager.getBguUsername(),experiment.getExperimentId(),"grading task",new ArrayList<>(),List.of(-1,-2,-3),new ArrayList<>()));
 
-        Assert.assertTrue(creatorBusiness.addGradingTask(manager.getBguUsername(),experiment.getExperimentId(),"grading task",new ArrayList<>(),List.of(2),new ArrayList<>()).contains("was created"));
+        try {
+            creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", new ArrayList<>(), List.of(2), new ArrayList<>());
+        } catch (Exception fail) {
+            Assert.fail();
+        }
     }
-
-
 }

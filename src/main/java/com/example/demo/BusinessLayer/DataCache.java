@@ -4,6 +4,8 @@ import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +39,10 @@ public class DataCache {
         return instance;
     }
 
-    public ManagementUser getManagerByName(String name) {
+    public ManagementUser getManagerByName(String name) throws NotExistException {
         for (ManagementUser manager : managers)
             if (manager.getBguUsername().equals(name)) return manager;
-        return null;
+        throw new NotExistException("user",name);
     }
 
     public ManagementUser getManagerByEMail(String email) {
@@ -49,10 +51,10 @@ public class DataCache {
         return null;
     }
 
-    public Grader getGraderByEMail(String email) {
+    public Grader getGraderByEMail(String email) throws NotExistException {
         for (Grader grader : graders)
             if (grader.getGraderEmail().equals(email)) return grader;
-        return null;
+        throw new NotExistException("grader",email);
     }
 
     public Grader getGraderByCode(String code) throws CodeException {
@@ -61,10 +63,10 @@ public class DataCache {
         throw new CodeException(code);
     }
 
-    public Experimentee getExpeeByEMail(String email) {
+    public Experimentee getExpeeByEMail(String email) throws NotExistException {
         for (Experimentee expee : experimentees)
             if (expee.getExperimenteeEmail().equals(email)) return expee;
-        return null;
+        throw new NotExistException("experimentee",email);
     }
 
     public Experimentee getExpeeByCode(String code) throws CodeException {
@@ -73,14 +75,14 @@ public class DataCache {
         throw new CodeException(code);
     }
 
-    public Experimentee getExpeeByMailAndExp(String email, int expId) {
+    public Experimentee getExpeeByMailAndExp(String email, int expId) throws NotExistException {
         for (Experimentee expee : experimentees)
             if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
                 return expee;
-        return null;
+        throw new NotExistException("experimentee",email);
     }
 
-    public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) {
+    public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) throws NotExistException {
         ManagementUser man = getManagerByName(researcherName);
         Experiment exp = man.getExperiment(expId);
         for (GradingTask gt : gradingTasks) {

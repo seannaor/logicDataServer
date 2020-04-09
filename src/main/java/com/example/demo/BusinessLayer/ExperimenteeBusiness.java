@@ -14,8 +14,13 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     private DataCache cache = DataCache.getInstance();
 
     @Override
-    public Stage beginParticipation(String accessCode) throws CodeException, ExpEndException {
-        Experimentee expee = cache.getExpeeByCode(accessCode);
+    public Stage beginParticipation(String accessCode) throws ExpEndException {
+        Experimentee expee;
+        try {
+            expee = cache.getExpeeByCode(accessCode);
+        }catch (CodeException ignore){
+            return null;
+        }
         return expee.getParticipant().getCurrStage();
     }
 
