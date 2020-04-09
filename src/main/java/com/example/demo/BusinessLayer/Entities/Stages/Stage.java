@@ -1,13 +1,18 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -81,5 +86,21 @@ public abstract class Stage {
 
     public abstract String getType();
 
-    public abstract void fillIn(JSONObject data);
+
+
+    public CodeResult fillCode(JSONObject data) throws FormatException {
+        throw new FormatException("code stage answers");
+    }
+
+    public List<Answer> fillQuestionnaire(JSONObject data) throws FormatException, ParseException {
+        throw new FormatException("questionnaire stage answers");
+    }
+
+    public List<RequirementTag> fillTagging(JSONObject data) throws FormatException {
+        throw new FormatException("tagging stage answers");
+    }
+
+    public void fillInfo(JSONObject data)throws FormatException {
+        throw new FormatException("info stage");
+    }
 }

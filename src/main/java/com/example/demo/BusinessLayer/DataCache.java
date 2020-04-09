@@ -11,7 +11,7 @@ import java.util.List;
 public class DataCache {
 
     /*
-    This class purpose is to be the channel witch we can add or get data.
+    This class purpose is to be the channel witch we can add or get data about the main entities.
     If data not found, we should look for it in the database.
      */
 

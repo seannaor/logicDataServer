@@ -44,5 +44,5 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillIn(JSONObject data) {}
+    public void fillInfo(JSONObject data) {}
 }

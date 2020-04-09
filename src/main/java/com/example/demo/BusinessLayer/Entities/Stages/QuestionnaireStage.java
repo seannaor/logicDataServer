@@ -1,9 +1,12 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -57,7 +60,7 @@ public class QuestionnaireStage extends Stage {
 
     public JSONObject getJson() {
         JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type","questionnaire");
+        jStage.put("type", "questionnaire");
         List<String> jQuestions = new LinkedList<>();
         for (Question q : questions) {
             jQuestions.add(q.getQuestionJson());
@@ -72,7 +75,16 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public void fillIn(JSONObject data) {
-        //TODO: return Answer list or QuestionnaireStage
+    public List<Answer> fillQuestionnaire(JSONObject data) throws FormatException, ParseException {
+        List<Answer> answers = new ArrayList<>();
+
+        for (Question q : questions) {
+            int i = q.getIndex();
+            if (!data.containsKey(i))
+                throw new FormatException("answer #" + i);
+
+            answers.add(q.answer((JSONObject) data.get(i)));
+        }
+        return answers;
     }
 }

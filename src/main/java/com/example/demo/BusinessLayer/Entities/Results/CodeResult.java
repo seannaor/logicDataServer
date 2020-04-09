@@ -66,4 +66,12 @@ public class CodeResult {
     public void setUserCode(String userCode) {
         this.userCode = userCode;
     }
+
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+    }
+
+    public void setCodeStage(CodeStage codeStage) {
+        this.codeStage = codeStage;
+    }
 }

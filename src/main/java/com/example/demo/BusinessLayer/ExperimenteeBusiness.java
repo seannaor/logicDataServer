@@ -2,9 +2,11 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
@@ -18,10 +20,9 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public void fillInStage(String accessCode, JSONObject data) throws CodeException, ExpEndException{
-        Experimentee expee = cache.getExpeeByCode(accessCode);
-        Stage currStage = expee.getCurrStage();
-        currStage.fillIn(data);
+    public void fillInStage(String accessCode, JSONObject data) throws Exception {
+        Participant part = cache.getExpeeByCode(accessCode).getParticipant();
+        part.fillInStage(data);
     }
 
     @Override
