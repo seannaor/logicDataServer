@@ -10,6 +10,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +22,11 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 @RequestMapping("/grader")
 public class GraderRouter {
 
-    private GraderService grader = new GraderService();
+    private GraderService grader;
+
+    public GraderRouter() {
+        this.grader = new GraderService();
+    }
 
     @RequestMapping("")
     public Map<String, Object> graderLogin(@RequestParam String code) {

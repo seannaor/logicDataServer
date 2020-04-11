@@ -1,14 +1,13 @@
-package com.example.demo;
+package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.*;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
-import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import org.aspectj.weaver.ast.Not;
+import com.example.demo.Utils;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,20 +17,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.BusinessLayer.DataCache.*;
-
 @SpringBootTest
-public class BusinessLayerTests {
+public class ManagerTests {
 
-    private ICreatorBusiness creatorBusiness = new CreatorBusiness();
-    private IGraderBusiness graderBusiness = new GraderBusiness();
-    private IExperimenteeBusiness experimenteeBusiness = new ExperimenteeBusiness();
-    private DataCache cache = DataCache.getInstance();
+    private ICreatorBusiness creatorBusiness;
+    private DataCache cache;
 
     private ManagementUser manager;
     private Experiment experiment;
     private Experimentee expee;
-    //private Grader grader = new Grader();
+
+    public ManagerTests() {
+        creatorBusiness = new CreatorBusiness();
+        cache = DataCache.getInstance();
+    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {

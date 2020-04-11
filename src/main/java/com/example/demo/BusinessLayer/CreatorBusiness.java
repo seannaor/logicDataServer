@@ -13,7 +13,11 @@ import java.util.List;
 
 public class CreatorBusiness implements ICreatorBusiness {
 
-    private DataCache cache = DataCache.getInstance();
+    private DataCache cache;
+
+    public CreatorBusiness() {
+        this.cache = DataCache.getInstance();
+    }
 
     @Override
     public boolean researcherLogin(String username, String password) {
@@ -56,12 +60,13 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException,ExistException {
+    public void addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
-        } catch (NotExistException ignore) { }
+        } catch (NotExistException ignore) {
+        }
 
         Experiment exp = buildExperiment(stages, expName, c);
     }
@@ -132,14 +137,14 @@ public class CreatorBusiness implements ICreatorBusiness {
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
-        cache.addGraderToGradingTask(gt, grader);
+        cache.addGraderToGradingTask(gt, grader,"CODE");//TODO:figure out WTF
     }
 
     @Override
     public void addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
-        if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail,"experiment "+expId);
+        if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
         cache.addExperimentee(new Experimentee(expeeMail, exp));
     }
 

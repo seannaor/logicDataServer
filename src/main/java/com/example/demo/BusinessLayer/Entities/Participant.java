@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,11 +36,18 @@ public class Participant {
     private List<RequirementTag> requirementTags;
 
     public Participant() {
+//        isDone=false;
+//        currStage=0;
     }
 
     public Participant(Experiment experiment) {
         this.experiment = experiment;
         experiment.addParticipant(this);
+        isDone=false;
+        currStage=0;
+        this.answers = new ArrayList<>();
+        this.codeResults = new ArrayList<>();
+        this.requirementTags = new ArrayList<>();
     }
 
     public Experiment getExperiment() {
@@ -73,7 +81,7 @@ public class Participant {
 
     public void fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
         Stage curr = getCurrStage();
-        String type = (String) data.get("stageType");
+        String type = (String) data.getOrDefault("stageType","no stage stated");
 
         switch (type) {
             case "code":

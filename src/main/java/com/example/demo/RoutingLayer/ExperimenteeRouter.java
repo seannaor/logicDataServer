@@ -16,29 +16,33 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 @RequestMapping("/experimentee")
 public class ExperimenteeRouter {
 
-    private ExperimenteeService expee = new ExperimenteeService();
+    private ExperimenteeService expee;
+
+    public ExperimenteeRouter() {
+        this.expee = new ExperimenteeService();
+    }
 
     @RequestMapping("")
     public Map<String, Object> expeeLogin(@RequestParam String code) {
-        System.out.println("/experimentee "+code);
+        System.out.println("/experimentee " + code);
         return expee.beginParticipation(code);
     }
 
     @RequestMapping("/experimentee/fill_stage")
     public Map<String, Object> fillStage(@RequestParam String code, @RequestParam String data) {
-        System.out.println("experimentee/fill_stage "+code);
+        System.out.println("experimentee/fill_stage " + code);
         return expee.fillInStage(code, strToJSON(data));
     }
 
     @RequestMapping("/next_stage")
     public Map<String, Object> nextStage(@RequestParam String code) {
-        System.out.println("experimentee/next_stage "+code);
+        System.out.println("experimentee/next_stage " + code);
         return expee.getNextStage(code);
     }
 
     @RequestMapping("/current_stage")
     public Map<String, Object> currStage(@RequestParam String code) {
-        System.out.println("experimentee/current_stage "+code);
+        System.out.println("experimentee/current_stage " + code);
         return expee.getCurrentStage(code);
     }
 
