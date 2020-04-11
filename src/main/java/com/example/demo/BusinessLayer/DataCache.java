@@ -17,7 +17,7 @@ public class DataCache {
     If data not found, we should look for it in the database.
      */
 
-    private static DataCache instance;
+    private static DataCache instance = null;
     private List<ManagementUser> managers;
     private List<Experimentee> experimentees;
     private List<Grader> graders;
@@ -33,16 +33,16 @@ public class DataCache {
     }
 
     public static DataCache getInstance() {
-        if (instance == null) {
+        if (instance == null)
             instance = new DataCache();
-        }
+
         return instance;
     }
 
     public ManagementUser getManagerByName(String name) throws NotExistException {
         for (ManagementUser manager : managers)
             if (manager.getBguUsername().equals(name)) return manager;
-        throw new NotExistException("user",name);
+        throw new NotExistException("user", name);
     }
 
     public ManagementUser getManagerByEMail(String email) {
@@ -54,7 +54,7 @@ public class DataCache {
     public Grader getGraderByEMail(String email) throws NotExistException {
         for (Grader grader : graders)
             if (grader.getGraderEmail().equals(email)) return grader;
-        throw new NotExistException("grader",email);
+        throw new NotExistException("grader", email);
     }
 
     public Grader getGraderByCode(String code) throws CodeException {
@@ -66,7 +66,7 @@ public class DataCache {
     public Experimentee getExpeeByEMail(String email) throws NotExistException {
         for (Experimentee expee : experimentees)
             if (expee.getExperimenteeEmail().equals(email)) return expee;
-        throw new NotExistException("experimentee",email);
+        throw new NotExistException("experimentee", email);
     }
 
     public Experimentee getExpeeByCode(String code) throws CodeException {
@@ -79,7 +79,7 @@ public class DataCache {
         for (Experimentee expee : experimentees)
             if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
                 return expee;
-        throw new NotExistException("experimentee",email);
+        throw new NotExistException("experimentee", email);
     }
 
     public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) throws NotExistException {
@@ -110,8 +110,9 @@ public class DataCache {
         gradingTasks.add(gt);
     }
 
-    public void addGraderToGradingTask(GradingTask gt, Grader g) {
-        graderToGradingTasks.add(new GraderToGradingTask(gt, g));
+    public void addGraderToGradingTask(GradingTask gt, Grader g,String code) {
+        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g,code,new ArrayList<>());
+        graderToGradingTasks.add(gtgt);
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 

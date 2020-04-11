@@ -10,11 +10,15 @@ import java.util.Map;
 
 public class GraderService {
 
-    private IGraderBusiness graderBusiness = new GraderBusiness();
+    private IGraderBusiness graderBusiness;
 
-    public Map<String,Object> beginGrading(String code){
+    public GraderService() {
+        this.graderBusiness = new GraderBusiness();
+    }
+
+    public Map<String, Object> beginGrading(String code) {
         String res = "OK";
-        try{
+        try {
             graderBusiness.beginGrading(code);
         } catch (Exception e) {
             res = e.getMessage();

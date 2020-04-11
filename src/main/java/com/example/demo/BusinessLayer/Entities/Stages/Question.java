@@ -74,17 +74,17 @@ public class Question {
         this.questionJson = questionJson;
     }
 
-    public Answer answer(JSONObject data) throws ParseException, FormatException {
+    public Answer answer(Object data) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
         Answer ans = new Answer();
         ans.setQuestion(this);
 
         switch ((String) jQuestion.get("type")){
             case "open":
-                ans.setTextualAnswer((String) jQuestion.get("text"));
+                ans.setTextualAnswer((String) data);
                 return ans;
             case "american":
-                ans.setNumeralAnswer((int) jQuestion.get("#"));
+                ans.setNumeralAnswer((int) data);
                 return ans;
 
                 //TODO: add types of questions like multichoise

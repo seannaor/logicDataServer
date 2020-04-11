@@ -83,7 +83,7 @@ public class QuestionnaireStage extends Stage {
             if (!data.containsKey(i))
                 throw new FormatException("answer #" + i);
 
-            answers.add(q.answer((JSONObject) data.get(i)));
+            answers.add(q.answer(data.get(i)));
         }
         return answers;
     }

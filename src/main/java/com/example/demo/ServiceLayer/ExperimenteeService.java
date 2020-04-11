@@ -9,7 +9,11 @@ import java.util.Map;
 
 public class ExperimenteeService {
 
-    private IExperimenteeBusiness experimenteeBusiness = new ExperimenteeBusiness();
+    private IExperimenteeBusiness experimenteeBusiness;
+
+    public ExperimenteeService() {
+        this.experimenteeBusiness = new ExperimenteeBusiness();
+    }
 
     //UC 2.1 - Login
     public Map<String, Object> beginParticipation(String accessCode) {
@@ -43,7 +47,7 @@ public class ExperimenteeService {
 
     //UC 2.2.*
     public Map<String, Object> fillInStage(String accessCode, JSONObject data) {
-        String res ="OK";
+        String res = "OK";
         try {
             experimenteeBusiness.fillInStage(accessCode, data);
         } catch (Exception e) {

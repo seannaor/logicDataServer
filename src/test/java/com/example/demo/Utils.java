@@ -57,7 +57,7 @@ public class Utils {
         questions.add(q1);
 
         JSONObject q2 = new JSONObject();
-        q2.put("type", "multi");
+        q2.put("type", "american");
         q2.put("question", "who?");
         List<String> answers = new ArrayList<>();
         answers.add("me");

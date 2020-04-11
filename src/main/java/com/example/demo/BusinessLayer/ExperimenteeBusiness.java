@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
@@ -8,24 +7,29 @@ import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
 
-    private DataCache cache = DataCache.getInstance();
+    private DataCache cache;
+
+    public ExperimenteeBusiness() {
+        this.cache = DataCache.getInstance();
+    }
 
     @Override
     public Stage beginParticipation(String accessCode) throws ExpEndException {
         Experimentee expee;
         try {
             expee = cache.getExpeeByCode(accessCode);
-        }catch (CodeException ignore){
+        } catch (CodeException ignore) {
             return null;
         }
         return expee.getParticipant().getCurrStage();
     }
 
     @Override
-    public void fillInStage(String accessCode, JSONObject data) throws Exception {
+    public void fillInStage(String accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
         part.fillInStage(data);
     }

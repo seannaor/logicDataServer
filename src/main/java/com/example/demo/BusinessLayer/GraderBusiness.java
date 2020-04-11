@@ -4,10 +4,19 @@ import com.example.demo.BusinessLayer.Exceptions.CodeException;
 
 public class GraderBusiness implements IGraderBusiness {
 
-    private DataCache cache = DataCache.getInstance();
+    private DataCache cache;
+
+    public GraderBusiness() {
+        this.cache = DataCache.getInstance();
+    }
 
     @Override
-    public boolean beginGrading(String accessCode) throws CodeException {
-        return cache.getGraderByCode(accessCode)!=null;
+    public boolean beginGrading(String accessCode) {
+        try {
+            cache.getGraderByCode(accessCode);
+            return true;
+        } catch (CodeException ignore) {
+            return false;
+        }
     }
 }
