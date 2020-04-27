@@ -2,6 +2,8 @@ package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class GradingTask {
         this.baseExperiment = baseExperiment;
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
+        this.stages =new ArrayList<>();
     }
 
     public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
@@ -50,6 +53,10 @@ public class GradingTask {
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
         this.stages = stages;
+    }
+
+    public void setGradingTaskId(int gradingTaskId) {
+        this.gradingTaskId = gradingTaskId;
     }
 
     public int getGradingTaskId() {
@@ -62,6 +69,16 @@ public class GradingTask {
 
     public void setStages(List<Stage> stages) {
         this.stages = stages;
+    }
+
+    public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException {
+        List<Stage> baseStages = this.baseExperiment.getStages();
+        List<Stage> newStages = new ArrayList<>();
+        for(int i:stages_idxs){
+            if(i>=baseStages.size()||i<0) throw new NotExistException("stage",""+i);
+            newStages.add(baseStages.get(i));
+        }
+        this.stages = newStages;
     }
 
     public List<GraderToGradingTask> getAssignedGradingTasks() {
