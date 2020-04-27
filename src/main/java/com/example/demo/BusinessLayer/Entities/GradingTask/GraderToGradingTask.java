@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -74,7 +75,8 @@ public class GraderToGradingTask {
         this.participants = participants;
     }
 
-    public void addParticipant(Participant p){
+    public void addParticipant(Participant p) throws ExistException {
+        if(participants.contains(p)) throw new ExistException("user with id "+p.getParticipantId(),this.grader.getGraderEmail()+" participants");
         participants.add(p);
     }
 

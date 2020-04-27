@@ -45,10 +45,10 @@ public class DataCache {
         throw new NotExistException("user", name);
     }
 
-    public ManagementUser getManagerByEMail(String email) {
+    public ManagementUser getManagerByEMail(String email) throws NotExistException {
         for (ManagementUser manager : managers)
             if (manager.getUserEmail().equals(email)) return manager;
-        return null;
+        throw new NotExistException("user", email);
     }
 
     public Grader getGraderByEMail(String email) throws NotExistException {
@@ -77,7 +77,8 @@ public class DataCache {
 
     public Experimentee getExpeeByMailAndExp(String email, int expId) throws NotExistException {
         for (Experimentee expee : experimentees)
-            if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
+            if (expee.getExperimenteeEmail().equals(email) &&
+                    expee.getExperiment().getExperimentId() == expId)
                 return expee;
         throw new NotExistException("experimentee", email);
     }
@@ -89,7 +90,28 @@ public class DataCache {
             if (gt.getBaseExperiment().equals(exp) && gt.getGeneralExperiment().getExperimentName().equals(gradName))
                 return gt;
         }
-        return null;
+        throw new NotExistException("grading task", gradName);
+    }
+
+    public GradingTask getGradingTaskById(String researcherName, int expId, int id) throws NotExistException {
+        ManagementUser man = getManagerByName(researcherName);
+        Experiment exp = man.getExperiment(expId);
+        for (GradingTask gt : gradingTasks) {
+            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId()==id)
+                return gt;
+        }
+        throw new NotExistException("grading task", ""+id);
+    }
+
+    public List<GradingTask> getAllGradingTasks(String researcherName, int expId) throws NotExistException {
+        ManagementUser man = getManagerByName(researcherName);
+        Experiment exp = man.getExperiment(expId);
+        List<GradingTask> ret = new ArrayList<>();
+        for (GradingTask gt : gradingTasks) {
+            if (gt.getBaseExperiment().equals(exp))
+                ret.add(gt);
+        }
+        return ret;
     }
 
     //=======================================================================
@@ -110,13 +132,13 @@ public class DataCache {
         gradingTasks.add(gt);
     }
 
-    public void addGraderToGradingTask(GradingTask gt, Grader g,String code) {
-        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g,code,new ArrayList<>());
+    public void addGraderToGradingTask(GradingTask gt, Grader g, String code) {
+        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g, code, new ArrayList<>());
         graderToGradingTasks.add(gtgt);
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 
-    public void addExpeeToGradingTask(GradingTask gt, Grader grader, Participant participant) {
+    public void addExpeeToGradingTask(GradingTask gt, Grader grader, Participant participant) throws ExistException {
         for (GraderToGradingTask gtgt : graderToGradingTasks) {
             if (gtgt.getGrader().equals(grader) && gtgt.getGradingTask().equals(gt)) {
                 gtgt.addParticipant(participant);

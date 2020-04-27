@@ -99,8 +99,13 @@ public class ManagementUser {
     }
 
     public void addExperiment(Experiment exp) {
-        experiments.add(exp);
-        exp.addManagementUser(this);
+        try{
+            getExperiment(exp.getExperimentId());
+            return;
+        } catch (NotExistException ignore) {
+            experiments.add(exp);
+            exp.addManagementUser(this);
+        }
     }
 
     public void removeExp(String expName) {
