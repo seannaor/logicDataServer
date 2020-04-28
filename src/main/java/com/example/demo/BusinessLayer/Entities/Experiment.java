@@ -81,6 +81,7 @@ public class Experiment {
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
+        stage.setExp(this);
         stages.add(stage);
     }
 

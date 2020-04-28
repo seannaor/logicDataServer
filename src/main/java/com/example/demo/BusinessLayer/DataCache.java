@@ -83,15 +83,15 @@ public class DataCache {
         throw new NotExistException("experimentee", email);
     }
 
-    public GradingTask getGradingTaskByName(String researcherName, int expId, String gradName) throws NotExistException {
-        ManagementUser man = getManagerByName(researcherName);
-        Experiment exp = man.getExperiment(expId);
-        for (GradingTask gt : gradingTasks) {
-            if (gt.getBaseExperiment().equals(exp) && gt.getGeneralExperiment().getExperimentName().equals(gradName))
-                return gt;
-        }
-        throw new NotExistException("grading task", gradName);
-    }
+//    public GradingTask getGradingTaskByName(String researcherName, int expId, int taskId) throws NotExistException {
+//        ManagementUser man = getManagerByName(researcherName);
+//        Experiment exp = man.getExperiment(expId);
+//        for (GradingTask gt : gradingTasks) {
+//            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == taskId)
+//                return gt;
+//        }
+//        throw new NotExistException("grading task", ""+taskId);
+//    }
 
     public GradingTask getGradingTaskById(String researcherName, int expId, int id) throws NotExistException {
         ManagementUser man = getManagerByName(researcherName);
@@ -155,6 +155,10 @@ public class DataCache {
             if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
                 return true;
         }
+        return false;
+    }
+
+    public boolean isGraderInTask(String email, int expId, int taskId){
         return false;
     }
 

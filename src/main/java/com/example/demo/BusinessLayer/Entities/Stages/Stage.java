@@ -59,6 +59,11 @@ public abstract class Stage {
         experiment.addStage(this);
     }
 
+    public void setExp(Experiment experiment){
+        this.experiment = experiment;
+        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
+    }
+
     public Stage(Experiment experiment, int stage_index) {
 //        this.stage_id = new StageID(experiment.getExperiment_id(), stage_index);
         this.stageID = new StageID(experiment.getExperimentId(), stage_index);
@@ -87,7 +92,6 @@ public abstract class Stage {
     public abstract String getType();
 
 
-
     public CodeResult fillCode(JSONObject data) throws FormatException {
         throw new FormatException("code stage answers");
     }
@@ -104,20 +108,20 @@ public abstract class Stage {
         throw new FormatException("info stage");
     }
 
-    public static Stage parseStage(JSONObject stage, Experiment experiment) throws FormatException {
+    public static Stage parseStage(JSONObject stage) throws FormatException {
         try {
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"), experiment);
+                    return new InfoStage((String) stage.get("info"));
 
                 case "code":
                     String desc = (String) stage.get("description");
                     String template = (String) stage.get("template");
                     List<String> requirements = (List<String>) stage.get("requirements");
-                    return new CodeStage(desc, template, requirements, experiment);
+                    return new CodeStage(desc, template, requirements);
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), experiment);
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");
