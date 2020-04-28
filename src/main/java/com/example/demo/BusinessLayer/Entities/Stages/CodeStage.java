@@ -26,11 +26,23 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
+    public CodeStage(String desc, String template, List<String> requirements) {
+        this.description=desc;
+        this.template=template;
+        this.requirements = new ArrayList<>();
+        for(String req:requirements){
+            this.requirements.add(new Requirement(this,req));
+        }
+    }
+
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
         super(experiment);
         this.description=desc;
         this.template=template;
-        //TODO: add requirements field - this.requirements = requirements;
+        this.requirements = new ArrayList<>();
+        for(String req:requirements){
+            this.requirements.add(new Requirement(this,req));
+        }
     }
 
     public CodeStage(Experiment experiment, int stage_index) {

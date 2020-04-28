@@ -36,8 +36,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
-        } catch (NotExistException ignore) {
-        }
+        } catch (NotExistException ignore) {}
 
         int id = c.getExperiments().size()+1;
         Experiment exp = new Experiment(expName, c);
@@ -50,8 +49,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     public void addStageToExperiment(String researcherName, int id, JSONObject stage) throws FormatException, NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(id);
-        Stage s = Stage.parseStage(stage, exp);
-        //TODO: order of parsing the stage changed, re-implement
+        exp.addStage(Stage.parseStage(stage));
     }
 
     @Override
@@ -63,7 +61,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
+    public int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         try {
             c.getExperimentByName(expName);
@@ -72,6 +70,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         }
 
         Experiment exp = buildExperiment(stages, expName, c);
+        return exp.getExperimentId();
     }
 
     @Override
@@ -89,33 +88,27 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addToPersonal(String researcherName, int expId, String gradTaskName, JSONObject stage) throws NotExistException, FormatException {
-        GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
+    public void addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+        GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment personal = gt.getGeneralExperiment();
-        addStageToExp(stage,personal);
+        personal.addStage(Stage.parseStage(stage));
     }
 
     @Override
-    public void addToResultsExp(String researcherName, int expId, String gradTaskName, JSONObject stage) throws NotExistException, FormatException {
-        GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
+    public void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+        GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment resExp = gt.getGradingExperiment();
-        addStageToExp(stage,resExp);
-    }
-
-    private void addStageToExp(JSONObject stage,Experiment exp) throws FormatException {
-        Stage s = Stage.parseStage(stage, exp);
-//        exp.addStage(s);
-        //TODO: order of parsing the stage changed, re-implement
+        resExp.addStage(Stage.parseStage(stage));
     }
 
     @Override
-    public void setStagesToCheck(String researcherName, int expId, String gradTaskName, List<Integer> stagesToCheck) throws NotExistException {
-        GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
+    public void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         gt.setStagesByIdx(stagesToCheck);
     }
 
     @Override
-    public String saveGradingTask(String researcherName, int expId, String gradTaskName) throws NotExistException {
+    public String saveGradingTask(String researcherName, int expId, int taskId) throws NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         if (c == null) return researcherName + " not exist";
         return "TODO:CreatorBusiness.saveGradingTask";
@@ -145,11 +138,12 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addGrader(String researcherName, int expId, String gradTaskName, String graderMail) throws NotExistException {
-        ManagementUser c = cache.getManagerByName(researcherName);
-        GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
-        Grader grader = cache.getGraderByEMail(graderMail);
-        if (grader == null) {
+    public void addGrader(String researcherName, int expId, int taskId, String graderMail) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
+        Grader grader;
+        try {
+            grader = cache.getGraderByEMail(graderMail);
+        }catch (NotExistException ignore){
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
@@ -165,24 +159,25 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addExpeeToGrader(String researcherName, int expId, String gradTaskName, String graderMail, String expeeMail) throws NotExistException, ExistException {
+    public void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) throws NotExistException, ExistException {
         Grader grader = cache.getGraderByEMail(graderMail);
-        GradingTask gt = cache.getGradingTaskByName(researcherName, expId, gradTaskName);
+        GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Participant participant = cache.getExpeeByMailAndExp(expeeMail, expId).getParticipant();
         cache.addExpeeToGradingTask(gt, grader, participant);
-        //TODO: test
+        //TODO: fix?
     }
 
     private static Experiment buildExperiment(List<JSONObject> stages, String expName, ManagementUser creator) throws FormatException {
         Experiment exp = new Experiment(expName, creator);
-        int id = creator.getExperiments().size()+1;
+        int id = creator.getExperiments().size();
         exp.setExperimentId(id);
         creator.addExperiment(exp);
         for (JSONObject jStage : stages) {
-            Stage s = Stage.parseStage(jStage, exp);
-            if (s == null) {
+            try{
+                exp.addStage(Stage.parseStage(jStage));
+            }catch (FormatException e){
                 creator.removeExp(expName);
-                return null;
+                throw e;
             }
         }
         return exp;

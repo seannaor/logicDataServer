@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface ICreatorBusiness {
 
-    //TODO: each return value would change from bool to string or something more meaningful
-
     //Login
     boolean researcherLogin(String username, String password);
 
@@ -22,27 +20,27 @@ public interface ICreatorBusiness {
     String saveExperiment(String researcherName, int id) throws NotExistException;
 
     //UC 1.1 - second choice (ALL)
-    void addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException;
+    int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException;
 
     //UC 1.2 - one choice (ALL)
     int addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp,
                        List<Integer> stagesToCheck, List<JSONObject> personalExp) throws NotExistException, FormatException;
 
     //UC 1.2 - second choice (PARTS)
-    // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/gradTaskName, JSONObject stage)
-    void addToPersonal(String researcherName, int expId, String gradTaskName, JSONObject stage) throws NotExistException, FormatException;
-    void addToResultsExp(String researcherName, int expId, String gradTaskName, JSONObject stage) throws NotExistException, FormatException;
-    void setStagesToCheck(String researcherName, int expId, String gradTaskName, List<Integer> stagesToCheck)throws NotExistException;
-    String saveGradingTask(String researcherName, int expId, String gradTaskName)throws NotExistException;
+    // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/taskId, JSONObject stage)
+    void addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException;
+    void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException;
+    void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck)throws NotExistException;
+    String saveGradingTask(String researcherName, int expId, int taskId)throws NotExistException;
 
     //UC 1.3
     void setAlliePermissions(String researcherName, int expId, String allieMail, List<String> permissions)throws NotExistException;
 
-    void addGrader(String researcherName, int expId, String gradTaskName, String graderMail)throws NotExistException;
+    void addGrader(String researcherName, int expId, int taskId, String graderMail)throws NotExistException;
 
     void addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
 
-    void addExpeeToGrader(String researcherName, int expId, String gradTaskName, String graderMail, String ExpeeMail) throws NotExistException, ExistException;
+    void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String ExpeeMail) throws NotExistException, ExistException;
 
     //TODO: add meaningful getters: experimentees, grading tasks, graders, stages ... (anything that the creator might want to observe)
 }

@@ -18,6 +18,10 @@ public class InfoStage extends Stage {
     public InfoStage() {
     }
 
+    public InfoStage(String info) {
+        this.info = info;
+    }
+
     public InfoStage(String info, Experiment experiment) {
         super(experiment);
         this.info = info;
