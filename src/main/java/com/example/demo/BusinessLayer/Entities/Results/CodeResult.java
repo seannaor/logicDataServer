@@ -4,13 +4,14 @@ package com.example.demo.BusinessLayer.Entities.Results;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "code_results")
-public class CodeResult {
+public class CodeResult implements ResultWrapper {
 
     @Embeddable
     public static class CodeResultID implements Serializable {
@@ -59,6 +60,8 @@ public class CodeResult {
         return codeResultID;
     }
 
+    public Stage.StageID getCodeStageID(){return codeStage.getStageID()}
+
     public String getUserCode() {
         return userCode;
     }
@@ -73,5 +76,12 @@ public class CodeResult {
 
     public void setCodeStage(CodeStage codeStage) {
         this.codeStage = codeStage;
+    }
+
+    @Override
+    public JSONObject getAsJson() {
+        JSONObject JResult = codeStage.getJson();
+        JResult.put("user code",userCode);
+        return JResult;
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Question;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -80,5 +81,9 @@ public class Answer {
 
     public void setNumeralAnswer(Integer numeralAnswer) {
         this.numeralAnswer = numeralAnswer;
+    }
+
+    public Stage.StageID getStageID(){
+        return this.question.getStageID();
     }
 }

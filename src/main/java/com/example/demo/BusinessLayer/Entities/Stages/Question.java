@@ -74,6 +74,10 @@ public class Question {
         this.questionJson = questionJson;
     }
 
+    public Stage.StageID getStageID(){
+        return this.questionnaireStage.getStageID();
+    }
+
     public Answer answer(Object data) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
         Answer ans = new Answer();

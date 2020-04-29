@@ -2,10 +2,15 @@ package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -18,7 +23,8 @@ public class GraderToGradingTask {
         @Column(name = "grader_email")
         private String graderEmail;
 
-        public GraderToGradingTaskID() { }
+        public GraderToGradingTaskID() {
+        }
 
         public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
             this.gradingTaskId = gradingTaskId;
@@ -48,11 +54,12 @@ public class GraderToGradingTask {
     )
     private List<Participant> participants;
 
-    public GraderToGradingTask() { }
+    public GraderToGradingTask() {
+    }
 
-    public GraderToGradingTask(GradingTask gradingTask,Grader grader) {
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader) {
         this.gradingTask = gradingTask;
-        this.grader=grader;
+        this.grader = grader;
     }
 
     public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, List<Participant> participants) {
@@ -76,7 +83,8 @@ public class GraderToGradingTask {
     }
 
     public void addParticipant(Participant p) throws ExistException {
-        if(participants.contains(p)) throw new ExistException("user with id "+p.getParticipantId(),this.grader.getGraderEmail()+" participants");
+        if (participants.contains(p))
+            throw new ExistException("user with id " + p.getParticipantId(), this.grader.getGraderEmail() + " participants");
         participants.add(p);
     }
 
@@ -90,5 +98,22 @@ public class GraderToGradingTask {
 
     public String getGraderAccessCode() {
         return graderAccessCode;
+    }
+
+    public List<ResultWrapper> getExpeeRes(int parti_id) throws NotExistException, FormatException {
+        Participant p = getParti(parti_id);
+        List<ResultWrapper> ret = new LinkedList<>();
+        for (Stage visible : gradingTask.getStages()) {
+            ret.add(p.getResultsOf(visible));
+        }
+        return ret;
+    }
+
+    private Participant getParti(int parti_id) throws NotExistException {
+        for (Participant p : participants) {
+            if (p.getParticipantId() == parti_id)
+                return p;
+        }
+        throw new NotExistException("participant", "" + parti_id);
     }
 }

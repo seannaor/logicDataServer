@@ -18,7 +18,8 @@ public class Requirement {
         private int requirementIndex;
         private Stage.StageID stageID;
 
-        public RequirementID() { }
+        public RequirementID() {
+        }
 
         public RequirementID(int requirementIndex, Stage.StageID stageID) {
             this.requirementIndex = requirementIndex;
@@ -43,7 +44,8 @@ public class Requirement {
     @ManyToMany(mappedBy = "requirements")
     private List<RequirementTag> requirementTags = new ArrayList<>();
 
-    public Requirement() { }
+    public Requirement() {
+    }
 
     public Requirement(CodeStage codeStage, String text) {
         this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID());
@@ -71,15 +73,19 @@ public class Requirement {
         return text;
     }
 
-    public int getIndex(){
+    public int getIndex() {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data){
+    public RequirementTag tag(JSONObject data) {
         RequirementTag tag = new RequirementTag();
         tag.setRequirement(this);
         tag.setStart((int) data.get("start_loc"));
         tag.setLength((int) data.get("length"));
         return tag;
+    }
+
+    public Stage.StageID getStageID() {
+        return this.codeStage.getStageID();
     }
 }

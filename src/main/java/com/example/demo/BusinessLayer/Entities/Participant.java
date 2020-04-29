@@ -1,12 +1,11 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.*;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -43,8 +42,8 @@ public class Participant {
     public Participant(Experiment experiment) {
         this.experiment = experiment;
         experiment.addParticipant(this);
-        isDone=false;
-        currStage=0;
+        isDone = false;
+        currStage = 0;
         this.answers = new ArrayList<>();
         this.codeResults = new ArrayList<>();
         this.requirementTags = new ArrayList<>();
@@ -79,9 +78,13 @@ public class Participant {
             isDone = true;
     }
 
+    public boolean isDone() {
+        return isDone;
+    }
+
     public void fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
         Stage curr = getCurrStage();
-        String type = (String) data.getOrDefault("stageType","no stage stated");
+        String type = (String) data.getOrDefault("stageType", "no stage stated");
 
         switch (type) {
             case "code":
@@ -111,4 +114,42 @@ public class Participant {
         }
     }
 
+    public ResultWrapper getResultsOf(Stage visible) throws FormatException, NotExistException {
+        switch (visible.getType()) {
+            case "code":
+                return getCodeIn(visible.getStageID());
+            case "questionnaire":
+                return getAnsIn(visible.getStageID());
+            case "tagging":
+                return getTagsIn(visible.getStageID());
+            default:
+                throw new FormatException("code|questionnaire|tagging", visible.getType());
+        }
+    }
+
+    private ResultWrapper getCodeIn(Stage.StageID id) throws NotExistException {
+        for (CodeResult code : codeResults) {
+            if (code.getCodeStageID().equals(id))
+                return code;
+        }
+        throw new NotExistException("stage", id.toString());
+    }
+
+    private ResultWrapper getAnsIn(Stage.StageID id) {
+        AnswersWrapper answers = new AnswersWrapper();
+        for (Answer ans : this.answers) {
+            if (ans.getStageID().equals(id))
+                answers.addAns(ans);
+        }
+        return answers;
+    }
+
+    private ResultWrapper getTagsIn(Stage.StageID id) {
+        TagsWrapper tags = new TagsWrapper();
+        for (RequirementTag tag : requirementTags) {
+            if (tag.getStageID().equals(id))
+                tags.addTag(tag);
+        }
+        return tags;
+    }
 }
