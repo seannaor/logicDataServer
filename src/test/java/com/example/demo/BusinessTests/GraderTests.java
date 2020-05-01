@@ -50,7 +50,7 @@ public class GraderTests {
         cache.addGrader(grader);
 
         //fuck this grading task, TODO: build a real one
-        GradingTask gt= new GradingTask(experiment,experiment,experiment);
+        GradingTask gt= new GradingTask("test", experiment,experiment,experiment);
         cache.addGraderToGradingTask(gt,grader,"accessCode");
     }
 

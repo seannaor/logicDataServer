@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
@@ -23,6 +24,9 @@ public class DataCache {
     private List<Grader> graders;
     private List<GradingTask> gradingTasks;
     private List<GraderToGradingTask> graderToGradingTasks;
+    private List<GradersGTToParticipants> gradersGTToParticipants;
+    private List<ManagementUserToExperiment> managementUserToExperiments;
+
 
     private DataCache() {
         managers = new ArrayList<>();
@@ -30,6 +34,8 @@ public class DataCache {
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();
         graderToGradingTasks = new ArrayList<>();
+        gradersGTToParticipants = new ArrayList<>();
+        managementUserToExperiments = new ArrayList<>();
     }
 
     public static DataCache getInstance() {
@@ -114,6 +120,24 @@ public class DataCache {
         return ret;
     }
 
+    public GraderToGradingTask getGraderToGradingTask(Grader grader, GradingTask gradingTask) throws NotExistException {
+        for (GraderToGradingTask g : graderToGradingTasks) {
+            if (g.getGraderToGradingTaskID().getGraderEmail().equals(grader.getGraderEmail()) && g.getGraderToGradingTaskID().getGradingTaskId()==gradingTask.getGradingTaskId())
+                return g;
+        }
+        throw new NotExistException("grading task", ""+gradingTask.getGradingTaskId());
+    }
+
+    public GradersGTToParticipants getGradersGTToParticipants(GraderToGradingTask graderToGradingTask, Participant participant) {
+        for (GradersGTToParticipants g : gradersGTToParticipants) {
+            if (g.getGraderToGradingTask().equals(graderToGradingTask) && g.getParticipant().equals(participant)) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+
     //=======================================================================
 
     public void addManager(ManagementUser manager) {
@@ -133,20 +157,25 @@ public class DataCache {
     }
 
     public void addGraderToGradingTask(GradingTask gt, Grader g, String code) {
-        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g, code, new ArrayList<>());
+        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g, code);
         graderToGradingTasks.add(gtgt);
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 
-    public void addExpeeToGradingTask(GradingTask gt, Grader grader, Participant participant) throws ExistException {
+    public void addExpeeToGradingTask(GradingTask gt, Grader grader, GradersGTToParticipants participantInGradingTask) throws ExistException {
         for (GraderToGradingTask gtgt : graderToGradingTasks) {
             if (gtgt.getGrader().equals(grader) && gtgt.getGradingTask().equals(gt)) {
-                gtgt.addParticipant(participant);
+                gradersGTToParticipants.add(participantInGradingTask);
+
                 return;
             }
         }
         GraderToGradingTask gtgt = new GraderToGradingTask(gt, grader);
-        gtgt.addParticipant(participant);
+        gradersGTToParticipants.add(participantInGradingTask);
+    }
+
+    public void addManagementUserToExperiment(ManagementUserToExperiment m) {
+        managementUserToExperiments.add(m);
     }
     //=======================================================================
 

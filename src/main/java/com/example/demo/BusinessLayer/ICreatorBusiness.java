@@ -34,7 +34,7 @@ public interface ICreatorBusiness {
     String saveGradingTask(String researcherName, int expId, int taskId)throws NotExistException;
 
     //UC 1.3
-    void setAlliePermissions(String researcherName, int expId, String allieMail, List<String> permissions)throws NotExistException;
+    void setAlliePermissions(String researcherName, int expId, String allieMail, String allieRole, List<String> permissions)throws NotExistException;
 
     void addGrader(String researcherName, int expId, int taskId, String graderMail)throws NotExistException;
 

@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
@@ -38,10 +39,9 @@ public class CreatorBusiness implements ICreatorBusiness {
             throw new ExistException(expName);
         } catch (NotExistException ignore) {}
 
-        int id = c.getExperiments().size()+1;
+        int id = c.getManagementUserToExperiments().size()+1;
         Experiment exp = new Experiment(expName, c);
         exp.setExperimentId(id);
-        c.addExperiment(exp);
         return id;
     }
 
@@ -79,7 +79,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         Experiment exp = c.getExperiment(expId);
         Experiment personal = buildExperiment(personalExp, gradTaskName+"/personal", c);
         Experiment forExpee = buildExperiment(ExpeeExp, gradTaskName+"/forExpee", c);
-        GradingTask gt  = new GradingTask(exp, personal, forExpee);
+        GradingTask gt  = new GradingTask(gradTaskName, exp, personal, forExpee);
         gt.setStagesByIdx(stagesToCheck);
         int id = cache.getAllGradingTasks(researcherName, expId).size();
         gt.setGradingTaskId(id);
@@ -116,7 +116,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void setAlliePermissions(String researcherName, int expId, String allieMail, List<String> permissions) throws NotExistException {
+    public void setAlliePermissions(String researcherName, int expId, String allieMail, String allieRole, List<String> permissions) throws NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
 
@@ -128,7 +128,9 @@ public class CreatorBusiness implements ICreatorBusiness {
             ally.setUserEmail(allieMail);
             cache.addManager(ally);
         }
-        ally.addExperiment(exp);
+        ManagementUserToExperiment m = new ManagementUserToExperiment(ally, exp, allieRole);
+        cache.addManagementUserToExperiment(m);
+        ally.addManagementUserToExperiment(m);
 
         List<Permission> pers = new ArrayList<>();
         for (String per : permissions) {
@@ -163,20 +165,27 @@ public class CreatorBusiness implements ICreatorBusiness {
         Grader grader = cache.getGraderByEMail(graderMail);
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Participant participant = cache.getExpeeByMailAndExp(expeeMail, expId).getParticipant();
-        cache.addExpeeToGradingTask(gt, grader, participant);
+        GradersGTToParticipants g = cache.getGradersGTToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
+        if(g != null) { //this participant is already in the graderToGraderTask
+            throw new ExistException("user with id "+participant.getParticipantId(),graderMail+" participants");
+        }
+        else {
+            g = new GradersGTToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
+        }
+
+        cache.addExpeeToGradingTask(gt, grader, g);
         //TODO: fix?
     }
 
     private static Experiment buildExperiment(List<JSONObject> stages, String expName, ManagementUser creator) throws FormatException {
         Experiment exp = new Experiment(expName, creator);
-        int id = creator.getExperiments().size();
+        int id = creator.getManagementUserToExperiments().size();
         exp.setExperimentId(id);
-        creator.addExperiment(exp);
         for (JSONObject jStage : stages) {
             try{
                 exp.addStage(Stage.parseStage(jStage));
             }catch (FormatException e){
-                creator.removeExp(expName);
+                creator.removeManagementUserToExperimentById(exp);
                 throw e;
             }
         }

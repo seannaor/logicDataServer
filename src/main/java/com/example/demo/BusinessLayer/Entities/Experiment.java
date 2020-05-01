@@ -15,8 +15,8 @@ public class Experiment {
     private int experimentId;
     @Column(name = "experiment_name")
     private String experimentName;
-    @ManyToMany(mappedBy = "experiments")
-    private List<ManagementUser> managementUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "experiment")
+    private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
@@ -31,7 +31,8 @@ public class Experiment {
 
     public Experiment(String experimentName,ManagementUser creator) {
         this.experimentName = experimentName;
-        this.managementUsers.add(creator);
+        ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
+        this.managementUserToExperiments.add(m);
     }
 
     public int getExperimentId() {
@@ -50,12 +51,12 @@ public class Experiment {
         this.experimentName = experiment_name;
     }
 
-    public List<ManagementUser> getManagementUsers() {
-        return managementUsers;
+    public List<ManagementUserToExperiment> getManagementUserToExperiments() {
+        return managementUserToExperiments;
     }
 
-    public void setManagementUsers(List<ManagementUser> managementUsers) {
-        this.managementUsers = managementUsers;
+    public void setManagementUserToExperiments(List<ManagementUserToExperiment> managementUserToExperiments) {
+        this.managementUserToExperiments = managementUserToExperiments;
     }
 
     public List<Participant> getParticipants() {
@@ -85,8 +86,18 @@ public class Experiment {
         stages.add(stage);
     }
 
-    public void addManagementUser(ManagementUser mu){
-        this.managementUsers.add(mu);
+    public void addManagementUserToExperiment(ManagementUserToExperiment m){
+        if(!this.managementUserToExperiments.contains(m))
+            this.managementUserToExperiments.add(m);
+    }
+
+    public boolean containsManger(ManagementUser manger) {
+        for(ManagementUserToExperiment m : managementUserToExperiments) {
+            if(m.getManagementUser().equals(manger)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

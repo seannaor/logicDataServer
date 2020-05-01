@@ -60,12 +60,12 @@ public class ManagerTests {
         List<JSONObject> stages = Utils.buildStages();
 
         //new experiment should pass
-        int expNum = manager.getExperiments().size();
+        int expNum = manager.getManagementUserToExperiments().size();
         try {
             creatorBusiness.addExperiment(manager.getBguUsername(), expName, stages);
-            Assert.assertEquals(manager.getExperiments().size(), expNum + 1);
+            Assert.assertEquals(manager.getManagementUserToExperiments().size(), expNum + 1);
             Experiment exp = manager.getExperimentByName(expName);
-            Assert.assertTrue(exp.getManagementUsers().contains(manager));
+            Assert.assertTrue(exp.containsManger(manager));
         } catch (Exception e) {
             Assert.fail();
         }
@@ -94,12 +94,12 @@ public class ManagerTests {
         String expName = "testExp";
 
         //new experiment should pass
-        int expNum = manager.getExperiments().size();
+        int expNum = manager.getManagementUserToExperiments().size();
         try {
             creatorBusiness.createExperiment(manager.getBguUsername(), expName);
-            Assert.assertEquals(manager.getExperiments().size(), expNum + 1);
+            Assert.assertEquals(manager.getManagementUserToExperiments().size(), expNum + 1);
             Experiment exp = manager.getExperimentByName(expName);
-            Assert.assertTrue(exp.getManagementUsers().contains(manager));
+            Assert.assertTrue(exp.containsManger(manager));
             Assert.assertEquals(exp.getStages().size(), 0);
         } catch (Exception e) {
             Assert.fail();
@@ -320,14 +320,14 @@ public class ManagerTests {
         String ally_mail = "fucky@post.bgu.ac.il";
         try {
             //not exist manager
-            creatorBusiness.setAlliePermissions("not exist", experiment.getExperimentId(), ally_mail, List.of("PERMISSION"));
+            creatorBusiness.setAlliePermissions("not exist", experiment.getExperimentId(), ally_mail, "view", List.of("PERMISSION"));
             Assert.fail();
         } catch (NotExistException ignored) {
         }
 
         try {
             //not exist experiment
-            creatorBusiness.setAlliePermissions(manager.getBguUsername(), -1, ally_mail, List.of("PERMISSION"));
+            creatorBusiness.setAlliePermissions(manager.getBguUsername(), -1, ally_mail, "edit", List.of("PERMISSION"));
             Assert.fail();
         } catch (NotExistException ignored) {
         }
@@ -341,10 +341,10 @@ public class ManagerTests {
         }
 
         try {
-            creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, List.of("PERMISSION"));
+            creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, "view", List.of("PERMISSION"));
             Assert.assertEquals(cache.getManagerByEMail(ally_mail).getPermissions().size(), 1);
 
-            creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, List.of("PERMISSION", "ADMIN?"));
+            creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, "edit", List.of("PERMISSION", "ADMIN?"));
             Assert.assertEquals(cache.getManagerByEMail(ally_mail).getPermissions().size(), 2);
         } catch (NotExistException e) {
             Assert.fail();

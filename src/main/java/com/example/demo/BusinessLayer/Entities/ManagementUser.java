@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
@@ -25,13 +24,8 @@ public class ManagementUser {
     )
     private List<Permission> permissions = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "management_users_to_experiments",
-            joinColumns = {@JoinColumn(name = "bgu_username")},
-            inverseJoinColumns = {@JoinColumn(name = "experiment_id")}
-    )
-    private List<Experiment> experiments = new ArrayList<>();
+    @OneToMany(mappedBy = "managementUser")
+    private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
 
     public ManagementUser(String bguUsername, String bguPassword, String userEmail) {
         this.bguUsername = bguUsername;
@@ -74,45 +68,64 @@ public class ManagementUser {
         this.permissions = permissions;
     }
 
-    public List<Experiment> getExperiments() {
-        return experiments;
+    public List<ManagementUserToExperiment> getManagementUserToExperiments() {
+        return managementUserToExperiments;
     }
 
-    public void setExperiments(List<Experiment> experiments) {
-        this.experiments = experiments;
+    public void setManagementUserToExperiments(List<ManagementUserToExperiment> managementUserToExperiments) {
+        this.managementUserToExperiments = managementUserToExperiments;
     }
 
     //======================= end of setters and getters =======================
 
-    public Experiment getExperiment(int id) throws NotExistException {
-        for (Experiment exp : experiments) {
-            if (exp.getExperimentId() == id) return exp;
+    public Experiment getExperiment(int expId) throws NotExistException{
+        for (ManagementUserToExperiment m : this.managementUserToExperiments) {
+            if(m.getExperiment().getExperimentId() == expId) {
+                return m.getExperiment();
+            }
         }
-        throw new NotExistException("experiment",String.valueOf(id));
+        throw new NotExistException("experiment",String.valueOf(expId));
     }
 
-    public Experiment getExperimentByName(String name) throws NotExistException {
-        for (Experiment exp : experiments) {
-            if (exp.getExperimentName().equals(name)) return exp;
+    public Experiment getExperimentByName(String expName) throws NotExistException{
+        for (ManagementUserToExperiment m : this.managementUserToExperiments) {
+            if(m.getExperiment().getExperimentName() == expName) {
+                return m.getExperiment();
+            }
         }
-        throw new NotExistException("experiment",name);
+        throw new NotExistException("experiment",String.valueOf(expName));
     }
 
-    public void addExperiment(Experiment exp) {
+    public ManagementUserToExperiment getManagementUserToExperiment(ManagementUserToExperiment managementUserToExperiment) throws NotExistException {
+        for (ManagementUserToExperiment m : managementUserToExperiments) {
+            if (m.equals(managementUserToExperiment))
+                return m;
+        }
+        throw new NotExistException("managementUserToExperiment",String.valueOf(managementUserToExperiment));
+    }
+
+    public void addManagementUserToExperiment(ManagementUserToExperiment m) {
         try{
-            getExperiment(exp.getExperimentId());
+            getManagementUserToExperiment(m);
             return;
         } catch (NotExistException ignore) {
-            experiments.add(exp);
-            exp.addManagementUser(this);
+            managementUserToExperiments.add(m);
+            m.getExperiment().addManagementUserToExperiment(m);
         }
     }
 
-    public void removeExp(String expName) {
-        Experiment toRemove = null;
-        for (Experiment exp : experiments)
-            if (exp.getExperimentName().equals(expName)) {
-                experiments.remove(exp);
+    public void removeManagementUserToExperimentById(Experiment e) {
+        for (ManagementUserToExperiment m : managementUserToExperiments)
+            if (m.getManagementUser().equals(this) && m.getExperiment().equals(e)) {
+                managementUserToExperiments.remove(m);
+                break;
+            }
+    }
+
+    public void removeManagementUserToExperiment(ManagementUserToExperiment managementUserToExperiment) {
+        for (ManagementUserToExperiment m : managementUserToExperiments)
+            if (m.equals(managementUserToExperiment)) {
+                managementUserToExperiments.remove(m);
                 break;
             }
     }

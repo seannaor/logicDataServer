@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
@@ -62,6 +63,10 @@ class PersistenceTests {
 	GradingTaskRep gradingTaskRep;
 	@Autowired
 	GraderToGradingTaskRep graderToGradingTaskRep;
+	@Autowired
+	GradersGTToParticipantsRep gradersGTToParticipantsRep;
+	@Autowired
+	ManagementUserToExperimentRep managementUserToExperimentRep;
 
 	@BeforeEach
 	void clean() {
@@ -82,7 +87,9 @@ class PersistenceTests {
 				requirementRep,
 				requirementTagRep,
 				gradingTaskRep,
-				graderToGradingTaskRep
+				graderToGradingTaskRep,
+				gradersGTToParticipantsRep,
+				managementUserToExperimentRep
 		};
 		for (JpaRepository rep : reps)
 			rep.deleteAll();
@@ -165,80 +172,83 @@ class PersistenceTests {
 		assertEquals(experimenteeRep.count(), 0);
 	}
 
-//	@Test
-//	@Transactional
-//	void gradersAndGradingTasksCRUDTest() {
-//		Experiment e = new Experiment("hi");
-//		experimentRep.save(e);
-//		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
-//		Participant pOfExpee1 = new Participant(e);
-//		expee1.setParticipant(pOfExpee1);
-//		participantRep.save(pOfExpee1);
-//		experimenteeRep.save(expee1);
-//		Experimentee expee2 = new Experimentee("aaa", "b@b.com");
-//		Participant pOfExpee2 = new Participant(e);
-//		expee2.setParticipant(pOfExpee2);
-//		participantRep.save(pOfExpee2);
-//		experimenteeRep.save(expee2);
-//		Participant pOfGrader1 = new Participant(e);
-//		participantRep.save(pOfGrader1);
-//		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
-//		graderRep.save(g1);
-//		Participant pOfGrader2 = new Participant(e);
-//		participantRep.save(pOfGrader2);
-//		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
-//		graderRep.save(g2);
-//		assertEquals(graderRep.count(), 2);
-//		assertEquals(graderRep.findById(g1.getGraderEmail()).orElse(null).getGraderEmail(), "mosh@gmail.com");
-//		e.addParticipant(pOfExpee1);
-//		e.addParticipant(pOfExpee2);
-//		e.addParticipant(pOfGrader1);
-//		e.addParticipant(pOfGrader2);
-//		InfoStage infoStage1 = new InfoStage("hi", e);
-//		stageRep.save(infoStage1);
-//		e.addStage(infoStage1);
-//		experimentRep.save(e);
-//		InfoStage infoStage2 = new InfoStage("bye", e);
-//		stageRep.save(infoStage2);
-//		e.addStage(infoStage2);
-//		experimentRep.save(e);
-//		assertEquals(stageRep.count(), 2);
-//		Experiment baseExp = new Experiment("baseExp");
-//		experimentRep.save(baseExp);
-//		List<Stage> stagesForGT1 = new ArrayList<>();
-//		stagesForGT1.add(infoStage1);
-// 		GradingTask gt1 = new GradingTask(e, e, e, stagesForGT1);
-//		gradingTaskRep.save(gt1);
-//		assertEquals(gradingTaskRep.count(), 1);
-//		List<Stage> stagesForGT2 = new ArrayList<>();
-//		stagesForGT2.add(infoStage2);
-//		GradingTask gt2 = new GradingTask(e, e, e, stagesForGT2);
-//		gradingTaskRep.save(gt2);
-//		assertEquals(gradingTaskRep.count(), 2);
-//		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getStages().size(), 1);
-//		List<Participant> participantsFor1 = new ArrayList<>();
-//		List<Participant> participantsFor2 = new ArrayList<>();
-//		participantsFor1.add(pOfExpee1);
-//		participantsFor2.add(pOfExpee2);
-//		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1, "1", participantsFor1);
-//		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2, "2", participantsFor2);
-//		graderToGradingTaskRep.save(graderToGradingTask1);
-//		assertEquals(graderToGradingTaskRep.count(), 1);
-//		graderToGradingTaskRep.save(graderToGradingTask2);
-//		assertEquals(graderToGradingTaskRep.count(), 2);
-//		g1.assignGradingTasks(graderToGradingTask1);
-//		g2.assignGradingTasks(graderToGradingTask2);
-//		graderRep.save(g1);
-//		graderRep.save(g2);
-//		assertEquals(graderRep.findById(g1.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
-//		assertEquals(graderRep.findById(g2.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
-//		gt1.addAssignedGradingTasks(graderToGradingTask1);
-//		gt2.addAssignedGradingTasks(graderToGradingTask2);
-//		gradingTaskRep.save(gt1);
-//		gradingTaskRep.save(gt2);
-//		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
-//		assertEquals(gradingTaskRep.findById(gt2.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
-//	}
+	@Test
+	@Transactional
+	void gradersAndGradingTasksCRUDTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		experimenteesForGradingTasks(e);
+		Participant pOfGrader1 = new Participant(e);
+		participantRep.save(pOfGrader1);
+		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
+		graderRep.save(g1);
+		Participant pOfGrader2 = new Participant(e);
+		participantRep.save(pOfGrader2);
+		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
+		graderRep.save(g2);
+		assertEquals(graderRep.count(), 2);
+		createStagesForGradingTasks(e);
+		assertEquals(stageRep.count(), 2);
+		Experiment gradingExp = new Experiment("gradingExp");
+		experimentRep.save(gradingExp);
+		List<Stage> stagesForGT1 = new ArrayList<>();
+		stagesForGT1.add(stageRep.findAll().get(0));
+ 		GradingTask gt1 = new GradingTask("gt1", e, null, gradingExp, stagesForGT1);
+		gradingTaskRep.save(gt1);
+		assertEquals(gradingTaskRep.count(), 1);
+		List<Stage> stagesForGT2 = new ArrayList<>();
+		stagesForGT2.add(stageRep.findAll().get(0));
+		GradingTask gt2 = new GradingTask("gt2", e, null, gradingExp, stagesForGT2);
+		gradingTaskRep.save(gt2);
+		assertEquals(gradingTaskRep.count(), 2);
+		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getStages().size(), 1);
+		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1, "1");
+		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2, "2");
+		graderToGradingTaskRep.save(graderToGradingTask1);
+		assertEquals(graderToGradingTaskRep.count(), 1);
+		graderToGradingTaskRep.save(graderToGradingTask2);
+		assertEquals(graderToGradingTaskRep.count(), 2);
+		GradersGTToParticipants participant1Gt1 = new GradersGTToParticipants(graderToGradingTask1, participantRep.findAll().get(0));
+		GradersGTToParticipants participant1Gt2 = new GradersGTToParticipants(graderToGradingTask2, participantRep.findAll().get(1));
+		gradersGTToParticipantsRep.save(participant1Gt1);
+		gradersGTToParticipantsRep.save(participant1Gt2);
+		assertEquals(gradersGTToParticipantsRep.count(), 2);
+		graderToGradingTaskRep.save(graderToGradingTask1);
+		graderToGradingTaskRep.save(graderToGradingTask2);
+		graderRep.save(g1);
+		graderRep.save(g2);
+		assertEquals(graderRep.findById(g1.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
+		assertEquals(graderRep.findById(g2.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
+		gradingTaskRep.save(gt1);
+		gradingTaskRep.save(gt2);
+		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
+		assertEquals(gradingTaskRep.findById(gt2.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
+		participant1Gt1.setGradingState(true);
+		gradersGTToParticipantsRep.save(participant1Gt1);
+		assertEquals(gradersGTToParticipantsRep.findAll().get(0).getGradingState(), true);
+	}
+
+	private void createStagesForGradingTasks(Experiment e) {
+		InfoStage infoStage1 = new InfoStage("hi", e);
+		stageRep.save(infoStage1);
+		experimentRep.save(e);
+		InfoStage infoStage2 = new InfoStage("bye", e);
+		stageRep.save(infoStage2);
+		experimentRep.save(e);
+	}
+
+	private void experimenteesForGradingTasks(Experiment e) {
+		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
+		Participant pOfExpee1 = new Participant(e);
+		expee1.setParticipant(pOfExpee1);
+		participantRep.save(pOfExpee1);
+		experimenteeRep.save(expee1);
+		Experimentee expee2 = new Experimentee("aaa", "b@b.com");
+		Participant pOfExpee2 = new Participant(e);
+		expee2.setParticipant(pOfExpee2);
+		participantRep.save(pOfExpee2);
+		experimenteeRep.save(expee2);
+	}
 
 	@Test
 	void stagesCRUDTest() {
@@ -433,10 +443,11 @@ class PersistenceTests {
 		addExperiments();
 		assertEquals(experimentRep.count(), 2);
 		addManagementUsersToExperiments();
-		assertEquals(managementUserRep.findAll().get(0).getExperiments().size(), 1);
-		assertEquals(managementUserRep.findAll().get(1).getExperiments().size(), 1);
-		assertEquals(experimentRep.findAll().get(0).getManagementUsers().size(), 1);
-		assertEquals(experimentRep.findAll().get(1).getManagementUsers().size(), 1);
+		assertEquals(managementUserToExperimentRep.count(), 2);
+		assertEquals(managementUserRep.findAll().get(0).getManagementUserToExperiments().size(), 1);
+		assertEquals(managementUserRep.findAll().get(1).getManagementUserToExperiments().size(), 1);
+		assertEquals(experimentRep.findAll().get(0).getManagementUserToExperiments().size(), 1);
+		assertEquals(experimentRep.findAll().get(1).getManagementUserToExperiments().size(), 1);
 		addExperimenteesToExperiments();
 		assertEquals(experimenteeRep.count(), 3);
 		assertEquals(participantRep.count(), 3);
@@ -458,10 +469,12 @@ class PersistenceTests {
 	private void addManagementUsersToExperiments() {
 		ManagementUser u1 = new ManagementUser("User1", "123Pass", "u1@u1mail.com");
 		ManagementUser u2 = new ManagementUser("User2", "123Pass", "u2@u2mail.com");
-		u1.getExperiments().add(experimentRep.findAll().get(0));
-		u2.getExperiments().add(experimentRep.findAll().get(1));
-		experimentRep.findAll().get(0).getManagementUsers().add(u1);
-		experimentRep.findAll().get(1).getManagementUsers().add(u2);
+		managementUserRep.save(u1);
+		managementUserRep.save(u2);
+		ManagementUserToExperiment mU1 = new ManagementUserToExperiment(u1, experimentRep.findAll().get(0), "creator");
+		ManagementUserToExperiment mU2 = new ManagementUserToExperiment(u2, experimentRep.findAll().get(1), "creator");
+		managementUserToExperimentRep.save(mU1);
+		managementUserToExperimentRep.save(mU2);
 		managementUserRep.save(u1);
 		managementUserRep.save(u2);
 	}

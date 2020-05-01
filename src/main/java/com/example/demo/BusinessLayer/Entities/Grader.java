@@ -3,8 +3,8 @@ package com.example.demo.BusinessLayer.Entities;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "graders")
@@ -16,7 +16,7 @@ public class Grader {
     @JoinColumn(name = "participant_id")
     private Participant participant;
     @OneToMany(mappedBy = "grader")
-    private Set<GraderToGradingTask> assignedGradingTasks = new HashSet<>();
+    private List<GraderToGradingTask> assignedGradingTasks = new ArrayList<>();
 
     public Grader() { }
 
@@ -38,7 +38,7 @@ public class Grader {
         this.graderEmail = graderEmail;
     }
 
-    public Set<GraderToGradingTask> getAssignedGradingTasks() {
+    public List<GraderToGradingTask> getAssignedGradingTasks() {
         return assignedGradingTasks;
     }
 
