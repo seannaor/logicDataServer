@@ -18,6 +18,10 @@ public class InfoStage extends Stage {
     public InfoStage() {
     }
 
+    public InfoStage(String info) {
+        this.info = info;
+    }
+
     public InfoStage(String info, Experiment experiment) {
         super(experiment);
         this.info = info;
@@ -37,4 +41,12 @@ public class InfoStage extends Stage {
         jStage.put("info",info);
         return jStage;
     }
+
+    @Override
+    public String getType() {
+        return "info";
+    }
+
+    @Override
+    public void fillInfo(JSONObject data) {}
 }

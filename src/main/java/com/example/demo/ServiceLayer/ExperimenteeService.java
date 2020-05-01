@@ -5,40 +5,54 @@ import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.IExperimenteeBusiness;
 import org.json.simple.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
-public class ExperimenteeService implements IService {
+public class ExperimenteeService {
 
-    private IExperimenteeBusiness experimenteeBusiness = new ExperimenteeBusiness();
+    private IExperimenteeBusiness experimenteeBusiness;
+
+    public ExperimenteeService() {
+        this.experimenteeBusiness = new ExperimenteeBusiness();
+    }
 
     //UC 2.1 - Login
-    public Map<String,Object> beginParticipation(String accessCode){
-        return Map.of("response",experimenteeBusiness.beginParticipation(accessCode));
+    public Map<String, Object> beginParticipation(String accessCode) {
+
+        try {
+            Stage s = experimenteeBusiness.beginParticipation(accessCode);
+            return Map.of("response", "OK", "type", s.getType());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
     }
 
-    public Map<String,Object> getCurrentStage(String accessCode){
-        return Map.of("stage",experimenteeBusiness.getCurrentStage(accessCode));
+    public Map<String, Object> getCurrentStage(String accessCode) {
+        try {
+            Stage s = experimenteeBusiness.getCurrentStage(accessCode);
+            return Map.of("response", "OK", "stage", s.getJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
     }
 
-    public Map<String,Object> getNextStage(String accessCode){
-        return Map.of("stage",experimenteeBusiness.getNextStage(accessCode));
+    public Map<String, Object> getNextStage(String accessCode) {
+        try {
+            Stage s = experimenteeBusiness.getNextStage(accessCode);
+            return Map.of("response", "OK", "stage", s.getJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
     }
+
 
     //UC 2.2.*
-    public Map<String,Object> fillInStage(String accessCode, JSONObject data){
-        return Map.of("response",experimenteeBusiness.fillInStage(accessCode,data));
-    }
-
-    public Map<String,Object> requestProcessor(Map<String,Object> map) {
-        String op = (String) map.get("operation");
-        switch (op) {
-            case "beginParticipation":
-                return beginParticipation((String) map.get("code"));
-            case "fillInStage":
-                return fillInStage((String) map.get("code"), (JSONObject) map.get("data"));
-            default:
-                return Map.of("response","operation not found");
+    public Map<String, Object> fillInStage(String accessCode, JSONObject data) {
+        String res = "OK";
+        try {
+            experimenteeBusiness.fillInStage(accessCode, data);
+        } catch (Exception e) {
+            res = e.getMessage();
         }
+        return Map.of("response", res);
     }
 }

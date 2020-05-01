@@ -65,4 +65,20 @@ public class Answer {
         this.question = question;
         this.participant = participant;
     }
+
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public void setTextualAnswer(String textualAnswer) {
+        this.textualAnswer = textualAnswer;
+    }
+
+    public void setNumeralAnswer(Integer numeralAnswer) {
+        this.numeralAnswer = numeralAnswer;
+    }
 }

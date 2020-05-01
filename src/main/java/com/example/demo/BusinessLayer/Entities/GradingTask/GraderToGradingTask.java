@@ -1,10 +1,11 @@
 package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Grader;
-import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,14 @@ public class GraderToGradingTask {
             this.gradingTaskId = gradingTaskId;
             this.graderEmail = graderEmail;
         }
+
+        public int getGradingTaskId() {
+            return gradingTaskId;
+        }
+
+        public String getGraderEmail() {
+            return graderEmail;
+        }
     }
 
     @EmbeddedId
@@ -37,15 +46,8 @@ public class GraderToGradingTask {
     private Grader grader;
     @Column(name = "grader_access_code")
     private String graderAccessCode;
-    @ManyToMany
-    @JoinTable(
-            name = "graders_grading_tasks_to_participants",
-            joinColumns = {
-                    @JoinColumn(name = "grading_task_id", referencedColumnName = "grading_task_id"),
-                    @JoinColumn(name = "grader_email", referencedColumnName = "grader_email")},
-            inverseJoinColumns = {@JoinColumn(name = "participant_id", referencedColumnName = "participant_id")}
-    )
-    private List<Participant> participants;
+    @OneToMany(mappedBy = "graderToGradingTask")
+    private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
     public GraderToGradingTask() { }
 
@@ -54,28 +56,30 @@ public class GraderToGradingTask {
         this.grader=grader;
     }
 
-    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode, List<Participant> participants) {
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode) {
         this.graderToGradingTaskID = new GraderToGradingTaskID(gradingTask.getGradingTaskId(), grader.getGraderEmail());
         this.gradingTask = gradingTask;
         this.grader = grader;
         this.graderAccessCode = graderAccessCode;
-        this.participants = participants;
+        this.gradingTask.addAssignedGradingTasks(this);
+        this.grader.assignGradingTasks(this);
     }
 
     public GraderToGradingTaskID getGraderToGradingTaskID() {
         return graderToGradingTaskID;
     }
 
-    public List<Participant> getParticipants() {
-        return participants;
+    public List<GradersGTToParticipants> getGradersGTToParticipants() {
+        return this.gradersGTToParticipants;
     }
 
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
+    public void setGradersGTToParticipants(List<GradersGTToParticipants> gradersGTToParticipants) {
+        this.gradersGTToParticipants = gradersGTToParticipants;
     }
 
-    public void addParticipant(Participant p){
-        participants.add(p);
+    public void addGradersGTToParticipants(GradersGTToParticipants g) throws ExistException {
+        if(this.gradersGTToParticipants.contains(g)) throw new ExistException("user with id "+g.getParticipant().getParticipantId(),this.grader.getGraderEmail()+" participants");
+        this.gradersGTToParticipants.add(g);
     }
 
     public GradingTask getGradingTask() {

@@ -26,14 +26,14 @@ public class Utils {
         return researcher;
     }
 
-    private static JSONObject getStumpInfoStage(){
+    public static JSONObject getStumpInfoStage(){
         JSONObject info = new JSONObject();
         info.put("type", "info");
         info.put("info", "some information and stuff");
         return info;
     }
 
-    private static JSONObject getStumpCodeStage(){
+    public static JSONObject getStumpCodeStage(){
         JSONObject code = new JSONObject();
         code.put("type","code");
         code.put("description","design me a system that can create & manage & run experiments");
@@ -46,7 +46,7 @@ public class Utils {
         return code;
     }
 
-    private static JSONObject getStumpQuestionsStage(){
+    public static JSONObject getStumpQuestionsStage(){
         JSONObject questionnaire = new JSONObject();
         questionnaire.put("type", "questionnaire");
         List<JSONObject> questions = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Utils {
         questions.add(q1);
 
         JSONObject q2 = new JSONObject();
-        q2.put("type", "multi");
+        q2.put("type", "american");
         q2.put("question", "who?");
         List<String> answers = new ArrayList<>();
         answers.add("me");

@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 
 import javax.persistence.*;
 
@@ -57,11 +58,11 @@ public class Experimentee {
         this.participant = participant;
     }
 
-    public Stage getCurrStage() {
+    public Stage getCurrStage() throws ExpEndException {
         return participant.getCurrStage();
     }
 
-    public Stage getNextStage() {
+    public Stage getNextStage() throws ExpEndException {
         return participant.getNextStage();
     }
 }

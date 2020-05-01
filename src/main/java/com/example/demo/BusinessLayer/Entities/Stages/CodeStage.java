@@ -1,6 +1,8 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -24,11 +26,23 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
+    public CodeStage(String desc, String template, List<String> requirements) {
+        this.description=desc;
+        this.template=template;
+        this.requirements = new ArrayList<>();
+        for(String req:requirements){
+            this.requirements.add(new Requirement(this,req));
+        }
+    }
+
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
         super(experiment);
         this.description=desc;
         this.template=template;
-        //TODO: add requirements field - this.requirements = requirements;
+        this.requirements = new ArrayList<>();
+        for(String req:requirements){
+            this.requirements.add(new Requirement(this,req));
+        }
     }
 
     public CodeStage(Experiment experiment, int stage_index) {
@@ -46,6 +60,20 @@ public class CodeStage extends Stage {
         }
         jStage.put("requirements",jRequirements);
         return jStage;
+    }
+
+    @Override
+    public String getType() {
+        return "code";
+    }
+
+    @Override
+    public CodeResult fillCode(JSONObject data) throws FormatException {
+        CodeResult res = new CodeResult();
+        res.setCodeStage(this);
+        if(!data.containsKey("userCode")) throw new FormatException("user code");
+        res.setUserCode((String) data.get("userCode"));
+        return res;
     }
 
     public CodeStage(String desc, String template, Experiment experiment) {

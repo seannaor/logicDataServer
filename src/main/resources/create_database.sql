@@ -35,8 +35,9 @@ CREATE TABLE `experiments`
 
 CREATE TABLE `management_users_to_experiments`
 (
-    `bgu_username`  varchar(10) NOT NULL,
-    `experiment_id` int         NOT NULL,
+    `bgu_username`  varchar(10)  NOT NULL,
+    `experiment_id` int          NOT NULL,
+    `role`          varchar(100) NOT NULL,
     FOREIGN KEY (`bgu_username`) REFERENCES management_users (`bgu_username`),
     FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`),
     PRIMARY KEY (`bgu_username`, `experiment_id`)
@@ -80,6 +81,7 @@ CREATE TABLE `stages`
 CREATE TABLE `grading_tasks`
 (
     `grading_task_id`    int NOT NULL AUTO_INCREMENT,
+    `grading_task_name`  varchar(100) NOT NULL,
     `grading_experiment` int NOT NULL,
     `base_experiment`    int NOT NULL,
     `general_experiment` int,
@@ -91,11 +93,9 @@ CREATE TABLE `grading_tasks`
 
 CREATE TABLE `stages_of_grading_task`
 (
-    `grading_task_id` int NOT NULL,
-    `stage_index`     int NOT NULL,
-    `experiment_id`   int NOT NULL,
-    FOREIGN KEY (`grading_task_id`) REFERENCES grading_tasks (`grading_task_id`),
-    FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES stages (`stage_index`, `experiment_id`),
+    `grading_task_id` int NOT NULL REFERENCES grading_tasks (`grading_task_id`),
+    `stage_index`   int  NOT NULL REFERENCES stages (`stage_index`),
+    `experiment_id` int  NOT NULL REFERENCES stages (`experiment_id`),
     PRIMARY KEY (`grading_task_id`, `stage_index`, `experiment_id`)
 );
 

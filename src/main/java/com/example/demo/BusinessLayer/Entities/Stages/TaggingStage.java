@@ -1,9 +1,12 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +46,27 @@ public class TaggingStage extends Stage {
 
     public JSONObject getJson() {
         JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type","tag");
+        jStage.put("type","tagging");
         return jStage;
+    }
+
+    @Override
+    public String getType() {
+        return "tagging";
+    }
+
+    @Override
+    public List<RequirementTag> fillTagging(JSONObject data) throws FormatException {
+        List<RequirementTag> tags = new ArrayList<>();
+
+        for (Requirement r : codeStage.getRequirements()) {
+            int i = r.getIndex();
+            if (!data.containsKey(i))
+                throw new FormatException("tag for requirement #" + i);
+
+            tags.add(r.tag((JSONObject) data.get(i)));
+        }
+
+        return tags;
     }
 }

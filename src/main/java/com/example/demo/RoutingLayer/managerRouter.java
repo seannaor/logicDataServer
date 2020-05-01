@@ -16,7 +16,11 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 @RequestMapping("/manager")
 public class managerRouter {
 
-    private CreatorService creator = new CreatorService();
+    private CreatorService creator ;
+
+    public managerRouter() {
+        this.creator = new CreatorService();
+    }
 
     @RequestMapping("")
     public Map<String, Object> managerLogin(@RequestParam String username, @RequestParam String password) {

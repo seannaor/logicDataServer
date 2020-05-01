@@ -1,41 +1,48 @@
 package com.example.demo.BusinessLayer;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
 
-    private DataCache cache = DataCache.getInstance();
+    private DataCache cache;
 
-    @Override
-    public String beginParticipation(String accessCode) {
-        Experimentee expee = cache.getExpeeByCode(accessCode);
-        if(expee==null) return "code is not valid";
-        return (String) expee.getParticipant().getCurrStage().getJson().get("type");
+    public ExperimenteeBusiness() {
+        this.cache = DataCache.getInstance();
     }
 
     @Override
-    public String fillInStage(String accessCode, JSONObject data) {
-        Experimentee expee = cache.getExpeeByCode(accessCode);
-        if (expee == null) return "code is not valid";
-        Stage currStage = expee.getCurrStage();
-//        currStage.fillIn(data);
-        //fill in a stage at the experiment and return next stage
-        return "TODO: ExperimenteeBusiness.fillInStage";
+    public Stage beginParticipation(String accessCode) throws ExpEndException {
+        Experimentee expee;
+        try {
+            expee = cache.getExpeeByCode(accessCode);
+        } catch (CodeException ignore) {
+            return null;
+        }
+        return expee.getParticipant().getCurrStage();
     }
 
     @Override
-    public Stage getCurrentStage(String accessCode) {
+    public void fillInStage(String accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
+        Participant part = cache.getExpeeByCode(accessCode).getParticipant();
+        part.fillInStage(data);
+    }
+
+    @Override
+    public Stage getCurrentStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
     }
 
     @Override
-    public Stage getNextStage(String accessCode) {
+    public Stage getNextStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getNextStage();
     }
-
 }

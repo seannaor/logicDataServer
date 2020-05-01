@@ -2,6 +2,8 @@ package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ public class GradingTask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grading_task_id")
     private int gradingTaskId;
+    @Column(name = "grading_task_name")
+    private String gradingTaskName;
     @ManyToOne
     @JoinColumn(name = "base_experiment", referencedColumnName = "experiment_id")
     private Experiment baseExperiment;
@@ -29,7 +33,7 @@ public class GradingTask {
     @JoinTable(
             name = "stages_of_grading_task",
             joinColumns = {
-                    @JoinColumn(name = "grading_task_id", referencedColumnName = "grading_task_id"),
+                    @JoinColumn(name = "grading_task_id", referencedColumnName = "grading_task_id")
             },
             inverseJoinColumns = {
                     @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
@@ -39,17 +43,24 @@ public class GradingTask {
 
     public GradingTask() { }
 
-    public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment) {
+    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment) {
+        this.gradingTaskName = gradingTaskName;
         this.baseExperiment = baseExperiment;
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
+        this.stages =new ArrayList<>();
     }
 
-    public GradingTask(Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
+    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
+        this.gradingTaskName = gradingTaskName;
         this.baseExperiment = baseExperiment;
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
         this.stages = stages;
+    }
+
+    public void setGradingTaskId(int gradingTaskId) {
+        this.gradingTaskId = gradingTaskId;
     }
 
     public int getGradingTaskId() {
@@ -60,8 +71,18 @@ public class GradingTask {
         return stages;
     }
 
-    public void setStages(List<Stage> stages) {
-        this.stages = stages;
+    public void addStage(Stage stage) {
+        this.stages.add(stage);
+    }
+
+    public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException {
+        List<Stage> baseStages = this.baseExperiment.getStages();
+        List<Stage> newStages = new ArrayList<>();
+        for(int i:stages_idxs){
+            if(i>=baseStages.size()||i<0) throw new NotExistException("stage",""+i);
+            newStages.add(baseStages.get(i));
+        }
+        this.stages = newStages;
     }
 
     public List<GraderToGradingTask> getAssignedGradingTasks() {

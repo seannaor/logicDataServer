@@ -71,4 +71,16 @@ public class RequirementTag {
     public void setLength(int length) {
         this.length = length;
     }
+
+    public void setStart(int startCharLoc){
+        this.requirementTagID.startCharLoc=startCharLoc;
+    }
+
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+    }
+
+    public void setRequirement(Requirement requirement){
+        this.requirements.add(requirement);
+    }
 }

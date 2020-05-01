@@ -1,12 +1,19 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,13 +36,22 @@ public class Participant {
     private List<CodeResult> codeResults;
     @OneToMany(mappedBy = "participant")
     private List<RequirementTag> requirementTags;
+    @OneToMany(mappedBy = "participant")
+    private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
     public Participant() {
+//        isDone=false;
+//        currStage=0;
     }
 
     public Participant(Experiment experiment) {
         this.experiment = experiment;
         experiment.addParticipant(this);
+        isDone=false;
+        currStage=0;
+        this.answers = new ArrayList<>();
+        this.codeResults = new ArrayList<>();
+        this.requirementTags = new ArrayList<>();
     }
 
     public Experiment getExperiment() {
@@ -50,17 +66,57 @@ public class Participant {
         this.participantId = participantId;
     }
 
-    public Stage getCurrStage() {
+    public void addGradersGTToParticipants(GradersGTToParticipants g) {
+        if(!this.gradersGTToParticipants.contains(g))
+            this.gradersGTToParticipants.add(g);
+    }
+
+    public Stage getCurrStage() throws ExpEndException {
+        if (isDone) throw new ExpEndException();
         return experiment.getStages().get(currStage);
     }
 
-    public Stage getNextStage() {
-        currStage++;
-        if (currStage >= experiment.getStages().size()) {
-            isDone = true;
-            return null;
-        }
+    public Stage getNextStage() throws ExpEndException {
+        advanceStage();
+        if (isDone) throw new ExpEndException();
         return getCurrStage();
     }
 
+    private void advanceStage() {
+        currStage++;
+        if (currStage >= experiment.getStages().size())
+            isDone = true;
+    }
+
+    public void fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
+        Stage curr = getCurrStage();
+        String type = (String) data.getOrDefault("stageType","no stage stated");
+
+        switch (type) {
+            case "code":
+                CodeResult codeResult = curr.fillCode(data);
+                codeResult.setParticipant(this);
+                this.codeResults.add(codeResult);
+                return;
+            case "Tagging":
+                List<RequirementTag> requirementTags = curr.fillTagging(data);
+                for (RequirementTag tag : requirementTags)
+                    tag.setParticipant(this);
+
+                this.requirementTags.addAll(requirementTags);
+                return;
+            case "questionnaire":
+                List<Answer> answers = curr.fillQuestionnaire(data);
+                for (Answer ans : answers)
+                    ans.setParticipant(this);
+
+                this.answers.addAll(answers);
+                return;
+            case "info":
+                curr.fillInfo(data);
+                return;
+            default:
+                throw new FormatException(curr.getType(), type);
+        }
+    }
 }
