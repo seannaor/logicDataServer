@@ -23,6 +23,7 @@ public class ExperimenteeService {
             return Map.of("response", "OK", "type", s.getType());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
+
         }
     }
 

@@ -60,7 +60,7 @@ public class CodeResult implements ResultWrapper {
         return codeResultID;
     }
 
-    public Stage.StageID getCodeStageID(){return codeStage.getStageID()}
+    public Stage.StageID getCodeStageID(){return codeStage.getStageID();}
 
     public String getUserCode() {
         return userCode;

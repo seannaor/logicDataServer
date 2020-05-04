@@ -18,13 +18,8 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public Stage beginParticipation(String accessCode) throws ExpEndException {
-        Experimentee expee;
-        try {
-            expee = cache.getExpeeByCode(accessCode);
-        } catch (CodeException ignore) {
-            return null;
-        }
+    public Stage beginParticipation(String accessCode) throws ExpEndException, CodeException {
+        Experimentee expee =cache.getExpeeByCode(accessCode);
         return expee.getParticipant().getCurrStage();
     }
 
