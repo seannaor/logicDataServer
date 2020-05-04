@@ -1,7 +1,12 @@
 package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Grader;
+import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +23,8 @@ public class GraderToGradingTask {
         @Column(name = "grader_email")
         private String graderEmail;
 
-        public GraderToGradingTaskID() { }
+        public GraderToGradingTaskID() {
+        }
 
         public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
             this.gradingTaskId = gradingTaskId;
@@ -49,11 +55,12 @@ public class GraderToGradingTask {
     @OneToMany(mappedBy = "graderToGradingTask")
     private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
-    public GraderToGradingTask() { }
+    public GraderToGradingTask() {
+    }
 
-    public GraderToGradingTask(GradingTask gradingTask,Grader grader) {
+    public GraderToGradingTask(GradingTask gradingTask, Grader grader) {
         this.gradingTask = gradingTask;
-        this.grader=grader;
+        this.grader = grader;
     }
 
     public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode) {
@@ -78,8 +85,25 @@ public class GraderToGradingTask {
     }
 
     public void addGradersGTToParticipants(GradersGTToParticipants g) throws ExistException {
-        if(this.gradersGTToParticipants.contains(g)) throw new ExistException("user with id "+g.getParticipant().getParticipantId(),this.grader.getGraderEmail()+" participants");
+        if (this.gradersGTToParticipants.contains(g))
+            throw new ExistException("user with id " + g.getParticipant().getParticipantId(), this.grader.getGraderEmail() + " participants");
         this.gradersGTToParticipants.add(g);
+    }
+
+    public List<Participant> getParticipants() {
+        List<Participant> participants = new ArrayList<>();
+        for(GradersGTToParticipants graderToparticipant:gradersGTToParticipants){
+            participants.add(graderToparticipant.getParticipant());
+        }
+        return participants;
+    }
+
+    public void addParticipant(Participant p) throws ExistException {
+        //TODO: check with sean
+        GradersGTToParticipants graderToParticipant = new GradersGTToParticipants(this,p);
+        if (gradersGTToParticipants.contains(graderToParticipant))
+            throw new ExistException("user with id " + p.getParticipantId(), this.grader.getGraderEmail() + " participants");
+        gradersGTToParticipants.add(graderToParticipant);
     }
 
     public GradingTask getGradingTask() {
@@ -92,5 +116,22 @@ public class GraderToGradingTask {
 
     public String getGraderAccessCode() {
         return graderAccessCode;
+    }
+
+    public List<ResultWrapper> getExpeeRes(int parti_id) throws NotExistException, FormatException {
+        Participant p = getParti(parti_id);
+        List<ResultWrapper> ret = new ArrayList<>();
+        for (Stage visible : gradingTask.getStages()) {
+            ret.add(p.getResultsOf(visible));
+        }
+        return ret;
+    }
+
+    private Participant getParti(int parti_id) throws NotExistException {
+        for (GradersGTToParticipants graderToParticipant : gradersGTToParticipants) {
+            if (graderToParticipant.getParticipant().getParticipantId() == parti_id)
+                return graderToParticipant.getParticipant();
+        }
+        throw new NotExistException("participant", "" + parti_id);
     }
 }

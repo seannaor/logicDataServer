@@ -1,22 +1,15 @@
 package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.*;
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Experimentee;
-import com.example.demo.BusinessLayer.Entities.Grader;
+import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.ManagementUser;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.validation.constraints.AssertFalse;
 import java.util.List;
 
 @SpringBootTest
@@ -44,7 +37,6 @@ public class GraderTests {
         List<JSONObject> stages = Utils.buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         experiment = manager.getExperimentByName("The Experiment");
-        experiment.setExperimentId(1);
 
         grader = new Grader("grader@post.bgu.ac.il",experiment);
         cache.addGrader(grader);
@@ -61,4 +53,15 @@ public class GraderTests {
         Assert.assertTrue(graderBusiness.beginGrading("accessCode"));
     }
 
+    @Test
+    public void getParticipants(){
+        Assert.fail();
+        //TODO: implement
+    }
+
+    @Test
+    public void getParticipantResults(){
+        Assert.fail();
+        //TODO: implement
+    }
 }

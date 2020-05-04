@@ -3,6 +3,7 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -82,5 +83,9 @@ public class RequirementTag {
 
     public void setRequirement(Requirement requirement){
         this.requirements.add(requirement);
+    }
+
+    public Stage.StageID getStageID(){
+        return this.requirements.get(0).getStageID();
     }
 }

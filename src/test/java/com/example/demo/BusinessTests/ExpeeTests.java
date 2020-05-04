@@ -52,10 +52,8 @@ public class ExpeeTests {
         //not exist code should fail
         try {
             Stage first = experimenteeBusiness.beginParticipation("not exist");
-            if (first != null) Assert.fail();
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        } catch (CodeException ignore) {}
+        catch (ExpEndException e){Assert.fail();}
 
         // real code should get us the first stage - info
         try {

@@ -69,6 +69,12 @@ public class DataCache {
         throw new CodeException(code);
     }
 
+    public GraderToGradingTask getTaskByCode(String code) throws CodeException {
+        for (GraderToGradingTask g2gt : graderToGradingTasks)
+            if (g2gt.getGraderAccessCode().equals(code)) return g2gt;
+        throw new CodeException(code);
+    }
+
     public Experimentee getExpeeByEMail(String email) throws NotExistException {
         for (Experimentee expee : experimentees)
             if (expee.getExperimenteeEmail().equals(email)) return expee;

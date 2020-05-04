@@ -9,7 +9,7 @@ import org.json.simple.parser.ParseException;
 public interface IExperimenteeBusiness {
 
     //UC 2.1 - Login
-    Stage beginParticipation(String accessCode) throws ExpEndException;
+    Stage beginParticipation(String accessCode) throws ExpEndException, CodeException;
 
     //UC 2.2.*
     void fillInStage(String accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException;
