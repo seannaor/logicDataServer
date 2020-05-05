@@ -9,7 +9,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answers")
 public class Answer {
-
     @Embeddable
     public static class AnswerID implements Serializable {
         @Column(name = "participant_id")
@@ -80,5 +79,13 @@ public class Answer {
 
     public void setNumeralAnswer(Integer numeralAnswer) {
         this.numeralAnswer = numeralAnswer;
+    }
+
+    public Integer getNumeralAnswer() {
+        return numeralAnswer;
+    }
+
+    public String getTextualAnswer() {
+        return textualAnswer;
     }
 }
