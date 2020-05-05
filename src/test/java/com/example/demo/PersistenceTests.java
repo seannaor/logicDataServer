@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 @Sql({"/create_database.sql"})
 @SpringBootTest
 class PersistenceTests {
-
 	@Autowired
 	ExperimenteeRep experimenteeRep;
 	@Autowired
@@ -97,21 +96,44 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void managementUserCRUDTest() {
+	void addManagementUserTest() {
 		addManagementUsers();
 		assertEquals(managementUserRep.count(), 2);
+	}
+
+	@Test
+	@Transactional
+	void addManagementUserWithPermissionsTest() {
+		addManagementUsers();
 		addPermissionsToManagementUsers();
 		assertEquals(permissionRep.count(), 2);
 		assertEquals(managementUserRep.findAll().get(0).getPermissions().size(), 1);
+		assertEquals(managementUserRep.findAll().get(0).getPermissions().get(0).getPermissionName(), "Super Manager");
 		assertEquals(managementUserRep.findAll().get(1).getPermissions().size(), 1);
+		assertEquals(managementUserRep.findAll().get(1).getPermissions().get(0).getPermissionName(), "Noob");
 		assertEquals(permissionRep.findAll().get(0).getManagementUsers().size(), 1);
 		assertEquals(permissionRep.findAll().get(1).getManagementUsers().size(), 1);
+	}
+
+	@Test
+	@Transactional
+	void updateManagementUserTest() {
+		addManagementUsers();
+		assertEquals(managementUserRep.findById("User1").orElse(null).getUserEmail(), "u1@gmail.com");
+		assertEquals(managementUserRep.findById("User2").orElse(null).getUserEmail(), "User2@yahoo.com");
 		updateManagementUsers();
 		assertEquals(managementUserRep.findById("User1").orElse(null).getUserEmail(), "user1@gmail.com");
 		assertEquals(managementUserRep.findById("User2").orElse(null).getUserEmail(), "user2@gmail.com");
+	}
+
+	@Test
+	@Transactional
+	void deleteManagementUserTest() {
+		addManagementUsers();
 		deleteManagementUsers();
 		assertEquals(managementUserRep.count(), 1);
-		assertEquals(permissionRep.count(), 2);
+		managementUserRep.deleteAll();
+		assertEquals(managementUserRep.count(), 0);
 	}
 
 	private void addManagementUsers() {
@@ -148,9 +170,47 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void experimenteeCRUDTest() {
+	void addExpeesToExpTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
+		addExperimentees(e);
+		assertEquals(experimenteeRep.count(), 2);
+		assertEquals(participantRep.count(), 2);
+	}
+
+	@Test
+	@Transactional
+	void updateExpeesTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		addExperimentees(e);
+		Experimentee expee1 = experimenteeRep.findAll().get(0);
+		Experimentee expee2 = experimenteeRep.findAll().get(1);
+		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "a@a.com");
+		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "b@a.com");
+		expee1.setExperimenteeEmail("aa@aa.com");
+		expee2.setExperimenteeEmail("bb@bb.com");
+		experimenteeRep.save(expee1);
+		experimenteeRep.save(expee2);
+		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "aa@aa.com");
+		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "bb@bb.com");
+	}
+
+	@Test
+	@Transactional
+	void deleteExpeesTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		addExperimentees(e);
+		experimenteeRep.deleteById("123asd");
+		assertEquals(experimenteeRep.count(), 1);
+		assertEquals(experimenteeRep.findAll().get(0).getAccessCode(), "vxcf");
+		experimenteeRep.deleteAll();
+		assertEquals(experimenteeRep.count(), 0);
+	}
+
+
+	private void addExperimentees(Experiment e) {
 		Experimentee expee1 = new Experimentee("123asd", "a@a.com"),
 				expee2 = new Experimentee("vxcf", "b@a.com");
 		Participant p1 = new Participant(e),
@@ -161,53 +221,79 @@ class PersistenceTests {
 		participantRep.save(p2);
 		experimenteeRep.save(expee1);
 		experimenteeRep.save(expee2);
-		assertEquals(experimenteeRep.count(), 2);
-		expee1.setExperimenteeEmail("aa@aa.com");
-		expee2.setExperimenteeEmail("bb@bb.com");
-		experimenteeRep.save(expee1);
-		experimenteeRep.save(expee2);
-		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "aa@aa.com");
-		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "bb@bb.com");
-		experimenteeRep.deleteAll();
-		assertEquals(experimenteeRep.count(), 0);
 	}
 
 	@Test
 	@Transactional
-	void gradersAndGradingTasksCRUDTest() {
+	void addGradingTasksTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		experimenteesForGradingTasks(e);
-		Participant pOfGrader1 = new Participant(e);
-		participantRep.save(pOfGrader1);
-		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
-		graderRep.save(g1);
-		Participant pOfGrader2 = new Participant(e);
-		participantRep.save(pOfGrader2);
-		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
-		graderRep.save(g2);
-		assertEquals(graderRep.count(), 2);
 		createStagesForGradingTasks(e);
 		assertEquals(stageRep.count(), 2);
+		createGradingTask(e);
+		assertEquals(gradingTaskRep.count(), 2);
+		assertEquals(gradingTaskRep.findAll().get(0).getStages().size(), 1);
+	}
+
+	private void createGradingTask(Experiment baseExp) {
 		Experiment gradingExp = new Experiment("gradingExp");
 		experimentRep.save(gradingExp);
 		List<Stage> stagesForGT1 = new ArrayList<>();
 		stagesForGT1.add(stageRep.findAll().get(0));
- 		GradingTask gt1 = new GradingTask("gt1", e, null, gradingExp, stagesForGT1);
+		GradingTask gt1 = new GradingTask("gt1", baseExp, null, gradingExp, stagesForGT1);
 		gradingTaskRep.save(gt1);
-		assertEquals(gradingTaskRep.count(), 1);
 		List<Stage> stagesForGT2 = new ArrayList<>();
 		stagesForGT2.add(stageRep.findAll().get(0));
-		GradingTask gt2 = new GradingTask("gt2", e, null, gradingExp, stagesForGT2);
+		GradingTask gt2 = new GradingTask("gt2", baseExp, null, gradingExp, stagesForGT2);
 		gradingTaskRep.save(gt2);
-		assertEquals(gradingTaskRep.count(), 2);
-		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getStages().size(), 1);
+	}
+
+	@Test
+	@Transactional
+	void assignGradersToGradingTaskTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		createStagesForGradingTasks(e);
+		createGradingTask(e);
+		createGradersForGradingTasks(e);
+		assertEquals(graderRep.count(), 2);
+		assignGradersToGradingTasks();
+		assertEquals(graderToGradingTaskRep.count(), 2);
+	}
+
+	private void assignGradersToGradingTasks() {
+		Grader g1 = graderRep.findAll().get(0), g2 = graderRep.findAll().get(1);
+		GradingTask gt1 = gradingTaskRep.findAll().get(0), gt2 = gradingTaskRep.findAll().get(1);
 		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1, "1");
 		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2, "2");
 		graderToGradingTaskRep.save(graderToGradingTask1);
 		assertEquals(graderToGradingTaskRep.count(), 1);
 		graderToGradingTaskRep.save(graderToGradingTask2);
-		assertEquals(graderToGradingTaskRep.count(), 2);
+	}
+
+	@Test
+	@Transactional
+	void addExpeesToGradingTasksTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		createStagesForGradingTasks(e);
+		createGradingTask(e);
+		createExperimenteesForGradingTasks(e);
+		assertEquals(experimenteeRep.count(), 2);
+		createGradersForGradingTasks(e);
+		assignGradersToGradingTasks();
+		assignExpeesToGradingTasks();
+		assertEquals(graderRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
+		assertEquals(gradingTaskRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
+		GradersGTToParticipants participant1Gt1 = gradersGTToParticipantsRep.findAll().get(0);
+		participant1Gt1.setGradingState(true);
+		gradersGTToParticipantsRep.save(participant1Gt1);
+		assertEquals(gradersGTToParticipantsRep.findAll().get(0).getGradingState(), true);
+	}
+
+	private void assignExpeesToGradingTasks() {
+		GraderToGradingTask graderToGradingTask1 = graderToGradingTaskRep.findAll().get(0);
+		GraderToGradingTask graderToGradingTask2 = graderToGradingTaskRep.findAll().get(1);
 		GradersGTToParticipants participant1Gt1 = new GradersGTToParticipants(graderToGradingTask1, participantRep.findAll().get(0));
 		GradersGTToParticipants participant1Gt2 = new GradersGTToParticipants(graderToGradingTask2, participantRep.findAll().get(1));
 		gradersGTToParticipantsRep.save(participant1Gt1);
@@ -215,17 +301,13 @@ class PersistenceTests {
 		assertEquals(gradersGTToParticipantsRep.count(), 2);
 		graderToGradingTaskRep.save(graderToGradingTask1);
 		graderToGradingTaskRep.save(graderToGradingTask2);
+		Grader g1 = graderRep.findAll().get(0);
+		Grader g2 = graderRep.findAll().get(1);
 		graderRep.save(g1);
 		graderRep.save(g2);
-		assertEquals(graderRep.findById(g1.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
-		assertEquals(graderRep.findById(g2.getGraderEmail()).orElse(null).getAssignedGradingTasks().size(), 1);
+		GradingTask gt1 = gradingTaskRep.findAll().get(0), gt2 = gradingTaskRep.findAll().get(1);
 		gradingTaskRep.save(gt1);
 		gradingTaskRep.save(gt2);
-		assertEquals(gradingTaskRep.findById(gt1.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
-		assertEquals(gradingTaskRep.findById(gt2.getGradingTaskId()).orElse(null).getAssignedGradingTasks().size(), 1);
-		participant1Gt1.setGradingState(true);
-		gradersGTToParticipantsRep.save(participant1Gt1);
-		assertEquals(gradersGTToParticipantsRep.findAll().get(0).getGradingState(), true);
 	}
 
 	private void createStagesForGradingTasks(Experiment e) {
@@ -237,7 +319,7 @@ class PersistenceTests {
 		experimentRep.save(e);
 	}
 
-	private void experimenteesForGradingTasks(Experiment e) {
+	private void createExperimenteesForGradingTasks(Experiment e) {
 		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
 		Participant pOfExpee1 = new Participant(e);
 		expee1.setParticipant(pOfExpee1);
@@ -250,30 +332,53 @@ class PersistenceTests {
 		experimenteeRep.save(expee2);
 	}
 
+	private void createGradersForGradingTasks(Experiment e) {
+		Participant pOfGrader1 = new Participant(e);
+		participantRep.save(pOfGrader1);
+		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
+		graderRep.save(g1);
+		Participant pOfGrader2 = new Participant(e);
+		participantRep.save(pOfGrader2);
+		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
+		graderRep.save(g2);
+	}
+
 	@Test
-	void stagesCRUDTest() {
-		Experiment e = new Experiment("hi");
-		experimentRep.save(e);
-		InfoStage s = new InfoStage("hello", e);
-		QuestionnaireStage s1 = new QuestionnaireStage(e);
-		stageRep.save(s);
-		stageRep.save(s1);
-		assertEquals(stageRep.count(), 2);
+	@Transactional
+	void addStagesTest() {
+		addExperiments();
+		assignStagesToExperiments();
+		assertEquals(stageRep.count(), 10);
 		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hello");
-		s.setInfo("hi there");
-		stageRep.save(s);
-		assertEquals(stageRep.count(), 2);
+	}
+
+	@Test
+	@Transactional
+	void updateStagesTest() {
+		addExperiments();
+		assignStagesToExperiments();
+		InfoStage example = infoStageRep.findAll().get(0);
+		assertEquals(example.getInfo(), "hello");
+		example.setInfo("hi there");
+		stageRep.save(example);
 		assertEquals(infoStageRep.findAll().get(0).getInfo(), "hi there");
-		CodeStage s2 = new CodeStage("hello", "", e);
-		TaggingStage s3 = new TaggingStage(s2, e);
-		stageRep.save(s2);
-		stageRep.save(s3);
-		assertEquals(stageRep.count(), 4);
-		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "");
-		s2.setTemplate("int main() {");
-		stageRep.save(s2);
-		assertEquals(stageRep.count(), 4);
+		CodeStage codeStage = codeStageRep.findAll().get(0);
+		assertEquals(codeStage.getTemplate(), "");
+		codeStage.setTemplate("int main() {");
+		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getTemplate(), "int main() {");
+	}
+
+	@Test
+	@Transactional
+	void deleteStagesTest() {
+		addExperiments();
+		assignStagesToExperiments();
+		InfoStage stage = infoStageRep.findAll().get(0);
+		assertEquals(stageRep.count(), 10);
+		infoStageRep.delete(stage);
+		assertEquals(stageRep.count(), 9);
+		assertEquals(infoStageRep.count(), 3);
 		stageRep.deleteAll();
 		assertEquals(stageRep.count(), 0);
 		assertEquals(infoStageRep.count(), 0);
@@ -282,17 +387,13 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void questionsAndAnswersCRUDTest() {
+	void addAndUpdateQuestionsToStageTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
 		QuestionnaireStage s = new QuestionnaireStage(e);
 		stageRep.save(s);
-		assertEquals(questionRep.count(), 0);
-		assertEquals(stageRep.count(), 1);
-		assertEquals(questionnaireStageRep.count(), 1);
 		createAndSaveQuestions(questions, s);
-		stageRep.save(s);
 		assertEquals(questionRep.count(), 2);
 		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
 		JSONObject updatedJsonQuestion = new JSONObject();
@@ -303,9 +404,60 @@ class PersistenceTests {
 		questionRep.save(q);
 		assertEquals(questionRep.count(), 2);
 		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toJSONString());
+	}
+
+	private List<JSONObject> createQuestionJsons() {
+		JSONObject jsonQuestion1 = new JSONObject();
+		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		JSONObject jsonQuestion2 = new JSONObject();
+		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
+		List<JSONObject> questions = new ArrayList<>();
+		questions.add(jsonQuestion1);
+		questions.add(jsonQuestion2);
+		return questions;
+	}
+
+	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
+		int QIdx = 1;
+		for (JSONObject JQuestion : questions) {
+			Question q = new Question(QIdx, s, JQuestion.toJSONString());
+			questionRep.save(q);
+			s.addQuestion(q);
+			QIdx++;
+		}
+		stageRep.save(s);
+	}
+
+	@Test
+	@Transactional
+	void addAndUpdateAnswersTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		List<JSONObject> questions = createQuestionJsons();
+		QuestionnaireStage s = new QuestionnaireStage(e);
+		stageRep.save(s);
+		createAndSaveQuestions(questions, s);
 		Participant p1 = createExpeeAndParticipant();
 		addAnswers(s, p1);
 		assertEquals(answerRep.count(), 2);
+		Answer answer = answerRep.findAll().get(0);
+		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 2);
+		answer.setNumeralAnswer(3);
+		answerRep.save(answer);
+		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 3);
+	}
+
+	@Test
+	@Transactional
+	void deleteQuestionsAndAnswersTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		List<JSONObject> questions = createQuestionJsons();
+		QuestionnaireStage s = new QuestionnaireStage(e);
+		stageRep.save(s);
+		createAndSaveQuestions(questions, s);
+		Participant p1 = createExpeeAndParticipant();
+		addAnswers(s, p1);
 		Question toRemove = s.getQuestions().get(0);
 		s.getQuestions().remove(toRemove);
 		stageRep.save(s);
@@ -313,14 +465,10 @@ class PersistenceTests {
 		assertEquals(answerRep.count(), 1);
 		questionRep.deleteById(toRemove.getQuestionID());
 		assertEquals(questionRep.count(), 1);
-		answerRep.delete(answerRep.findAll().get(0));
+		answerRep.deleteAll();
+		questionRep.deleteAll();
 		assertEquals(answerRep.count(), 0);
-		Question toRemove1 = s.getQuestions().get(0);
-		s.getQuestions().remove(toRemove1);
-		stageRep.save(s);
-		questionRep.delete(toRemove1);
 		assertEquals(questionRep.count(), 0);
-		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 0);
 	}
 
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
@@ -340,38 +488,15 @@ class PersistenceTests {
 		return p1;
 	}
 
-	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
-		int QIdx = 1;
-		for (JSONObject JQuestion : questions) {
-			Question q = new Question(QIdx, s, JQuestion.toJSONString());
-			questionRep.save(q);
-			s.addQuestion(q);
-			QIdx++;
-		}
-	}
-
-	private List<JSONObject> createQuestionJsons() {
-		JSONObject jsonQuestion1 = new JSONObject();
-		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
-		JSONObject jsonQuestion2 = new JSONObject();
-		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
-		List<JSONObject> questions = new ArrayList<>();
-		questions.add(jsonQuestion1);
-		questions.add(jsonQuestion2);
-		return questions;
-	}
-
 	@Test
 	@Transactional
-	void codeStageAndTaggingCRUDTest() {
+	void addAndUpdateRequirementsForExpTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		assertEquals(experimentRep.count(), 1);
 		CodeStage codeStage = new CodeStage("welcome", "", e);
 		stageRep.save(codeStage);
-		assertEquals(stageRep.count(), 1);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
-		addRequirements(codeStage);
+		addRequirementsToStage(codeStage);
 		assertEquals(requirementRep.count(), 2);
 		assertEquals(requirementRep.findAll().get(0).getText(), "write a function that prints Hello World!");
 		codeStage.getRequirements().get(0).setText("please blabla write a function that prints Hello World!");
@@ -380,6 +505,15 @@ class PersistenceTests {
 		assertEquals(requirementRep.findAll().get(0).getText(), "please blabla write a function that prints Hello World!");
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().get(0).getText(), "please blabla write a function that prints Hello World!");
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 2);
+	}
+
+	@Test
+	@Transactional
+	void addAndUpdateCodeResultForExpeeTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		CodeStage codeStage = new CodeStage("welcome", "", e);
+		stageRep.save(codeStage);
 		Participant p1 = createExpeeAndParticipant();
 		assertEquals(participantRep.count(), 1);
 		assertEquals(experimenteeRep.count(), 1);
@@ -391,6 +525,19 @@ class PersistenceTests {
 		codeResultRep.save(codeResult);
 		assertEquals(codeResultRep.count(), 1);
 		assertEquals(codeResultRep.findAll().get(0).getUserCode(), "System.out.println(\"Hello World\");");
+	}
+
+	@Test
+	@Transactional
+	void addAndUpdateTaggingStageForExpeeTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		CodeStage codeStage = new CodeStage("welcome", "", e);
+		stageRep.save(codeStage);
+		addRequirementsToStage(codeStage);
+		Participant p1 = createExpeeAndParticipant();
+		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
+		codeResultRep.save(codeResult);
 		TaggingStage taggingStage = new TaggingStage(codeStage, e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
@@ -402,8 +549,24 @@ class PersistenceTests {
 		requirementTagRep.save(req);
 		assertEquals(requirementTagRep.count(), 2);
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 13);
-		requirementTagRep.deleteById(req.getRequirementTagID());
-		assertEquals(requirementTagRep.count(), 1);
+	}
+
+	@Test
+	@Transactional
+	void deleteReqsAndExpeeResultTest() {
+		Experiment e = new Experiment("hi");
+		experimentRep.save(e);
+		CodeStage codeStage = new CodeStage("welcome", "", e);
+		stageRep.save(codeStage);
+		addRequirementsToStage(codeStage);
+		Participant p1 = createExpeeAndParticipant();
+		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
+		codeResultRep.save(codeResult);
+		TaggingStage taggingStage = new TaggingStage(codeStage, e);
+		stageRep.save(taggingStage);
+		addRequirementTags(codeStage, p1);
+		requirementTagRep.deleteAll();
+		assertEquals(requirementTagRep.count(), 0);
 		Requirement toRem = codeStage.getRequirements().get(1);
 		codeStage.getRequirements().remove(1);
 		requirementRep.deleteById(toRem.getRequirementID());
@@ -426,7 +589,7 @@ class PersistenceTests {
 		requirementTagRep.save(rt2);
 	}
 
-	private void addRequirements(CodeStage codeStage) {
+	private void addRequirementsToStage(CodeStage codeStage) {
 		Requirement r1 = new Requirement(codeStage, "write a function that prints Hello World!");
 		codeStage.addRequirement(r1);
 		requirementRep.save(r1);
@@ -499,24 +662,24 @@ class PersistenceTests {
 
 	private void assignStagesToExperiments() {
 		InfoStage s11 = new InfoStage("hello", experimentRep.findAll().get(0));
-		QuestionnaireStage s21 = new QuestionnaireStage(experimentRep.findAll().get(0));
-		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
-		CodeStage s41 = new CodeStage("enter your code", "", experimentRep.findAll().get(0));
-		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
-		InfoStage s12 = new InfoStage("hello", experimentRep.findAll().get(1));
-		QuestionnaireStage s22 = new QuestionnaireStage(experimentRep.findAll().get(1));
-		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
-		CodeStage s42 = new CodeStage("enter your code", "", experimentRep.findAll().get(1));
-		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
 		stageRep.save(s11);
+		QuestionnaireStage s21 = new QuestionnaireStage(experimentRep.findAll().get(0));
 		stageRep.save(s21);
+		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
 		stageRep.save(s31);
+		CodeStage s41 = new CodeStage("enter your code", "", experimentRep.findAll().get(0));
 		stageRep.save(s41);
+		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
 		stageRep.save(s51);
+		InfoStage s12 = new InfoStage("hello", experimentRep.findAll().get(1));
 		stageRep.save(s12);
+		QuestionnaireStage s22 = new QuestionnaireStage(experimentRep.findAll().get(1));
 		stageRep.save(s22);
+		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
 		stageRep.save(s32);
+		CodeStage s42 = new CodeStage("enter your code", "", experimentRep.findAll().get(1));
 		stageRep.save(s42);
+		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
 		stageRep.save(s52);
 	}
 }
