@@ -38,7 +38,7 @@ public interface ICreatorBusiness {
 
     void addGrader(String researcherName, int expId, int taskId, String graderMail)throws NotExistException;
 
-    void addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
+    String addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
 
     void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String ExpeeMail) throws NotExistException, ExistException;
 

@@ -29,7 +29,7 @@ public class DataCache {
 
 
     private DataCache() {
-        managers = new ArrayList<>();
+        managers = List.of(new ManagementUser("ADMIN","13579", "admin@post.bgu.ac.il"));
         experimentees = new ArrayList<>();
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();
@@ -155,6 +155,7 @@ public class DataCache {
     }
 
     public void addExperimentee(Experimentee expee) {
+        expee.setAccessCode(""+experimentees.size());
         experimentees.add(expee);
     }
 

@@ -153,11 +153,13 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
+    public String addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
         if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
-        cache.addExperimentee(new Experimentee(expeeMail, exp));
+        Experimentee expee =new Experimentee(expeeMail, exp);
+        cache.addExperimentee(expee);
+        return expee.getAccessCode();
     }
 
     @Override
