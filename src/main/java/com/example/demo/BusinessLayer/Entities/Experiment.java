@@ -15,6 +15,8 @@ public class Experiment {
     private int experimentId;
     @Column(name = "experiment_name")
     private String experimentName;
+    @Column(name = "published")
+    private boolean published = false;
     @OneToMany(mappedBy = "experiment")
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
@@ -79,6 +81,14 @@ public class Experiment {
         this.stages = stages;
     }
 
+    public boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
@@ -99,5 +109,4 @@ public class Experiment {
         }
         return false;
     }
-
 }

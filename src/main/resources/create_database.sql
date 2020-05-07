@@ -30,6 +30,7 @@ CREATE TABLE `experiments`
 (
     `experiment_id`   int          NOT NULL AUTO_INCREMENT,
     `experiment_name` varchar(100) NOT NULL,
+    `published`       boolean      Not NULL,
     PRIMARY KEY (`experiment_id`)
 );
 
