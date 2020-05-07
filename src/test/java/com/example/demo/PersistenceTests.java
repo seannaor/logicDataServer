@@ -600,64 +600,11 @@ class PersistenceTests {
 		stageRep.save(codeStage);
 	}
 
-	@Test
-	@Transactional
-	void createExperimentsTest() {
-		addExperiments();
-		assertEquals(experimentRep.count(), 2);
-		addManagementUsersToExperiments();
-		assertEquals(managementUserToExperimentRep.count(), 2);
-		assertEquals(managementUserRep.findAll().get(0).getManagementUserToExperiments().size(), 1);
-		assertEquals(managementUserRep.findAll().get(1).getManagementUserToExperiments().size(), 1);
-		assertEquals(experimentRep.findAll().get(0).getManagementUserToExperiments().size(), 1);
-		assertEquals(experimentRep.findAll().get(1).getManagementUserToExperiments().size(), 1);
-		addExperimenteesToExperiments();
-		assertEquals(experimenteeRep.count(), 3);
-		assertEquals(participantRep.count(), 3);
-		assertEquals(experimentRep.findAll().get(0).getParticipants().size(), 2);
-		assertEquals(experimentRep.findAll().get(1).getParticipants().size(), 1);
-		assignStagesToExperiments();
-		assertEquals(stageRep.count(), 10);
-		assertEquals(experimentRep.findAll().get(0).getStages().size(), 5);
-		assertEquals(experimentRep.findAll().get(1).getStages().size(), 5);
-	}
-
 	private void addExperiments() {
 		Experiment e1 = new Experiment("Exp1"),
 				e2 = new Experiment("Expr2");
 		experimentRep.save(e1);
 		experimentRep.save(e2);
-	}
-
-	private void addManagementUsersToExperiments() {
-		ManagementUser u1 = new ManagementUser("User1", "123Pass", "u1@u1mail.com");
-		ManagementUser u2 = new ManagementUser("User2", "123Pass", "u2@u2mail.com");
-		managementUserRep.save(u1);
-		managementUserRep.save(u2);
-		ManagementUserToExperiment mU1 = new ManagementUserToExperiment(u1, experimentRep.findAll().get(0), "creator");
-		ManagementUserToExperiment mU2 = new ManagementUserToExperiment(u2, experimentRep.findAll().get(1), "creator");
-		managementUserToExperimentRep.save(mU1);
-		managementUserToExperimentRep.save(mU2);
-		managementUserRep.save(u1);
-		managementUserRep.save(u2);
-	}
-
-	private void addExperimenteesToExperiments() {
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com"),
-				expee2 = new Experimentee("vxcf", "b@a.com"),
-				expee3 = new Experimentee("asdiiji", "c@a.com");
-		Participant p1 = new Participant(experimentRep.findAll().get(0)),
-				p2 = new Participant(experimentRep.findAll().get(0)),
-				p3 = new Participant(experimentRep.findAll().get(1));
-		expee1.setParticipant(p1);
-		expee2.setParticipant(p2);
-		expee3.setParticipant(p3);
-		participantRep.save(p1);
-		participantRep.save(p2);
-		participantRep.save(p3);
-		experimenteeRep.save(expee1);
-		experimenteeRep.save(expee2);
-		experimenteeRep.save(expee3);
 	}
 
 	private void assignStagesToExperiments() {
