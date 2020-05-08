@@ -2,12 +2,15 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.springframework.data.util.Pair;
 
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
 
@@ -33,6 +36,12 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     public Stage getCurrentStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
+    }
+
+    @Override
+    public Pair<Stage, ResultWrapper> getStage(String accessCode, int idx) throws CodeException, NotInReachException {
+        Experimentee expee = cache.getExpeeByCode(accessCode);
+        return Pair.of(expee.getStage(idx),expee.getResults(idx));
     }
 
     @Override

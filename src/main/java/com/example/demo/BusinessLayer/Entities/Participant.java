@@ -11,6 +11,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -82,6 +83,17 @@ public class Participant {
         advanceStage();
         if (isDone) throw new ExpEndException();
         return getCurrStage();
+    }
+
+    public Stage getStage(int idx) throws NotInReachException {
+        if(currStage<idx) throw new NotInReachException("stage "+idx);
+        return this.experiment.getStages().get(idx);
+    }
+
+    public ResultWrapper getResults(int idx) throws NotInReachException {
+        if(currStage<idx) throw new NotInReachException("result of stage "+idx);
+        //TODO: when we will have one list of results, get results of stage idx.
+        return null;
     }
 
     private void advanceStage() {

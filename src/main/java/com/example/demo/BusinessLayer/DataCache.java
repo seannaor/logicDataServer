@@ -29,7 +29,8 @@ public class DataCache {
 
 
     private DataCache() {
-        managers = List.of(new ManagementUser("ADMIN","13579", "admin@post.bgu.ac.il"));
+        managers = new ArrayList<>();
+        managers.add(new ManagementUser("ADMIN","13579", "admin@post.bgu.ac.il"));
         experimentees = new ArrayList<>();
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();

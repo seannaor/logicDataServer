@@ -1,9 +1,12 @@
 package com.example.demo.ServiceLayer;
 
+import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.IExperimenteeBusiness;
+import org.hibernate.engine.jdbc.spi.ResultSetWrapper;
 import org.json.simple.JSONObject;
+import org.springframework.data.util.Pair;
 
 import java.util.Map;
 
@@ -55,5 +58,14 @@ public class ExperimenteeService {
             res = e.getMessage();
         }
         return Map.of("response", res);
+    }
+
+    public Map<String, Object> getStageAt(String code, int id) {
+        try {
+            Pair<Stage, ResultWrapper> pair = experimenteeBusiness.getStage(code, id);
+            return Map.of("response", "OK", "stage", pair.getFirst(), "results", pair.getSecond());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
     }
 }

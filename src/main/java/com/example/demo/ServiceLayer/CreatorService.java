@@ -1,12 +1,16 @@
 package com.example.demo.ServiceLayer;
 
 import com.example.demo.BusinessLayer.CreatorBusiness;
+import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.ICreatorBusiness;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,7 +129,7 @@ public class CreatorService {
     public Map<String, Object> addExperimentee(String researcherName, int expId, String ExpeeMail) {
         try {
             String code = creatorBusiness.addExperimentee(researcherName, expId, ExpeeMail);
-            return Map.of("response","OK","code",code);
+            return Map.of("response", "OK", "code", code);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -139,5 +143,126 @@ public class CreatorService {
             res = e.getMessage();
         }
         return Map.of("response", res);
+    }
+
+    // meaningful getters
+    public Map<String, Object> getExperiments(String username) {
+        List<Experiment> exps;
+        try {
+            exps = creatorBusiness.getExperiments(username);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (Experiment exp : exps) {
+            ids.add(exp.getExperimentId());
+        }
+        return Map.of("response", "OK", "experiments", ids);
+    }
+
+    public Map<String, Object> getStages(String username, int exp_id) {
+        List<Stage> stages;
+        try {
+            stages = creatorBusiness.getStages(username, exp_id);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        return stagesResponse(stages);
+    }
+
+    public Map<String, Object> getExperimentees(String username, int exp_id) {
+        List<Participant> expees;
+        try {
+            expees = creatorBusiness.getExperimentees(username, exp_id);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (Participant expee : expees) {
+            ids.add(expee.getParticipantId());
+        }
+        return Map.of("response", "OK", "experimentees", ids);
+    }
+
+    public Map<String, Object> getAllies(String username, int exp_id) {
+        List<ManagementUserToExperiment> allies;
+        try {
+            allies = creatorBusiness.getAllies(username, exp_id);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Map<String, String>> jsons = new ArrayList<>();
+        for (ManagementUserToExperiment ally : allies) {
+            jsons.add(Map.of("username", ally.getManagementUser().getBguUsername(), "role", ally.getRole()));
+        }
+        return Map.of("response", "OK", "allies", jsons);
+    }
+
+    public Map<String, Object> getGradingTasks(String username, int exp_id) {
+        List<GradingTask> tasks;
+        try {
+            tasks = creatorBusiness.getGradingTasks(username, exp_id);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (GradingTask task : tasks) {
+            ids.add(task.getGradingTaskId());
+        }
+        return Map.of("response", "OK", "tasks", ids);
+    }
+
+    public Map<String, Object> getPersonalStages(String username, int exp_id, int taskId) {
+        List<Stage> stages;
+        try {
+            stages = creatorBusiness.getPersonalStages(username, exp_id, taskId);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        return stagesResponse(stages);
+    }
+
+    public Map<String, Object> getEvaluationStages(String username, int exp_id, int taskId) {
+        List<Stage> stages;
+        try {
+            stages = creatorBusiness.getEvaluationStages(username, exp_id, taskId);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        return stagesResponse(stages);
+    }
+
+    public Map<String, Object> getTaskGraders(String username, int exp_id, int taskId) {
+        List<Grader> graders;
+        try {
+            graders = creatorBusiness.getTaskGraders(username, exp_id, taskId);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        return Map.of("response", "OK", "graders", graders);
+    }
+
+    public Map<String, Object> getTaskExperimentees(String username, int exp_id, int taskId) {
+        List<Participant> expees;
+        try {
+            expees = creatorBusiness.getTaskExperimentees(username, exp_id, taskId);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (Participant expee : expees) {
+            ids.add(expee.getParticipantId());
+        }
+        return Map.of("response", "OK", "experimentees", ids);
+    }
+
+    // Utils
+
+    private Map<String, Object> stagesResponse(List<Stage> stages) {
+        List<JSONObject> jsons = new ArrayList<>();
+        for (Stage stage : stages) {
+            jsons.add(stage.getJson());
+        }
+        return Map.of("response", "OK", "stages", jsons);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.demo.BusinessLayer.Entities;
 
+import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 
 import javax.persistence.*;
 
@@ -64,5 +66,13 @@ public class Experimentee {
 
     public Stage getNextStage() throws ExpEndException {
         return participant.getNextStage();
+    }
+
+    public Stage getStage(int idx) throws NotInReachException{
+        return participant.getStage(idx);
+    }
+
+    public ResultWrapper getResults(int idx) throws NotInReachException{
+        return participant.getResults(idx);
     }
 }

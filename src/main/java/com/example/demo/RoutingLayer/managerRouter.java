@@ -113,4 +113,50 @@ public class managerRouter {
         return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, expee_mail);
     }
 
+    // EXTRAS to manager
+
+    @RequestMapping("/get_experiments")
+    public Map<String, Object> getExperiments(@RequestParam String username) {
+        return creator.getExperiments(username);
+    }
+
+    @RequestMapping("/get_allies")
+    public Map<String, Object> getAllies(@RequestParam String username, @RequestParam int exp_id) {
+        return creator.getAllies(username, exp_id);
+    }
+
+    @RequestMapping("/get_stages")
+    public Map<String, Object> getStages(@RequestParam String username, @RequestParam int exp_id) {
+        return creator.getStages(username, exp_id);
+    }
+
+    @RequestMapping("/get_experimentees")
+    public Map<String, Object> getExperimentees(@RequestParam String username, @RequestParam int exp_id) {
+        return creator.getExperimentees(username, exp_id);
+    }
+
+    @RequestMapping("/get_grading_task")
+    public Map<String, Object> getGradingTasks(@RequestParam String username, @RequestParam int exp_id) {
+        return creator.getGradingTasks(username, exp_id);
+    }
+
+    @RequestMapping("/get_personal_stages")
+    public Map<String, Object> getPersonalStages(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
+        return creator.getPersonalStages(username, exp_id, task_id);
+    }
+    
+    @RequestMapping("/get_evaluation_stages")
+    public Map<String, Object> getEvaluationStages(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
+        return creator.getEvaluationStages(username, exp_id, task_id);
+    }
+
+    @RequestMapping("/get_task_graders")
+    public Map<String, Object> getTaskGraders(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
+        return creator.getTaskGraders(username, exp_id, task_id);
+    }
+
+    @RequestMapping("/get_task_experimentees")
+    public Map<String, Object> getTaskExperimentees(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
+        return creator.getTaskExperimentees(username, exp_id, task_id);
+    }
 }

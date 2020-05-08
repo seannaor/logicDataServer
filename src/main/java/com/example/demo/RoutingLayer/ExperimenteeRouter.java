@@ -2,6 +2,7 @@ package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.ExperimenteeService;
 import org.json.simple.JSONObject;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +45,13 @@ public class ExperimenteeRouter {
     public Map<String, Object> currStage(@RequestParam String code) {
         System.out.println("experimentee/current_stage " + code);
         return expee.getCurrentStage(code);
+    }
+
+    @RequestMapping("/get_stage/{id}")
+    public  Map<String, Object> getStageAt(
+            @PathVariable("id") int id, @RequestParam String code) {
+        System.out.println("experimentee/get_stage "+id+" " + code);
+        return expee.getStageAt(code,id);
     }
 
 }
