@@ -129,4 +129,12 @@ public class ManagementUser {
                 break;
             }
     }
+
+    public List<Experiment> getExperimentes() {
+        List<Experiment> all = new ArrayList<>();
+        for(ManagementUserToExperiment userToExp: managementUserToExperiments){
+            all.add(userToExp.getExperiment());
+        }
+        return all;
+    }
 }

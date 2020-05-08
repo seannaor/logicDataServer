@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
@@ -9,6 +10,7 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import org.json.simple.JSONObject;
 
+import javax.servlet.http.Part;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,11 +155,13 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
+    public String addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
         if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
-        cache.addExperimentee(new Experimentee(expeeMail, exp));
+        Experimentee expee =new Experimentee(expeeMail, exp);
+        cache.addExperimentee(expee);
+        return expee.getAccessCode();
     }
 
     @Override
@@ -177,6 +181,70 @@ public class CreatorBusiness implements ICreatorBusiness {
         //TODO: fix?
     }
 
+    //meaningful getters
+
+    public List<Experiment> getExperiments(String username) throws NotExistException {
+        ManagementUser manager = cache.getManagerByName(username);
+        return manager.getExperimentes();
+    }
+
+    public List<Stage> getStages(String username,int expId) throws NotExistException {
+        ManagementUser c = cache.getManagerByName(username);
+        Experiment exp = c.getExperiment(expId);
+        return exp.getStages();
+    }
+
+    public List<Participant> getExperimentees(String username, int expId) throws NotExistException {
+        ManagementUser c = cache.getManagerByName(username);
+        Experiment exp = c.getExperiment(expId);
+        return exp.getParticipants();
+    }
+
+    public List<ManagementUserToExperiment> getAllies(String username, int expId) throws NotExistException {
+        ManagementUser c = cache.getManagerByName(username);
+        Experiment exp = c.getExperiment(expId);
+        return exp.getManagementUserToExperiments();
+    }
+
+    public List<GradingTask> getGradingTasks(String username, int expId) throws NotExistException{
+        return cache.getAllGradingTasks(username,expId);
+    }
+
+    @Override
+    public List<Stage> getPersonalStages(String username, int expId, int taskId) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
+        return gt.getGeneralExperiment().getStages();
+    }
+
+    @Override
+    public List<Stage> getEvaluationStages(String username, int expId, int taskId) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
+        return gt.getGradingExperiment().getStages();
+    }
+
+    @Override
+    public List<Grader> getTaskGraders(String username, int expId, int taskId) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
+        List<GraderToGradingTask> assignedGradingTasks = gt.getAssignedGradingTasks();
+        List<Grader> graders = new ArrayList<>();
+        for(GraderToGradingTask graderToTask:assignedGradingTasks){
+            graders.add(graderToTask.getGrader());
+        }
+        return graders;
+    }
+
+    @Override
+    public List<Participant> getTaskExperimentees(String username, int expId, int taskId) throws NotExistException {
+        GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
+        List<GraderToGradingTask> assignedGradingTasks = gt.getAssignedGradingTasks();
+        List<Participant> experimentees = new ArrayList<>();
+        for(GraderToGradingTask graderToTask:assignedGradingTasks){
+            experimentees.addAll(graderToTask.getParticipants());
+        }
+        return experimentees;
+    }
+
+    // utils
     private static Experiment buildExperiment(List<JSONObject> stages, String expName, ManagementUser creator) throws FormatException {
         Experiment exp = new Experiment(expName, creator);
         int id = creator.getManagementUserToExperiments().size();
