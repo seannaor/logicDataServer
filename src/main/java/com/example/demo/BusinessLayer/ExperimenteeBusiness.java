@@ -8,17 +8,23 @@ import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import com.example.demo.DBAccess;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
-
+    @Autowired
     private DataCache cache;
+    @Autowired
+    private DBAccess db;
 
-    public ExperimenteeBusiness() {
-        this.cache = DataCache.getInstance();
-    }
+//    public ExperimenteeBusiness() {
+//        this.cache = DataCache.getInstance();
+//    }
 
     @Override
     public Stage beginParticipation(String accessCode) throws ExpEndException, CodeException {
@@ -47,6 +53,8 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Override
     public Stage getNextStage(String accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        return expee.getNextStage();
+        Stage nextStage = expee.getNextStage();
+        db.saveExperimentee(expee); //current stage has changed, need to save
+        return nextStage;
     }
 }

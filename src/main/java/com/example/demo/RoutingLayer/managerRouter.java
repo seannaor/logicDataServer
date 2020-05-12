@@ -2,6 +2,7 @@ package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.CreatorService;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,12 +16,12 @@ import static com.example.demo.RoutingLayer.RouterUtils.*;
 @RestController
 @RequestMapping("/manager")
 public class managerRouter {
-
+    @Autowired
     private CreatorService creator;
 
-    public managerRouter() {
-        this.creator = new CreatorService();
-    }
+//    public managerRouter() {
+//        this.creator = new CreatorService();
+//    }
 
     @RequestMapping("")
     public Map<String, Object> managerLogin(@RequestParam String username, @RequestParam String password) {
@@ -99,18 +100,18 @@ public class managerRouter {
     }
 
     @RequestMapping("/addGraderToTask")
-    public Map<String, Object> addGrader(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String mail) {
-        return creator.addGrader(username, exp_id, task_id, mail);
+    public Map<String, Object> addGraderToGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String mail, @RequestParam String graderCode) {
+        return creator.addGraderToGradingTask(username, exp_id, task_id, mail, graderCode);
     }
 
     @RequestMapping("/add_expee")
-    public Map<String, Object> addExperimentee(@RequestParam String username, @RequestParam int exp_id, @RequestParam String mail) {
-        return creator.addExperimentee(username, exp_id, mail);
+    public Map<String, Object> addExperimentee(@RequestParam String username, @RequestParam int exp_id, @RequestParam String accessCode, @RequestParam String mail) {
+        return creator.addExperimentee(username, exp_id, accessCode, mail);
     }
 
     @RequestMapping("/addExpeeToGrader")
-    public Map<String, Object> addExpeeToGrader(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String grader_mail, @RequestParam String expee_mail) {
-        return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, expee_mail);
+    public Map<String, Object> addExpeeToGrader(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String grader_mail, @RequestParam String access_code) {
+        return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, access_code);
     }
 
     // EXTRAS to manager

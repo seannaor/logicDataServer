@@ -59,10 +59,6 @@ public class GradingTask {
         this.stages = stages;
     }
 
-    public void setGradingTaskId(int gradingTaskId) {
-        this.gradingTaskId = gradingTaskId;
-    }
-
     public int getGradingTaskId() {
         return gradingTaskId;
     }

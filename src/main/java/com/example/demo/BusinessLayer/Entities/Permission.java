@@ -25,15 +25,12 @@ public class Permission {
 
     public Permission(String permissionName,ManagementUser man) {
         this.permissionName = permissionName;
-        managementUsers.add(man);
+        this.managementUsers.add(man);
+        man.addPermission(this);
     }
 
     public int getPermissionId() {
         return permissionId;
-    }
-
-    public void setPermissionId(int permission_id) {
-        this.permissionId = permission_id;
     }
 
     public String getPermissionName() {

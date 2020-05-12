@@ -6,17 +6,19 @@ import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.IExperimenteeBusiness;
 import org.hibernate.engine.jdbc.spi.ResultSetWrapper;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
+@Service
 public class ExperimenteeService {
+    @Autowired
+    private ExperimenteeBusiness experimenteeBusiness;
 
-    private IExperimenteeBusiness experimenteeBusiness;
-
-    public ExperimenteeService() {
-        this.experimenteeBusiness = new ExperimenteeBusiness();
-    }
+//    public ExperimenteeService() {
+//        this.experimenteeBusiness = new ExperimenteeBusiness();
+//    }
 
     //UC 2.1 - Login
     public Map<String, Object> beginParticipation(String accessCode) {

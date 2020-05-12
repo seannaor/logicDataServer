@@ -34,15 +34,10 @@ public class Experiment {
     public Experiment(String experimentName,ManagementUser creator) {
         this.experimentName = experimentName;
         ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
-        this.managementUserToExperiments.add(m);
     }
 
     public int getExperimentId() {
         return experimentId;
-    }
-
-    public void setExperimentId(int experiment_id) {
-        this.experimentId = experiment_id;
     }
 
     public String getExperimentName() {

@@ -26,13 +26,10 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
-    public CodeStage(String desc, String template, List<String> requirements) {
+    public CodeStage(String desc, String template, Experiment experiment) {
+        super(experiment);
         this.description=desc;
         this.template=template;
-        this.requirements = new ArrayList<>();
-        for(String req:requirements){
-            this.requirements.add(new Requirement(this,req));
-        }
     }
 
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
@@ -74,12 +71,6 @@ public class CodeStage extends Stage {
         if(!data.containsKey("userCode")) throw new FormatException("user code");
         res.setUserCode((String) data.get("userCode"));
         return res;
-    }
-
-    public CodeStage(String desc, String template, Experiment experiment) {
-        super(experiment);
-        this.description=desc;
-        this.template=template;
     }
 
     public String getDescription() {

@@ -2,11 +2,13 @@ package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.ExperimenteeService;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.Access;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +18,12 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 @RestController
 @RequestMapping("/experimentee")
 public class ExperimenteeRouter {
-
+    @Autowired
     private ExperimenteeService expee;
 
-    public ExperimenteeRouter() {
-        this.expee = new ExperimenteeService();
-    }
+//    public ExperimenteeRouter() {
+//        this.expee = new ExperimenteeService();
+//    }
 
     @RequestMapping("")
     public Map<String, Object> expeeLogin(@RequestParam String code) {

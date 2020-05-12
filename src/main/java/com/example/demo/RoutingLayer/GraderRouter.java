@@ -7,6 +7,7 @@ import com.example.demo.ServiceLayer.GraderService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,12 @@ import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 @RestController
 @RequestMapping("/grader")
 public class GraderRouter {
-
+    @Autowired
     private GraderService grader;
 
-    public GraderRouter() {
-        this.grader = new GraderService();
-    }
+//    public GraderRouter() {
+//        this.grader = new GraderService();
+//    }
 
     @RequestMapping("")
     public Map<String, Object> graderLogin(@RequestParam String code) {

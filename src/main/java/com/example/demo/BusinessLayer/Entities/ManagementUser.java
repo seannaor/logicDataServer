@@ -78,6 +78,10 @@ public class ManagementUser {
 
     //======================= end of setters and getters =======================
 
+    public void addPermission(Permission p) {
+        this.permissions.add(p);
+    }
+
     public Experiment getExperiment(int expId) throws NotExistException{
         for (ManagementUserToExperiment m : this.managementUserToExperiments) {
             if(m.getExperiment().getExperimentId() == expId) {

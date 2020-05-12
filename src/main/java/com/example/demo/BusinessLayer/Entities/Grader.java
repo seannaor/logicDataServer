@@ -45,4 +45,8 @@ public class Grader {
     public void assignGradingTasks(GraderToGradingTask gradingTask) {
         this.assignedGradingTasks.add(gradingTask);
     }
+
+    public Participant getParticipant() {
+        return participant;
+    }
 }

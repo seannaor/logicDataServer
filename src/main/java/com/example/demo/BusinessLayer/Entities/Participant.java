@@ -42,10 +42,7 @@ public class Participant {
     @OneToMany(mappedBy = "participant")
     private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
-    public Participant() {
-//        isDone=false;
-//        currStage=0;
-    }
+    public Participant() { }
 
     public Participant(Experiment experiment) {
         this.experiment = experiment;
@@ -63,10 +60,6 @@ public class Participant {
 
     public int getParticipantId() {
         return participantId;
-    }
-
-    public void setParticipantId(int participantId) {
-        this.participantId = participantId;
     }
 
     public void addGradersGTToParticipants(GradersGTToParticipants g) {

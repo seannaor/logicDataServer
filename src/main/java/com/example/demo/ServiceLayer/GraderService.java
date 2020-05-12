@@ -1,20 +1,18 @@
 package com.example.demo.ServiceLayer;
 
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.GraderBusiness;
-import com.example.demo.BusinessLayer.IGraderBusiness;
-import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
-
+@Service
 public class GraderService {
+    @Autowired
+    private GraderBusiness graderBusiness;
 
-    private IGraderBusiness graderBusiness;
-
-    public GraderService() {
-        this.graderBusiness = new GraderBusiness();
-    }
+//    public GraderService() {
+//        this.graderBusiness = new GraderBusiness();
+//    }
 
     public Map<String, Object> beginGrading(String code) {
         String res = "OK";
