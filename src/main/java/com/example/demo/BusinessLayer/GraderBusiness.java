@@ -17,10 +17,6 @@ public class GraderBusiness implements IGraderBusiness {
     @Autowired
     private DataCache cache;
 
-//    public GraderBusiness() {
-//        this.cache = DataCache.getInstance();
-//    }
-
     @Override
     public boolean beginGrading(String accessCode) {
         try {

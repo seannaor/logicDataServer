@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
+//I don't think this class do eny thing
 @Controller
 public class MyErrorController implements ErrorController { // stolen from  https://github.com/eugenp/tutorials/blob/master/spring-boot-modules/spring-boot-basic-customization/src/main/java/com/baeldung/errorhandling/controllers/MyErrorController.java
 

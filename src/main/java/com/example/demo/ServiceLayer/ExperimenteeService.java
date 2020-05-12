@@ -16,10 +16,6 @@ public class ExperimenteeService {
     @Autowired
     private ExperimenteeBusiness experimenteeBusiness;
 
-//    public ExperimenteeService() {
-//        this.experimenteeBusiness = new ExperimenteeBusiness();
-//    }
-
     //UC 2.1 - Login
     public Map<String, Object> beginParticipation(String accessCode) {
 

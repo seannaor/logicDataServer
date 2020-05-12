@@ -10,10 +10,6 @@ public class GraderService {
     @Autowired
     private GraderBusiness graderBusiness;
 
-//    public GraderService() {
-//        this.graderBusiness = new GraderBusiness();
-//    }
-
     public Map<String, Object> beginGrading(String code) {
         String res = "OK";
         try {

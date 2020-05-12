@@ -2,25 +2,12 @@ package com.example.demo.RoutingLayer;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 public class RouterUtils {
-
-
-//    @RequestMapping("/{service}")
-//    public Map<String, Object> requestProcessor(@PathVariable String service, @RequestParam String req) {
-//        System.out.println("received: " + req);
-//        JSONObject jsonReq = strToJSON(req);
-//        if (!serviceMap.containsKey(service)) return Map.of("response", "no such entity " + service);
-//        return serviceMap.get(service).requestProcessor(jsonReq);
-//    }
 
     private static JSONObject mapToJSON(Map<String, String> req) {
         JSONObject ret = new JSONObject();
