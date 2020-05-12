@@ -4,22 +4,22 @@ import com.example.demo.BusinessLayer.CreatorBusiness;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import com.example.demo.BusinessLayer.ICreatorBusiness;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class CreatorService {
-    private ICreatorBusiness creatorBusiness;
+    @Autowired
+    private CreatorBusiness creatorBusiness;
 
-    public CreatorService() {
-        this.creatorBusiness = new CreatorBusiness();
-    }
+//    public CreatorService() {
+//        this.creatorBusiness = new CreatorBusiness();
+//    }
 
     //Login
     public Map<String, Object> researcherLogin(String username, String password) {
@@ -116,29 +116,29 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addGrader(String researcherName, int expId, int taskId, String graderMail) {
+    public Map<String, Object> addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail, String graderCode) {
         String res = "OK";
         try {
-            creatorBusiness.addGrader(researcherName, expId, taskId, graderMail);
+            creatorBusiness.addGraderToGradingTask(researcherName, expId, taskId, graderMail, graderCode);
         } catch (Exception e) {
             res = e.getMessage();
         }
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addExperimentee(String researcherName, int expId, String ExpeeMail) {
+    public Map<String, Object> addExperimentee(String researcherName, int expId, String accessCode, String ExpeeMail) {
         try {
-            String code = creatorBusiness.addExperimentee(researcherName, expId, ExpeeMail);
+            String code = creatorBusiness.addExperimentee(researcherName, expId, accessCode, ExpeeMail);
             return Map.of("response", "OK", "code", code);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
     }
 
-    public Map<String, Object> addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String ExpeeMail) {
+    public Map<String, Object> addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String accessCode) {
         String res = "OK";
         try {
-            creatorBusiness.addExpeeToGrader(researcherName, expId, taskId, graderMail, ExpeeMail);
+            creatorBusiness.addExpeeToGrader(researcherName, expId, taskId, graderMail, accessCode);
         } catch (Exception e) {
             res = e.getMessage();
         }

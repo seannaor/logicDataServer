@@ -22,7 +22,8 @@ public class Experimentee {
     public Experimentee() {
     }
 
-    public Experimentee(String experimenteeEmail, Experiment exp) {
+    public Experimentee(String accessCode, String experimenteeEmail, Experiment exp) {
+        this.accessCode = accessCode;
         this.experimenteeEmail = experimenteeEmail;
         this.participant = new Participant(exp);
     }

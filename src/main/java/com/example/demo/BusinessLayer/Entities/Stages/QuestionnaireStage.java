@@ -27,22 +27,8 @@ public class QuestionnaireStage extends Stage {
         super();
     }
 
-    public QuestionnaireStage(Experiment experiment, int stage_index) {
-        super(experiment, stage_index);
-    }
-
     public QuestionnaireStage(Experiment experiment) {
         super(experiment);
-    }
-
-    public QuestionnaireStage(List<JSONObject> JQuestions) {
-        questions = new ArrayList<>();
-        int QIdx = 1;
-        for (JSONObject JQuestion : JQuestions) {
-            Question q = new Question(QIdx, this, JQuestion.toString());
-            questions.add(q);
-            QIdx++;
-        }
     }
 
     public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {

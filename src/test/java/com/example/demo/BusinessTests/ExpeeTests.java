@@ -6,44 +6,48 @@ import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 @SpringBootTest
 public class ExpeeTests {
-
-    private IExperimenteeBusiness experimenteeBusiness;
-    private ICreatorBusiness creatorBusiness;
+    @Autowired
+    private ExperimenteeBusiness experimenteeBusiness;
+    @Autowired
+    private CreatorBusiness creatorBusiness;
+    @Autowired
     private DataCache cache;
+    @Autowired
+    private DBAccess db;
 
     private ManagementUser manager;
     private Experiment experiment;
     private Experimentee expee;
 
-    public ExpeeTests() {
-        experimenteeBusiness = new ExperimenteeBusiness();
-        creatorBusiness = new CreatorBusiness();
-        cache = DataCache.getInstance();
-    }
+//    public ExpeeTests() {
+//        experimenteeBusiness = new ExperimenteeBusiness();
+//        creatorBusiness = new CreatorBusiness();
+//        cache = DataCache.getInstance();
+//    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
-        cache.flash();
+        cache.setCache();
+        db.deleteData();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         cache.addManager(manager);
         List<JSONObject> stages = Utils.buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         experiment = manager.getExperimentByName("The Experiment");
-        experiment.setExperimentId(1);
-
-        expee = new Experimentee("gili@post.bgu.ac.il", experiment);
-        expee.setAccessCode("code for 'The Experiment'");
+        expee = new Experimentee("123", "gili@post.bgu.ac.il", experiment);
         cache.addExperimentee(expee);
     }
 

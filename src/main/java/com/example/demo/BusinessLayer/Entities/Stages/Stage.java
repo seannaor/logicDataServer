@@ -5,15 +5,12 @@ import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "stages")
@@ -65,7 +62,6 @@ public abstract class Stage {
     }
 
     public Stage(Experiment experiment, int stage_index) {
-//        this.stage_id = new StageID(experiment.getExperiment_id(), stage_index);
         this.stageID = new StageID(experiment.getExperimentId(), stage_index);
         this.experiment = experiment;
         experiment.addStage(this);
@@ -108,20 +104,20 @@ public abstract class Stage {
         throw new FormatException("info stage");
     }
 
-    public static Stage parseStage(JSONObject stage) throws FormatException {
+    public static Stage parseStage(JSONObject stage, Experiment exp) throws FormatException {
         try {
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"));
+                    return new InfoStage((String) stage.get("info"), exp);
 
                 case "code":
                     String desc = (String) stage.get("description");
                     String template = (String) stage.get("template");
                     List<String> requirements = (List<String>) stage.get("requirements");
-                    return new CodeStage(desc, template, requirements);
+                    return new CodeStage(desc, template, requirements, exp);
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");

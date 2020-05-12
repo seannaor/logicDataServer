@@ -15,7 +15,7 @@ public interface IGraderBusiness {
     //UC - 3.1 - Login
     boolean beginGrading(String accessCode);
 
-    List<Integer> getPartiByTask(String accessCode) throws CodeException;
+    List<Integer> getParticipantsByTask(String accessCode) throws CodeException;
 
     List<ResultWrapper> getExpeeRes(String accessCode, int parti_code) throws CodeException, NotExistException, FormatException;
 }
