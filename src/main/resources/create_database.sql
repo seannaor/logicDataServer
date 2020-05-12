@@ -10,6 +10,9 @@ CREATE TABLE `management_users`
     PRIMARY KEY (`bgu_username`)
 );
 
+INSERT INTO management_users (bgu_username, bgu_password, user_email)
+VALUES ('ADMIN', '13579', 'admin@post.bgu.ac.il');
+
 CREATE TABLE `permissions`
 (
     `permission_id`   int          NOT NULL AUTO_INCREMENT,

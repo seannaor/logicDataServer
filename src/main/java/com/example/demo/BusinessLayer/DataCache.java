@@ -23,12 +23,12 @@ public class DataCache {
 
     @Autowired
     private DBAccess db;
-    private List<ManagementUser> managers;
-    private List<Experimentee> experimentees;
-    private List<Grader> graders;
-    private List<GradingTask> gradingTasks;
-    private List<GraderToGradingTask> graderToGradingTasks;
-    private List<GradersGTToParticipants> gradersGTToParticipants;
+    private List<ManagementUser> managers = new ArrayList<>();
+    private List<Experimentee> experimentees = new ArrayList<>();
+    private List<Grader> graders = new ArrayList<>();
+    private List<GradingTask> gradingTasks = new ArrayList<>();
+    private List<GraderToGradingTask> graderToGradingTasks = new ArrayList<>();
+    private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
     public void setCache() {
         managers = new ArrayList<>();
