@@ -43,6 +43,8 @@ public class GradersGTToParticipants {
     @JoinColumn(name = "participant_id", referencedColumnName = "participant_id")
     private Participant participant;
 
+    //TODO: I think i need to add Participant for the grader side
+
     public GradersGTToParticipants() { }
     public GradersGTToParticipants(GraderToGradingTask graderToGradingTask, Participant participant) {
         this.gradersGTToParticipantsID = new GradersGTToParticipantsID(graderToGradingTask.getGradingTask().getGradingTaskId(), graderToGradingTask.getGrader().getGraderEmail(), participant.getParticipantId());

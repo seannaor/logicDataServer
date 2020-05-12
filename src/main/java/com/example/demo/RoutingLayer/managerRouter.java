@@ -71,19 +71,19 @@ public class managerRouter {
         return creator.addGradingTask(username, exp_id, task_name, jStages_expee, exp_indexes, jStages_personal);
     }
 
-    @RequestMapping("/add_to_personal")
-    public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String stage) {
+    @RequestMapping("/add_to_personal_exp")
+    public Map<String, Object> addToPersonalExp(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String stage) {
         stage = decode(stage);
         return creator.addToPersonal(username, exp_id, task_id, strToJSON(stage));
     }
 
-    @RequestMapping("/addToResultsExp")
+    @RequestMapping("/add_to_evaluation_exp")
     public Map<String, Object> addToResultsExp(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String stage) {
         stage = decode(stage);
         return creator.addToResultsExp(username, exp_id, task_id, strToJSON(stage));
     }
 
-    @RequestMapping("/setStagesToCheck")
+    @RequestMapping("/set_stages_to_check")
     public Map<String, Object> setStagesToCheck(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam List<Integer> indexes) {
         return creator.setStagesToCheck(username, exp_id, task_id, indexes);
     }
