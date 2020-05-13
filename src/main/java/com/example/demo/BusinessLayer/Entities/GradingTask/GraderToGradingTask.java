@@ -7,11 +7,13 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "graders_to_grading_tasks")
@@ -50,8 +52,10 @@ public class GraderToGradingTask {
     @ManyToOne
     @JoinColumn(name = "grader_email")
     private Grader grader;
-    @Column(name = "grader_access_code")
-    private String graderAccessCode;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "grader_access_code", columnDefinition = "BINARY(16)")
+    private UUID graderAccessCode;
     @OneToMany(mappedBy = "graderToGradingTask")
     private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
@@ -59,15 +63,9 @@ public class GraderToGradingTask {
     }
 
     public GraderToGradingTask(GradingTask gradingTask, Grader grader) {
-        this.gradingTask = gradingTask;
-        this.grader = grader;
-    }
-
-    public GraderToGradingTask(GradingTask gradingTask, Grader grader, String graderAccessCode) {
         this.graderToGradingTaskID = new GraderToGradingTaskID(gradingTask.getGradingTaskId(), grader.getGraderEmail());
         this.gradingTask = gradingTask;
         this.grader = grader;
-        this.graderAccessCode = graderAccessCode;
         this.gradingTask.addAssignedGradingTasks(this);
         this.grader.assignGradingTasks(this);
     }
@@ -114,8 +112,12 @@ public class GraderToGradingTask {
         return grader;
     }
 
-    public String getGraderAccessCode() {
+    public UUID getGraderAccessCode() {
         return graderAccessCode;
+    }
+
+    public void setGraderAccessCode(UUID graderAccessCode) {
+        this.graderAccessCode = graderAccessCode;
     }
 
     public List<ResultWrapper> getExpeeRes(int parti_id) throws NotExistException, FormatException {

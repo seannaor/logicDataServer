@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
+
 @Service
 public class GraderService {
     @Autowired
@@ -17,7 +19,7 @@ public class GraderService {
     public Map<String, Object> beginGrading(String code) {
         String res = "OK";
         try {
-            graderBusiness.beginGrading(code);
+            graderBusiness.beginGrading(UUID.fromString(code));
         } catch (Exception e) {
             res = e.getMessage();
         }

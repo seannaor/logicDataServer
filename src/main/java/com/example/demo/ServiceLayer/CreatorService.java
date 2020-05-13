@@ -116,29 +116,29 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail, String graderCode) {
+    public Map<String, Object> addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) {
         String res = "OK";
         try {
-            creatorBusiness.addGraderToGradingTask(researcherName, expId, taskId, graderMail, graderCode);
+            creatorBusiness.addGraderToGradingTask(researcherName, expId, taskId, graderMail);
         } catch (Exception e) {
             res = e.getMessage();
         }
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addExperimentee(String researcherName, int expId, String accessCode, String ExpeeMail) {
+    public Map<String, Object> addExperimentee(String researcherName, int expId, String ExpeeMail) {
         try {
-            String code = creatorBusiness.addExperimentee(researcherName, expId, accessCode, ExpeeMail);
+            String code = creatorBusiness.addExperimentee(researcherName, expId, ExpeeMail);
             return Map.of("response", "OK", "code", code);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
     }
 
-    public Map<String, Object> addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String accessCode) {
+    public Map<String, Object> addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) {
         String res = "OK";
         try {
-            creatorBusiness.addExpeeToGrader(researcherName, expId, taskId, graderMail, accessCode);
+            creatorBusiness.addExpeeToGrader(researcherName, expId, taskId, graderMail, expeeMail);
         } catch (Exception e) {
             res = e.getMessage();
         }

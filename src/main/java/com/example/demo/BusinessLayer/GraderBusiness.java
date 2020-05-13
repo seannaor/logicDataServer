@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GraderBusiness implements IGraderBusiness {
@@ -22,7 +23,7 @@ public class GraderBusiness implements IGraderBusiness {
 //    }
 
     @Override
-    public boolean beginGrading(String accessCode) {
+    public boolean beginGrading(UUID accessCode) {
         try {
             cache.getGraderByCode(accessCode);
             return true;
@@ -32,7 +33,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<Integer> getParticipantsByTask(String accessCode) throws CodeException {
+    public List<Integer> getParticipantsByTask(UUID accessCode) throws CodeException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         List<Integer> parts = new ArrayList<>();
         for(Participant p:task.getParticipants()){
@@ -43,7 +44,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<ResultWrapper> getExpeeRes(String accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
+    public List<ResultWrapper> getExpeeRes(UUID accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         return task.getExpeeRes(parti_id);
 

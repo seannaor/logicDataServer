@@ -9,17 +9,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.util.Pair;
 
+import java.util.UUID;
+
 public interface IExperimenteeBusiness {
 
     //UC 2.1 - Login
-    Stage beginParticipation(String accessCode) throws ExpEndException, CodeException;
+    Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException;
 
     //UC 2.2.*
-    void fillInStage(String accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException;
+    void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException;
 
-    Stage getNextStage(String accessCode) throws CodeException, ExpEndException;
+    Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException;
 
-    Stage getCurrentStage(String accessCode) throws CodeException, ExpEndException;
+    Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException;
 
-    Pair<Stage, ResultWrapper> getStage(String code, int id) throws CodeException, NotInReachException;
+    Pair<Stage, ResultWrapper> getStage(UUID code, int id) throws CodeException, NotInReachException;
 }

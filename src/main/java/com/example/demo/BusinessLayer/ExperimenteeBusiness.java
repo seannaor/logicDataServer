@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Autowired
@@ -27,31 +29,31 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
 //    }
 
     @Override
-    public Stage beginParticipation(String accessCode) throws ExpEndException, CodeException {
+    public Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException {
         Experimentee expee =cache.getExpeeByCode(accessCode);
         return expee.getParticipant().getCurrStage();
     }
 
     @Override
-    public void fillInStage(String accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
+    public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
         part.fillInStage(data);
     }
 
     @Override
-    public Stage getCurrentStage(String accessCode) throws CodeException, ExpEndException {
+    public Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
     }
 
     @Override
-    public Pair<Stage, ResultWrapper> getStage(String accessCode, int idx) throws CodeException, NotInReachException {
+    public Pair<Stage, ResultWrapper> getStage(UUID accessCode, int idx) throws CodeException, NotInReachException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return Pair.of(expee.getStage(idx),expee.getResults(idx));
     }
 
     @Override
-    public Stage getNextStage(String accessCode) throws CodeException, ExpEndException {
+    public Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         Stage nextStage = expee.getNextStage();
         db.saveExperimentee(expee); //current stage has changed, need to save

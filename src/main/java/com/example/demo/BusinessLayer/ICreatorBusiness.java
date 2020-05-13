@@ -44,11 +44,11 @@ public interface ICreatorBusiness {
     //UC 1.3
     void setAlliePermissions(String researcherName, int expId, String allieMail, String allieRole, List<String> permissions) throws NotExistException;
 
-    void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail, String graderCode) throws NotExistException;
+    void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException;
 
-    String addExperimentee(String researcherName, int expId, String accessCode, String ExpeeMail) throws NotExistException, ExistException;
+    String addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
 
-    void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String accessCode) throws NotExistException, ExistException, CodeException;
+    void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) throws NotExistException, ExistException;
 
     //TODO: add meaningful getters: experimentees, grading tasks, graders, stages ... (anything that the creator might want to observe)
     List<Experiment> getExperiments(String username) throws NotExistException;

@@ -4,15 +4,19 @@ import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "experimentees")
 public class Experimentee {
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "access_code", columnDefinition = "BINARY(16)")
     @Id
-    @Column(name = "access_code")
-    private String accessCode;
+    private UUID accessCode;
     @Column(name = "experimentee_email")
     private String experimenteeEmail;
     @OneToOne
@@ -22,23 +26,17 @@ public class Experimentee {
     public Experimentee() {
     }
 
-    public Experimentee(String accessCode, String experimenteeEmail, Experiment exp) {
-        this.accessCode = accessCode;
+    public Experimentee(String experimenteeEmail, Experiment exp) {
         this.experimenteeEmail = experimenteeEmail;
         this.participant = new Participant(exp);
     }
 
-    public Experimentee(String accessCode, String experimenteeEmail) {
-        this.accessCode = accessCode;
+    public Experimentee(String experimenteeEmail) {
         this.experimenteeEmail = experimenteeEmail;
     }
 
-    public String getAccessCode() {
+    public UUID getAccessCode() {
         return accessCode;
-    }
-
-    public void setAccessCode(String access_code) {
-        this.accessCode = access_code;
     }
 
     public String getExperimenteeEmail() {

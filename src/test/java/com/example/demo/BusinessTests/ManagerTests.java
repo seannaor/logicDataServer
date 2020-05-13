@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 public class ManagerTests {
@@ -45,7 +46,7 @@ public class ManagerTests {
         List<JSONObject> stages = Utils.buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         experiment = manager.getExperimentByName("The Experiment");
-        expee = new Experimentee( "123", "gili@post.bgu.ac.il",experiment);
+        expee = new Experimentee( "gili@post.bgu.ac.il",experiment);
         cache.addExperimentee(expee);
         gradingTaskId = creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "The Grading Task", new ArrayList<>(), List.of(2), new ArrayList<>());
         gt = cache.getGradingTaskById(manager.getBguUsername(), experiment.getExperimentId(), gradingTaskId);
@@ -349,10 +350,9 @@ public class ManagerTests {
     @Test
     public void addExperimentee() {
         String expee_mail = "fucky@post.bgu.ac.il";
-        String expee_code = "rrrr";
         try {
             //not exist manager
-            creatorBusiness.addExperimentee("not exist", experiment.getExperimentId(), expee_code, expee_mail);
+            creatorBusiness.addExperimentee("not exist", experiment.getExperimentId(), expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
         } catch (ExistException fuck) {
@@ -361,19 +361,19 @@ public class ManagerTests {
 
         try {
             //not exist experiment
-            creatorBusiness.addExperimentee(manager.getBguUsername(), -1, expee_code, expee_mail);
+            creatorBusiness.addExperimentee(manager.getBguUsername(), -1, expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
         } catch (ExistException fuck) {
             Assert.fail();
         }
 
-        //checking that there isn't any expee with that access code
-        Assert.assertFalse(cache.isExpeeInExperiment(expee_code));
+        //checking that there isn't any expee with that mail in this experiment
+        Assert.assertFalse(cache.isExpeeInExperiment(expee_mail, experiment.getExperimentId()));
 
         try {
-            creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_code, expee_mail);
-            Assert.assertTrue(cache.isExpeeInExperiment(expee_code));
+            creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
+            Assert.assertTrue(cache.isExpeeInExperiment(expee_mail, experiment.getExperimentId()));
         } catch (Exception fuck) {
             Assert.fail();
         }
@@ -381,7 +381,7 @@ public class ManagerTests {
 
         try {
             //exist experimentee
-            creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_code, expee_mail);
+            creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
             Assert.fail();
         } catch (NotExistException fuck) {
             Assert.fail();
@@ -392,37 +392,37 @@ public class ManagerTests {
     @Test
     public void addExpeeToGrader(){
         String grader_mail = "grader@post.bgu.ac.il";
-        String grader_code = "123";
-        String expee_code = expee.getAccessCode();
+        String expee_mail = expee.getExperimenteeEmail();
+
         try {
-            creatorBusiness.addGraderToGradingTask(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail, grader_code);
+            creatorBusiness.addGraderToGradingTask(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail);
         }
         catch (Exception e){
             System.out.println(e);
         }
         try {
             //not exist manager
-            creatorBusiness.addExpeeToGrader("not exist", experiment.getExperimentId(), gt.getGradingTaskId(),grader_mail, expee_code);
+            creatorBusiness.addExpeeToGrader("not exist", experiment.getExperimentId(), gt.getGradingTaskId(),grader_mail,expee_mail);
             Assert.fail();
-        } catch (NotExistException | CodeException ignored) {
+        } catch (NotExistException ignored) {
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try {
             //not exist experiment
-            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), -1, gt.getGradingTaskId(), grader_mail, expee_code);
+            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), -1, gt.getGradingTaskId(), grader_mail,expee_mail);
             Assert.fail();
-        } catch (NotExistException | CodeException ignored) {
+        } catch (NotExistException ignored) {
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try {
             //not exist grading task
-            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), -1, grader_mail,expee_code);
+            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), -1, grader_mail,expee_mail);
             Assert.fail();
-        } catch (NotExistException | CodeException ignored) {
+        } catch (NotExistException ignored) {
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -432,31 +432,31 @@ public class ManagerTests {
             //not exist expee
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,"not exist");
             Assert.fail();
-        } catch (NotExistException | CodeException ignored) {
+        } catch (NotExistException ignored) {
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try {
             //not exist grader
-            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), "not exist",expee_code);
+            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), "not exist",expee_mail);
             Assert.fail();
-        } catch (NotExistException | CodeException ignored) {
+        } catch (NotExistException ignored) {
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try{
-            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,expee_code);
+            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,expee_mail);
         } catch (Exception e) {
             Assert.fail();
         }
 
         try {
             //expee already in grader's participants
-            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,expee_code);
+            creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,expee_mail);
             Assert.fail();
-        } catch (NotExistException | CodeException e) {
+        } catch (NotExistException e) {
             Assert.fail();
         } catch (ExistException ignore) {}
     }
