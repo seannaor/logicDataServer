@@ -13,8 +13,15 @@ public class AnswersWrapper implements ResultWrapper {
         if(!answers.contains(ans))
             answers.add(ans);
     }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
     @Override
     public JSONObject getAsJson() {
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("source stage","questionnaire");
+        return json;
     }
 }

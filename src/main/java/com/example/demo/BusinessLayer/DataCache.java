@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.DBAccess;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,14 +234,16 @@ public class DataCache {
         gradingTasks.add(gt);
     }
 
-    public void addGraderToGradingTask(GradingTask gt, Grader g) {
+    public UUID addGraderToGradingTask(GradingTask gt, Grader g) throws ExistException {
         for(GraderToGradingTask g2gt : graderToGradingTasks)
             if(g2gt.getGrader().getGraderEmail().equals(g.getGraderEmail()) && g2gt.getGradingTask().getGradingTaskId() == gt.getGradingTaskId())
-                return;
+                throw new ExistException("grader "+ g.getGraderEmail(),"grading task "+gt.getGradingTaskName());
         GraderToGradingTask gtgt = new GraderToGradingTask(gt, g);
-        gtgt.setGraderAccessCode(UUID.randomUUID());
+        UUID id = UUID.randomUUID();
+        gtgt.setGraderAccessCode(id);
         db.saveGraderToGradingTask(gtgt);
         graderToGradingTasks.add(gtgt);
+        return id;
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 

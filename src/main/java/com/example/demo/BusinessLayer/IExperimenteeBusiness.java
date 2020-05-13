@@ -7,7 +7,6 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.data.util.Pair;
 
 import java.util.UUID;
 
@@ -23,5 +22,7 @@ public interface IExperimenteeBusiness {
 
     Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException;
 
-    Pair<Stage, ResultWrapper> getStage(UUID code, int id) throws CodeException, NotInReachException;
+    Stage getStage(UUID code, int id) throws CodeException, NotInReachException;
+
+    ResultWrapper getResult(UUID accessCode, int idx) throws CodeException, NotInReachException;
 }

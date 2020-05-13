@@ -42,7 +42,8 @@ public class Participant {
     @OneToMany(mappedBy = "participant")
     private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
 
-    public Participant() { }
+    public Participant() {
+    }
 
     public Participant(Experiment experiment) {
         this.experiment = experiment;
@@ -63,7 +64,7 @@ public class Participant {
     }
 
     public void addGradersGTToParticipants(GradersGTToParticipants g) {
-        if(!this.gradersGTToParticipants.contains(g))
+        if (!this.gradersGTToParticipants.contains(g))
             this.gradersGTToParticipants.add(g);
     }
 
@@ -79,12 +80,12 @@ public class Participant {
     }
 
     public Stage getStage(int idx) throws NotInReachException {
-        if(currStage<idx) throw new NotInReachException("stage "+idx);
+        if (currStage < idx) throw new NotInReachException("stage " + idx);
         return this.experiment.getStages().get(idx);
     }
 
     public ResultWrapper getResults(int idx) throws NotInReachException {
-        if(currStage<idx) throw new NotInReachException("result of stage "+idx);
+        if (currStage < idx) throw new NotInReachException("result of stage " + idx);
         //TODO: when we will have one list of results, get results of stage idx.
         return null;
     }
@@ -99,7 +100,7 @@ public class Participant {
         return isDone;
     }
 
-    public void fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
+    public ResultWrapper fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
 
@@ -108,24 +109,26 @@ public class Participant {
                 CodeResult codeResult = curr.fillCode(data);
                 codeResult.setParticipant(this);
                 this.codeResults.add(codeResult);
-                return;
+                return codeResult;
             case "Tagging":
+                TagsWrapper tags = new TagsWrapper();
                 List<RequirementTag> requirementTags = curr.fillTagging(data);
-                for (RequirementTag tag : requirementTags)
+                for (RequirementTag tag : requirementTags) {
                     tag.setParticipant(this);
-
+                    tags.addTag(tag);
+                }
                 this.requirementTags.addAll(requirementTags);
-                return;
-            case "questionnaire":
-                List<Answer> answers = curr.fillQuestionnaire(data);
-                for (Answer ans : answers)
-                    ans.setParticipant(this);
 
+                return tags;
+            case "questionnaire":
+                AnswersWrapper answersWrapper = new AnswersWrapper();
+                List<Answer> answers = curr.fillQuestionnaire(data);
+                for (Answer ans : answers) {
+                    ans.setParticipant(this);
+                    answersWrapper.addAns(ans);
+                }
                 this.answers.addAll(answers);
-                return;
-            case "info":
-                curr.fillInfo(data);
-                return;
+                return answersWrapper;
             default:
                 throw new FormatException(curr.getType(), type);
         }

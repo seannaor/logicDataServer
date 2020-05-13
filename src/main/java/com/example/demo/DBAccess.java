@@ -5,9 +5,7 @@ import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,6 +146,24 @@ public class DBAccess {
         }
         stageRep.save(s);
         experimentRep.save(s.getExperiment());
+    }
+    public void saveStageResult(ResultWrapper result){
+        String sourceStage = result.getAsJson().get("source stage").toString();
+        switch (sourceStage){
+            case "code":
+                saveCodeResult((CodeResult) result);
+                return;
+            case "tagging":
+                for(RequirementTag tag : ((TagsWrapper)result).getTags()){
+                    saveRequirementTag(tag);
+                }
+                return;
+            case "questionnaire":
+                for(Answer ans : ((AnswersWrapper)result).getAnswers()){
+                    saveAnswer(ans);
+                }
+                return;
+        }
     }
     public void saveQuestion(Question q) { questionRep.save(q); }
     public void saveAnswer(Answer a) { answerRep.save(a); }

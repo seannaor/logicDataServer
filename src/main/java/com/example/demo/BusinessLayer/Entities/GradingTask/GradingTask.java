@@ -81,6 +81,10 @@ public class GradingTask {
         this.stages = newStages;
     }
 
+    public String getGradingTaskName() {
+        return gradingTaskName;
+    }
+
     public List<GraderToGradingTask> getAssignedGradingTasks() {
         return assignedGradingTasks;
     }

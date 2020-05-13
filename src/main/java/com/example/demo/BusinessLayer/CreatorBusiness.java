@@ -5,7 +5,6 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CreatorBusiness implements ICreatorBusiness {
@@ -145,7 +143,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException {
+    public String addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException, ExistException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Grader grader;
         try {
@@ -154,7 +152,7 @@ public class CreatorBusiness implements ICreatorBusiness {
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
-        cache.addGraderToGradingTask(gt, grader);//TODO:figure out WTF
+        return cache.addGraderToGradingTask(gt, grader).toString();//TODO:figure out WTF
     }
 
     @Override

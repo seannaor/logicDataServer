@@ -1,10 +1,8 @@
 package com.example.demo.BusinessLayer;
 
-
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
@@ -44,13 +42,14 @@ public interface ICreatorBusiness {
     //UC 1.3
     void setAlliePermissions(String researcherName, int expId, String allieMail, String allieRole, List<String> permissions) throws NotExistException;
 
-    void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException;
+    String addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException, ExistException;
 
     String addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
 
     void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) throws NotExistException, ExistException;
 
-    //TODO: add meaningful getters: experimentees, grading tasks, graders, stages ... (anything that the creator might want to observe)
+    //meaningful getters
+
     List<Experiment> getExperiments(String username) throws NotExistException;
 
     List<Stage> getStages(String username, int expId) throws NotExistException;

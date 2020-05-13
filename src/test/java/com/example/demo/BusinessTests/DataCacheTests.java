@@ -6,6 +6,7 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.DBAccess;
 import org.junit.Assert;
@@ -98,7 +99,7 @@ public class DataCacheTests {
         catch (NotExistException e) { Assert.fail(); }
     }
     @Test
-    void getGraderByCodeTest() throws NotExistException {
+    void getGraderByCodeTest() throws NotExistException, ExistException {
         try {
             cache.getGraderByCode(UUID.randomUUID());
         }
@@ -128,7 +129,7 @@ public class DataCacheTests {
         catch (CodeException e) { Assert.fail(); }
     }
     @Test
-    void getG2GTByCodeTest() throws NotExistException {
+    void getG2GTByCodeTest() throws NotExistException, ExistException {
         try {
             cache.getTaskByCode(UUID.randomUUID());
         }
@@ -261,7 +262,7 @@ public class DataCacheTests {
     }
     @Test
     @Transactional
-    void getGradingToGradingTaskByIdTest() {
+    void getGradingToGradingTaskByIdTest() throws ExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi", creator);
@@ -292,7 +293,7 @@ public class DataCacheTests {
     }
     @Test
     @Transactional
-    void getGradersGTToParticipantsTest() throws NotExistException {
+    void getGradersGTToParticipantsTest() throws NotExistException, ExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi", creator);

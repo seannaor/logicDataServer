@@ -14,8 +14,14 @@ public class TagsWrapper implements ResultWrapper {
             tags.add(tag);
     }
 
+    public List<RequirementTag> getTags() {
+        return tags;
+    }
+
     @Override
     public JSONObject getAsJson() {
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("source stage","tagging");
+        return json;
     }
 }

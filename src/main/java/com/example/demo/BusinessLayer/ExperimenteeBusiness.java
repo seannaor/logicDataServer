@@ -37,7 +37,8 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Override
     public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
-        part.fillInStage(data);
+        ResultWrapper result = part.fillInStage(data);
+        db.saveStageResult(result);
     }
 
     @Override
@@ -47,9 +48,15 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public Pair<Stage, ResultWrapper> getStage(UUID accessCode, int idx) throws CodeException, NotInReachException {
+    public Stage getStage(UUID accessCode, int idx) throws CodeException, NotInReachException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        return Pair.of(expee.getStage(idx),expee.getResults(idx));
+        return expee.getStage(idx);
+    }
+
+    @Override
+    public ResultWrapper getResult(UUID accessCode, int idx) throws CodeException, NotInReachException {
+        Experimentee expee = cache.getExpeeByCode(accessCode);
+        return expee.getResults(idx);
     }
 
     @Override
