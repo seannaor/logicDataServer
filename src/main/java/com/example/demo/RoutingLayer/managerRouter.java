@@ -100,18 +100,18 @@ public class managerRouter {
     }
 
     @RequestMapping("/addGraderToTask")
-    public Map<String, Object> addGraderToGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String mail, @RequestParam String graderCode) {
-        return creator.addGraderToGradingTask(username, exp_id, task_id, mail, graderCode);
+    public Map<String, Object> addGraderToGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String mail) {
+        return creator.addGraderToGradingTask(username, exp_id, task_id, mail);
     }
 
     @RequestMapping("/add_expee")
-    public Map<String, Object> addExperimentee(@RequestParam String username, @RequestParam int exp_id, @RequestParam String accessCode, @RequestParam String mail) {
-        return creator.addExperimentee(username, exp_id, accessCode, mail);
+    public Map<String, Object> addExperimentee(@RequestParam String username, @RequestParam int exp_id, @RequestParam String mail) {
+        return creator.addExperimentee(username, exp_id, mail);
     }
 
     @RequestMapping("/addExpeeToGrader")
-    public Map<String, Object> addExpeeToGrader(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String grader_mail, @RequestParam String access_code) {
-        return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, access_code);
+    public Map<String, Object> addExpeeToGrader(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String grader_mail, @RequestParam String expee_mail) {
+        return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, expee_mail);
     }
 
     // EXTRAS to manager

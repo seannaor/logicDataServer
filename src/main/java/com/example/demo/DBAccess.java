@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DBAccess {
@@ -84,7 +85,7 @@ public class DBAccess {
     public List<Experimentee> getAllExperimentees() {
         return experimenteeRep.findAll();
     }
-    public Experimentee getExperimenteeByCode(String code) { return experimenteeRep.findById(code).orElse(null); }
+    public Experimentee getExperimenteeByCode(UUID code) { return experimenteeRep.findById(code).orElse(null); }
     public Experimentee getExperimenteeByEmail(String email) { return experimenteeRep.findByEmail(email); }
     public Experimentee getExperimenteeByEmailAndExp(String email, int expId) { return experimenteeRep.findByEmailAndExp(email, expId); }
     public void saveExperiment(Experiment e, ManagementUser creator) {
@@ -165,7 +166,7 @@ public class DBAccess {
     }
     public long getGraderToGradingTaskCount() { return graderToGradingTaskRep.count(); }
     public GraderToGradingTask getGraderToGradingTaskById(int gtId, String graderEmail) { return graderToGradingTaskRep.findById(new GraderToGradingTask.GraderToGradingTaskID(gtId, graderEmail)).orElse(null); }
-    public GraderToGradingTask getGraderToGradingTaskByCode(String code) { return graderToGradingTaskRep.findByGradersCode(code); }
+    public GraderToGradingTask getGraderToGradingTaskByCode(UUID code) { return graderToGradingTaskRep.findByGradersCode(code); }
     public void saveGradersGTToParticipants(GradersGTToParticipants g) {
         gradersGTToParticipantsRep.save(g);
         graderToGradingTaskRep.save(g.getGraderToGradingTask());

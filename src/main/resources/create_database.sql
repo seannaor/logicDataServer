@@ -59,7 +59,7 @@ CREATE TABLE `participants`
 
 CREATE TABLE `experimentees`
 (
-    `access_code`        varchar(255) NOT NULL,
+    `access_code`        BINARY(16)   NOT NULL,
     `experimentee_email` varchar(255) NOT NULL,
     `participant_id`     int          NOT NULL,
     FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
@@ -107,7 +107,7 @@ CREATE TABLE `graders_to_grading_tasks`
 (
     `grading_task_id`    int          NOT NULL,
     `grader_email`       varchar(255) NOT NULL,
-    `grader_access_code` varchar(255) NOT NULL,
+    `grader_access_code` BINARY(16)   NOT NULL,
     FOREIGN KEY (`grading_task_id`) REFERENCES grading_tasks (`grading_task_id`) ON DELETE CASCADE,
     FOREIGN KEY (`grader_email`) REFERENCES graders (`grader_email`) ON DELETE CASCADE,
     PRIMARY KEY (`grading_task_id`, `grader_email`)

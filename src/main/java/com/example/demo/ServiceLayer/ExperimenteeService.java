@@ -11,6 +11,8 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
+
 @Service
 public class ExperimenteeService {
     @Autowired
@@ -24,7 +26,7 @@ public class ExperimenteeService {
     public Map<String, Object> beginParticipation(String accessCode) {
 
         try {
-            Stage s = experimenteeBusiness.beginParticipation(accessCode);
+            Stage s = experimenteeBusiness.beginParticipation(UUID.fromString(accessCode));
             return Map.of("response", "OK", "type", s.getType());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
@@ -34,7 +36,7 @@ public class ExperimenteeService {
 
     public Map<String, Object> getCurrentStage(String accessCode) {
         try {
-            Stage s = experimenteeBusiness.getCurrentStage(accessCode);
+            Stage s = experimenteeBusiness.getCurrentStage(UUID.fromString(accessCode));
             return Map.of("response", "OK", "stage", s.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
@@ -43,7 +45,7 @@ public class ExperimenteeService {
 
     public Map<String, Object> getNextStage(String accessCode) {
         try {
-            Stage s = experimenteeBusiness.getNextStage(accessCode);
+            Stage s = experimenteeBusiness.getNextStage(UUID.fromString(accessCode));
             return Map.of("response", "OK", "stage", s.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
@@ -55,7 +57,7 @@ public class ExperimenteeService {
     public Map<String, Object> fillInStage(String accessCode, JSONObject data) {
         String res = "OK";
         try {
-            experimenteeBusiness.fillInStage(accessCode, data);
+            experimenteeBusiness.fillInStage(UUID.fromString(accessCode), data);
         } catch (Exception e) {
             res = e.getMessage();
         }
@@ -64,7 +66,7 @@ public class ExperimenteeService {
 
     public Map<String, Object> getStageAt(String code, int id) {
         try {
-            Pair<Stage, ResultWrapper> pair = experimenteeBusiness.getStage(code, id);
+            Pair<Stage, ResultWrapper> pair = experimenteeBusiness.getStage(UUID.fromString(code), id);
             return Map.of("response", "OK", "stage", pair.getFirst(), "results", pair.getSecond());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());

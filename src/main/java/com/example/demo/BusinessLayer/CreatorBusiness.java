@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CreatorBusiness implements ICreatorBusiness {
@@ -144,7 +145,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail, String graderCode) throws NotExistException {
+    public void addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) throws NotExistException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Grader grader;
         try {
@@ -153,24 +154,24 @@ public class CreatorBusiness implements ICreatorBusiness {
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
-        cache.addGraderToGradingTask(gt, grader, graderCode);//TODO:figure out WTF
+        cache.addGraderToGradingTask(gt, grader);//TODO:figure out WTF
     }
 
     @Override
-    public String addExperimentee(String researcherName, int expId, String accessCode, String expeeMail) throws NotExistException, ExistException {
+    public String addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
-        if (cache.isExpeeInExperiment(accessCode)) throw new ExistException(accessCode, "experiment " + expId);
-        Experimentee expee =new Experimentee(accessCode, expeeMail, exp);
+        if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
+        Experimentee expee =new Experimentee(expeeMail, exp);
         cache.addExperimentee(expee);
-        return expee.getAccessCode();
+        return expee.getAccessCode().toString();
     }
 
     @Override
-    public void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String accessCode) throws NotExistException, ExistException, CodeException {
+    public void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) throws NotExistException, ExistException {
         Grader grader = cache.getGraderByEMail(graderMail);
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
-        Participant participant = cache.getExpeeByCode(accessCode).getParticipant();
+        Participant participant = cache.getExpeeByMailAndExp(expeeMail, expId).getParticipant();
         GradersGTToParticipants g = cache.getGradersGTToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
         if(g != null) { //this participant is already in the graderToGraderTask
             throw new ExistException("user with id "+participant.getParticipantId(),graderMail+" participants");

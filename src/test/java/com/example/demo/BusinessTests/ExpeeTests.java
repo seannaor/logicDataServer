@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 public class ExpeeTests {
@@ -47,7 +48,7 @@ public class ExpeeTests {
         List<JSONObject> stages = Utils.buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         experiment = manager.getExperimentByName("The Experiment");
-        expee = new Experimentee("123", "gili@post.bgu.ac.il", experiment);
+        expee = new Experimentee("gili@post.bgu.ac.il", experiment);
         cache.addExperimentee(expee);
     }
 
@@ -55,7 +56,7 @@ public class ExpeeTests {
     public void loginTest() {
         //not exist code should fail
         try {
-            Stage first = experimenteeBusiness.beginParticipation("not exist");
+            Stage first = experimenteeBusiness.beginParticipation(UUID.randomUUID());
         } catch (CodeException ignore) {}
         catch (ExpEndException e){Assert.fail();}
 
@@ -72,7 +73,7 @@ public class ExpeeTests {
     public void currNextStageTest() {
         //not exist code should fail
         try {
-            experimenteeBusiness.getCurrentStage("not exist");
+            experimenteeBusiness.getCurrentStage(UUID.randomUUID());
             Assert.fail();
         } catch (CodeException ignore) {
         } catch (ExpEndException e) {
@@ -81,7 +82,7 @@ public class ExpeeTests {
 
         //not exist code should fail
         try {
-            experimenteeBusiness.getNextStage("not exist");
+            experimenteeBusiness.getNextStage(UUID.randomUUID());
             Assert.fail();
         } catch (CodeException ignore) {
         } catch (Exception e) {
@@ -128,7 +129,7 @@ public class ExpeeTests {
 
         //not exist code should fail
         try {
-            experimenteeBusiness.fillInStage("not exist", new JSONObject());
+            experimenteeBusiness.fillInStage(UUID.randomUUID(), new JSONObject());
             Assert.fail();
         } catch (CodeException ignore) {
         } catch (Exception e) {

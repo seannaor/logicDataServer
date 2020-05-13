@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DataCache {
@@ -79,7 +80,7 @@ public class DataCache {
         throw new NotExistException("grader", email);
     }
 
-    public Grader getGraderByCode(String code) throws CodeException {
+    public Grader getGraderByCode(UUID code) throws CodeException {
         for (GraderToGradingTask g2gt : graderToGradingTasks)
             if (g2gt.getGraderAccessCode().equals(code)) return g2gt.getGrader();
         GraderToGradingTask g2gt = db.getGraderToGradingTaskByCode(code);
@@ -87,10 +88,10 @@ public class DataCache {
             graderToGradingTasks.add(g2gt);
             return g2gt.getGrader();
         }
-        throw new CodeException(code);
+        throw new CodeException(code.toString());
     }
 
-    public GraderToGradingTask getTaskByCode(String code) throws CodeException {
+    public GraderToGradingTask getTaskByCode(UUID code) throws CodeException {
         for (GraderToGradingTask g2gt : graderToGradingTasks)
             if (g2gt.getGraderAccessCode().equals(code)) return g2gt;
         GraderToGradingTask g = db.getGraderToGradingTaskByCode(code);
@@ -98,7 +99,7 @@ public class DataCache {
             graderToGradingTasks.add(g);
             return g;
         }
-        throw new CodeException(code);
+        throw new CodeException(code.toString());
     }
 
     public Experimentee getExpeeByEMail(String email) throws NotExistException {
@@ -112,7 +113,7 @@ public class DataCache {
         throw new NotExistException("experimentee", email);
     }
 
-    public Experimentee getExpeeByCode(String code) throws CodeException {
+    public Experimentee getExpeeByCode(UUID code) throws CodeException {
         for (Experimentee expee : experimentees)
             if (expee.getAccessCode().equals(code)) return expee;
         Experimentee expee = db.getExperimenteeByCode(code);
@@ -120,7 +121,7 @@ public class DataCache {
             experimentees.add(expee);
             return expee;
         }
-        throw new CodeException(code);
+        throw new CodeException(code.toString());
     }
 
     public Experimentee getExpeeByMailAndExp(String email, int expId) throws NotExistException {
@@ -207,38 +208,39 @@ public class DataCache {
         for(ManagementUser m : managers)
             if(m.getBguUsername().equals(manager.getBguUsername()))
                 return;
-        managers.add(manager);
         db.saveManagementUser(manager);
+        managers.add(manager);
     }
 
     public void addGrader(Grader grader) {
         for(Grader g : graders)
             if(g.getGraderEmail().equals(grader.getGraderEmail()))
                 return;
-        graders.add(grader);
         db.saveGrader(grader);
+        graders.add(grader);
     }
 
     public void addExperimentee(Experimentee expee) {
-        experimentees.add(expee);
         db.saveExperimentee(expee);
+        experimentees.add(expee);
     }
 
     public void addGradingTask(GradingTask gt) {
         for(GradingTask g : gradingTasks)
             if(g.getGradingTaskId() == gt.getGradingTaskId())
                 return;
-        gradingTasks.add(gt);
         db.saveGradingTask(gt);
+        gradingTasks.add(gt);
     }
 
-    public void addGraderToGradingTask(GradingTask gt, Grader g, String code) {
+    public void addGraderToGradingTask(GradingTask gt, Grader g) {
         for(GraderToGradingTask g2gt : graderToGradingTasks)
             if(g2gt.getGrader().getGraderEmail().equals(g.getGraderEmail()) && g2gt.getGradingTask().getGradingTaskId() == gt.getGradingTaskId())
                 return;
-        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g, code);
-        graderToGradingTasks.add(gtgt);
+        GraderToGradingTask gtgt = new GraderToGradingTask(gt, g);
+        gtgt.setGraderAccessCode(UUID.randomUUID());
         db.saveGraderToGradingTask(gtgt);
+        graderToGradingTasks.add(gtgt);
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 
@@ -249,15 +251,15 @@ public class DataCache {
                     && g.getGraderToGradingTask().getGradingTask().getGradingTaskId() == participantInGradingTask.getGraderToGradingTask().getGradingTask().getGradingTaskId()) {
                 return;
             }
-        gradersGTToParticipants.add(participantInGradingTask);
         db.saveGradersGTToParticipants(participantInGradingTask);
+        gradersGTToParticipants.add(participantInGradingTask);
     }
 
     //=======================================================================
 
-    public boolean isExpeeInExperiment(String accessCode) {
+    public boolean isExpeeInExperiment(String email, int expId) {
         for (Experimentee expee : db.getAllExperimentees()) {
-            if (expee.getAccessCode().equals(accessCode))
+            if (expee.getExperimenteeEmail().equals(email) && expee.getExperiment().getExperimentId() == expId)
                 return true;
         }
         return false;

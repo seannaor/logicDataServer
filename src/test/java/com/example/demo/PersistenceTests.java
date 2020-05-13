@@ -20,7 +20,9 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -183,17 +185,17 @@ class PersistenceTests {
 	void updateExpeesTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		addExperimentees(e);
-		Experimentee expee1 = experimenteeRep.findAll().get(0);
-		Experimentee expee2 = experimenteeRep.findAll().get(1);
-		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "a@a.com");
-		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "b@a.com");
+		List<UUID> codesCreated = addExperimentees(e);
+		Experimentee expee1 = experimenteeRep.findById(codesCreated.get(0)).orElse(null);
+		Experimentee expee2 = experimenteeRep.findById(codesCreated.get(1)).orElse(null);
+		assertEquals(experimenteeRep.findById(expee1.getAccessCode()).orElse(null).getExperimenteeEmail(), "a@a.com");
+		assertEquals(experimenteeRep.findById(expee2.getAccessCode()).orElse(null).getExperimenteeEmail(), "b@a.com");
 		expee1.setExperimenteeEmail("aa@aa.com");
 		expee2.setExperimenteeEmail("bb@bb.com");
 		experimenteeRep.save(expee1);
 		experimenteeRep.save(expee2);
-		assertEquals(experimenteeRep.findById("123asd").orElse(null).getExperimenteeEmail(), "aa@aa.com");
-		assertEquals(experimenteeRep.findById("vxcf").orElse(null).getExperimenteeEmail(), "bb@bb.com");
+		assertEquals(experimenteeRep.findById(expee1.getAccessCode()).orElse(null).getExperimenteeEmail(), "aa@aa.com");
+		assertEquals(experimenteeRep.findById(expee2.getAccessCode()).orElse(null).getExperimenteeEmail(), "bb@bb.com");
 	}
 
 	@Test
@@ -202,17 +204,16 @@ class PersistenceTests {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		addExperimentees(e);
-		experimenteeRep.deleteById("123asd");
+		experimenteeRep.deleteById(experimenteeRep.findAll().get(0).getAccessCode());
 		assertEquals(experimenteeRep.count(), 1);
-		assertEquals(experimenteeRep.findAll().get(0).getAccessCode(), "vxcf");
 		experimenteeRep.deleteAll();
 		assertEquals(experimenteeRep.count(), 0);
 	}
 
 
-	private void addExperimentees(Experiment e) {
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com"),
-				expee2 = new Experimentee("vxcf", "b@a.com");
+	private List<UUID> addExperimentees(Experiment e) {
+		Experimentee expee1 = new Experimentee("a@a.com"),
+				expee2 = new Experimentee("b@a.com");
 		Participant p1 = new Participant(e),
 				p2 = new Participant(e);
 		expee1.setParticipant(p1);
@@ -221,6 +222,7 @@ class PersistenceTests {
 		participantRep.save(p2);
 		experimenteeRep.save(expee1);
 		experimenteeRep.save(expee2);
+		return new ArrayList<>(Arrays.asList(expee1.getAccessCode(), expee2.getAccessCode()));
 	}
 
 	@Test
@@ -264,8 +266,10 @@ class PersistenceTests {
 	private void assignGradersToGradingTasks() {
 		Grader g1 = graderRep.findAll().get(0), g2 = graderRep.findAll().get(1);
 		GradingTask gt1 = gradingTaskRep.findAll().get(0), gt2 = gradingTaskRep.findAll().get(1);
-		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1, "1");
-		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2, "2");
+		GraderToGradingTask graderToGradingTask1 = new GraderToGradingTask(gt1, g1);
+		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2);
+		graderToGradingTask1.setGraderAccessCode(UUID.randomUUID());
+		graderToGradingTask2.setGraderAccessCode(UUID.randomUUID());
 		graderToGradingTaskRep.save(graderToGradingTask1);
 		assertEquals(graderToGradingTaskRep.count(), 1);
 		graderToGradingTaskRep.save(graderToGradingTask2);
@@ -320,12 +324,12 @@ class PersistenceTests {
 	}
 
 	private void createExperimenteesForGradingTasks(Experiment e) {
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
+		Experimentee expee1 = new Experimentee("a@a.com");
 		Participant pOfExpee1 = new Participant(e);
 		expee1.setParticipant(pOfExpee1);
 		participantRep.save(pOfExpee1);
 		experimenteeRep.save(expee1);
-		Experimentee expee2 = new Experimentee("aaa", "b@b.com");
+		Experimentee expee2 = new Experimentee("b@b.com");
 		Participant pOfExpee2 = new Participant(e);
 		expee2.setParticipant(pOfExpee2);
 		participantRep.save(pOfExpee2);
@@ -479,7 +483,7 @@ class PersistenceTests {
 	}
 
 	private Participant createExpeeAndParticipant() {
-		Experimentee expee1 = new Experimentee("123asd", "a@a.com");
+		Experimentee expee1 = new Experimentee( "a@a.com");
 		Participant p1 = new Participant(experimentRep.findAll().get(0));
 		experimentRep.findAll().get(0).getParticipants().add(p1);
 		expee1.setParticipant(p1);
