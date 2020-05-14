@@ -19,10 +19,6 @@ public class managerRouter {
     @Autowired
     private CreatorService creator;
 
-//    public managerRouter() {
-//        this.creator = new CreatorService();
-//    }
-
     @RequestMapping("")
     public Map<String, Object> managerLogin(@RequestParam String username, @RequestParam String password) {
         return creator.researcherLogin(username, password);
@@ -114,7 +110,7 @@ public class managerRouter {
         return creator.addExpeeToGrader(username, exp_id, task_id, grader_mail, expee_mail);
     }
 
-    // EXTRAS to manager
+    // meaningful getters
 
     @RequestMapping("/get_experiments")
     public Map<String, Object> getExperiments(@RequestParam String username) {

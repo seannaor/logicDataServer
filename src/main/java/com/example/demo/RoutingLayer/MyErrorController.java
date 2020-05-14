@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class MyErrorController implements ErrorController { // stolen from  https://github.com/eugenp/tutorials/blob/master/spring-boot-modules/spring-boot-basic-customization/src/main/java/com/baeldung/errorhandling/controllers/MyErrorController.java
-
+//Stupid shit do nothing
     @GetMapping(value = "/error")
     public String handleError(HttpServletRequest request) {
 

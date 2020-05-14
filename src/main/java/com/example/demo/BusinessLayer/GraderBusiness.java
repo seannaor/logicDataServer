@@ -33,12 +33,11 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<Integer> getParticipantsByTask(UUID accessCode) throws CodeException {
+    public List<Participant> getParticipantsByTask(UUID accessCode) throws CodeException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
-        List<Integer> parts = new ArrayList<>();
+        List<Participant> parts = new ArrayList<>();
         for(Participant p:task.getParticipants()){
-            if(p.isDone())
-                parts.add(p.getParticipantId());
+            if(p.isDone()) parts.add(p);
         }
         return parts;
     }
@@ -47,7 +46,6 @@ public class GraderBusiness implements IGraderBusiness {
     public List<ResultWrapper> getExpeeRes(UUID accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         return task.getExpeeRes(parti_id);
-
     }
 
 

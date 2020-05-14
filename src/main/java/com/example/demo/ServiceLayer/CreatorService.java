@@ -17,10 +17,6 @@ public class CreatorService {
     @Autowired
     private CreatorBusiness creatorBusiness;
 
-//    public CreatorService() {
-//        this.creatorBusiness = new CreatorBusiness();
-//    }
-
     //Login
     public Map<String, Object> researcherLogin(String username, String password) {
         return Map.of("response", creatorBusiness.researcherLogin(username, password));
@@ -117,13 +113,11 @@ public class CreatorService {
     }
 
     public Map<String, Object> addGraderToGradingTask(String researcherName, int expId, int taskId, String graderMail) {
-        String res = "OK";
         try {
-            creatorBusiness.addGraderToGradingTask(researcherName, expId, taskId, graderMail);
+            return Map.of("response","OK","code",creatorBusiness.addGraderToGradingTask(researcherName, expId, taskId, graderMail));
         } catch (Exception e) {
-            res = e.getMessage();
+            return  Map.of("response", e.getMessage());
         }
-        return Map.of("response", res);
     }
 
     public Map<String, Object> addExperimentee(String researcherName, int expId, String ExpeeMail) {

@@ -82,6 +82,7 @@ public class CodeResult implements ResultWrapper {
     public JSONObject getAsJson() {
         JSONObject JResult = codeStage.getJson();
         JResult.put("user code",userCode);
+        JResult.put("source stage","code");
         return JResult;
     }
 }

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -55,10 +57,13 @@ public class ManagerTests {
     @Test // manager login
     public void researcherLoginTest() {
         Assert.assertFalse(creatorBusiness.researcherLogin(manager.getBguUsername(), "not the password"));
+        Assert.assertTrue(db.getManagementUserByName(manager.getBguUsername()).getBguPassword() != "not the password");
         Assert.assertTrue(creatorBusiness.researcherLogin(manager.getBguUsername(), manager.getBguPassword()));
+        Assert.assertTrue(db.getManagementUserByName(manager.getBguUsername()).getBguPassword().equals(manager.getBguPassword()));
     }
 
     @Test
+    @Transactional
     public void addAllExperiment() {
         String expName = "testExp";
         List<JSONObject> stages = Utils.buildStages();
@@ -66,14 +71,17 @@ public class ManagerTests {
         //new experiment should pass
         int expNum = manager.getManagementUserToExperiments().size();
         try {
-            creatorBusiness.addExperiment(manager.getBguUsername(), expName, stages);
+            int expId = creatorBusiness.addExperiment(manager.getBguUsername(), expName, stages);
             Assert.assertEquals(manager.getManagementUserToExperiments().size(), expNum + 1);
+            Assert.assertEquals(db.getExperimentById(expId).getExperimentName(), expName);
             Experiment exp = manager.getExperimentByName(expName);
             Assert.assertTrue(exp.containsManger(manager));
+            Assert.assertTrue(db.getExperimentById(expId).containsManger(manager));
+
         } catch (Exception e) {
             Assert.fail();
         }
-
+        long currentExps = db.getNumberOfExperiments();
         try {
             //same name should fail
             creatorBusiness.addExperiment(manager.getBguUsername(), expName, new ArrayList<>());
@@ -81,6 +89,7 @@ public class ManagerTests {
         } catch (FormatException | NotExistException e) {
             Assert.fail();
         } catch (ExistException e) {
+            Assert.assertEquals(db.getNumberOfExperiments(), currentExps);
         }
 
         try {
@@ -90,30 +99,36 @@ public class ManagerTests {
         } catch (FormatException | ExistException e) {
             Assert.fail();
         } catch (NotExistException e) {
+            Assert.assertEquals(db.getNumberOfExperiments(), currentExps);
         }
     }
 
     @Test
+    @Transactional
     public void createExperiment() {
         String expName = "testExp";
 
         //new experiment should pass
         int expNum = manager.getManagementUserToExperiments().size();
         try {
-            creatorBusiness.createExperiment(manager.getBguUsername(), expName);
+            int expId = creatorBusiness.createExperiment(manager.getBguUsername(), expName);
             Assert.assertEquals(manager.getManagementUserToExperiments().size(), expNum + 1);
+            Assert.assertEquals(db.getExperimentById(expId).getExperimentName(), expName);
             Experiment exp = manager.getExperimentByName(expName);
             Assert.assertTrue(exp.containsManger(manager));
+            Assert.assertTrue(db.getExperimentById(expId).containsManger(manager));
             Assert.assertEquals(exp.getStages().size(), 0);
+            Assert.assertEquals(db.getExperimentById(expId).getStages().size(), 0);
         } catch (Exception e) {
             Assert.fail();
         }
-
+        long currentExps = db.getNumberOfExperiments();
         try {
             //same name should fail
             creatorBusiness.createExperiment(manager.getBguUsername(), expName);
             Assert.fail();
         } catch (ExistException ignore) {
+            Assert.assertEquals(db.getNumberOfExperiments(), currentExps);
         } catch (NotExistException e) {
             Assert.fail();
         }
@@ -123,24 +138,27 @@ public class ManagerTests {
             creatorBusiness.createExperiment("not exist name", expName);
             Assert.fail();
         } catch (NotExistException e) {
+            Assert.assertEquals(db.getNumberOfExperiments(), currentExps);
         } catch (ExistException e) {
             Assert.fail();
         }
     }
 
     @Test
+    @Transactional
     public void addStage() {
         String expName = "testExp";
         Experiment exp = new Experiment();
         List<JSONObject> stages = Utils.buildStages();
         try {
-            creatorBusiness.createExperiment(manager.getBguUsername(), expName);
+            int expId = creatorBusiness.createExperiment(manager.getBguUsername(), expName);
             exp = manager.getExperimentByName(expName);
 
             // adding legal stages should pass
             int i = 1;
             for (JSONObject jStage : stages) {
                 creatorBusiness.addStageToExperiment(manager.getBguUsername(), exp.getExperimentId(), jStage);
+                Assert.assertEquals(db.getExperimentById(expId).getStages().size(), i);
                 Assert.assertEquals(exp.getStages().size(), i);
                 i++;
             }
@@ -149,7 +167,7 @@ public class ManagerTests {
         }
 
         //VVVVVVVV should fails VVVVVVVV
-
+        long currentStages = db.getNumberOfStages();
         try {
             //creator name not exist
             creatorBusiness.addStageToExperiment("not exist name", exp.getExperimentId(), stages.get(0));
@@ -157,6 +175,7 @@ public class ManagerTests {
         } catch (FormatException f) {
             Assert.fail();
         } catch (NotExistException ignore) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         }
 
 
@@ -167,6 +186,7 @@ public class ManagerTests {
         } catch (FormatException f) {
             Assert.fail();
         } catch (NotExistException ignore) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         }
 
 
@@ -177,16 +197,20 @@ public class ManagerTests {
         } catch (NotExistException f) {
             Assert.fail();
         } catch (FormatException ignore) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         }
     }
 
     @Test
+    @Transactional
     public void addGradingTask() {
+        long currentGT = db.getNumberOfGradingTasks();
         try {
             //not exist manager
             creatorBusiness.addGradingTask("not exist", experiment.getExperimentId(), "grading task", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfGradingTasks(), currentGT);
         } catch (FormatException e) {
             Assert.fail();
         }
@@ -196,6 +220,7 @@ public class ManagerTests {
             creatorBusiness.addGradingTask(manager.getBguUsername(), -1, "grading task", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfGradingTasks(), currentGT);
         } catch (FormatException e) {
             Assert.fail();
         }
@@ -207,6 +232,7 @@ public class ManagerTests {
             creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", stagesIllegal, new ArrayList<>(), stagesIllegal);
             Assert.fail();
         } catch (FormatException ignored) {
+            Assert.assertEquals(db.getNumberOfGradingTasks(), currentGT);
         } catch (NotExistException e) {
             Assert.fail();
         }
@@ -219,25 +245,31 @@ public class ManagerTests {
         } catch (FormatException ignored) {
             Assert.fail();
         } catch (NotExistException ignore) {
+            Assert.assertEquals(db.getNumberOfGradingTasks(), currentGT);
         }
 
 
         try {
             int id = creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", new ArrayList<>(), List.of(2), new ArrayList<>());
             cache.getGradingTaskById(manager.getBguUsername(), experiment.getExperimentId(),id);
+            Assert.assertEquals(db.getNumberOfGradingTasks(), currentGT + 1);
+            Assert.assertTrue(db.getGradingTaskById(id) != null);
         } catch (Exception fail) {
             Assert.fail();
         }
     }
 
     @Test
+    @Transactional
     public void addStageToGradingTask() {
         //addToPersonal and addToResultsExp are the same so testing on personal exp is sufficient
+        long currentStages = db.getNumberOfStages();
         try {
             //not exist manager
             creatorBusiness.addToPersonal("not exist", experiment.getExperimentId(), gt.getGradingTaskId(), Utils.getStumpInfoStage());
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         } catch (FormatException e) {
             Assert.fail();
         }
@@ -247,6 +279,7 @@ public class ManagerTests {
             creatorBusiness.addToPersonal(manager.getBguUsername(), -1, gt.getGradingTaskId(), Utils.getStumpInfoStage());
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         } catch (FormatException e) {
             Assert.fail();
         }
@@ -256,6 +289,7 @@ public class ManagerTests {
             creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), -1, Utils.getStumpInfoStage());
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         } catch (FormatException e) {
             Assert.fail();
         }
@@ -265,6 +299,7 @@ public class ManagerTests {
             creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), new JSONObject());
             Assert.fail();
         } catch (FormatException ignored) {
+            Assert.assertEquals(db.getNumberOfStages(), currentStages);
         } catch (NotExistException e) {
             Assert.fail();
         }
@@ -274,18 +309,21 @@ public class ManagerTests {
             creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), Utils.getStumpInfoStage());
             int after = gt.getGeneralExperiment().getStages().size();
             Assert.assertEquals(before + 1, after);
+            Assert.assertEquals(db.getNumberOfStages(), currentStages + 1);
         } catch (Exception e) {
             Assert.fail();
         }
     }
 
     @Test
+    @Transactional
     public void setStagesToCheck() {
         try {
             //not exist manager
             creatorBusiness.setStagesToCheck("not exist", experiment.getExperimentId(), gt.getGradingTaskId(), List.of(0));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
 
         try {
@@ -293,6 +331,7 @@ public class ManagerTests {
             creatorBusiness.setStagesToCheck(manager.getBguUsername(), -1, gt.getGradingTaskId(), List.of(0));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
 
         try {
@@ -300,6 +339,7 @@ public class ManagerTests {
             creatorBusiness.setStagesToCheck(manager.getBguUsername(), experiment.getExperimentId(), -1, List.of(0));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
 
         try {
@@ -307,26 +347,31 @@ public class ManagerTests {
             creatorBusiness.setStagesToCheck(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), List.of(-2));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
 
         try {
             creatorBusiness.setStagesToCheck(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), List.of(0));
             Assert.assertEquals(1,gt.getStages().size());
+            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         } catch (Exception e) {
             Assert.fail();
         }
     }
 
     @Test
+    @Transactional
     public void addAllies() {
         //setAlliePermissions(researcherName, expId, allieMail, List<String> permissions) throws NotExistException
         String ally_mail = "fucky@post.bgu.ac.il";
         cache.addManager(new ManagementUser("ally", "123", ally_mail));
+        long currentPerms = db.getNumberOfPermissions();
         try {
             //not exist manager
             creatorBusiness.setAlliePermissions("not exist", experiment.getExperimentId(), ally_mail, "view", List.of("PERMISSION"));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfPermissions(), currentPerms);
         }
 
         try {
@@ -334,20 +379,24 @@ public class ManagerTests {
             creatorBusiness.setAlliePermissions(manager.getBguUsername(), -1, ally_mail, "edit", List.of("PERMISSION"));
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertEquals(db.getNumberOfPermissions(), currentPerms);
         }
 
         try {
             creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, "view", List.of("PERMISSION"));
             Assert.assertEquals(cache.getManagerByEMail(ally_mail).getPermissions().size(), 1);
+            Assert.assertEquals(db.getNumberOfPermissions(), currentPerms + 1);
 
             creatorBusiness.setAlliePermissions(manager.getBguUsername(), experiment.getExperimentId(), ally_mail, "edit", List.of("PERMISSION", "ADMIN?"));
             Assert.assertEquals(cache.getManagerByEMail(ally_mail).getPermissions().size(), 2);
+            Assert.assertEquals(db.getNumberOfPermissions(), currentPerms + 2);
         } catch (NotExistException e) {
             Assert.fail();
         }
     }
 
     @Test
+    @Transactional
     public void addExperimentee() {
         String expee_mail = "fucky@post.bgu.ac.il";
         try {
@@ -355,6 +404,7 @@ public class ManagerTests {
             creatorBusiness.addExperimentee("not exist", experiment.getExperimentId(), expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getExperimenteeByEmail(expee_mail) == null);
         } catch (ExistException fuck) {
             Assert.fail();
         }
@@ -364,6 +414,7 @@ public class ManagerTests {
             creatorBusiness.addExperimentee(manager.getBguUsername(), -1, expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getExperimenteeByEmail(expee_mail) == null);
         } catch (ExistException fuck) {
             Assert.fail();
         }
@@ -374,11 +425,12 @@ public class ManagerTests {
         try {
             creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
             Assert.assertTrue(cache.isExpeeInExperiment(expee_mail, experiment.getExperimentId()));
+            Assert.assertTrue(db.getExperimenteeByEmail(expee_mail) != null);
         } catch (Exception fuck) {
             Assert.fail();
         }
 
-
+        long currentExpees = db.getNumberOfExperimentees();
         try {
             //exist experimentee
             creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
@@ -386,16 +438,19 @@ public class ManagerTests {
         } catch (NotExistException fuck) {
             Assert.fail();
         } catch (ExistException ignore) {
+            Assert.assertEquals(db.getNumberOfExperimentees(), currentExpees);
         }
     }
 
     @Test
+    @Transactional
     public void addExpeeToGrader(){
         String grader_mail = "grader@post.bgu.ac.il";
         String expee_mail = expee.getExperimenteeEmail();
 
         try {
-            creatorBusiness.addGraderToGradingTask(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail);
+            String code = creatorBusiness.addGraderToGradingTask(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail);
+            Assert.assertTrue(db.getGraderToGradingTaskByCode(UUID.fromString(code)) != null);
         }
         catch (Exception e){
             System.out.println(e);
@@ -405,6 +460,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader("not exist", experiment.getExperimentId(), gt.getGradingTaskId(),grader_mail,expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -414,6 +470,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), -1, gt.getGradingTaskId(), grader_mail,expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -423,6 +480,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), -1, grader_mail,expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -433,6 +491,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,"not exist");
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -442,12 +501,14 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), "not exist",expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try{
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), grader_mail,expee_mail);
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -458,6 +519,8 @@ public class ManagerTests {
             Assert.fail();
         } catch (NotExistException e) {
             Assert.fail();
-        } catch (ExistException ignore) {}
+        } catch (ExistException ignore) {
+            Assert.assertTrue(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
+        }
     }
 }

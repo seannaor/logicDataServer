@@ -3,11 +3,8 @@ package com.example.demo.ServiceLayer;
 import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
-import com.example.demo.BusinessLayer.IExperimenteeBusiness;
-import org.hibernate.engine.jdbc.spi.ResultSetWrapper;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,10 +14,6 @@ import java.util.UUID;
 public class ExperimenteeService {
     @Autowired
     private ExperimenteeBusiness experimenteeBusiness;
-
-//    public ExperimenteeService() {
-//        this.experimenteeBusiness = new ExperimenteeBusiness();
-//    }
 
     //UC 2.1 - Login
     public Map<String, Object> beginParticipation(String accessCode) {
@@ -66,8 +59,10 @@ public class ExperimenteeService {
 
     public Map<String, Object> getStageAt(String code, int id) {
         try {
-            Pair<Stage, ResultWrapper> pair = experimenteeBusiness.getStage(UUID.fromString(code), id);
-            return Map.of("response", "OK", "stage", pair.getFirst(), "results", pair.getSecond());
+            Stage s = experimenteeBusiness.getStage(UUID.fromString(code), id);
+            ResultWrapper res = experimenteeBusiness.getResult(UUID.fromString(code), id);
+            if(res==null)  return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
+            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getAsJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
