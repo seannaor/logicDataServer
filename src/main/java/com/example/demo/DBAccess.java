@@ -11,7 +11,6 @@ import com.example.demo.DataAccessLayer.Reps.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +82,7 @@ public class DBAccess {
     public List<Experimentee> getAllExperimentees() {
         return experimenteeRep.findAll();
     }
+    public long getNumberOfExperimentees() { return experimenteeRep.count(); }
     public Experimentee getExperimenteeByCode(UUID code) { return experimenteeRep.findById(code).orElse(null); }
     public Experimentee getExperimenteeByEmail(String email) { return experimenteeRep.findByEmail(email); }
     public Experimentee getExperimenteeByEmailAndExp(String email, int expId) { return experimenteeRep.findByEmailAndExp(email, expId); }
@@ -96,6 +96,7 @@ public class DBAccess {
         managementUserRep.save(creator);
         //cache.updateManagementUser(creator);
     }
+    public long getNumberOfExperiments() { return experimentRep.count(); }
     public void deleteExperiment(Experiment e) {
         experimentRep.deleteById(e.getExperimentId());
     }
@@ -119,6 +120,7 @@ public class DBAccess {
     public void saveParticipant(Participant p) { participantRep.save(p); }
     public Participant getParticipantById(int pId) { return participantRep.findById(pId).orElse(null); }
     public void savePermissionForManagementUser(Permission p, ManagementUser m) { permissionRep.save(p); managementUserRep.save(m); }
+    public long getNumberOfPermissions() { return permissionRep.count(); }
     public void deletePermissionsOfManagementUser(ManagementUser m) {
         for(Permission p : m.getPermissions())
             permissionRep.delete(p);
@@ -165,6 +167,7 @@ public class DBAccess {
                 return;
         }
     }
+    public long getNumberOfStages() { return stageRep.count(); }
     public void saveQuestion(Question q) { questionRep.save(q); }
     public void saveAnswer(Answer a) { answerRep.save(a); }
     public void saveCodeResult(CodeResult cr) { codeResultRep.save(cr); }
@@ -173,6 +176,7 @@ public class DBAccess {
     public void saveGradingTask(GradingTask gt) { gradingTaskRep.save(gt); }
     public GradingTask getGradingTaskById(int gtId) { return gradingTaskRep.findById(gtId).orElse(null); }
     public List<GradingTask> getAllGradingTasks() { return gradingTaskRep.findAll(); }
+    public long getNumberOfGradingTasks() { return gradingTaskRep.count(); }
     public void saveGraderToGradingTask(GraderToGradingTask g) {
         graderToGradingTaskRep.save(g);
         graderRep.save(g.getGrader());

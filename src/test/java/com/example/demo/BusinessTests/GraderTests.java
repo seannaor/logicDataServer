@@ -59,8 +59,11 @@ public class GraderTests {
 
     @Test
     public void loginTest(){
-        Assert.assertFalse(graderBusiness.beginGrading(UUID.randomUUID()));
+        UUID someCode = UUID.randomUUID();
+        Assert.assertFalse(graderBusiness.beginGrading(someCode));
+        Assert.assertTrue(db.getGraderToGradingTaskByCode(someCode) == null);
         Assert.assertTrue(graderBusiness.beginGrading(graderCode));
+        Assert.assertTrue(db.getGraderToGradingTaskByCode(graderCode) != null);
     }
 
     @Test

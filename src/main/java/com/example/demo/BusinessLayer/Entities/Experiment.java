@@ -98,7 +98,7 @@ public class Experiment {
 
     public boolean containsManger(ManagementUser manger) {
         for(ManagementUserToExperiment m : managementUserToExperiments) {
-            if(m.getManagementUser().equals(manger)) {
+            if(m.getManagementUser().getBguUsername().equals(manger.getBguUsername())) {
                 return true;
             }
         }
