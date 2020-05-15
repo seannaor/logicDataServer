@@ -175,7 +175,9 @@ public class DBAccess {
     public long getNumberOfStages() { return stageRep.count(); }
     public void saveQuestion(Question q) { questionRep.save(q); }
     public void saveAnswer(Answer a) { answerRep.save(a); }
+    public long getNumerOfAnswers() { return answerRep.count(); }
     public void saveCodeResult(CodeResult cr) { codeResultRep.save(cr); }
+    public long getNumerOfCodeResults() { return codeResultRep.count(); }
     public void saveRequirement(Requirement r) { requirementRep.save(r); }
     public void saveRequirementTag(RequirementTag rt) { requirementTagRep.save(rt); }
     public void saveGradingTask(GradingTask gt) { gradingTaskRep.save(gt); }
