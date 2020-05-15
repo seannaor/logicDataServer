@@ -1,7 +1,9 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.TagsWrapper;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
@@ -56,7 +58,8 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public List<RequirementTag> fillTagging(JSONObject data) throws FormatException {
+    public List<RequirementTag> fillTagging(JSONObject data, Participant participant) throws FormatException {
+        TagsWrapper tagsWrapper = new TagsWrapper();
         List<RequirementTag> tags = new ArrayList<>();
 
         for (Requirement r : codeStage.getRequirements()) {
@@ -64,7 +67,7 @@ public class TaggingStage extends Stage {
             if (!data.containsKey(i))
                 throw new FormatException("tag for requirement #" + i);
 
-            tags.add(r.tag((JSONObject) data.get(i)));
+            tags.add(r.tag((JSONObject) data.get(i),participant));
         }
 
         return tags;

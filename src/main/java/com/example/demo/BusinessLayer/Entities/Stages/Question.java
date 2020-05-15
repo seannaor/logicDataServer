@@ -1,5 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.Type;
@@ -78,18 +79,14 @@ public class Question {
         return this.questionnaireStage.getStageID();
     }
 
-    public Answer answer(Object data) throws ParseException, FormatException {
+    public Answer answer(Object data, Participant participant) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
-        Answer ans = new Answer();
-        ans.setQuestion(this);
 
         switch ((String) jQuestion.get("type")){
             case "open":
-                ans.setTextualAnswer((String) data);
-                return ans;
+                return new Answer((String) data,this,participant);
             case "american":
-                ans.setNumeralAnswer((int) data);
-                return ans;
+                return new Answer((int) data,this,participant);
 
                 //TODO: add types of questions like multichoise
             default:

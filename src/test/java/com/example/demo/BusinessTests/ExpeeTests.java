@@ -141,7 +141,6 @@ public class ExpeeTests {
         try {
             JSONObject ans = new JSONObject();
             ans.put("stageType","questionnaire");
-            ans.put(1,"WTF?");
             ans.put(2,2);
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();

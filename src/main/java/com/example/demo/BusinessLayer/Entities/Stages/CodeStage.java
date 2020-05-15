@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
@@ -65,12 +66,9 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(JSONObject data) throws FormatException {
-        CodeResult res = new CodeResult();
-        res.setCodeStage(this);
+    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
         if(!data.containsKey("userCode")) throw new FormatException("user code");
-        res.setUserCode((String) data.get("userCode"));
-        return res;
+        return new CodeResult(participant,this,(String) data.get("userCode"));
     }
 
     public String getDescription() {

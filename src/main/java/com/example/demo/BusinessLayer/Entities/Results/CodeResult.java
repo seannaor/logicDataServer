@@ -72,6 +72,7 @@ public class CodeResult implements ResultWrapper {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
+        this.codeResultID = new CodeResultID(participant.getParticipantId(),codeStage.getStageID());
     }
 
     public void setCodeStage(CodeStage codeStage) {
