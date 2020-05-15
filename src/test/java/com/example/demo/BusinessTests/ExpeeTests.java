@@ -34,12 +34,6 @@ public class ExpeeTests {
     private Experiment experiment;
     private Experimentee expee;
 
-//    public ExpeeTests() {
-//        experimenteeBusiness = new ExperimenteeBusiness();
-//        creatorBusiness = new CreatorBusiness();
-//        cache = DataCache.getInstance();
-//    }
-
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
         cache.setCache();

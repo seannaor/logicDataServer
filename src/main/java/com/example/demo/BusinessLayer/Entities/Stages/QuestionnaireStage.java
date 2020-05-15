@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.NotFound;
@@ -71,7 +72,7 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public List<Answer> fillQuestionnaire(JSONObject data) throws FormatException, ParseException {
+    public List<Answer> fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException {
         List<Answer> answers = new ArrayList<>();
 
         for (Question q : questions) {
@@ -79,7 +80,7 @@ public class QuestionnaireStage extends Stage {
             if (!data.containsKey(i))
                 throw new FormatException("answer #" + i);
 
-            answers.add(q.answer(data.get(i)));
+            answers.add(q.answer(data.get(i),participant));
         }
         return answers;
     }

@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -88,19 +89,19 @@ public abstract class Stage {
     public abstract String getType();
 
 
-    public CodeResult fillCode(JSONObject data) throws FormatException {
+    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public List<Answer> fillQuestionnaire(JSONObject data) throws FormatException, ParseException {
+    public List<Answer> fillQuestionnaire(JSONObject data,Participant participant) throws FormatException, ParseException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public List<RequirementTag> fillTagging(JSONObject data) throws FormatException {
+    public List<RequirementTag> fillTagging(JSONObject data,Participant participant) throws FormatException {
         throw new FormatException("tagging stage answers");
     }
 
-    public void fillInfo(JSONObject data)throws FormatException {
+    public void fillInfo(JSONObject data,Participant participant)throws FormatException {
         throw new FormatException("info stage");
     }
 

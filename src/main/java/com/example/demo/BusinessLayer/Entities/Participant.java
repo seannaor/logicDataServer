@@ -101,20 +101,19 @@ public class Participant {
     }
 
     public ResultWrapper fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
+        //TODO: when we will have one list of results, change fillTagging and fillQuestionnaire to return the wrappers
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
 
         switch (type) {
             case "code":
-                CodeResult codeResult = curr.fillCode(data);
-                codeResult.setParticipant(this);
+                CodeResult codeResult = curr.fillCode(data,this);
                 this.codeResults.add(codeResult);
                 return codeResult;
             case "Tagging":
                 TagsWrapper tags = new TagsWrapper();
-                List<RequirementTag> requirementTags = curr.fillTagging(data);
+                List<RequirementTag> requirementTags = curr.fillTagging(data,this);
                 for (RequirementTag tag : requirementTags) {
-                    tag.setParticipant(this);
                     tags.addTag(tag);
                 }
                 this.requirementTags.addAll(requirementTags);
@@ -122,9 +121,8 @@ public class Participant {
                 return tags;
             case "questionnaire":
                 AnswersWrapper answersWrapper = new AnswersWrapper();
-                List<Answer> answers = curr.fillQuestionnaire(data);
+                List<Answer> answers = curr.fillQuestionnaire(data,this);
                 for (Answer ans : answers) {
-                    ans.setParticipant(this);
                     answersWrapper.addAns(ans);
                 }
                 this.answers.addAll(answers);

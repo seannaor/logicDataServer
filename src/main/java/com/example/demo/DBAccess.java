@@ -151,21 +151,26 @@ public class DBAccess {
     }
     public void saveStageResult(ResultWrapper result){
         String sourceStage = result.getAsJson().get("source stage").toString();
+        Participant p = null;
         switch (sourceStage){
             case "code":
+                p = ((CodeResult) result).getParticipant();
                 saveCodeResult((CodeResult) result);
-                return;
+                break;
             case "tagging":
                 for(RequirementTag tag : ((TagsWrapper)result).getTags()){
                     saveRequirementTag(tag);
+                    p = tag.getParticipant();
                 }
-                return;
+                break;
             case "questionnaire":
                 for(Answer ans : ((AnswersWrapper)result).getAnswers()){
                     saveAnswer(ans);
+                    p = ans.getParticipant();
                 }
-                return;
+                break;
         }
+        participantRep.save(p);
     }
     public long getNumberOfStages() { return stageRep.count(); }
     public void saveQuestion(Question q) { questionRep.save(q); }

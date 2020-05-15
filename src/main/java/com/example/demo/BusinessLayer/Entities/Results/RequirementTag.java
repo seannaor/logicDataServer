@@ -79,10 +79,15 @@ public class RequirementTag {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
+        this.requirementTagID = new RequirementTagID(participant.getParticipantId(), -1);
     }
 
     public void setRequirement(Requirement requirement){
         this.requirements.add(requirement);
+    }
+
+    public Participant getParticipant() {
+        return participant;
     }
 
     public Stage.StageID getStageID(){

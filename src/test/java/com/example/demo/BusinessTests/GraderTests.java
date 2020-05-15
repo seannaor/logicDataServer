@@ -31,11 +31,6 @@ public class GraderTests {
     private Experiment experiment;
     private UUID graderCode;
 
-//    public GraderTests() {
-//        creatorBusiness = new CreatorBusiness();
-//        graderBusiness = new GraderBusiness();
-//        cache = DataCache.getInstance();
-//    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
