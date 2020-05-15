@@ -1,5 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import org.json.simple.JSONObject;
 
@@ -77,11 +78,12 @@ public class Requirement {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data) {
+    public RequirementTag tag(JSONObject data, Participant participant) {
         RequirementTag tag = new RequirementTag();
         tag.setRequirement(this);
         tag.setStart((int) data.get("start_loc"));
         tag.setLength((int) data.get("length"));
+        tag.setParticipant(participant);
         return tag;
     }
 

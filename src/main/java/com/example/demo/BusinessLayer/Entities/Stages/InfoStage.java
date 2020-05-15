@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import org.json.simple.JSONObject;
 
 import javax.persistence.Column;
@@ -44,5 +45,5 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillInfo(JSONObject data) {}
+    public void fillInfo(JSONObject data, Participant participant) {}
 }

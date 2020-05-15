@@ -76,12 +76,11 @@ public class Answer {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
-        this.answerID.setParticipantId(participant.getParticipantId());
+        this.answerID = new AnswerID(participant.getParticipantId(),this.question.getQuestionID());
     }
 
     public void setQuestion(Question question) {
         this.question = question;
-        this.answerID.setQuestionID(question.getQuestionID());
     }
 
     public void setTextualAnswer(String textualAnswer) {

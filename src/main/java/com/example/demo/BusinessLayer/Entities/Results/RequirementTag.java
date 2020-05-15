@@ -79,6 +79,7 @@ public class RequirementTag {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
+        this.requirementTagID = new RequirementTagID(participant.getParticipantId(), -1);
     }
 
     public void setRequirement(Requirement requirement){
