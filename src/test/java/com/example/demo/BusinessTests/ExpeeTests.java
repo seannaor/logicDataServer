@@ -131,85 +131,89 @@ public class ExpeeTests {
             Assert.fail();
         }
     }
-    //TODO: review this test, fails for me
-//    @Test
-//    public void fillStage() {
-//
-//        //not exist code should fail
-//        UUID someCode = UUID.randomUUID();
-//        try {
-//            experimenteeBusiness.fillInStage(someCode, new JSONObject());
-//            Assert.fail();
-//        } catch (CodeException ignore) {
-//            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in info (first) stage only type check
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","info");
-//            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-//            experimenteeBusiness.getNextStage(expee.getAccessCode());
-//        } catch (FormatException ignore) { //no care for info in fillInStage - goes to default
-//
-//        }
-//        catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in questions (second) stage, fucked format should fail
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","questionnaire");
-//            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-//            Assert.fail();
-//        } catch (FormatException ignore) {
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in questions (second) stage, good format should pass
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","questionnaire");
-//            ans.put(1,"WTF!!!");
-//            ans.put(2,3);
-//            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-//            experimenteeBusiness.getNextStage(expee.getAccessCode());
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in code (third) stage, fucked format should fail
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","code");
-//            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-//            Assert.fail();
-//        } catch (FormatException ignore) {
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in code (third) stage, good format should pass
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","code");
-//            ans.put("userCode","return -1");
-//            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // end of experiment
-//        try{
-//            experimenteeBusiness.getNextStage(expee.getAccessCode());
-//            Assert.fail();
-//        }catch (ExpEndException ignore){}
-//        catch (Exception e){
-//            Assert.fail();
-//        }
-//    }
+    @Test
+    @Transactional
+    public void fillStage() {
+
+        //not exist code should fail
+        UUID someCode = UUID.randomUUID();
+        try {
+            experimenteeBusiness.fillInStage(someCode, new JSONObject());
+            Assert.fail();
+        } catch (CodeException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // pass info (first) stage
+        try {
+            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in questions (second) stage, fucked format should fail
+        long numOfAnswers = db.getNumerOfAnswers();
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","questionnaire");
+            ans.put(2,2);
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in questions (second) stage, good format should pass
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","questionnaire");
+            ans.put(1,"WTF!!!");
+            ans.put(2,3);
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
+            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.fail();
+        }
+
+        // fill in code (third) stage, fucked format should fail
+        long numOfCodeRes = db.getNumerOfCodeResults();
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","code");
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in code (third) stage, good format should pass
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","code");
+            ans.put("userCode","return -1");
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes + 1);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // end of experiment
+        try{
+            experimenteeBusiness.getNextStage(expee.getAccessCode());
+            Assert.fail();
+        }catch (ExpEndException ignore){
+            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
+        }
+        catch (Exception e){
+            Assert.fail();
+        }
+    }
 }
