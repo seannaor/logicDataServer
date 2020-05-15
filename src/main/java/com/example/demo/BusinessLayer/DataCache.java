@@ -42,12 +42,6 @@ public class DataCache {
         gradersGTToParticipants = new ArrayList<>();
     }
 
-//    public static DataCache getInstance() {
-//        if (instance == null)
-//            instance = new DataCache();
-//        return instance;
-//    }
-
     public ManagementUser getManagerByName(String name) throws NotExistException {
         for (ManagementUser manager : managers)
             if (manager.getBguUsername().equals(name)) return manager;

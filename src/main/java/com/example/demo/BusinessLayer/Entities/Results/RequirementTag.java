@@ -85,6 +85,10 @@ public class RequirementTag {
         this.requirements.add(requirement);
     }
 
+    public Participant getParticipant() {
+        return participant;
+    }
+
     public Stage.StageID getStageID(){
         return this.requirements.get(0).getStageID();
     }

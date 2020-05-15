@@ -33,12 +33,6 @@ public class ExpeeTests {
     private Experiment experiment;
     private Experimentee expee;
 
-//    public ExpeeTests() {
-//        experimenteeBusiness = new ExperimenteeBusiness();
-//        creatorBusiness = new CreatorBusiness();
-//        cache = DataCache.getInstance();
-//    }
-
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
         cache.setCache();
@@ -136,11 +130,8 @@ public class ExpeeTests {
             Assert.fail();
         }
 
-        // fill in info (first) stage only type check
+        // pass info (first) stage
         try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType","info");
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             experimenteeBusiness.getNextStage(expee.getAccessCode());
         } catch (Exception e) {
             Assert.fail();
@@ -150,6 +141,8 @@ public class ExpeeTests {
         try {
             JSONObject ans = new JSONObject();
             ans.put("stageType","questionnaire");
+            ans.put(1,"WTF?");
+            ans.put(2,2);
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();
         } catch (FormatException ignore) {
@@ -166,6 +159,7 @@ public class ExpeeTests {
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             experimenteeBusiness.getNextStage(expee.getAccessCode());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             Assert.fail();
         }
 

@@ -78,6 +78,10 @@ public class CodeResult implements ResultWrapper {
         this.codeStage = codeStage;
     }
 
+    public Participant getParticipant() {
+        return participant;
+    }
+
     @Override
     public JSONObject getAsJson() {
         JSONObject JResult = codeStage.getJson();

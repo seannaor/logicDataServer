@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answers")
 public class Answer {
+
     @Embeddable
     public static class AnswerID implements Serializable {
         @Column(name = "participant_id")
@@ -22,7 +23,14 @@ public class Answer {
         public AnswerID(int participantId, Question.QuestionID questionID) {
             this.participantId = participantId;
             this.questionID = questionID;
+        }
 
+        public void setQuestionID(Question.QuestionID questionID){
+            this.questionID = questionID;
+        }
+
+        public void setParticipantId(int participantId){
+            this.participantId = participantId;
         }
     }
 
@@ -68,10 +76,12 @@ public class Answer {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
+        this.answerID.setParticipantId(participant.getParticipantId());
     }
 
     public void setQuestion(Question question) {
         this.question = question;
+        this.answerID.setQuestionID(question.getQuestionID());
     }
 
     public void setTextualAnswer(String textualAnswer) {
@@ -88,6 +98,10 @@ public class Answer {
 
     public Integer getNumeralAnswer() {
         return numeralAnswer;
+    }
+
+    public Participant getParticipant() {
+        return participant;
     }
 
     public String getTextualAnswer() {
