@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answers")
 public class Answer {
-
     @Embeddable
     public static class AnswerID implements Serializable {
         @Column(name = "participant_id")
@@ -49,27 +48,14 @@ public class Answer {
     })
     private Question question;
 
-    @Lob
-    @Column(name = "textual_answer")
-    private String textualAnswer;
-
-    @Column(name = "numeral_answer")
-    private Integer numeralAnswer;
+    @Column(name = "answer_json", columnDefinition = "json")
+    private String answerJson;
 
     public Answer (){ }
 
-    public Answer (String textualAnswer, Question question, Participant participant) {
+    public Answer (String answerJson, Question question, Participant participant) {
         this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
-        this.textualAnswer = textualAnswer;
-        this.numeralAnswer = null;
-        this.question = question;
-        this.participant = participant;
-    }
-
-    public Answer (Integer numeralAnswer, Question question, Participant participant) {
-        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
-        this.textualAnswer = null;
-        this.numeralAnswer = numeralAnswer;
+        this.answerJson = answerJson;
         this.question = question;
         this.participant = participant;
     }
@@ -83,27 +69,20 @@ public class Answer {
         this.question = question;
     }
 
-    public void setTextualAnswer(String textualAnswer) {
-        this.textualAnswer = textualAnswer;
-    }
-
-    public void setNumeralAnswer(Integer numeralAnswer) {
-        this.numeralAnswer = numeralAnswer;
-    }
-
     public Stage.StageID getStageID(){
         return this.question.getStageID();
-    }
-
-    public Integer getNumeralAnswer() {
-        return numeralAnswer;
     }
 
     public Participant getParticipant() {
         return participant;
     }
 
-    public String getTextualAnswer() {
-        return textualAnswer;
+    public String getAnswerJson() {
+        return answerJson;
     }
+
+    public void setAnswerJson(String answerJson) {
+        this.answerJson = answerJson;
+    }
+
 }

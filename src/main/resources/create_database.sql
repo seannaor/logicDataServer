@@ -211,8 +211,7 @@ CREATE TABLE `code_results`
 
 CREATE TABLE `answers`
 (
-    `textual_answer` TEXT,
-    `numeral_answer` int,
+    `answer_json`    JSON,
     `question_index` int NOT NULL,
     `stage_index`    int NOT NULL,
     `experiment_id`  int NOT NULL,
