@@ -3,7 +3,6 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -84,11 +83,9 @@ public class Question {
 
         switch ((String) jQuestion.get("type")){
             case "open":
-                return new Answer((String) data,this,participant);
             case "american":
-                return new Answer((int) data,this,participant);
-
-                //TODO: add types of questions like multichoise
+            case "multi-choice":
+                return new Answer((String) data,this,participant);
             default:
                 throw new FormatException("american or open question");
         }

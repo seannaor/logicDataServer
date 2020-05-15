@@ -4,8 +4,6 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -13,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 

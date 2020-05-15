@@ -172,7 +172,7 @@ public class ExpeeTests {
             JSONObject ans = new JSONObject();
             ans.put("stageType","questionnaire");
             ans.put(1,"WTF!!!");
-            ans.put(2,3);
+            ans.put(2,"3");
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
             experimenteeBusiness.getNextStage(expee.getAccessCode());

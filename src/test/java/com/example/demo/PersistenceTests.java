@@ -9,7 +9,9 @@ import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -401,20 +403,26 @@ class PersistenceTests {
 		assertEquals(questionRep.count(), 2);
 		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
 		JSONObject updatedJsonQuestion = new JSONObject();
-		updatedJsonQuestion.put("how old are you?", new String[] {"10-20", "21-30", "31-40", "41+"});
+		List<String> answers1 = new ArrayList<>();
+		answers1.add("10-20");answers1.add("21-30");answers1.add("31-40");answers1.add("41+");
+		updatedJsonQuestion.put("how old are you?", answers1);
 		Question q = s.getQuestions().get(0);
-		q.setQuestionJson(updatedJsonQuestion.toJSONString());
+		q.setQuestionJson(updatedJsonQuestion.toString());
 		stageRep.save(s);
 		questionRep.save(q);
 		assertEquals(questionRep.count(), 2);
-		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toJSONString());
+		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toString());
 	}
 
 	private List<JSONObject> createQuestionJsons() {
 		JSONObject jsonQuestion1 = new JSONObject();
-		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		List<String> answers1 = new ArrayList<>();
+		answers1.add("10-20");answers1.add("20-30");answers1.add("30-40");answers1.add("40+");
+		jsonQuestion1.put("how old are you?", answers1);
 		JSONObject jsonQuestion2 = new JSONObject();
-		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
+		List<String> answers2 = new ArrayList<>();
+		answers2.add("c");answers2.add("c++");answers2.add("java");answers2.add("python");
+		jsonQuestion2.put("favorite programming language?", answers2);
 		List<JSONObject> questions = new ArrayList<>();
 		questions.add(jsonQuestion1);
 		questions.add(jsonQuestion2);
@@ -424,7 +432,7 @@ class PersistenceTests {
 	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
 		int QIdx = 1;
 		for (JSONObject JQuestion : questions) {
-			Question q = new Question(QIdx, s, JQuestion.toJSONString());
+			Question q = new Question(QIdx, s, JQuestion.toString());
 			questionRep.save(q);
 			s.addQuestion(q);
 			QIdx++;
@@ -434,7 +442,7 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void addAndUpdateAnswersTest() {
+	void addAndUpdateAnswersTest() throws ParseException {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
@@ -445,10 +453,15 @@ class PersistenceTests {
 		addAnswers(s, p1);
 		assertEquals(answerRep.count(), 2);
 		Answer answer = answerRep.findAll().get(0);
-		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 2);
-		answer.setNumeralAnswer(3);
+		JSONObject jAns = (JSONObject) new JSONParser().parse(answerRep.findAll().get(0).getAnswerJson());
+		assertEquals(jAns.get("answer"), (long)2);
+		JSONObject jsonAns = new JSONObject();
+		jsonAns.put("type", "american");
+		jsonAns.put("answer", 3);
+		answer.setAnswerJson(jsonAns.toString());
 		answerRep.save(answer);
-		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 3);
+		JSONObject jAnsNew = (JSONObject) new JSONParser().parse(answerRep.findAll().get(0).getAnswerJson());
+		assertEquals(jAnsNew.get("answer"), (long)3);
 	}
 
 	@Test
@@ -476,9 +489,15 @@ class PersistenceTests {
 	}
 
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
-		Answer answer1 = new Answer(2, s.getQuestions().get(0), p1);
+		JSONObject jsonAns1 = new JSONObject();
+		jsonAns1.put("type", "american");
+		jsonAns1.put("answer", 2);
+		Answer answer1 = new Answer(jsonAns1.toString(), s.getQuestions().get(0), p1);
 		answerRep.save(answer1);
-		Answer answer2 = new Answer(3, s.getQuestions().get(1), p1);
+		JSONObject jsonAns2 = new JSONObject();
+		jsonAns2.put("type", "american");
+		jsonAns2.put("answer", 3);
+		Answer answer2 = new Answer(jsonAns2.toString(), s.getQuestions().get(1), p1);
 		answerRep.save(answer2);
 	}
 
