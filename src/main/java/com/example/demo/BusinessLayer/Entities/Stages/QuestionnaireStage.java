@@ -3,6 +3,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -69,16 +70,16 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public List<Answer> fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException {
-        List<Answer> answers = new ArrayList<>();
+    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException {
+        QuestionnaireResult questionnaireResult = new QuestionnaireResult(this, participant);
 
         for (Question q : questions) {
             int i = q.getIndex();
             if (!data.containsKey(i))
                 throw new FormatException("answer #" + i);
 
-            answers.add(q.answer(data.get(i),participant));
+            q.answer(data.get(i), questionnaireResult); //adds the new answer to the questionnaireResult automatically
         }
-        return answers;
+        return questionnaireResult;
     }
 }

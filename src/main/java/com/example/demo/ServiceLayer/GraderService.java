@@ -1,10 +1,8 @@
 package com.example.demo.ServiceLayer;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.GraderBusiness;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +43,7 @@ public class GraderService {
 
     public Map<String, Object> getExperimenteeResults(String code,int participantId){
         try{
-            List<ResultWrapper> results = graderBusiness.getExpeeRes(UUID.fromString(code),participantId);
+            List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code),participantId);
             List<JSONObject> JResults = new ArrayList<>();
             results.forEach((resultWrapper -> JResults.add(resultWrapper.getAsJson())));
             return Map.of("response","OK","results", JResults);

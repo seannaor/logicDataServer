@@ -1,10 +1,7 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
@@ -34,13 +31,9 @@ public class Participant {
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
     @OneToMany(mappedBy = "participant")
-    private List<Answer> answers;
+    private List<Result> results;
     @OneToMany(mappedBy = "participant")
-    private List<CodeResult> codeResults;
-    @OneToMany(mappedBy = "participant")
-    private List<RequirementTag> requirementTags;
-    @OneToMany(mappedBy = "participant")
-    private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
+    private List<GradersGTToParticipants> gradersGTToParticipants;
 
     public Participant() {
     }
@@ -50,9 +43,8 @@ public class Participant {
         experiment.addParticipant(this);
         isDone = false;
         currStage = 0;
-        this.answers = new ArrayList<>();
-        this.codeResults = new ArrayList<>();
-        this.requirementTags = new ArrayList<>();
+        this.results = new ArrayList<>();
+        this.gradersGTToParticipants = new ArrayList<>();
     }
 
     public Experiment getExperiment() {
@@ -84,9 +76,13 @@ public class Participant {
         return this.experiment.getStages().get(idx);
     }
 
-    public ResultWrapper getResults(int idx) throws NotInReachException {
+    public Result getResults(int idx) throws NotInReachException {
         if (currStage < idx) throw new NotInReachException("result of stage " + idx);
-        //TODO: when we will have one list of results, get results of stage idx.
+        for (Result result : this.results) {
+            if(result.getStage().getStageID().getStageIndex() == idx) {
+                return result;
+            }
+        }
         return null;
     }
 
@@ -100,7 +96,7 @@ public class Participant {
         return isDone;
     }
 
-    public ResultWrapper fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
+    public Result fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
         //TODO: when we will have one list of results, change fillTagging and fillQuestionnaire to return the wrappers
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
@@ -108,66 +104,37 @@ public class Participant {
         switch (type) {
             case "code":
                 CodeResult codeResult = curr.fillCode(data,this);
-                this.codeResults.add(codeResult);
+                this.results.add(codeResult);
                 return codeResult;
             case "Tagging":
-                TagsWrapper tags = new TagsWrapper();
-                List<RequirementTag> requirementTags = curr.fillTagging(data,this);
-                for (RequirementTag tag : requirementTags) {
-                    tags.addTag(tag);
-                }
-                this.requirementTags.addAll(requirementTags);
-
-                return tags;
+                TaggingResult taggingResult = curr.fillTagging(data,this);
+                this.results.add(taggingResult);
+                return taggingResult;
             case "questionnaire":
-                AnswersWrapper answersWrapper = new AnswersWrapper();
-                List<Answer> answers = curr.fillQuestionnaire(data,this);
-                for (Answer ans : answers) {
-                    answersWrapper.addAns(ans);
-                }
-                this.answers.addAll(answers);
-                return answersWrapper;
+                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data,this);
+                this.results.add(questionnaireResult);
+                return questionnaireResult;
             default:
                 throw new FormatException(curr.getType(), type);
         }
     }
 
-    public ResultWrapper getResultsOf(Stage visible) throws FormatException, NotExistException {
-        switch (visible.getType()) {
-            case "code":
-                return getCodeIn(visible.getStageID());
-            case "questionnaire":
-                return getAnsIn(visible.getStageID());
-            case "tagging":
-                return getTagsIn(visible.getStageID());
-            default:
-                throw new FormatException("code|questionnaire|tagging", visible.getType());
+    public Result getResultsOf(Stage visible) throws FormatException, NotExistException {
+//        switch (visible.getType()) {
+//            case "code":
+//                return getCodeIn(visible.getStageID());
+//            case "questionnaire":
+//                return getAnsIn(visible.getStageID());
+//            case "tagging":
+//                return getTagsIn(visible.getStageID());
+//            default:
+//                throw new FormatException("code|questionnaire|tagging", visible.getType());
+//        }
+        //TODO: shahar needs to check this
+        for (Result result : results) {
+            if (result.getStage().getStageID().equals(visible.getStageID()))
+                return result;
         }
-    }
-
-    private ResultWrapper getCodeIn(Stage.StageID id) throws NotExistException {
-        for (CodeResult code : codeResults) {
-            if (code.getCodeStageID().equals(id))
-                return code;
-        }
-        throw new NotExistException("stage", id.toString());
-    }
-
-    private ResultWrapper getAnsIn(Stage.StageID id) {
-        AnswersWrapper answers = new AnswersWrapper();
-        for (Answer ans : this.answers) {
-            if (ans.getStageID().equals(id))
-                answers.addAns(ans);
-        }
-        return answers;
-    }
-
-    private ResultWrapper getTagsIn(Stage.StageID id) {
-        TagsWrapper tags = new TagsWrapper();
-        for (RequirementTag tag : requirementTags) {
-            if (tag.getStageID().equals(id))
-                tags.addTag(tag);
-        }
-        return tags;
+        throw new FormatException("code|questionnaire|tagging", visible.getType());
     }
 }

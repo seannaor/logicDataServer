@@ -2,7 +2,7 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
@@ -12,7 +12,6 @@ import com.example.demo.DBAccess;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -24,10 +23,6 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Autowired
     private DBAccess db;
 
-//    public ExperimenteeBusiness() {
-//        this.cache = DataCache.getInstance();
-//    }
-
     @Override
     public Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException {
         Experimentee expee =cache.getExpeeByCode(accessCode);
@@ -37,7 +32,7 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Override
     public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
-        ResultWrapper result = part.fillInStage(data);
+        Result result = part.fillInStage(data);
         db.saveStageResult(result);
     }
 
@@ -54,9 +49,9 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public ResultWrapper getResult(UUID accessCode, int idx) throws CodeException, NotInReachException {
+    public Result getResult(UUID accessCode, int idx) throws CodeException, NotInReachException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        return expee.getResults(idx);
+        return expee.getResult(idx);
     }
 
     @Override

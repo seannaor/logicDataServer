@@ -2,7 +2,7 @@ package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -120,9 +120,9 @@ public class GraderToGradingTask {
         this.graderAccessCode = graderAccessCode;
     }
 
-    public List<ResultWrapper> getExpeeRes(int parti_id) throws NotExistException, FormatException {
+    public List<Result> getExpeeRes(int parti_id) throws NotExistException, FormatException {
         Participant p = getParti(parti_id);
-        List<ResultWrapper> ret = new ArrayList<>();
+        List<Result> ret = new ArrayList<>();
         for (Stage visible : gradingTask.getStages()) {
             ret.add(p.getResultsOf(visible));
         }

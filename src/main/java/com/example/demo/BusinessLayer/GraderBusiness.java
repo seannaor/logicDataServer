@@ -2,7 +2,7 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
@@ -17,10 +17,6 @@ import java.util.UUID;
 public class GraderBusiness implements IGraderBusiness {
     @Autowired
     private DataCache cache;
-
-//    public GraderBusiness() {
-//        this.cache = DataCache.getInstance();
-//    }
 
     @Override
     public boolean beginGrading(UUID accessCode) {
@@ -43,7 +39,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<ResultWrapper> getExpeeRes(UUID accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
+    public List<Result> getExpeeRes(UUID accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         return task.getExpeeRes(parti_id);
     }

@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -50,8 +51,6 @@ public class Question {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
         this.questionnaireStage = questionnaireStage;
         this.questionJson = questionJson;
-
-//        answer = new ArrayList<>();
     }
 
     public int getIndex() {
@@ -78,16 +77,16 @@ public class Question {
         return this.questionnaireStage.getStageID();
     }
 
-    public Answer answer(Object data, Participant participant) throws ParseException, FormatException {
+    public Answer answer(Object data, QuestionnaireResult questionnaireResult) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
 
         switch ((String) jQuestion.get("type")){
             case "open":
             case "american":
             case "multi-choice":
-                return new Answer((String) data,this,participant);
+                return new Answer(data.toString(),this, questionnaireResult);
             default:
-                throw new FormatException("american or open question");
+                throw new FormatException("american, open or multi-choice question");
         }
     }
 }

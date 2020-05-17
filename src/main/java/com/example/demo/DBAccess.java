@@ -51,6 +51,8 @@ public class DBAccess {
     @Autowired
     ManagementUserToExperimentRep managementUserToExperimentRep;
     @Autowired
+    ResultRep resultRep;
+    @Autowired
     DataCache cache;
 
     public void deleteData() {
@@ -149,25 +151,24 @@ public class DBAccess {
         stageRep.save(s);
         experimentRep.save(s.getExperiment());
     }
-    public void saveStageResult(ResultWrapper result){
+    public void saveStageResult(Result result){
         String sourceStage = result.getAsJson().get("source stage").toString();
-        Participant p = null;
+        Participant p = result.getParticipant();
         switch (sourceStage){
             case "code":
-                p = ((CodeResult) result).getParticipant();
-                saveCodeResult((CodeResult) result);
+                saveResult(result);
                 break;
             case "tagging":
-                for(RequirementTag tag : ((TagsWrapper)result).getTags()){
+                for(RequirementTag tag : ((TaggingResult)result).getTags()){
                     saveRequirementTag(tag);
-                    p = tag.getParticipant();
                 }
+                saveResult(result);
                 break;
             case "questionnaire":
-                for(Answer ans : ((AnswersWrapper)result).getAnswers()){
+                for(Answer ans : ((QuestionnaireResult)result).getAnswers()){
                     saveAnswer(ans);
-                    p = ans.getParticipant();
                 }
+                saveResult(result);
                 break;
         }
         participantRep.save(p);
@@ -201,4 +202,5 @@ public class DBAccess {
     }
     public GradersGTToParticipants getGradersGTToParticipantsById(int gtId, String graderEmail, int pId) { return gradersGTToParticipantsRep.findById(new GradersGTToParticipants.GradersGTToParticipantsID(gtId, graderEmail, pId)).orElse(null); }
     public void saveManagementUserToExperiment(ManagementUserToExperiment m) { managementUserToExperimentRep.save(m); }
+    public void saveResult(Result r) { resultRep.save(r); }
 }

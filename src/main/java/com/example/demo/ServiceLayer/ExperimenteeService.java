@@ -1,6 +1,6 @@
 package com.example.demo.ServiceLayer;
 
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import org.json.simple.JSONObject;
@@ -60,7 +60,7 @@ public class ExperimenteeService {
     public Map<String, Object> getStageAt(String code, int id) {
         try {
             Stage s = experimenteeBusiness.getStage(UUID.fromString(code), id);
-            ResultWrapper res = experimenteeBusiness.getResult(UUID.fromString(code), id);
+            Result res = experimenteeBusiness.getResult(UUID.fromString(code), id);
             if(res==null)  return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
             return Map.of("response", "OK", "stage", s.getJson(), "results", res.getAsJson());
         } catch (Exception e) {

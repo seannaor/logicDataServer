@@ -2,15 +2,11 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
-import com.example.demo.BusinessLayer.Entities.Results.TagsWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Table(name = "tagging_stages")
@@ -58,18 +54,15 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public List<RequirementTag> fillTagging(JSONObject data, Participant participant) throws FormatException {
-        TagsWrapper tagsWrapper = new TagsWrapper();
-        List<RequirementTag> tags = new ArrayList<>();
-
+    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException {
+        TaggingResult taggingResult = new TaggingResult(this, participant);
         for (Requirement r : codeStage.getRequirements()) {
             int i = r.getIndex();
             if (!data.containsKey(i))
                 throw new FormatException("tag for requirement #" + i);
 
-            tags.add(r.tag((JSONObject) data.get(i),participant));
+            r.tag((JSONObject) data.get(i), taggingResult); //adds the new tag to the taggingResult automatically
         }
-
-        return tags;
+        return taggingResult;
     }
 }

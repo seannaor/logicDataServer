@@ -1,5 +1,5 @@
 package com.example.demo.BusinessLayer;
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
@@ -24,5 +24,5 @@ public interface IExperimenteeBusiness {
 
     Stage getStage(UUID code, int id) throws CodeException, NotInReachException;
 
-    ResultWrapper getResult(UUID accessCode, int idx) throws CodeException, NotInReachException;
+    Result getResult(UUID accessCode, int idx) throws CodeException, NotInReachException;
 }

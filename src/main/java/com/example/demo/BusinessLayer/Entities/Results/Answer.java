@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer.Entities.Results;
 
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Question;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
@@ -35,10 +34,16 @@ public class Answer {
 
     @EmbeddedId
     private AnswerID answerID;
-    @MapsId("participantId")
+
+    @MapsId("resultID")
     @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
+    @JoinColumns({
+            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private QuestionnaireResult questionnaireResult;
+
     @MapsId("questionID")
     @ManyToOne
     @JoinColumns({
@@ -53,16 +58,12 @@ public class Answer {
 
     public Answer (){ }
 
-    public Answer (String answerJson, Question question, Participant participant) {
-        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
+    public Answer (String answerJson, Question question, QuestionnaireResult questionnaireResult) {
+        this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
         this.answerJson = answerJson;
         this.question = question;
-        this.participant = participant;
-    }
-
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-        this.answerID = new AnswerID(participant.getParticipantId(),this.question.getQuestionID());
+        this.questionnaireResult = questionnaireResult;
+        this.questionnaireResult.addAns(this);
     }
 
     public void setQuestion(Question question) {
@@ -73,8 +74,8 @@ public class Answer {
         return this.question.getStageID();
     }
 
-    public Participant getParticipant() {
-        return participant;
+    public QuestionnaireResult getQuestionnaireResult() {
+        return questionnaireResult;
     }
 
     public String getAnswerJson() {

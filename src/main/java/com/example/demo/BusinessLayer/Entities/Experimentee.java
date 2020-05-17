@@ -1,6 +1,6 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
@@ -71,7 +71,7 @@ public class Experimentee {
         return participant.getStage(idx);
     }
 
-    public ResultWrapper getResults(int idx) throws NotInReachException{
+    public Result getResult(int idx) throws NotInReachException{
         return participant.getResults(idx);
     }
 }
