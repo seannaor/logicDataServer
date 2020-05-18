@@ -76,7 +76,7 @@ public class Participant {
         return this.experiment.getStages().get(idx);
     }
 
-    public Result getResults(int idx) throws NotInReachException {
+    public Result getResult(int idx) throws NotInReachException {
         if (currStage < idx) throw new NotInReachException("result of stage " + idx);
         for (Result result : this.results) {
             if(result.getStage().getStageID().getStageIndex() == idx) {
@@ -96,11 +96,9 @@ public class Participant {
         return isDone;
     }
 
-    public Result fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException {
-        //TODO: when we will have one list of results, change fillTagging and fillQuestionnaire to return the wrappers
+    public Result fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException, NotInReachException {
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
-
         switch (type) {
             case "code":
                 CodeResult codeResult = curr.fillCode(data,this);

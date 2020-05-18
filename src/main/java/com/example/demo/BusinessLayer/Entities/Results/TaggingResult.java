@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "tagging_results")
 public class TaggingResult extends Result {
     @OneToMany(mappedBy = "taggingResult")
-    List<RequirementTag> tags;
+    private List<RequirementTag> tags;
 
     public TaggingResult() { }
 
@@ -31,6 +31,10 @@ public class TaggingResult extends Result {
 
     public List<RequirementTag> getTags() {
         return tags;
+    }
+
+    public void setTags(List<RequirementTag> tags) {
+        this.tags = tags;
     }
 
     @Override

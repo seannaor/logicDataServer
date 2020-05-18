@@ -156,22 +156,28 @@ public class DBAccess {
         Participant p = result.getParticipant();
         switch (sourceStage){
             case "code":
-                saveResult(result);
                 break;
             case "tagging":
-                for(RequirementTag tag : ((TaggingResult)result).getTags()){
+                List<RequirementTag> temp1 = ((TaggingResult)result).getTags();
+                ((TaggingResult)result).setTags(new ArrayList<>());
+                saveResult(result);
+                for(RequirementTag tag : temp1){
                     saveRequirementTag(tag);
                 }
-                saveResult(result);
+                ((TaggingResult)result).setTags(temp1);
                 break;
             case "questionnaire":
-                for(Answer ans : ((QuestionnaireResult)result).getAnswers()){
+                List<Answer> temp2 = ((QuestionnaireResult)result).getAnswers();
+                ((QuestionnaireResult)result).setAnswers(new ArrayList<>());
+                saveResult(result);
+                for(Answer ans : temp2){
                     saveAnswer(ans);
                 }
-                saveResult(result);
+                ((QuestionnaireResult)result).setAnswers(temp2);
                 break;
         }
-        participantRep.save(p);
+        saveResult(result);
+        saveParticipant(p);
     }
     public long getNumberOfStages() { return stageRep.count(); }
     public void saveQuestion(Question q) { questionRep.save(q); }

@@ -32,6 +32,10 @@ public class QuestionnaireResult extends Result {
         return answers;
     }
 
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
     @Override
     public JSONObject getAsJson() {
         JSONObject json = new JSONObject();

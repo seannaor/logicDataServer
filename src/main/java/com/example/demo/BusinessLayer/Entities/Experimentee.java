@@ -72,6 +72,6 @@ public class Experimentee {
     }
 
     public Result getResult(int idx) throws NotInReachException{
-        return participant.getResults(idx);
+        return participant.getResult(idx);
     }
 }

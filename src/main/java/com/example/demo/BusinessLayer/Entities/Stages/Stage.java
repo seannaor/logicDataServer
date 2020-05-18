@@ -4,6 +4,7 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -18,7 +19,9 @@ public abstract class Stage {
 
     @Embeddable
     public static class StageID implements Serializable {
+        @Column(name = "stage_index")
         private int stageIndex;
+        @Column(name = "experiment_id")
         private int experimentId;
 
         public StageID() {
@@ -43,10 +46,6 @@ public abstract class Stage {
     }
 
     @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(name = "stageIndex", column = @Column(name = "stage_index")),
-            @AttributeOverride(name = "experimentId", column = @Column(name = "experiment_id"))
-    })
     private StageID stageID;
 
     @MapsId("experimentId")
@@ -99,11 +98,11 @@ public abstract class Stage {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException {
+    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException, NotInReachException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException {
+    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException, NotInReachException {
         throw new FormatException("tagging stage answers");
     }
 

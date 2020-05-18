@@ -14,6 +14,7 @@ import java.io.Serializable;
 public abstract class Result {
     @Embeddable
     public static class ResultID implements Serializable {
+        @Column(name = "participant_id")
         private int participantId;
         private Stage.StageID stageID;
 
@@ -25,11 +26,6 @@ public abstract class Result {
         }
     }
     @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(name = "participantId", column = @Column(name = "participant_id")),
-            @AttributeOverride(name = "stageIndex", column = @Column(name = "stage_index")),
-            @AttributeOverride(name = "experimentId", column = @Column(name = "experiment_id"))
-    })
     private ResultID resultID;
 
     @MapsId("stageID")
@@ -67,6 +63,10 @@ public abstract class Result {
 
     public void setParticipant(Participant participant) {
         this.participant = participant;
+    }
+
+    public ResultID getResultID() {
+        return resultID;
     }
 
     public abstract JSONObject getAsJson();

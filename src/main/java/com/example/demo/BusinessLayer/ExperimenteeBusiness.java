@@ -30,7 +30,7 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException {
+    public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
         Result result = part.fillInStage(data);
         db.saveStageResult(result);

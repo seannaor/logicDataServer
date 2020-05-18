@@ -16,7 +16,7 @@ public interface IExperimenteeBusiness {
     Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException;
 
     //UC 2.2.*
-    void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException;
+    void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException;
 
     Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException;
 

@@ -4,7 +4,9 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -70,9 +72,11 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException {
-        QuestionnaireResult questionnaireResult = new QuestionnaireResult(this, participant);
-
+    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException, NotInReachException {
+        QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
+        if(questionnaireResult == null) {
+            questionnaireResult = new QuestionnaireResult(this, participant);
+        }
         for (Question q : questions) {
             int i = q.getIndex();
             if (!data.containsKey(i))

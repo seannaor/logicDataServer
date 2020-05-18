@@ -2,8 +2,10 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -54,8 +56,11 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException {
-        TaggingResult taggingResult = new TaggingResult(this, participant);
+    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException, NotInReachException {
+        TaggingResult taggingResult = (TaggingResult)participant.getResult(this.getStageID().getStageIndex());
+        if(taggingResult == null) {
+            taggingResult = new TaggingResult(this, participant);
+        }
         for (Requirement r : codeStage.getRequirements()) {
             int i = r.getIndex();
             if (!data.containsKey(i))

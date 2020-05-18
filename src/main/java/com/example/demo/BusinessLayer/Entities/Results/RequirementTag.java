@@ -19,6 +19,7 @@ public class RequirementTag {
         @Column(name = "start_char_loc")
         private int startCharLoc;
         private Requirement.RequirementID requirementID;
+        @Column(name = "participant_id")
         private int participantId;
 
         public RequirementTagID() { }
