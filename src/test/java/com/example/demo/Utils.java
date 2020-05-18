@@ -14,6 +14,7 @@ public class Utils {
         stages.add(getStumpInfoStage());
         stages.add(getStumpQuestionsStage());
         stages.add(getStumpCodeStage());
+        stages.add(getStumpTaggingStage());
 
         return stages;
     }
@@ -69,4 +70,12 @@ public class Utils {
         questionnaire.put("questions", questions);
         return questionnaire;
     }
+
+    public static JSONObject getStumpTaggingStage(){
+        JSONObject JTagging = new JSONObject();
+        JTagging.put("type","tagging");
+        JTagging.put("codeIndex",2);
+        return JTagging;
+    }
+
 }
