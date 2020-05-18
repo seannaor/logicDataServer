@@ -18,10 +18,16 @@ import java.util.List;
 
 @Service
 public class CreatorBusiness implements ICreatorBusiness {
-    @Autowired
+
     private DBAccess db;
-    @Autowired
+
     private DataCache cache;
+
+    @Autowired
+    public CreatorBusiness(DBAccess db, DataCache cache) {
+        this.db = db;
+        this.cache = cache;
+    }
 
     @Override
     public boolean researcherLogin(String username, String password) {
@@ -54,14 +60,6 @@ public class CreatorBusiness implements ICreatorBusiness {
         Stage toAdd = Stage.parseStage(stage, exp);
         db.saveStage(toAdd);
     }
-
-//    @Override
-//    public String saveExperiment(String researcherName, int id) throws NotExistException {
-//        ManagementUser c = cache.getManagerByName(researcherName);
-//
-//        return "TODO: CreatorBusiness.saveExperiment";
-//        //TODO:implements??
-//    }
 
     @Override
     public int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
@@ -104,18 +102,26 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException {
+    public void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException, FormatException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         gt.setStagesByIdx(stagesToCheck);
         db.saveGradingTask(gt);
     }
 
 //    @Override
+//    public String saveExperiment(String researcherName, int id) throws NotExistException {
+//        ManagementUser c = cache.getManagerByName(researcherName);
+//
+//        return;
+//        //TODO:implements CreatorBusiness.saveExperiment??
+//    }
+
+//    @Override
 //    public String saveGradingTask(String researcherName, int expId, int taskId) throws NotExistException {
 //        ManagementUser c = cache.getManagerByName(researcherName);
 //        if (c == null) return researcherName + " not exist";
-//        return "TODO:CreatorBusiness.saveGradingTask";
-//        //TODO:implements??
+//        return;
+//        //TODO:implements CreatorBusiness.saveGradingTask??
 //    }
 
     @Override
@@ -148,7 +154,7 @@ public class CreatorBusiness implements ICreatorBusiness {
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
-        return cache.addGraderToGradingTask(gt, grader).toString();//TODO:figure out WTF
+        return cache.addGraderToGradingTask(gt, grader).toString();
     }
 
     @Override

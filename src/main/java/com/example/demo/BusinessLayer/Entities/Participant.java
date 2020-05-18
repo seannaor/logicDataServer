@@ -7,7 +7,6 @@ import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -104,7 +103,7 @@ public class Participant {
                 CodeResult codeResult = curr.fillCode(data,this);
                 this.results.add(codeResult);
                 return codeResult;
-            case "Tagging":
+            case "tagging":
                 TaggingResult taggingResult = curr.fillTagging(data,this);
                 this.results.add(taggingResult);
                 return taggingResult;
@@ -117,18 +116,7 @@ public class Participant {
         }
     }
 
-    public Result getResultsOf(Stage visible) throws FormatException, NotExistException {
-//        switch (visible.getType()) {
-//            case "code":
-//                return getCodeIn(visible.getStageID());
-//            case "questionnaire":
-//                return getAnsIn(visible.getStageID());
-//            case "tagging":
-//                return getTagsIn(visible.getStageID());
-//            default:
-//                throw new FormatException("code|questionnaire|tagging", visible.getType());
-//        }
-        //TODO: shahar needs to check this
+    public Result getResultsOf(Stage visible) throws FormatException {
         for (Result result : results) {
             if (result.getStage().getStageID().equals(visible.getStageID()))
                 return result;

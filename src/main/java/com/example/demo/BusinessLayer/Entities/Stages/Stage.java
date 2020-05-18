@@ -117,13 +117,16 @@ public abstract class Stage {
                     return new InfoStage((String) stage.get("info"), exp);
 
                 case "code":
-                    String desc = (String) stage.get("description");
-                    String template = (String) stage.get("template");
-                    List<String> requirements = (List<String>) stage.get("requirements");
-                    return new CodeStage(desc, template, requirements, exp);
+                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
+                            (List<String>) stage.get("requirements"), exp);
 
                 case "questionnaire":
                     return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);
+
+                case "tagging":
+                    int codeIdx = (int)stage.get("codeIndex");
+                    CodeStage codeStage = (CodeStage) exp.getStages().get(codeIdx);
+                    return new TaggingStage(codeStage,exp);
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");

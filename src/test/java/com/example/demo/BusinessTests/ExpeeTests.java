@@ -21,14 +21,22 @@ import java.util.UUID;
 
 @SpringBootTest
 public class ExpeeTests {
-    @Autowired
+
     private ExperimenteeBusiness experimenteeBusiness;
-    @Autowired
+
     private CreatorBusiness creatorBusiness;
-    @Autowired
+
     private DataCache cache;
-    @Autowired
+
     private DBAccess db;
+
+    @Autowired
+    public ExpeeTests(ExperimenteeBusiness experimenteeBusiness, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+        this.experimenteeBusiness = experimenteeBusiness;
+        this.creatorBusiness = creatorBusiness;
+        this.cache = cache;
+        this.db = db;
+    }
 
     private ManagementUser manager;
     private Experiment experiment;
@@ -131,6 +139,7 @@ public class ExpeeTests {
             Assert.fail();
         }
     }
+
     @Test
     @Transactional
     public void fillStage() {
@@ -170,22 +179,8 @@ public class ExpeeTests {
         }
 
         // fill in questions (second) stage, good format should pass
-        try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType","questionnaire");
-            JSONObject ans1 = new JSONObject();
-            ans1.put("answer", "WTF!!!");
-            ans.put(1, ans1);
-            JSONObject ans2 = new JSONObject();
-            ans2.put("answer", 3);
-            ans.put(2, ans2);
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
-            experimenteeBusiness.getNextStage(expee.getAccessCode());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.fail();
-        }
+        fillInQuestionnaire(expee);
+        Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
 
         // fill in code (third) stage, fucked format should fail
         long numOfCodeRes = db.getNumerOfCodeResults();
@@ -201,15 +196,25 @@ public class ExpeeTests {
         }
 
         // fill in code (third) stage, good format should pass
+        fillInCode(expee);
+        Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes + 1);
+
+        // fill in tagging (last) stage, fucked format should fail
+        long numOfTagRes = db.getNumberOfTagResults();
         try {
             JSONObject ans = new JSONObject();
-            ans.put("stageType","code");
-            ans.put("userCode","return -1");
+            ans.put("stageType","tagging");
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes + 1);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(numOfTagRes,db.getNumberOfTagResults());
         } catch (Exception e) {
             Assert.fail();
         }
+
+        // fill in code (third) stage, good format should pass
+        fillInTagging(expee);
+        Assert.assertEquals(db.getNumberOfTagResults(), numOfTagRes + 3);
 
         // end of experiment
         try{
@@ -219,6 +224,63 @@ public class ExpeeTests {
             Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
         }
         catch (Exception e){
+            Assert.fail();
+        }
+    }
+
+    private void fillInTagging(Experimentee expee) {
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","tagging");
+
+            JSONObject tag1 = new JSONObject();
+            tag1.put("start_loc",0);
+            tag1.put("length",10);
+            ans.put(0,tag1);
+
+            JSONObject tag2 = new JSONObject();
+            tag2.put("start_loc",0);
+            tag2.put("length",10);
+            ans.put(1,tag2);
+
+            JSONObject tag3 = new JSONObject();
+            tag3.put("start_loc",0);
+            tag3.put("length",10);
+            ans.put(2,tag3);
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+//            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.fail();
+        }
+    }
+
+    void fillInQuestionnaire(Experimentee expee){
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","questionnaire");
+            JSONObject ans1 = new JSONObject();
+            ans1.put("answer", "WTF!!!");
+            ans.put("1", ans1);
+            JSONObject ans2 = new JSONObject();
+            ans2.put("answer", 3);
+            ans.put("2", ans2);
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.fail();
+        }
+    }
+
+    private void fillInCode(Experimentee expee){
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","code");
+            ans.put("userCode","return -1");
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
             Assert.fail();
         }
     }

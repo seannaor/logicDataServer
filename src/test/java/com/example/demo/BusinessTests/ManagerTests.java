@@ -21,23 +21,23 @@ import java.util.UUID;
 
 @SpringBootTest
 public class ManagerTests {
-    @Autowired
+
     private CreatorBusiness creatorBusiness;
-    @Autowired
     private DataCache cache;
-    @Autowired
     private DBAccess db;
+
+    @Autowired
+    public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+        this.creatorBusiness = creatorBusiness;
+        this.cache = cache;
+        this.db = db;
+    }
 
     private ManagementUser manager;
     private Experiment experiment;
     private Experimentee expee;
     private int gradingTaskId;
     private GradingTask gt;
-
-//    public ManagerTests() {
-//        creatorBusiness = new CreatorBusiness();
-//        cache = DataCache.getInstance();
-//    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
@@ -325,6 +325,9 @@ public class ManagerTests {
         } catch (NotExistException ignored) {
             Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
+        catch (FormatException fuck){
+            Assert.fail();
+        }
 
         try {
             //not exist experiment
@@ -332,6 +335,9 @@ public class ManagerTests {
             Assert.fail();
         } catch (NotExistException ignored) {
             Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
+        }
+        catch (FormatException fuck){
+            Assert.fail();
         }
 
         try {
@@ -341,6 +347,9 @@ public class ManagerTests {
         } catch (NotExistException ignored) {
             Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
+        catch (FormatException fuck){
+            Assert.fail();
+        }
 
         try {
             //illegal stage
@@ -349,9 +358,12 @@ public class ManagerTests {
         } catch (NotExistException ignored) {
             Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         }
+        catch (FormatException fuck){
+            Assert.fail();
+        }
 
         try {
-            creatorBusiness.setStagesToCheck(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), List.of(0));
+            creatorBusiness.setStagesToCheck(manager.getBguUsername(), experiment.getExperimentId(), gt.getGradingTaskId(), List.of(1));
             Assert.assertEquals(1,gt.getStages().size());
             Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getStages().size(), 1);
         } catch (Exception e) {

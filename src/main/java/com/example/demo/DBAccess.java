@@ -57,26 +57,28 @@ public class DBAccess {
 
     public void deleteData() {
         JpaRepository[] reps = {
-                managementUserRep,
-                experimenteeRep,
-                graderRep,
-                participantRep,
+                answerRep,
+                questionRep,
+                codeResultRep,
+                requirementTagRep,
+                requirementRep,
+                gradersGTToParticipantsRep,
+                graderToGradingTaskRep,
+                gradingTaskRep,
+                managementUserToExperimentRep,
                 stageRep,
                 experimentRep,
                 permissionRep,
-                questionRep,
-                answerRep,
-                codeResultRep,
-                requirementRep,
-                requirementTagRep,
-                gradingTaskRep,
-                graderToGradingTaskRep,
-                gradersGTToParticipantsRep,
-                managementUserToExperimentRep
+                managementUserRep,
+                permissionRep,
+                participantRep,
+                experimenteeRep,
+                graderRep,
         };
         for (JpaRepository rep : reps)
             rep.deleteAll();
     }
+
     public void saveExperimentee(Experimentee e) {
         participantRep.save(e.getParticipant());
         experimenteeRep.save(e);
@@ -185,6 +187,7 @@ public class DBAccess {
     public long getNumerOfAnswers() { return answerRep.count(); }
     public void saveCodeResult(CodeResult cr) { codeResultRep.save(cr); }
     public long getNumerOfCodeResults() { return codeResultRep.count(); }
+    public long getNumberOfTagResults(){return requirementTagRep.count();}
     public void saveRequirement(Requirement r) { requirementRep.save(r); }
     public void saveRequirementTag(RequirementTag rt) { requirementTagRep.save(rt); }
     public void saveGradingTask(GradingTask gt) { gradingTaskRep.save(gt); }
