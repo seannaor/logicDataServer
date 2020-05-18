@@ -177,35 +177,37 @@ CREATE TABLE `tagging_stages`
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );
 
-CREATE TABLE `requirement_tags`
+CREATE TABLE `results`
 (
-    `start_char_loc` int NOT NULL,
-    `length`         int NOT NULL,
-    `participant_id` int NOT NULL,
+    `participant_id`    int NOT NULL,
+    `stage_index`       int NOT NULL REFERENCES stages (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`     int NOT NULL REFERENCES stages (`experiment_id`) ON DELETE CASCADE,
     FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
-    PRIMARY KEY (`participant_id`, `start_char_loc`)
+    PRIMARY KEY (`participant_id`, `stage_index`, `experiment_id`)
 );
 
-CREATE TABLE `requirements_to_requirement_tags`
+CREATE TABLE `questionnaire_results`
 (
-    `requirement_index` int NOT NULL,
-    `experiment_id`     int NOT NULL,
-    `stage_index`       int NOT NULL,
-    `start_char_loc`    int NOT NULL,
-    `participant_id`    int NOT NULL,
-    FOREIGN KEY (`requirement_index`, `stage_index`, `experiment_id`) REFERENCES requirements (`requirement_index`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`participant_id`, `start_char_loc`) REFERENCES requirement_tags (`participant_id`, `start_char_loc`) ON DELETE CASCADE,
-    PRIMARY KEY (`requirement_index`, `stage_index`, `experiment_id`, `participant_id`, `start_char_loc`)
+    `stage_index`    int  NOT NULL REFERENCES results (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`  int  NOT NULL REFERENCES results (`experiment_id`) ON DELETE CASCADE,
+    `participant_id` int  NOT NULL REFERENCES results (`participant_id`) ON DELETE CASCADE,
+    PRIMARY KEY (`participant_id`, `stage_index`, `experiment_id`)
+);
+
+CREATE TABLE `tagging_results`
+(
+    `stage_index`    int  NOT NULL REFERENCES results (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`  int  NOT NULL REFERENCES results (`experiment_id`) ON DELETE CASCADE,
+    `participant_id` int  NOT NULL REFERENCES results (`participant_id`) ON DELETE CASCADE,
+    PRIMARY KEY (`participant_id`, `stage_index`, `experiment_id`)
 );
 
 CREATE TABLE `code_results`
 (
     `user_code`      TEXT NOT NULL,
-    `stage_index`    int  NOT NULL,
-    `experiment_id`  int  NOT NULL,
-    `participant_id` int  NOT NULL,
-    FOREIGN KEY (`stage_index`, `experiment_id`) REFERENCES code_stages (`stage_index`, `experiment_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
+    `stage_index`    int  NOT NULL REFERENCES results (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`  int  NOT NULL REFERENCES results (`experiment_id`) ON DELETE CASCADE,
+    `participant_id` int  NOT NULL REFERENCES results (`participant_id`) ON DELETE CASCADE,
     PRIMARY KEY (`participant_id`, `stage_index`, `experiment_id`)
 );
 
@@ -213,11 +215,22 @@ CREATE TABLE `answers`
 (
     `answer_json`    JSON,
     `question_index` int NOT NULL,
-    `stage_index`    int NOT NULL,
-    `experiment_id`  int NOT NULL,
-    `participant_id` int NOT NULL,
+    `stage_index`    int  NOT NULL REFERENCES questionnaire_results (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`  int  NOT NULL REFERENCES questionnaire_results (`experiment_id`) ON DELETE CASCADE,
+    `participant_id` int  NOT NULL REFERENCES questionnaire_results (`participant_id`) ON DELETE CASCADE,
     FOREIGN KEY (`question_index`, `stage_index`, `experiment_id`) REFERENCES questions (`question_index`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
     PRIMARY KEY (`participant_id`, `question_index`, `stage_index`, `experiment_id`)
+);
+
+CREATE TABLE `requirement_tags`
+(
+    `start_char_loc`    int NOT NULL,
+    `length`            int NOT NULL,
+    `requirement_index` int NOT NULL,
+    `stage_index`    int  NOT NULL REFERENCES tagging_results (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`  int  NOT NULL REFERENCES tagging_results (`experiment_id`) ON DELETE CASCADE,
+    `participant_id` int  NOT NULL REFERENCES tagging_results (`participant_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`requirement_index`, `stage_index`, `experiment_id`) REFERENCES requirements (`requirement_index`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
+    PRIMARY KEY (`start_char_loc`, `requirement_index`, `participant_id`, `stage_index`, `experiment_id`)
 );
 

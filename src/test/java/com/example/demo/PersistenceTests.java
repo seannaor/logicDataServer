@@ -4,9 +4,7 @@ import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
@@ -59,6 +57,8 @@ class PersistenceTests {
 	@Autowired
 	CodeResultRep codeResultRep;
 	@Autowired
+	TaggingStageRep taggingStageRep;
+	@Autowired
 	RequirementRep requirementRep;
 	@Autowired
 	RequirementTagRep requirementTagRep;
@@ -70,6 +70,8 @@ class PersistenceTests {
 	GradersGTToParticipantsRep gradersGTToParticipantsRep;
 	@Autowired
 	ManagementUserToExperimentRep managementUserToExperimentRep;
+	@Autowired
+	ResultRep resultRep;
 
 	@BeforeEach
 	void clean() {
@@ -84,6 +86,7 @@ class PersistenceTests {
 				infoStageRep,
 				questionnaireStageRep,
 				codeStageRep,
+				taggingStageRep,
 				questionRep,
 				answerRep,
 				codeResultRep,
@@ -92,7 +95,8 @@ class PersistenceTests {
 				gradingTaskRep,
 				graderToGradingTaskRep,
 				gradersGTToParticipantsRep,
-				managementUserToExperimentRep
+				managementUserToExperimentRep,
+				resultRep
 		};
 		for (JpaRepository rep : reps)
 			rep.deleteAll();
@@ -451,6 +455,8 @@ class PersistenceTests {
 		createAndSaveQuestions(questions, s);
 		Participant p1 = createExpeeAndParticipant();
 		addAnswers(s, p1);
+		assertEquals(resultRep.count(), 1);
+		assertEquals(((QuestionnaireResult)resultRep.findAll().get(0)).getAnswers().size(), 2);
 		assertEquals(answerRep.count(), 2);
 		Answer answer = answerRep.findAll().get(0);
 		JSONObject jAns = (JSONObject) new JSONParser().parse(answerRep.findAll().get(0).getAnswerJson());
@@ -489,16 +495,20 @@ class PersistenceTests {
 	}
 
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
+		QuestionnaireResult q = new QuestionnaireResult(questionnaireStageRep.findAll().get(0), p1);
+		resultRep.save(q);
 		JSONObject jsonAns1 = new JSONObject();
 		jsonAns1.put("type", "american");
 		jsonAns1.put("answer", 2);
-		Answer answer1 = new Answer(jsonAns1.toString(), s.getQuestions().get(0), p1);
+		Answer answer1 = new Answer(jsonAns1.toString(), s.getQuestions().get(0), q);
 		answerRep.save(answer1);
+		resultRep.save(q);
 		JSONObject jsonAns2 = new JSONObject();
 		jsonAns2.put("type", "american");
 		jsonAns2.put("answer", 3);
-		Answer answer2 = new Answer(jsonAns2.toString(), s.getQuestions().get(1), p1);
+		Answer answer2 = new Answer(jsonAns2.toString(), s.getQuestions().get(1), q);
 		answerRep.save(answer2);
+		resultRep.save(q);
 	}
 
 	private Participant createExpeeAndParticipant() {
@@ -564,7 +574,8 @@ class PersistenceTests {
 		TaggingStage taggingStage = new TaggingStage(codeStage, e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
-		addRequirementTags(codeStage, p1);
+		TaggingResult t = addRequirementTags(codeStage, p1);
+		assertEquals(((TaggingResult)resultRep.findById(t.getResultID()).orElse(null)).getTags().size(), 2);
 		assertEquals(requirementTagRep.count(), 2);
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 10);
 		RequirementTag req = requirementTagRep.findAll().get(0);
@@ -596,20 +607,21 @@ class PersistenceTests {
 		assertEquals(requirementRep.count(), 1);
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 1);
-		codeResultRep.deleteById(codeResult.getCodeResultID());
+		codeResultRep.deleteById(codeResult.getResultID());
 		assertEquals(codeResultRep.count(), 0);
 	}
 
-	private void addRequirementTags(CodeStage codeStage, Participant p1) {
-		List<Requirement> requirementsFor_rt1 = new ArrayList<>();
-		requirementsFor_rt1.add(codeStage.getRequirements().get(0));
-		requirementsFor_rt1.add(codeStage.getRequirements().get(1));
-		RequirementTag rt1 = new RequirementTag(0, 10, p1, requirementsFor_rt1);
-		List<Requirement> requirementsFor_rt2 = new ArrayList<>();
-		requirementsFor_rt2.add(codeStage.getRequirements().get(0));
-		RequirementTag rt2 = new RequirementTag(10, 15, p1, requirementsFor_rt2);
+	private TaggingResult addRequirementTags(CodeStage codeStage, Participant p1) {
+		TaggingResult q = new TaggingResult(taggingStageRep.findAll().get(0), p1);
+		resultRep.save(q);
+		Requirement requirementFor_rt1 = codeStage.getRequirements().get(0);
+		RequirementTag rt1 = new RequirementTag(0, 10, requirementFor_rt1, q);
+		Requirement requirementFor_rt2 = codeStage.getRequirements().get(1);
+		RequirementTag rt2 = new RequirementTag(10, 15, requirementFor_rt2, q);
 		requirementTagRep.save(rt1);
 		requirementTagRep.save(rt2);
+		resultRep.save(q);
+		return q;
 	}
 
 	private void addRequirementsToStage(CodeStage codeStage) {

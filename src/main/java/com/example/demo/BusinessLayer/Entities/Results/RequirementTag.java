@@ -4,6 +4,7 @@ package com.example.demo.BusinessLayer.Entities.Results;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,50 +16,52 @@ public class RequirementTag {
 
     @Embeddable
     public static class RequirementTagID implements Serializable {
-        @Column(name = "participant_id")
-        private int participantId;
         @Column(name = "start_char_loc")
         private int startCharLoc;
+        private Requirement.RequirementID requirementID;
+        @Column(name = "participant_id")
+        private int participantId;
 
         public RequirementTagID() { }
 
-        public RequirementTagID(int participantId, int startCharLoc) {
-            this.participantId = participantId;
+        public RequirementTagID(int startCharLoc, Requirement.RequirementID requirementID, int participantId) {
             this.startCharLoc = startCharLoc;
+            this.requirementID = requirementID;
+            this.participantId = participantId;
         }
     }
 
     @EmbeddedId
     private RequirementTagID requirementTagID;
-    @MapsId("participantId")
+    @MapsId("taggingResult")
     @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
+    @JoinColumns({
+            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private TaggingResult taggingResult;
 
     @Column(name = "length")
     private int length;
 
-    @ManyToMany
-    @JoinTable(
-            name = "requirements_to_requirement_tags",
-            joinColumns = {
-                    @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
-                    @JoinColumn(name = "start_char_loc", referencedColumnName = "start_char_loc")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "requirement_index", referencedColumnName = "requirement_index"),
-                    @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
-                    @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
-    )
-    private List<Requirement> requirements;
+    @MapsId("taggingResult")
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "requirement_index", referencedColumnName = "requirement_index"),
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private Requirement requirement;
 
     public RequirementTag() { }
 
-    public RequirementTag(int startCharLoc, int length, Participant participant, List<Requirement> requirements) {
-        this.requirementTagID = new RequirementTagID(participant.getParticipantId(), startCharLoc);
+    public RequirementTag(int startCharLoc, int length, Requirement requirement, TaggingResult taggingResult) {
+        this.requirementTagID = new RequirementTagID(startCharLoc, requirement.getRequirementID(), taggingResult.getParticipant().getParticipantId());
         this.length = length;
-        this.participant = participant;
-        this.requirements = requirements;
+        this.taggingResult = taggingResult;
+        this.requirement = requirement;
+        this.taggingResult.addTag(this);
     }
 
     public RequirementTagID getRequirementTagID() {
@@ -77,20 +80,15 @@ public class RequirementTag {
         this.requirementTagID.startCharLoc=startCharLoc;
     }
 
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-        this.requirementTagID = new RequirementTagID(participant.getParticipantId(), -1);
+    public TaggingResult getTaggingResult() {
+        return taggingResult;
     }
 
-    public void setRequirement(Requirement requirement){
-        this.requirements.add(requirement);
-    }
-
-    public Participant getParticipant() {
-        return participant;
+    public Requirement getRequirement() {
+        return requirement;
     }
 
     public Stage.StageID getStageID(){
-        return this.requirements.get(0).getStageID();
+        return this.requirement.getStageID();
     }
 }

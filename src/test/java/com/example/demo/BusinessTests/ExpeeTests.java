@@ -158,7 +158,9 @@ public class ExpeeTests {
         try {
             JSONObject ans = new JSONObject();
             ans.put("stageType","questionnaire");
-            ans.put(2,2);
+            JSONObject ans1 = new JSONObject();
+            ans1.put("answer", 2);
+            ans.put(2, ans1);
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();
         } catch (FormatException ignore) {
@@ -171,8 +173,12 @@ public class ExpeeTests {
         try {
             JSONObject ans = new JSONObject();
             ans.put("stageType","questionnaire");
-            ans.put(1,"WTF!!!");
-            ans.put(2,"3");
+            JSONObject ans1 = new JSONObject();
+            ans1.put("answer", "WTF!!!");
+            ans.put(1, ans1);
+            JSONObject ans2 = new JSONObject();
+            ans2.put("answer", 3);
+            ans.put(2, ans2);
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
             experimenteeBusiness.getNextStage(expee.getAccessCode());

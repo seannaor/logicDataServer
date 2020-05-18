@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -42,7 +43,7 @@ public class Requirement {
     @Column(name = "text")
     private String text;
 
-    @ManyToMany(mappedBy = "requirements")
+    @OneToMany(mappedBy = "requirement")
     private List<RequirementTag> requirementTags = new ArrayList<>();
 
     public Requirement() {
@@ -78,12 +79,8 @@ public class Requirement {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data, Participant participant) {
-        RequirementTag tag = new RequirementTag();
-        tag.setRequirement(this);
-        tag.setStart((int) data.get("start_loc"));
-        tag.setLength((int) data.get("length"));
-        tag.setParticipant(participant);
+    public RequirementTag tag(JSONObject data, TaggingResult taggingResult) {
+        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"), this, taggingResult);
         return tag;
     }
 

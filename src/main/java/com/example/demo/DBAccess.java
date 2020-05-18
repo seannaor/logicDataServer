@@ -51,6 +51,8 @@ public class DBAccess {
     @Autowired
     ManagementUserToExperimentRep managementUserToExperimentRep;
     @Autowired
+    ResultRep resultRep;
+    @Autowired
     DataCache cache;
 
     public void deleteData() {
@@ -149,28 +151,33 @@ public class DBAccess {
         stageRep.save(s);
         experimentRep.save(s.getExperiment());
     }
-    public void saveStageResult(ResultWrapper result){
+    public void saveStageResult(Result result){
         String sourceStage = result.getAsJson().get("source stage").toString();
-        Participant p = null;
+        Participant p = result.getParticipant();
         switch (sourceStage){
             case "code":
-                p = ((CodeResult) result).getParticipant();
-                saveCodeResult((CodeResult) result);
                 break;
             case "tagging":
-                for(RequirementTag tag : ((TagsWrapper)result).getTags()){
+                List<RequirementTag> temp1 = ((TaggingResult)result).getTags();
+                ((TaggingResult)result).setTags(new ArrayList<>());
+                saveResult(result);
+                for(RequirementTag tag : temp1){
                     saveRequirementTag(tag);
-                    p = tag.getParticipant();
                 }
+                ((TaggingResult)result).setTags(temp1);
                 break;
             case "questionnaire":
-                for(Answer ans : ((AnswersWrapper)result).getAnswers()){
+                List<Answer> temp2 = ((QuestionnaireResult)result).getAnswers();
+                ((QuestionnaireResult)result).setAnswers(new ArrayList<>());
+                saveResult(result);
+                for(Answer ans : temp2){
                     saveAnswer(ans);
-                    p = ans.getParticipant();
                 }
+                ((QuestionnaireResult)result).setAnswers(temp2);
                 break;
         }
-        participantRep.save(p);
+        saveResult(result);
+        saveParticipant(p);
     }
     public long getNumberOfStages() { return stageRep.count(); }
     public void saveQuestion(Question q) { questionRep.save(q); }
@@ -201,4 +208,5 @@ public class DBAccess {
     }
     public GradersGTToParticipants getGradersGTToParticipantsById(int gtId, String graderEmail, int pId) { return gradersGTToParticipantsRep.findById(new GradersGTToParticipants.GradersGTToParticipantsID(gtId, graderEmail, pId)).orElse(null); }
     public void saveManagementUserToExperiment(ManagementUserToExperiment m) { managementUserToExperimentRep.save(m); }
+    public void saveResult(Result r) { resultRep.save(r); }
 }

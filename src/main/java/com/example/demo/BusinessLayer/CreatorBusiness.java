@@ -23,10 +23,6 @@ public class CreatorBusiness implements ICreatorBusiness {
     @Autowired
     private DataCache cache;
 
-//    public CreatorBusiness() {
-//        this.cache = DataCache.getInstance();
-//    }
-
     @Override
     public boolean researcherLogin(String username, String password) {
         ManagementUser c;
