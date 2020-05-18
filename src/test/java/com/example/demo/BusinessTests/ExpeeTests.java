@@ -114,9 +114,14 @@ public class ExpeeTests {
             Stage s = experimenteeBusiness.getNextStage(expee.getAccessCode());
             Assert.assertEquals(s.getType(), "questionnaire");
             Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "questionnaire");
+
             s = experimenteeBusiness.getNextStage(expee.getAccessCode());
             Assert.assertEquals(s.getType(), "code");
             Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
+
+            s = experimenteeBusiness.getNextStage(expee.getAccessCode());
+            Assert.assertEquals(s.getType(), "tagging");
+            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
         } catch (Exception e) {
             Assert.fail();
         }
