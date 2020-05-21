@@ -124,6 +124,22 @@ public class CreatorBusiness implements ICreatorBusiness {
 //        //TODO:implements CreatorBusiness.saveGradingTask??
 //    }
 
+    public void addAlly(String researcherName,String allyMail, List<String> permissions) throws NotExistException, ExistException {
+        // When adding a new ally, his password is TEMP and username is his mail
+        cache.getManagerByName(researcherName);
+        try{
+            cache.getManagerByEMail(allyMail);
+            throw new ExistException(allyMail);
+        }catch (NotExistException ignore){}
+        ManagementUser ally = new ManagementUser(allyMail,"TEMP",allyMail);
+        for (String per : permissions) {
+            Permission toAdd = new Permission(per, ally);
+            ally.addPermission(toAdd);
+            db.savePermissionForManagementUser(toAdd, ally);
+        }
+        cache.addManager(ally);
+    }
+
     @Override
     public void setAlliePermissions(String researcherName, int expId, String allieMail, String allieRole, List<String> permissions) throws NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);

@@ -83,69 +83,118 @@ public class DBAccess {
         participantRep.save(e.getParticipant());
         experimenteeRep.save(e);
     }
+
     public List<Experimentee> getAllExperimentees() {
         return experimenteeRep.findAll();
     }
-    public long getNumberOfExperimentees() { return experimenteeRep.count(); }
-    public Experimentee getExperimenteeByCode(UUID code) { return experimenteeRep.findById(code).orElse(null); }
-    public Experimentee getExperimenteeByEmail(String email) { return experimenteeRep.findByEmail(email); }
-    public Experimentee getExperimenteeByEmailAndExp(String email, int expId) { return experimenteeRep.findByEmailAndExp(email, expId); }
+
+    public long getNumberOfExperimentees() {
+        return experimenteeRep.count();
+    }
+
+    public Experimentee getExperimenteeByCode(UUID code) {
+        return experimenteeRep.findById(code).orElse(null);
+    }
+
+    public Experimentee getExperimenteeByEmail(String email) {
+        return experimenteeRep.findByEmail(email);
+    }
+
+    public Experimentee getExperimenteeByEmailAndExp(String email, int expId) {
+        return experimenteeRep.findByEmailAndExp(email, expId);
+    }
+
     public void saveExperiment(Experiment e, ManagementUser creator) {
         experimentRep.save(e);
-        for(ManagementUserToExperiment m : creator.getManagementUserToExperiments()) {
-            if(m.getExperiment().getExperimentId() == e.getExperimentId()) {
+        for (ManagementUserToExperiment m : creator.getManagementUserToExperiments()) {
+            if (m.getExperiment().getExperimentId() == e.getExperimentId()) {
                 managementUserToExperimentRep.save(m);
             }
         }
         managementUserRep.save(creator);
         //cache.updateManagementUser(creator);
     }
-    public long getNumberOfExperiments() { return experimentRep.count(); }
+
+    public long getNumberOfExperiments() {
+        return experimentRep.count();
+    }
+
     public void deleteExperiment(Experiment e) {
         experimentRep.deleteById(e.getExperimentId());
     }
-    public Experiment getExperimentById(int expId) { return experimentRep.findById(expId).orElse(null); }
+
+    public Experiment getExperimentById(int expId) {
+        return experimentRep.findById(expId).orElse(null);
+    }
+
     public void saveGrader(Grader g) {
         participantRep.save(g.getParticipant());
         graderRep.save(g);
     }
-    public Grader getGraderByEmail(String email) { return graderRep.findById(email).orElse(null); }
+
+    public Grader getGraderByEmail(String email) {
+        return graderRep.findById(email).orElse(null);
+    }
+
     public void saveManagementUser(ManagementUser m) {
         managementUserRep.save(m);
     }
+
     public void deleteManagementUser(ManagementUser m) {
         managementUserRep.delete(m);
     }
+
     public List<ManagementUser> getAllManagementUsers() {
         return managementUserRep.findAll();
     }
-    public ManagementUser getManagementUserByName(String name) { return managementUserRep.findById(name).orElse(null); }
-    public ManagementUser getManagementUserByEMail(String email) { return managementUserRep.findByEmail(email); }
-    public void saveParticipant(Participant p) { participantRep.save(p); }
-    public Participant getParticipantById(int pId) { return participantRep.findById(pId).orElse(null); }
-    public void savePermissionForManagementUser(Permission p, ManagementUser m) { permissionRep.save(p); managementUserRep.save(m); }
-    public long getNumberOfPermissions() { return permissionRep.count(); }
+
+    public ManagementUser getManagementUserByName(String name) {
+        return managementUserRep.findById(name).orElse(null);
+    }
+
+    public ManagementUser getManagementUserByEMail(String email) {
+        return managementUserRep.findByEmail(email);
+    }
+
+    public void saveParticipant(Participant p) {
+        participantRep.save(p);
+    }
+
+    public Participant getParticipantById(int pId) {
+        return participantRep.findById(pId).orElse(null);
+    }
+
+    public void savePermissionForManagementUser(Permission p, ManagementUser m) {
+        permissionRep.save(p);
+        managementUserRep.save(m);
+    }
+
+    public long getNumberOfPermissions() {
+        return permissionRep.count();
+    }
+
     public void deletePermissionsOfManagementUser(ManagementUser m) {
-        for(Permission p : m.getPermissions())
+        for (Permission p : m.getPermissions())
             permissionRep.delete(p);
         m.setPermissions(new ArrayList<>());
         managementUserRep.save(m);
     }
+
     public void saveStage(Stage s) {
-        if(s instanceof QuestionnaireStage) {
+        if (s instanceof QuestionnaireStage) {
             List<Question> temp = ((QuestionnaireStage) s).getQuestions();
             ((QuestionnaireStage) s).setQuestions(new ArrayList<>());
             stageRep.save(s);
-            for(Question q : temp) {
+            for (Question q : temp) {
                 questionRep.save(q);
             }
             ((QuestionnaireStage) s).setQuestions(temp);
         }
-        if(s instanceof CodeStage) {
+        if (s instanceof CodeStage) {
             List<Requirement> temp = ((CodeStage) s).getRequirements();
             ((CodeStage) s).setRequirements(new ArrayList<>());
             stageRep.save(s);
-            for(Requirement r : temp) {
+            for (Requirement r : temp) {
                 requirementRep.save(r);
             }
             ((CodeStage) s).setRequirements(temp);
@@ -153,47 +202,88 @@ public class DBAccess {
         stageRep.save(s);
         experimentRep.save(s.getExperiment());
     }
-    public void saveStageResult(Result result){
+
+    public void saveStageResult(Result result) {
         String sourceStage = result.getAsJson().get("source stage").toString();
         Participant p = result.getParticipant();
-        switch (sourceStage){
+        switch (sourceStage) {
             case "code":
                 break;
             case "tagging":
-                List<RequirementTag> temp1 = ((TaggingResult)result).getTags();
-                ((TaggingResult)result).setTags(new ArrayList<>());
+                List<RequirementTag> temp1 = ((TaggingResult) result).getTags();
+                ((TaggingResult) result).setTags(new ArrayList<>());
                 saveResult(result);
-                for(RequirementTag tag : temp1){
+                for (RequirementTag tag : temp1) {
                     saveRequirementTag(tag);
                 }
-                ((TaggingResult)result).setTags(temp1);
+                ((TaggingResult) result).setTags(temp1);
                 break;
             case "questionnaire":
-                List<Answer> temp2 = ((QuestionnaireResult)result).getAnswers();
-                ((QuestionnaireResult)result).setAnswers(new ArrayList<>());
+                List<Answer> temp2 = ((QuestionnaireResult) result).getAnswers();
+                ((QuestionnaireResult) result).setAnswers(new ArrayList<>());
                 saveResult(result);
-                for(Answer ans : temp2){
+                for (Answer ans : temp2) {
                     saveAnswer(ans);
                 }
-                ((QuestionnaireResult)result).setAnswers(temp2);
+                ((QuestionnaireResult) result).setAnswers(temp2);
                 break;
         }
         saveResult(result);
         saveParticipant(p);
     }
-    public long getNumberOfStages() { return stageRep.count(); }
-    public void saveQuestion(Question q) { questionRep.save(q); }
-    public void saveAnswer(Answer a) { answerRep.save(a); }
-    public long getNumerOfAnswers() { return answerRep.count(); }
-    public void saveCodeResult(CodeResult cr) { codeResultRep.save(cr); }
-    public long getNumerOfCodeResults() { return codeResultRep.count(); }
-    public long getNumberOfTagResults(){return requirementTagRep.count();}
-    public void saveRequirement(Requirement r) { requirementRep.save(r); }
-    public void saveRequirementTag(RequirementTag rt) { requirementTagRep.save(rt); }
-    public void saveGradingTask(GradingTask gt) { gradingTaskRep.save(gt); }
-    public GradingTask getGradingTaskById(int gtId) { return gradingTaskRep.findById(gtId).orElse(null); }
-    public List<GradingTask> getAllGradingTasks() { return gradingTaskRep.findAll(); }
-    public long getNumberOfGradingTasks() { return gradingTaskRep.count(); }
+
+    public long getNumberOfStages() {
+        return stageRep.count();
+    }
+
+    public void saveQuestion(Question q) {
+        questionRep.save(q);
+    }
+
+    public void saveAnswer(Answer a) {
+        answerRep.save(a);
+    }
+
+    public long getNumerOfAnswers() {
+        return answerRep.count();
+    }
+
+    public void saveCodeResult(CodeResult cr) {
+        codeResultRep.save(cr);
+    }
+
+    public long getNumerOfCodeResults() {
+        return codeResultRep.count();
+    }
+
+    public long getNumberOfTagResults() {
+        return requirementTagRep.count();
+    }
+
+    public void saveRequirement(Requirement r) {
+        requirementRep.save(r);
+    }
+
+    public void saveRequirementTag(RequirementTag rt) {
+        requirementTagRep.save(rt);
+    }
+
+    public void saveGradingTask(GradingTask gt) {
+        gradingTaskRep.save(gt);
+    }
+
+    public GradingTask getGradingTaskById(int gtId) {
+        return gradingTaskRep.findById(gtId).orElse(null);
+    }
+
+    public List<GradingTask> getAllGradingTasks() {
+        return gradingTaskRep.findAll();
+    }
+
+    public long getNumberOfGradingTasks() {
+        return gradingTaskRep.count();
+    }
+
     public void saveGraderToGradingTask(GraderToGradingTask g) {
         graderToGradingTaskRep.save(g);
         graderRep.save(g.getGrader());
@@ -201,15 +291,34 @@ public class DBAccess {
 //        cache.updateGrader(g.getGrader());
 //        cache.updateGradingTask(g.getGradingTask());
     }
-    public long getGraderToGradingTaskCount() { return graderToGradingTaskRep.count(); }
-    public GraderToGradingTask getGraderToGradingTaskById(int gtId, String graderEmail) { return graderToGradingTaskRep.findById(new GraderToGradingTask.GraderToGradingTaskID(gtId, graderEmail)).orElse(null); }
-    public GraderToGradingTask getGraderToGradingTaskByCode(UUID code) { return graderToGradingTaskRep.findByGradersCode(code); }
+
+    public long getGraderToGradingTaskCount() {
+        return graderToGradingTaskRep.count();
+    }
+
+    public GraderToGradingTask getGraderToGradingTaskById(int gtId, String graderEmail) {
+        return graderToGradingTaskRep.findById(new GraderToGradingTask.GraderToGradingTaskID(gtId, graderEmail)).orElse(null);
+    }
+
+    public GraderToGradingTask getGraderToGradingTaskByCode(UUID code) {
+        return graderToGradingTaskRep.findByGradersCode(code);
+    }
+
     public void saveGradersGTToParticipants(GradersGTToParticipants g) {
         gradersGTToParticipantsRep.save(g);
         graderToGradingTaskRep.save(g.getGraderToGradingTask());
         participantRep.save(g.getParticipant());
     }
-    public GradersGTToParticipants getGradersGTToParticipantsById(int gtId, String graderEmail, int pId) { return gradersGTToParticipantsRep.findById(new GradersGTToParticipants.GradersGTToParticipantsID(gtId, graderEmail, pId)).orElse(null); }
-    public void saveManagementUserToExperiment(ManagementUserToExperiment m) { managementUserToExperimentRep.save(m); }
-    public void saveResult(Result r) { resultRep.save(r); }
+
+    public GradersGTToParticipants getGradersGTToParticipantsById(int gtId, String graderEmail, int pId) {
+        return gradersGTToParticipantsRep.findById(new GradersGTToParticipants.GradersGTToParticipantsID(gtId, graderEmail, pId)).orElse(null);
+    }
+
+    public void saveManagementUserToExperiment(ManagementUserToExperiment m) {
+        managementUserToExperimentRep.save(m);
+    }
+
+    public void saveResult(Result r) {
+        resultRep.save(r);
+    }
 }

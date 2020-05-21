@@ -153,7 +153,7 @@ public class DataCache {
         List<GradingTask> ret = new ArrayList<>();
         // no need to go over cache because anyway we need to go over all grading tasks in db to insure we are not missing some in cache
         for (GradingTask gt : db.getAllGradingTasks()) {
-            if (gt.getBaseExperiment().equals(exp))
+            if (gt.getBaseExperiment().getExperimentId()==exp.getExperimentId())
                 ret.add(gt);
         }
         return ret;

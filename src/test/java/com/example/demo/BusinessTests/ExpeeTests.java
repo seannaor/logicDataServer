@@ -48,9 +48,9 @@ public class ExpeeTests {
         db.deleteData();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         cache.addManager(manager);
-        List<JSONObject> stages = Utils.buildStages();
-        creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
-        experiment = manager.getExperimentByName("The Experiment");
+
+        experiment = Utils.buildExp(creatorBusiness,manager);
+
         expee = new Experimentee("gili@post.bgu.ac.il", experiment);
         cache.addExperimentee(expee);
     }
@@ -60,9 +60,10 @@ public class ExpeeTests {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
-            Stage first = experimenteeBusiness.beginParticipation(someCode);
+            experimenteeBusiness.beginParticipation(someCode);
+            Assert.fail();
         } catch (CodeException ignore) {
-            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
+            Assert.assertNull(db.getExperimenteeByCode(someCode));
         }
         catch (ExpEndException e){Assert.fail();}
 
@@ -70,7 +71,7 @@ public class ExpeeTests {
         try {
             Stage first = experimenteeBusiness.beginParticipation(expee.getAccessCode());
             Assert.assertEquals(first.getType(), "info");
-            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()) != null);
+            Assert.assertNotNull(db.getExperimenteeByCode(expee.getAccessCode()));
         } catch (Exception e) {
             Assert.fail();
         }
@@ -235,24 +236,7 @@ public class ExpeeTests {
 
     private void fillInTagging(Experimentee expee) {
         try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType","tagging");
-
-            JSONObject tag1 = new JSONObject();
-            tag1.put("start_loc",0);
-            tag1.put("length",10);
-            ans.put(0,tag1);
-
-            JSONObject tag2 = new JSONObject();
-            tag2.put("start_loc",0);
-            tag2.put("length",10);
-            ans.put(1,tag2);
-
-            JSONObject tag3 = new JSONObject();
-            tag3.put("start_loc",0);
-            tag3.put("length",10);
-            ans.put(2,tag3);
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Utils.fillInTagging(experimenteeBusiness,expee);
 //            experimenteeBusiness.getNextStage(expee.getAccessCode());
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -260,17 +244,9 @@ public class ExpeeTests {
         }
     }
 
-    void fillInQuestionnaire(Experimentee expee){
+    private void fillInQuestionnaire(Experimentee expee){
         try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType","questionnaire");
-            JSONObject ans1 = new JSONObject();
-            ans1.put("answer", "WTF!!!");
-            ans.put("1", ans1);
-            JSONObject ans2 = new JSONObject();
-            ans2.put("answer", 3);
-            ans.put("2", ans2);
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Utils.fillInQuestionnaire(experimenteeBusiness,expee);
             experimenteeBusiness.getNextStage(expee.getAccessCode());
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -280,10 +256,7 @@ public class ExpeeTests {
 
     private void fillInCode(Experimentee expee){
         try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType","code");
-            ans.put("userCode","return -1");
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            Utils.fillInCode(experimenteeBusiness,expee);
             experimenteeBusiness.getNextStage(expee.getAccessCode());
         } catch (Exception e) {
             Assert.fail();

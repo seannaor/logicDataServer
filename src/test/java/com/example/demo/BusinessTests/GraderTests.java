@@ -2,14 +2,12 @@ package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.*;
 import com.example.demo.BusinessLayer.Entities.*;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +56,7 @@ public class GraderTests {
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         cache.addManager(manager);
 
-        buildExp();
+        experiment = Utils.buildExp(creatorBusiness,manager);
 
         expee = new Experimentee("gili@post", experiment);
         cache.addExperimentee(expee);
@@ -66,66 +64,24 @@ public class GraderTests {
         grader = new Grader("grader@post.bgu.ac.il", experiment);
         cache.addGrader(grader);
 
-        buildGradingTask();
+        task = Utils.buildGradingTask(cache,grader,experiment,experiment,experiment);
+        graderCode = cache.getGraderToGradingTask(grader, task).getGraderAccessCode();
 
         cache.addExpeeToGradingTask(task, grader, new GradersGTToParticipants(cache.getGraderToGradingTask(grader, task), expee.getParticipant()));
 
-        fillInExp();
+        Utils.fillInExp(experimenteeBusiness,expee);
     }
 
-    private void fillInExp() throws CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
-        // pass info (first) stage
-        experimenteeBusiness.getNextStage(expee.getAccessCode());
 
-        // fill in questions (second) stage, good format should pass
-        fillInQuestionnaire(expee);
 
-        // fill in code (third) stage, good format should pass
-        fillInCode(expee);
-    }
-
-    private void fillInQuestionnaire(Experimentee expee) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "questionnaire");
-        JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "WTF!!!");
-        ans.put("1", ans1);
-        JSONObject ans2 = new JSONObject();
-        ans2.put("answer", 3);
-        ans.put("2", ans2);
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-        experimenteeBusiness.getNextStage(expee.getAccessCode());
-
-    }
-
-    private void fillInCode(Experimentee expee) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "code");
-        ans.put("userCode", "return -1");
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
-    }
-
-    private void buildGradingTask() throws ExistException, NotExistException, FormatException {
-        task = new GradingTask("test", experiment, experiment, experiment);
-        task.setStagesByIdx(List.of(1,2));
-        cache.addGradingTask(task);
-        cache.addGraderToGradingTask(task, grader);
-        graderCode = cache.getGraderToGradingTask(grader, task).getGraderAccessCode();
-    }
-
-    private void buildExp() throws NotExistException, FormatException, ExistException {
-        List<JSONObject> stages = Utils.buildStages();
-        creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
-        experiment = manager.getExperimentByName("The Experiment");
-    }
 
     @Test
     public void loginTest() {
         UUID someCode = UUID.randomUUID();
         Assert.assertFalse(graderBusiness.beginGrading(someCode));
-        Assert.assertTrue(db.getGraderToGradingTaskByCode(someCode) == null);
+        Assert.assertNull(db.getGraderToGradingTaskByCode(someCode));
         Assert.assertTrue(graderBusiness.beginGrading(graderCode));
-        Assert.assertTrue(db.getGraderToGradingTaskByCode(graderCode) != null);
+        Assert.assertNotNull(db.getGraderToGradingTaskByCode(graderCode));
     }
 
     @Test
