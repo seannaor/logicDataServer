@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 
@@ -31,8 +30,6 @@ public class Participant {
     private Experiment experiment;
     @OneToMany(mappedBy = "participant")
     private List<Result> results;
-    @OneToMany(mappedBy = "participant")
-    private List<GradersGTToParticipants> gradersGTToParticipants;
 
     public Participant() {
     }
@@ -43,7 +40,6 @@ public class Participant {
         isDone = false;
         currStage = 0;
         this.results = new ArrayList<>();
-        this.gradersGTToParticipants = new ArrayList<>();
     }
 
     public Experiment getExperiment() {
@@ -52,11 +48,6 @@ public class Participant {
 
     public int getParticipantId() {
         return participantId;
-    }
-
-    public void addGradersGTToParticipants(GradersGTToParticipants g) {
-        if (!this.gradersGTToParticipants.contains(g))
-            this.gradersGTToParticipants.add(g);
     }
 
     public Stage getCurrStage() throws ExpEndException {

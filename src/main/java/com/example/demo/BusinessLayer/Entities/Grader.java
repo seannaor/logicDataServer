@@ -12,9 +12,6 @@ public class Grader {
     @Id
     @Column(name = "grader_email")
     private String graderEmail;
-    @OneToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
     @OneToMany(mappedBy = "grader")
     private List<GraderToGradingTask> assignedGradingTasks = new ArrayList<>();
 
@@ -22,12 +19,10 @@ public class Grader {
 
     public Grader(String graderEmail, Experiment exp) {
         this.graderEmail = graderEmail;
-        this.participant = new Participant(exp);
     }
 
-    public Grader(String graderEmail, Participant participant) {
+    public Grader(String graderEmail) {
         this.graderEmail = graderEmail;
-        this.participant = participant;
     }
 
     public String getGraderEmail() {
@@ -46,7 +41,4 @@ public class Grader {
         this.assignedGradingTasks.add(gradingTask);
     }
 
-    public Participant getParticipant() {
-        return participant;
-    }
 }
