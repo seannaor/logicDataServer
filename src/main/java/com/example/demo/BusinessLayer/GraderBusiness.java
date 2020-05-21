@@ -15,8 +15,12 @@ import java.util.UUID;
 
 @Service
 public class GraderBusiness implements IGraderBusiness {
-    @Autowired
+
     private DataCache cache;
+
+    public GraderBusiness(DataCache cache) {
+        this.cache = cache;
+    }
 
     @Override
     public boolean beginGrading(UUID accessCode) {
@@ -32,9 +36,9 @@ public class GraderBusiness implements IGraderBusiness {
     public List<Participant> getParticipantsByTask(UUID accessCode) throws CodeException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         List<Participant> parts = new ArrayList<>();
-        for(Participant p:task.getParticipants()){
-            if(p.isDone()) parts.add(p);
-        }
+        for (Participant p : task.getParticipants())
+            parts.add(p);
+
         return parts;
     }
 

@@ -79,10 +79,10 @@ public class QuestionnaireStage extends Stage {
         }
         for (Question q : questions) {
             int i = q.getIndex();
-            if (!data.containsKey(i))
+            if (!data.containsKey(i+""))
                 throw new FormatException("answer #" + i);
 
-            q.answer(data.get(i), questionnaireResult); //adds the new answer to the questionnaireResult automatically
+            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
         }
         return questionnaireResult;
     }

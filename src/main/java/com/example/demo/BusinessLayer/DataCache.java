@@ -132,16 +132,6 @@ public class DataCache {
         throw new NotExistException("experimentee", email);
     }
 
-//    public GradingTask getGradingTaskByName(String researcherName, int expId, int taskId) throws NotExistException {
-//        ManagementUser man = getManagerByName(researcherName);
-//        Experiment exp = man.getExperiment(expId);
-//        for (GradingTask gt : gradingTasks) {
-//            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == taskId)
-//                return gt;
-//        }
-//        throw new NotExistException("grading task", ""+taskId);
-//    }
-
     public GradingTask getGradingTaskById(String researcherName, int expId, int id) throws NotExistException {
         ManagementUser man = getManagerByName(researcherName);
         Experiment exp = man.getExperiment(expId);
@@ -163,7 +153,7 @@ public class DataCache {
         List<GradingTask> ret = new ArrayList<>();
         // no need to go over cache because anyway we need to go over all grading tasks in db to insure we are not missing some in cache
         for (GradingTask gt : db.getAllGradingTasks()) {
-            if (gt.getBaseExperiment().equals(exp))
+            if (gt.getBaseExperiment().getExperimentId()==exp.getExperimentId())
                 ret.add(gt);
         }
         return ret;
@@ -196,6 +186,15 @@ public class DataCache {
         return null;
     }
 
+//    public GradingTask getGradingTaskByName(String researcherName, int expId, int taskId) throws NotExistException {
+//        ManagementUser man = getManagerByName(researcherName);
+//        Experiment exp = man.getExperiment(expId);
+//        for (GradingTask gt : gradingTasks) {
+//            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == taskId)
+//                return gt;
+//        }
+//        throw new NotExistException("grading task", ""+taskId);
+//    }
 
     //=======================================================================
 

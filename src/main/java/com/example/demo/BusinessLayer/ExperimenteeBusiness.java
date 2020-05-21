@@ -9,23 +9,31 @@ import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.DBAccess;
+import com.example.demo.SpringBooter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class ExperimenteeBusiness implements IExperimenteeBusiness {
-    @Autowired
+
     private DataCache cache;
-    @Autowired
     private DBAccess db;
+
+    @Autowired
+    public ExperimenteeBusiness(DataCache cache, DBAccess db) {
+        this.cache = cache;
+        this.db = db;
+    }
 
     @Override
     public Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException {
-        Experimentee expee =cache.getExpeeByCode(accessCode);
+        Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getParticipant().getCurrStage();
     }
 
@@ -61,4 +69,5 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
         db.saveExperimentee(expee); //current stage has changed, need to save
         return nextStage;
     }
+
 }

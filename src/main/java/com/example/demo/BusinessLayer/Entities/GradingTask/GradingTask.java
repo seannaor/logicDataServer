@@ -71,11 +71,12 @@ public class GradingTask {
         this.stages.add(stage);
     }
 
-    public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException {
+    public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException, FormatException {
         List<Stage> baseStages = this.baseExperiment.getStages();
         List<Stage> newStages = new ArrayList<>();
         for(int i:stages_idxs){
             if(i>=baseStages.size()||i<0) throw new NotExistException("stage",""+i);
+            if(baseStages.get(i).getType().equals("info")) throw new FormatException("stage with result","info stage");
             newStages.add(baseStages.get(i));
         }
         this.stages = newStages;
