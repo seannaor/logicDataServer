@@ -3,7 +3,7 @@ package com.example.demo;
 import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
@@ -47,7 +47,7 @@ public class DBAccess {
     @Autowired
     GraderToGradingTaskRep graderToGradingTaskRep;
     @Autowired
-    GradersGTToParticipantsRep gradersGTToParticipantsRep;
+    GraderToParticipantRep graderToParticipantRep;
     @Autowired
     ManagementUserToExperimentRep managementUserToExperimentRep;
     @Autowired
@@ -62,7 +62,7 @@ public class DBAccess {
                 codeResultRep,
                 requirementTagRep,
                 requirementRep,
-                gradersGTToParticipantsRep,
+                graderToParticipantRep,
                 graderToGradingTaskRep,
                 gradingTaskRep,
                 managementUserToExperimentRep,
@@ -128,7 +128,6 @@ public class DBAccess {
     }
 
     public void saveGrader(Grader g) {
-        participantRep.save(g.getParticipant());
         graderRep.save(g);
     }
 
@@ -285,6 +284,7 @@ public class DBAccess {
     }
 
     public void saveGraderToGradingTask(GraderToGradingTask g) {
+        participantRep.save(g.getGeneralExpParticipant());
         graderToGradingTaskRep.save(g);
         graderRep.save(g.getGrader());
         gradingTaskRep.save(g.getGradingTask());
@@ -304,14 +304,15 @@ public class DBAccess {
         return graderToGradingTaskRep.findByGradersCode(code);
     }
 
-    public void saveGradersGTToParticipants(GradersGTToParticipants g) {
-        gradersGTToParticipantsRep.save(g);
+    public void saveGraderToParticipant(GraderToParticipant g) {
+        participantRep.save(g.getGraderParticipant());
+        graderToParticipantRep.save(g);
         graderToGradingTaskRep.save(g.getGraderToGradingTask());
-        participantRep.save(g.getParticipant());
+        participantRep.save(g.getExpeeParticipant());
     }
 
-    public GradersGTToParticipants getGradersGTToParticipantsById(int gtId, String graderEmail, int pId) {
-        return gradersGTToParticipantsRep.findById(new GradersGTToParticipants.GradersGTToParticipantsID(gtId, graderEmail, pId)).orElse(null);
+    public GraderToParticipant getGraderToParticipantById(int gtId, String graderEmail, int pId) {
+        return graderToParticipantRep.findById(new GraderToParticipant.GraderToParticipantID(gtId, graderEmail, pId)).orElse(null);
     }
 
     public void saveManagementUserToExperiment(ManagementUserToExperiment m) {

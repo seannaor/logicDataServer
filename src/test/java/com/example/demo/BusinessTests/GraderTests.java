@@ -2,7 +2,7 @@ package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.*;
 import com.example.demo.BusinessLayer.Entities.*;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.*;
@@ -14,10 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.UUID;
 
+@Sql({"/create_database.sql"})
 @SpringBootTest
 public class GraderTests {
 
@@ -67,7 +69,7 @@ public class GraderTests {
         task = Utils.buildGradingTask(cache,grader,experiment,experiment,experiment);
         graderCode = cache.getGraderToGradingTask(grader, task).getGraderAccessCode();
 
-        cache.addExpeeToGradingTask(task, grader, new GradersGTToParticipants(cache.getGraderToGradingTask(grader, task), expee.getParticipant()));
+        cache.addExpeeToGradingTask(task, grader, new GraderToParticipant(cache.getGraderToGradingTask(grader, task), expee.getParticipant()));
 
         Utils.fillInExp(experimenteeBusiness,expee);
     }

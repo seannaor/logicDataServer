@@ -3,7 +3,7 @@ package com.example.demo.BusinessTests;
 import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
@@ -14,10 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
 
+@Sql({"/create_database.sql"})
 @SpringBootTest
 public class DataCacheTests {
     @Autowired
@@ -119,7 +121,9 @@ public class DataCacheTests {
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp");
         db.saveExperiment(gradingExp, creator);
-        GradingTask gt = new GradingTask("test", exp, null, gradingExp);
+        Experiment personalExp = new Experiment("personalExp", creator);
+        db.saveExperiment(personalExp, creator);
+        GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         UUID graderCode = cache.getGraderToGradingTask(g, gt).getGraderAccessCode();
@@ -152,7 +156,9 @@ public class DataCacheTests {
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp");
         db.saveExperiment(gradingExp, creator);
-        GradingTask gt = new GradingTask("test", exp, null, gradingExp);
+        Experiment personalExp = new Experiment("personalExp", creator);
+        db.saveExperiment(personalExp, creator);
+        GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         UUID graderCode = cache.getGraderToGradingTask(g, gt).getGraderAccessCode();
@@ -267,7 +273,9 @@ public class DataCacheTests {
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);
-        GradingTask gt = new GradingTask("test", exp, null, gradingExp);
+        Experiment personalExp = new Experiment("personalExp", creator);
+        db.saveExperiment(personalExp, creator);
+        GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         try {
             GradingTask fromCache = cache.getGradingTaskById("sean", exp.getExperimentId(), gt.getGradingTaskId());
@@ -299,7 +307,9 @@ public class DataCacheTests {
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);
-        GradingTask gt = new GradingTask("test", exp, null, gradingExp);
+        Experiment personalExp = new Experiment("personalExp", creator);
+        db.saveExperiment(personalExp, creator);
+        GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         try {
@@ -319,7 +329,7 @@ public class DataCacheTests {
 
     @Test
     @Transactional
-    void getGradersGTToParticipantsTest() throws NotExistException, ExistException {
+    void getGraderToPArticipantTest() throws NotExistException, ExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi", creator);
@@ -332,23 +342,25 @@ public class DataCacheTests {
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);
-        GradingTask gt = new GradingTask("test", exp, null, gradingExp);
+        Experiment personalExp = new Experiment("personalExp", creator);
+        db.saveExperiment(personalExp, creator);
+        GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         Experimentee expee = new Experimentee("a@a.a", exp);
         cache.addExperimentee(expee);
-        GradersGTToParticipants participantInGT = new GradersGTToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
+        GraderToParticipant participantInGT = new GraderToParticipant(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
         cache.addExpeeToGradingTask(gt, g, participantInGT);
         try {
-            GradersGTToParticipants fromCache = cache.getGradersGTToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
-            Assert.assertEquals(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getParticipant().getParticipantId(), fromCache.getParticipant().getParticipantId());
+            GraderToParticipant fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
+            Assert.assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
         } catch (NotExistException e) {
             Assert.fail();
         }
         cache.setCache();
         try {
-            GradersGTToParticipants fromCache = cache.getGradersGTToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
-            Assert.assertEquals(db.getGradersGTToParticipantsById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getParticipant().getParticipantId(), fromCache.getParticipant().getParticipantId());
+            GraderToParticipant fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
+            Assert.assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
         } catch (NotExistException e) {
             Assert.fail();
         }

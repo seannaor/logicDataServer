@@ -17,6 +17,8 @@ public class Experiment {
     private String experimentName;
     @Column(name = "published")
     private boolean published = false;
+    @Column(name = "is_grading_task_exp")
+    private boolean isGradingTaskExp = false;
     @OneToMany(mappedBy = "experiment")
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
@@ -103,5 +105,13 @@ public class Experiment {
             }
         }
         return false;
+    }
+
+    public boolean isGradingTaskExp() {
+        return isGradingTaskExp;
+    }
+
+    public void setGradingTaskExp(boolean gradingTaskExp) {
+        isGradingTaskExp = gradingTaskExp;
     }
 }

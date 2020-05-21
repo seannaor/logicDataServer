@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
@@ -67,7 +67,7 @@ class PersistenceTests {
 	@Autowired
 	GraderToGradingTaskRep graderToGradingTaskRep;
 	@Autowired
-	GradersGTToParticipantsRep gradersGTToParticipantsRep;
+	GraderToParticipantRep graderToParticipantRep;
 	@Autowired
 	ManagementUserToExperimentRep managementUserToExperimentRep;
 	@Autowired
@@ -94,7 +94,7 @@ class PersistenceTests {
 				requirementTagRep,
 				gradingTaskRep,
 				graderToGradingTaskRep,
-				gradersGTToParticipantsRep,
+				graderToParticipantRep,
 				managementUserToExperimentRep,
 				resultRep
 		};
@@ -246,13 +246,15 @@ class PersistenceTests {
 	private void createGradingTask(Experiment baseExp) {
 		Experiment gradingExp = new Experiment("gradingExp");
 		experimentRep.save(gradingExp);
+		Experiment generalExp = new Experiment("generalExp");
+		experimentRep.save(generalExp);
 		List<Stage> stagesForGT1 = new ArrayList<>();
 		stagesForGT1.add(stageRep.findAll().get(0));
-		GradingTask gt1 = new GradingTask("gt1", baseExp, null, gradingExp, stagesForGT1);
+		GradingTask gt1 = new GradingTask("gt1", baseExp, generalExp, gradingExp, stagesForGT1);
 		gradingTaskRep.save(gt1);
 		List<Stage> stagesForGT2 = new ArrayList<>();
 		stagesForGT2.add(stageRep.findAll().get(0));
-		GradingTask gt2 = new GradingTask("gt2", baseExp, null, gradingExp, stagesForGT2);
+		GradingTask gt2 = new GradingTask("gt2", baseExp, generalExp, gradingExp, stagesForGT2);
 		gradingTaskRep.save(gt2);
 	}
 
@@ -276,8 +278,9 @@ class PersistenceTests {
 		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2);
 		graderToGradingTask1.setGraderAccessCode(UUID.randomUUID());
 		graderToGradingTask2.setGraderAccessCode(UUID.randomUUID());
+		participantRep.save(graderToGradingTask1.getGeneralExpParticipant());
 		graderToGradingTaskRep.save(graderToGradingTask1);
-		assertEquals(graderToGradingTaskRep.count(), 1);
+		participantRep.save(graderToGradingTask2.getGeneralExpParticipant());
 		graderToGradingTaskRep.save(graderToGradingTask2);
 	}
 
@@ -295,20 +298,22 @@ class PersistenceTests {
 		assignExpeesToGradingTasks();
 		assertEquals(graderRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
 		assertEquals(gradingTaskRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
-		GradersGTToParticipants participant1Gt1 = gradersGTToParticipantsRep.findAll().get(0);
+		GraderToParticipant participant1Gt1 = graderToParticipantRep.findAll().get(0);
 		participant1Gt1.setGradingState(true);
-		gradersGTToParticipantsRep.save(participant1Gt1);
-		assertEquals(gradersGTToParticipantsRep.findAll().get(0).getGradingState(), true);
+		graderToParticipantRep.save(participant1Gt1);
+		assertEquals(graderToParticipantRep.findAll().get(0).getGradingState(), true);
 	}
 
 	private void assignExpeesToGradingTasks() {
 		GraderToGradingTask graderToGradingTask1 = graderToGradingTaskRep.findAll().get(0);
 		GraderToGradingTask graderToGradingTask2 = graderToGradingTaskRep.findAll().get(1);
-		GradersGTToParticipants participant1Gt1 = new GradersGTToParticipants(graderToGradingTask1, participantRep.findAll().get(0));
-		GradersGTToParticipants participant1Gt2 = new GradersGTToParticipants(graderToGradingTask2, participantRep.findAll().get(1));
-		gradersGTToParticipantsRep.save(participant1Gt1);
-		gradersGTToParticipantsRep.save(participant1Gt2);
-		assertEquals(gradersGTToParticipantsRep.count(), 2);
+		GraderToParticipant participant1Gt1 = new GraderToParticipant(graderToGradingTask1, participantRep.findAll().get(0));
+		GraderToParticipant participant1Gt2 = new GraderToParticipant(graderToGradingTask2, participantRep.findAll().get(1));
+		participantRep.save(participant1Gt1.getGraderParticipant());
+		graderToParticipantRep.save(participant1Gt1);
+		participantRep.save(participant1Gt2.getGraderParticipant());
+		graderToParticipantRep.save(participant1Gt2);
+		assertEquals(graderToParticipantRep.count(), 2);
 		graderToGradingTaskRep.save(graderToGradingTask1);
 		graderToGradingTaskRep.save(graderToGradingTask2);
 		Grader g1 = graderRep.findAll().get(0);
@@ -343,13 +348,9 @@ class PersistenceTests {
 	}
 
 	private void createGradersForGradingTasks(Experiment e) {
-		Participant pOfGrader1 = new Participant(e);
-		participantRep.save(pOfGrader1);
-		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
+		Grader g1 = new Grader("mosh@gmail.com");
 		graderRep.save(g1);
-		Participant pOfGrader2 = new Participant(e);
-		participantRep.save(pOfGrader2);
-		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
+		Grader g2 = new Grader("shalom@gmail.com");
 		graderRep.save(g2);
 	}
 

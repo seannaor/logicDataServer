@@ -33,7 +33,8 @@ CREATE TABLE `experiments`
 (
     `experiment_id`   int          NOT NULL AUTO_INCREMENT,
     `experiment_name` varchar(100) NOT NULL,
-    `published`       boolean      Not NULL,
+    `published`       boolean      NOT NULL,
+    `is_grading_task_exp` boolean  NOT NULL,
     PRIMARY KEY (`experiment_id`)
 );
 
@@ -69,8 +70,6 @@ CREATE TABLE `experimentees`
 CREATE TABLE `graders`
 (
     `grader_email`   varchar(255) NOT NULL,
-    `participant_id` int          NOT NULL,
-    FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
     PRIMARY KEY (`grader_email`)
 );
 
@@ -108,20 +107,24 @@ CREATE TABLE `graders_to_grading_tasks`
     `grading_task_id`    int          NOT NULL,
     `grader_email`       varchar(255) NOT NULL,
     `grader_access_code` BINARY(16)   NOT NULL,
+    `general_exp_participant` int     NOT NULL,
     FOREIGN KEY (`grading_task_id`) REFERENCES grading_tasks (`grading_task_id`) ON DELETE CASCADE,
     FOREIGN KEY (`grader_email`) REFERENCES graders (`grader_email`) ON DELETE CASCADE,
+    FOREIGN KEY (`general_exp_participant`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
     PRIMARY KEY (`grading_task_id`, `grader_email`)
 );
 
-CREATE TABLE `graders_grading_tasks_to_participants`
+CREATE TABLE `grader_to_participant`
 (
     `grading_task_id` int          NOT NULL,
     `grader_email`    varchar(255) NOT NULL,
-    `participant_id`  int          NOT NULL,
+    `expee_participant_id`  int    NOT NULL,
     `grading_state`   boolean      NOT NULL,
+    `grader_participant_id` int    NOT NULL,
     FOREIGN KEY (`grading_task_id`, `grader_email`) REFERENCES graders_to_grading_tasks (`grading_task_id`, `grader_email`) ON DELETE CASCADE,
-    FOREIGN KEY (`participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
-    PRIMARY KEY (`grading_task_id`, `grader_email`, `participant_id`)
+    FOREIGN KEY (`expee_participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`grader_participant_id`) REFERENCES participants (`participant_id`) ON DELETE CASCADE,
+    PRIMARY KEY (`grading_task_id`, `grader_email`, `expee_participant_id`)
 );
 
 CREATE TABLE `info_stages`

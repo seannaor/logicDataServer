@@ -2,7 +2,7 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
@@ -132,12 +132,12 @@ public class CreatorBusiness implements ICreatorBusiness {
             throw new ExistException(allyMail);
         }catch (NotExistException ignore){}
         ManagementUser ally = new ManagementUser(allyMail,"TEMP",allyMail);
+        cache.addManager(ally);
         for (String per : permissions) {
             Permission toAdd = new Permission(per, ally);
             ally.addPermission(toAdd);
             db.savePermissionForManagementUser(toAdd, ally);
         }
-        cache.addManager(ally);
     }
 
     @Override
@@ -188,12 +188,12 @@ public class CreatorBusiness implements ICreatorBusiness {
         Grader grader = cache.getGraderByEMail(graderMail);
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Participant participant = cache.getExpeeByMailAndExp(expeeMail, expId).getParticipant();
-        GradersGTToParticipants g = cache.getGradersGTToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
+        GraderToParticipant g = cache.getGraderToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
         if(g != null) { //this participant is already in the graderToGraderTask
             throw new ExistException("user with id "+participant.getParticipantId(),graderMail+" participants");
         }
         else {
-            g = new GradersGTToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
+            g = new GraderToParticipant(cache.getGraderToGradingTask(grader, gt), participant);
         }
         cache.addExpeeToGradingTask(gt, grader, g);
         //TODO: fix?

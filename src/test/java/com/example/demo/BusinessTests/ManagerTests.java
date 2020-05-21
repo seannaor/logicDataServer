@@ -12,12 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Sql({"/create_database.sql"})
 @SpringBootTest
 public class ManagerTests {
 
@@ -39,8 +41,8 @@ public class ManagerTests {
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
-        cache.setCache();
         db.deleteData();
+        cache.setCache();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         cache.addManager(manager);
 
@@ -497,7 +499,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader("not exist", experiment.getExperimentId(), task.getGradingTaskId(), grader_mail, expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -507,7 +509,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), -1, task.getGradingTaskId(), grader_mail, expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -517,7 +519,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), -1, grader_mail, expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -528,7 +530,7 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader_mail, "not exist");
             Assert.fail();
         } catch (NotExistException ignored) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
@@ -538,14 +540,14 @@ public class ManagerTests {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), "not exist", expee_mail);
             Assert.fail();
         } catch (NotExistException ignored) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) == null);
         } catch (ExistException e) {
             Assert.fail();
         }
 
         try {
             creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader_mail, expee_mail);
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -557,7 +559,7 @@ public class ManagerTests {
         } catch (NotExistException e) {
             Assert.fail();
         } catch (ExistException ignore) {
-            Assert.assertTrue(db.getGradersGTToParticipantsById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
+            Assert.assertTrue(db.getGraderToParticipantById(task.getGradingTaskId(), grader_mail, db.getExperimenteeByEmail(expee_mail).getParticipant().getParticipantId()) != null);
         }
     }
 
