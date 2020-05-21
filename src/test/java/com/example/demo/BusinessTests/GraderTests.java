@@ -5,9 +5,11 @@ import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +50,7 @@ public class GraderTests {
     private Experimentee expee;
     private Experiment experiment;
     private GradingTask task;
+    private Participant graderExpeeParticipant;
     private UUID graderCode;
 
 
@@ -70,12 +74,9 @@ public class GraderTests {
         graderCode = cache.getGraderToGradingTask(grader, task).getGraderAccessCode();
 
         cache.addExpeeToGradingTask(task, grader, new GraderToParticipant(cache.getGraderToGradingTask(grader, task), expee.getParticipant()));
-
+        graderExpeeParticipant = task.graderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
         Utils.fillInExp(experimenteeBusiness,expee);
     }
-
-
-
 
     @Test
     public void loginTest() {
@@ -120,6 +121,193 @@ public class GraderTests {
         try {
             expeeRes=graderBusiness.getExpeeRes(task.getAssignedGradingTasks().get(0).getGraderAccessCode(),expee.getParticipant().getParticipantId());
             Assert.assertEquals(2,expeeRes.size());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+
+    @Test
+    @Transactional
+    public void currNextStageTest() {//personal wise
+        //not exist code should fail
+        UUID someCode = UUID.randomUUID();
+        try {
+            graderBusiness.getCurrentStage(someCode,expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (CodeException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        //not exist code should fail
+        try {
+            graderBusiness.getNextStage(someCode,expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (CodeException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // real code should get us the first stage - info
+        try {
+            Stage first = graderBusiness.getCurrentStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.assertEquals(first.getType(), "info");
+            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "info");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // real code should get us the next stages
+        try {
+            Stage s = graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.assertEquals(s.getType(), "questionnaire");
+            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "questionnaire");
+
+            s = graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.assertEquals(s.getType(), "code");
+            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
+
+            s = graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.assertEquals(s.getType(), "tagging");
+            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // end of exp - curr and next should fail
+        try {
+            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        try {
+            graderBusiness.getCurrentStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    @Transactional
+    public void fillStage() {
+
+        //not exist code should fail
+        UUID someCode = UUID.randomUUID();
+        try {
+            graderBusiness.fillInStage(someCode,expee.getParticipant().getParticipantId(), new JSONObject());
+            Assert.fail();
+        } catch (CodeException ignore) {
+            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // pass info (first) stage
+        try {
+            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in questions (second) stage, fucked format should fail
+        long numOfAnswers = db.getNumerOfAnswers();
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","questionnaire");
+            JSONObject ans1 = new JSONObject();
+            ans1.put("answer", 2);
+            ans.put(2, ans1);
+            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in questions (second) stage, good format should pass
+        fillInQuestionnaire(graderCode,graderExpeeParticipant);
+        Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
+
+        // fill in code (third) stage, fucked format should fail
+        long numOfCodeRes = db.getNumerOfCodeResults();
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","code");
+            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in code (third) stage, good format should pass
+        fillInCode(graderCode,graderExpeeParticipant);
+        Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes + 1);
+
+        // fill in tagging (last) stage, fucked format should fail
+        long numOfTagRes = db.getNumberOfTagResults();
+        try {
+            JSONObject ans = new JSONObject();
+            ans.put("stageType","tagging");
+            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
+            Assert.fail();
+        } catch (FormatException ignore) {
+            Assert.assertEquals(numOfTagRes,db.getNumberOfTagResults());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // fill in code (third) stage, good format should pass
+        fillInTagging(graderExpeeParticipant);
+        Assert.assertEquals(db.getNumberOfTagResults(), numOfTagRes + 3);
+
+        // end of experiment
+        try{
+            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
+            Assert.fail();
+        }catch (ExpEndException ignore){
+            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
+        }
+        catch (Exception e){
+            Assert.fail();
+        }
+    }
+
+    private void fillInTagging(Participant p) {
+        try {
+            Utils.fillInTagging(graderBusiness,p);
+//            experimenteeBusiness.getNextStage(expee.getAccessCode());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.fail();
+        }
+    }
+
+    private void fillInQuestionnaire(UUID code, Participant p){
+        try {
+            Utils.fillInQuestionnaire(graderBusiness,p);
+            graderBusiness.getNextStage(code, p.getParticipantId());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.fail();
+        }
+    }
+
+    void fillInCode(UUID code, Participant p){
+        try {
+            Utils.fillInCode(graderBusiness,p);
+            graderBusiness.getNextStage(code, p.getParticipantId());
         } catch (Exception e) {
             Assert.fail();
         }

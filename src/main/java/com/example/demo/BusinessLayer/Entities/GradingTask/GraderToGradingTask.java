@@ -132,8 +132,8 @@ public class GraderToGradingTask {
         this.graderAccessCode = graderAccessCode;
     }
 
-    public List<Result> getExpeeRes(int parti_id) throws NotExistException, FormatException {
-        Participant p = getParti(parti_id);
+    public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException {
+        Participant p = getExperimenteeParticipant(pid);
         List<Result> ret = new ArrayList<>();
         for (Stage visible : gradingTask.getStages()) {
             ret.add(p.getResultsOf(visible));
@@ -141,11 +141,19 @@ public class GraderToGradingTask {
         return ret;
     }
 
-    private Participant getParti(int parti_id) throws NotExistException {
+    private Participant getExperimenteeParticipant(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
-            if (graderToParticipant.getExpeeParticipant().getParticipantId() == parti_id)
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid)
                 return graderToParticipant.getExpeeParticipant();
         }
-        throw new NotExistException("participant", "" + parti_id);
+        throw new NotExistException("participant", "" + pid);
+    }
+
+    public Participant getGraderParticipant(int pid) throws NotExistException {
+        for (GraderToParticipant graderToParticipant : graderToParticipants) {
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid)
+                return graderToParticipant.getGraderParticipant();
+        }
+        throw new NotExistException("participant", "" + pid);
     }
 }
