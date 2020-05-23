@@ -4,11 +4,13 @@ import com.example.demo.BusinessLayer.*;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,22 +51,23 @@ public class ExpeeTests {
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
         cache.addManager(manager);
 
-        experiment = Utils.buildExp(creatorBusiness,manager);
+        experiment = Utils.buildExp(creatorBusiness, manager);
 
-        String code = creatorBusiness.addExperimentee(manager.getBguUsername(),experiment.getExperimentId(),"gili@post.bgu.ac.il");
+        String code = creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), "gili@post.bgu.ac.il");
         expee = cache.getExpeeByCode(UUID.fromString(code));
     }
 
     @Test
-    public void loginFailTest(){
+    public void loginFailTest() {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
             experimenteeBusiness.beginParticipation(someCode);
             Assert.fail();
+        } catch (CodeException ignore) {
+        } catch (ExpEndException e) {
+            Assert.fail();
         }
-        catch (CodeException ignore) {}
-        catch (ExpEndException e){Assert.fail();}
     }
 
     @Test
@@ -80,80 +83,66 @@ public class ExpeeTests {
 
     @Test
 //    @Transactional
-    public void currStageFailTest(){
+    public void currStageFailTest() throws ExpEndException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
             experimenteeBusiness.getCurrentStage(someCode);
             Assert.fail();
         } catch (CodeException ignore) {
-//            Assert.assertNull(db.getExperimenteeByCode(someCode));
-        } catch (ExpEndException e) {
-            Assert.fail();
         }
     }
 
     @Test
 //    @Transactional
-    public void nextStageFailTest(){
+    public void nextStageFailTest() throws ExpEndException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
             experimenteeBusiness.getNextStage(someCode);
             Assert.fail();
         } catch (CodeException ignore) {
-//            Assert.assertNull(db.getExperimenteeByCode(someCode));
-        } catch (Exception e) {
-            Assert.fail();
         }
     }
 
     @Test
-//    @Transactional
-    public void currStageTest() {
+    @Transactional
+    public void currStageTest() throws CodeException, ExpEndException {
         // real code should get us the first stage - info
-        try {
-            Stage first = experimenteeBusiness.getCurrentStage(expee.getAccessCode());
-            Assert.assertEquals(first.getType(), "info");
-//            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "info");
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        Stage first = experimenteeBusiness.getCurrentStage(expee.getAccessCode());
+        Assert.assertEquals(first.getType(), "info");
+        Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "info");
     }
 
     @Test
-//    @Transactional
-    public void currNextStageTest() {
+    @Transactional
+    public void nextStageTest() throws CodeException, ExpEndException {
         // real code should get us the next stages
-        try {
-            Stage s = experimenteeBusiness.getNextStage(expee.getAccessCode());
-            Assert.assertEquals(s.getType(), "questionnaire");
-//            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "questionnaire");
 
-            s = experimenteeBusiness.getNextStage(expee.getAccessCode());
-            Assert.assertEquals(s.getType(), "code");
-//            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
+        Stage s = experimenteeBusiness.getNextStage(expee.getAccessCode());
+        Assert.assertEquals(s.getType(), "questionnaire");
+        Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "questionnaire");
 
-            s = experimenteeBusiness.getNextStage(expee.getAccessCode());
-            Assert.assertEquals(s.getType(), "tagging");
-//            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        s = experimenteeBusiness.getNextStage(expee.getAccessCode());
+        Assert.assertEquals(s.getType(), "code");
+        Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
+
+        s = experimenteeBusiness.getNextStage(expee.getAccessCode());
+        Assert.assertEquals(s.getType(), "tagging");
+        Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
     }
 
     @Test
     public void endExperimentTest() throws CodeException, ExpEndException {
-        nextStageFor(3,expee.getAccessCode());
+        nextStageFor(3, expee.getAccessCode());
 
         // end of exp - next should fail
         try {
             experimenteeBusiness.getNextStage(expee.getAccessCode());
             Assert.fail();
         } catch (ExpEndException ignore) {
-//            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
-        } catch (Exception e) {
-            Assert.fail();
+            Participant sameExpee = db.getExperimenteeByCode(expee.getAccessCode()).getParticipant();
+            Assert.assertTrue(sameExpee.isDone());
         }
 
         // current stage should fail because next was activated first
@@ -161,127 +150,116 @@ public class ExpeeTests {
             experimenteeBusiness.getCurrentStage(expee.getAccessCode());
             Assert.fail();
         } catch (ExpEndException ignore) {
-//            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
-        } catch (Exception e) {
-            Assert.fail();
         }
     }
 
     @Test
-    public void fillStageFail() throws NotInReachException {
+    public void fillStageFail() throws NotInReachException, ParseException, ExpEndException, FormatException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
             experimenteeBusiness.fillInStage(someCode, new JSONObject());
             Assert.fail();
         } catch (CodeException ignore) {
-//            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
-        } catch (Exception e) {
-            Assert.fail();
         }
 
         Assert.assertNull(expee.getResult(0));
     }
 
     @Test
-    public void fillQuestionsFail() throws CodeException, ExpEndException, NotInReachException {
+    public void fillQuestionsFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
         // fill in questions (second) stage, fucked format should fail
-//        long numOfAnswers = db.getNumerOfAnswers();
+        long numOfAnswers = db.getNumerOfAnswers();
         try {
             JSONObject ans = new JSONObject();
-            ans.put("stageType","questionnaire");
+            ans.put("stageType", "questionnaire");
             JSONObject ans1 = new JSONObject();
             ans1.put("answer", 2);
             ans.put(2, ans1);
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();
         } catch (FormatException ignore) {
-//            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers);
-        } catch (Exception e) {
-            Assert.fail();
+            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers);
         }
+
         Assert.assertNull(expee.getResult(1));
     }
 
     @Test
-    public void fillCodeFail() throws CodeException, ExpEndException, NotInReachException {
-        nextStageFor(2,expee.getAccessCode());
+    public void fillCodeFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
+        nextStageFor(2, expee.getAccessCode());
 
         // fill in code (third) stage, fucked format should fail
-//        long numOfCodeRes = db.getNumerOfCodeResults();
+        long numOfCodeRes = db.getNumerOfCodeResults();
         try {
             JSONObject ans = new JSONObject();
-            ans.put("stageType","code");
+            ans.put("stageType", "code");
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();
         } catch (FormatException ignore) {
-//            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes);
-        } catch (Exception e) {
-            Assert.fail();
+            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes);
         }
+
         Assert.assertNull(expee.getResult(2));
     }
 
     @Test
-    public void fillTaggingFail() throws CodeException, ExpEndException, NotInReachException {
-        nextStageFor(3,expee.getAccessCode());
+    public void fillTaggingFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
+        nextStageFor(3, expee.getAccessCode());
         // fill in tagging (last) stage, fucked format should fail
-//        long numOfTagRes = db.getNumberOfTagResults();
+        long numOfTagRes = db.getNumberOfTagResults();
         try {
             JSONObject ans = new JSONObject();
-            ans.put("stageType","tagging");
+            ans.put("stageType", "tagging");
             experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
             Assert.fail();
         } catch (FormatException ignore) {
-//            Assert.assertEquals(numOfTagRes,db.getNumberOfTagResults());
-        } catch (Exception e) {
-            Assert.fail();
+            Assert.assertEquals(numOfTagRes, db.getNumberOfTagResults());
         }
+
         Assert.assertNull(expee.getResult(3));
     }
 
     @Test
-    public void fillInTagging() throws CodeException, ExpEndException, NotInReachException {
-        nextStageFor(3,expee.getAccessCode());
-        try {
-            //fill tagging dont really answer this stage, sill got weird problem there
-            Utils.fillInTagging(experimenteeBusiness,expee.getAccessCode());
-//            experimenteeBusiness.getNextStage(expee.getAccessCode());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.fail();
-        }
+    @Transactional
+    public void fillInTagging() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+        nextStageFor(3, expee.getAccessCode());
+        long numOfTagRes = db.getNumberOfTagResults();
+
+        //fill tagging dont really answer this stage, sill got weird problem there
+        int numofTags = Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
+
         Assert.assertTrue(expee.getResult(3).getAsJson().get("source stage").equals("tagging"));
+        Assert.assertEquals(numOfTagRes + numofTags, db.getNumberOfTagResults());
     }
 
     @Test
-    public void fillInQuestionnaire() throws CodeException, ExpEndException, NotInReachException {
+    public void fillInQuestionnaire() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+        long numOfAnswers = db.getNumerOfAnswers();
         experimenteeBusiness.getNextStage(expee.getAccessCode());
-        try {
-            Utils.fillInQuestionnaire(experimenteeBusiness,expee.getAccessCode());
-            experimenteeBusiness.getNextStage(expee.getAccessCode());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.fail();
-        }
+
+        int numOfquestionsAnswered = Utils.fillInQuestionnaire(experimenteeBusiness, expee.getAccessCode());
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
+
         Assert.assertTrue(expee.getResult(1).getAsJson().get("source stage").equals("questionnaire"));
+        Assert.assertEquals(numOfAnswers + numOfquestionsAnswered, db.getNumerOfAnswers());
     }
 
     @Test
-    public void fillInCode() throws CodeException, ExpEndException, NotInReachException {
-        nextStageFor(2,expee.getAccessCode());
-        try {
-            Utils.fillInCode(experimenteeBusiness,expee.getAccessCode());
-            experimenteeBusiness.getNextStage(expee.getAccessCode());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+    public void fillInCode() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+        long numOfCodeRes = db.getNumerOfCodeResults();
+        nextStageFor(2, expee.getAccessCode());
+
+        Utils.fillInCode(experimenteeBusiness, expee.getAccessCode());
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
+
         Assert.assertTrue(expee.getResult(2).getAsJson().get("source stage").equals("code"));
+        Assert.assertEquals(numOfCodeRes+1, db.getNumerOfCodeResults());
     }
 
-    private void nextStageFor(int i,UUID code) throws CodeException, ExpEndException {
-        for(int j=0;j<i;j++) experimenteeBusiness.getNextStage(code);
+    private void nextStageFor(int i, UUID code) throws CodeException, ExpEndException {
+        for (int j = 0; j < i; j++) experimenteeBusiness.getNextStage(code);
     }
 }

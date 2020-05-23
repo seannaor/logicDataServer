@@ -112,7 +112,7 @@ public class Utils {
         }catch (ExpEndException ignore){}
     }
 
-    public static void fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
+    public static int fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
@@ -122,6 +122,7 @@ public class Utils {
         ans2.put("answer", 3);
         ans.put("2", ans2);
         experimenteeBusiness.fillInStage(code, ans);
+        return 2;
     }
 
     public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
@@ -131,7 +132,7 @@ public class Utils {
         experimenteeBusiness.fillInStage(code, ans);
     }
 
-    public static void fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
+    public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "tagging");
 
@@ -149,7 +150,8 @@ public class Utils {
         tag3.put("start_loc", 0);
         tag3.put("length", 10);
         ans.put(2, tag3);
-//        experimenteeBusiness.fillInStage(code, ans);
+        experimenteeBusiness.fillInStage(code, ans);
+        return 3;
     }
 
     public static void fillInQuestionnaire(GraderBusiness graderBusiness, Participant p) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
