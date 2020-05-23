@@ -9,6 +9,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,7 +108,6 @@ public class GraderTests {
         Assert.assertEquals(2, expeeRes.size());
     }
 
-
     @Test
     @Transactional
     public void currNextStageTest() throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException, NotExistException, ExistException {
@@ -126,21 +126,26 @@ public class GraderTests {
         }
     }
 
+    // all fill In stage related tests would be positive tests only
+    // no need for negative because they been tested in the expeeTests
+    @Test
+    public void fillStageNoGrader() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
+        //not exist code should fail
+        UUID someCode = UUID.randomUUID();
+        try {
+            graderBusiness.fillInStage(someCode,expee.getParticipant().getParticipantId(), new JSONObject());
+            Assert.fail();
+        } catch (CodeException ignore) {
+//            Assert.assertNull(db.getExperimenteeByCode(someCode));
+        }
+    }
+    
+
+    //=================================================
+
     @Test
     @Transactional
     public void fillStage() {
-//
-//        //not exist code should fail
-//        UUID someCode = UUID.randomUUID();
-//        try {
-//            graderBusiness.fillInStage(someCode,expee.getParticipant().getParticipantId(), new JSONObject());
-//            Assert.fail();
-//        } catch (CodeException ignore) {
-//            Assert.assertTrue(db.getExperimenteeByCode(someCode) == null);
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
 //        // pass info (first) stage
 //        try {
 //            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
