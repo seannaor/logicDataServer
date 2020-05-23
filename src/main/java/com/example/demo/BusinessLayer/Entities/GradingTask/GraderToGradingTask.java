@@ -7,6 +7,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -132,8 +133,9 @@ public class GraderToGradingTask {
         this.graderAccessCode = graderAccessCode;
     }
 
-    public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException {
+    public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException, NotInReachException {
         Participant p = getExperimenteeParticipant(pid);
+        if(!p.isDone()) throw new NotInReachException(pid+ " results", pid+ " didn't finish the experiment");
         List<Result> ret = new ArrayList<>();
         for (Stage visible : gradingTask.getStages()) {
             ret.add(p.getResultsOf(visible));

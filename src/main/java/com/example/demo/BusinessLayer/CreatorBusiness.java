@@ -203,7 +203,12 @@ public class CreatorBusiness implements ICreatorBusiness {
 
     public List<Experiment> getExperiments(String username) throws NotExistException {
         ManagementUser manager = cache.getManagerByName(username);
-        return manager.getExperimentes();
+        List<Experiment> experiments = manager.getExperimentes();
+        List<Experiment> experimentsToRes = new ArrayList<>();
+        for(Experiment exp:experiments){
+            if(!exp.isGradingTaskExp())experimentsToRes.add(exp);
+        }
+        return experimentsToRes;
     }
 
     public List<Stage> getStages(String username,int expId) throws NotExistException {

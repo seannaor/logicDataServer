@@ -98,7 +98,7 @@ public class GradingTask {
     public GraderToGradingTask graderToGradingTask(Grader g) throws NotExistException {
         // for tests use
         for(GraderToGradingTask gtgt:assignedGradingTasks){
-            if(gtgt.getGrader().equals(g)) return gtgt;
+            if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
         }
         throw new NotExistException("grader",g.getGraderEmail());
     }

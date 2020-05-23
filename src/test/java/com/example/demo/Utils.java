@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Utils {
 
@@ -92,22 +93,26 @@ public class Utils {
         return manager.getExperimentByName("The Experiment");
     }
 
-    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, Experimentee expee) throws CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
+    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, UUID code) throws CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
         // pass info (first) stage
-        experimenteeBusiness.getNextStage(expee.getAccessCode());
+        experimenteeBusiness.getNextStage(code);
 
         // fill in questions (second) stage, good format should pass
-        fillInQuestionnaire(experimenteeBusiness, expee);
-        experimenteeBusiness.getNextStage(expee.getAccessCode());
+        fillInQuestionnaire(experimenteeBusiness, code);
+        experimenteeBusiness.getNextStage(code);
 
         // fill in code (third) stage, good format should pass
-        fillInCode(experimenteeBusiness, expee);
-//        experimenteeBusiness.getNextStage(expee.getAccessCode());
-//
-//        fillInTagging(experimenteeBusiness, expee);
+        fillInCode(experimenteeBusiness, code);
+        experimenteeBusiness.getNextStage(code);
+
+        fillInTagging(experimenteeBusiness, code);
+
+        try {
+            experimenteeBusiness.getNextStage(code);
+        }catch (ExpEndException ignore){}
     }
 
-    public static void fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, Experimentee expee) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
+    public static void fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
@@ -116,17 +121,17 @@ public class Utils {
         JSONObject ans2 = new JSONObject();
         ans2.put("answer", 3);
         ans.put("2", ans2);
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+        experimenteeBusiness.fillInStage(code, ans);
     }
 
-    public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, Experimentee expee) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
+    public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "code");
         ans.put("userCode", "return -1");
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+        experimenteeBusiness.fillInStage(code, ans);
     }
 
-    public static void fillInTagging(ExperimenteeBusiness experimenteeBusiness, Experimentee expee) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
+    public static void fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "tagging");
 
@@ -144,7 +149,7 @@ public class Utils {
         tag3.put("start_loc", 0);
         tag3.put("length", 10);
         ans.put(2, tag3);
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+//        experimenteeBusiness.fillInStage(code, ans);
     }
 
     public static void fillInQuestionnaire(GraderBusiness graderBusiness, Participant p) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
@@ -187,11 +192,27 @@ public class Utils {
         graderBusiness.fillInStage(p, ans);
     }
 
-    public static GradingTask buildGradingTask(DataCache cache, Grader grader, Experiment base, Experiment general, Experiment grading) throws ExistException, NotExistException, FormatException {
-        GradingTask task = new GradingTask("test", base, general, grading);
-        task.setStagesByIdx(List.of(1, 2));
-        cache.addGradingTask(task);
-        cache.addGraderToGradingTask(task, grader);
-        return task;
+    private static List<JSONObject> buildSimpleExpQuestion(String question) {
+        List<JSONObject> stages = new ArrayList<>();
+
+        JSONObject questionnaire = new JSONObject();
+        questionnaire.put("type", "questionnaire");
+        List<JSONObject> questions = new ArrayList<>();
+        JSONObject q1 = new JSONObject();
+
+        q1.put("type", "open");
+        q1.put("question", question);
+        questions.add(q1);
+
+        questionnaire.put("questions", questions);
+        stages.add(questionnaire);
+        return stages;
+    }
+
+    public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
+        int tid = creatorBusiness.addGradingTask(manager.getBguUsername(), exp.getExperimentId(), "TestGradingTask",
+                buildSimpleExpQuestion("what do you think about the experimentee results?"), List.of(1, 2)
+                , buildSimpleExpQuestion("what is your best score in minesweeper?"));
+        return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
     }
 }

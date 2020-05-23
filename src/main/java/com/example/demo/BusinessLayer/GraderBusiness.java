@@ -24,6 +24,7 @@ public class GraderBusiness implements IGraderBusiness {
     @Autowired
     public GraderBusiness(DataCache cache, DBAccess db) {
         this.cache = cache;
+        this.db=db;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<Result> getExpeeRes(UUID accessCode, int pid) throws CodeException, NotExistException, FormatException {
+    public List<Result> getExpeeRes(UUID accessCode, int pid) throws CodeException, NotExistException, FormatException, NotInReachException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
         return task.getExpeeRes(pid);
     }
