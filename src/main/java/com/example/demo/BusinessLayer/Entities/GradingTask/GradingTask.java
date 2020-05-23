@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.GradingTask;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
@@ -67,10 +68,6 @@ public class GradingTask {
         return stages;
     }
 
-    public void addStage(Stage stage) {
-        this.stages.add(stage);
-    }
-
     public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException, FormatException {
         List<Stage> baseStages = this.baseExperiment.getStages();
         List<Stage> newStages = new ArrayList<>();
@@ -94,6 +91,13 @@ public class GradingTask {
         this.assignedGradingTasks.add(assignedGradingTask);
     }
 
+    public GraderToGradingTask graderToGradingTask(Grader g) throws NotExistException {
+        // for tests use
+        for(GraderToGradingTask gtgt:assignedGradingTasks){
+            if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
+        }
+        throw new NotExistException("grader",g.getGraderEmail());
+    }
     public Experiment getBaseExperiment() {
         return baseExperiment;
     }

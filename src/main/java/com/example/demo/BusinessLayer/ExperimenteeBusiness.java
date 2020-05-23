@@ -65,7 +65,14 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Override
     public Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
-        Stage nextStage = expee.getNextStage();
+        Stage nextStage;
+        try {
+            nextStage = expee.getNextStage();
+        }
+        catch (ExpEndException e){
+            db.saveExperimentee(expee); //current stage has changed, need to save
+            throw e;
+        }
         db.saveExperimentee(expee); //current stage has changed, need to save
         return nextStage;
     }

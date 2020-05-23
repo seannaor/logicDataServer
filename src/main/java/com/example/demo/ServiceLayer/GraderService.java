@@ -2,9 +2,11 @@ package com.example.demo.ServiceLayer;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.BusinessLayer.GraderBusiness;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +30,66 @@ public class GraderService {
         return Map.of("response", res);
     }
 
+    public Map<String, Object> fillInStage(String accessCode, int pid, JSONObject data) {
+        String res = "OK";
+        try {
+            graderBusiness.fillInStage(UUID.fromString(accessCode), pid, data);
+        } catch (Exception e) {
+            res = e.getMessage();
+        }
+        return Map.of("response", res);
+    }
+
+    public Map<String, Object> getNextStage(String accessCode, int pid) {
+        try {
+            Stage s = graderBusiness.getNextStage(UUID.fromString(accessCode), pid);
+            return Map.of("response", "OK", "stage", s.getJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
+
+    public Map<String, Object> getCurrentStage(String accessCode, int pid) {
+        try {
+            Stage s = graderBusiness.getCurrentStage(UUID.fromString(accessCode), pid);
+            return Map.of("response", "OK", "stage", s.getJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
+
+    public Map<String, Object> getStage(String accessCode, int pid, int idx) {
+        try {
+            Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);
+            Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);
+            if (res == null) return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
+            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getAsJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
+
     // meaningful getters
 
     public Map<String, Object> getExperimentees(String code) {
         try {
-            List<Participant> experimentees= graderBusiness.getParticipantsByTask(UUID.fromString(code));
+            List<Participant> experimentees = graderBusiness.getParticipantsByTask(UUID.fromString(code));
             List<Integer> ids = new ArrayList<>();
-            experimentees.forEach((p)-> ids.add(p.getParticipantId()));
-            return Map.of("response","OK","experimentees", ids);
+            experimentees.forEach((p) -> ids.add(p.getParticipantId()));
+            return Map.of("response", "OK", "experimentees", ids);
         } catch (CodeException e) {
-            return Map.of("response",e.getMessage());
+            return Map.of("response", e.getMessage());
         }
     }
 
-    public Map<String, Object> getExperimenteeResults(String code,int participantId){
-        try{
-            List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code),participantId);
+    public Map<String, Object> getExperimenteeResults(String code, int participantId) {
+        try {
+            List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code), participantId);
             List<JSONObject> JResults = new ArrayList<>();
             results.forEach((resultWrapper -> JResults.add(resultWrapper.getAsJson())));
-            return Map.of("response","OK","results", JResults);
+            return Map.of("response", "OK", "results", JResults);
         } catch (Exception e) {
-            return Map.of("response",e.getMessage());
+            return Map.of("response", e.getMessage());
         }
     }
 }

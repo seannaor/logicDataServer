@@ -3,9 +3,11 @@ package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.DBAccess;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,12 @@ import java.util.UUID;
 public class GraderBusiness implements IGraderBusiness {
 
     private DataCache cache;
+    private DBAccess db;
 
-    public GraderBusiness(DataCache cache) {
+    @Autowired
+    public GraderBusiness(DataCache cache, DBAccess db) {
         this.cache = cache;
+        this.db=db;
     }
 
     @Override
@@ -43,10 +48,48 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public List<Result> getExpeeRes(UUID accessCode, int parti_id) throws CodeException, NotExistException, FormatException {
+    public List<Result> getExpeeRes(UUID accessCode, int pid) throws CodeException, NotExistException, FormatException, NotInReachException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
-        return task.getExpeeRes(parti_id);
+        return task.getExpeeRes(pid);
     }
 
+    public void fillInStage(UUID accessCode, int pid, JSONObject data) throws CodeException, NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
+        fillInStage(getParticipant(accessCode,pid), data);
+    }
+
+    public Stage getNextStage(UUID accessCode, int pid) throws CodeException, ExpEndException, NotExistException {
+        Participant participant = getParticipant(accessCode,pid);
+        Stage s = participant.getNextStage();
+        db.saveParticipant(participant);
+        return s;
+    }
+
+    public Stage getCurrentStage(UUID accessCode, int pid) throws CodeException, NotExistException, ExpEndException {
+        Participant participant = getParticipant(accessCode,pid);
+        return participant.getCurrStage();
+    }
+
+    public Stage getStage(UUID accessCode, int pid, int idx) throws CodeException, NotExistException, NotInReachException {
+        Participant participant = getParticipant(accessCode,pid);
+        return participant.getStage(idx);
+    }
+
+    public Result getResult(UUID accessCode,int pid, int idx) throws CodeException, NotExistException, NotInReachException {
+        Participant participant = getParticipant(accessCode,pid);
+        return participant.getResult(idx);
+    }
+
+
+    //Utils
+    private Participant getParticipant(UUID accessCode, int pid) throws CodeException, NotExistException {
+        GraderToGradingTask task = cache.getTaskByCode(accessCode);
+        if(pid==-1)return task.getGeneralExpParticipant();
+        return task.getGraderParticipant(pid);
+    }
+
+    public void fillInStage(Participant p, JSONObject data) throws NotInReachException, ExpEndException, ParseException, FormatException {
+        Result result = p.fillInStage(data);
+        db.saveStageResult(result);
+    }
 
 }

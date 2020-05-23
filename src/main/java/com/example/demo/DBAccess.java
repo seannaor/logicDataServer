@@ -115,6 +115,11 @@ public class DBAccess {
         //cache.updateManagementUser(creator);
     }
 
+    public long getNumberOfManagers() {
+        //raising exception, why?
+        return managementUserRep.count();
+    }
+
     public long getNumberOfExperiments() {
         return experimentRep.count();
     }
@@ -164,6 +169,7 @@ public class DBAccess {
     }
 
     public void savePermissionForManagementUser(Permission p, ManagementUser m) {
+        //raising exception, why?
         permissionRep.save(p);
         managementUserRep.save(m);
     }
