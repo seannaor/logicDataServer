@@ -111,19 +111,26 @@ public class GraderTests {
     @Test
     @Transactional
     public void currNextStageTest() throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException, NotExistException, ExistException {
-        String code = creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), "test@post");
-        creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), "test@post");
-        Utils.fillInExp(experimenteeBusiness, UUID.fromString(code));
-        List<Participant> participants = graderBusiness.getParticipantsByTask(graderCode);
 
-        for (Participant p : participants) {
-            Stage s = graderBusiness.getCurrentStage(graderCode, p.getParticipantId());
-            Assert.assertEquals("questionnaire", s.getType());
-            try {
-                graderBusiness.getNextStage(graderCode, p.getParticipantId());
-                Assert.fail();
-            } catch (ExpEndException ignore) {}
+        Stage s = graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
+        Assert.assertEquals("questionnaire", s.getType());
+
+        //different questionnaire
+        s = graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
+        Assert.assertEquals("questionnaire", s.getType());
+
+        try {
+            graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
         }
+
+        try {
+            graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+
     }
 
     // all fill In stage related tests would be positive tests only
@@ -133,118 +140,68 @@ public class GraderTests {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
-            graderBusiness.fillInStage(someCode,expee.getParticipant().getParticipantId(), new JSONObject());
+            graderBusiness.fillInStage(someCode, expee.getParticipant().getParticipantId(), new JSONObject());
             Assert.fail();
         } catch (CodeException ignore) {
 //            Assert.assertNull(db.getExperimenteeByCode(someCode));
         }
     }
 
+    @Test
+    public void fillPersonal() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException {
+        graderBusiness.fillInStage(graderCode,-1,Utils.getPersonalAnswers());
 
-    //=================================================
+        try {
+            graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+
+        try {
+            graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+
+        try {
+            graderBusiness.fillInStage(graderCode, expee.getParticipant().getParticipantId(),new JSONObject());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+    }
 
     @Test
     @Transactional
-    public void fillStage() {
-//        // pass info (first) stage
-//        try {
-//            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in questions (second) stage, fucked format should fail
-//        long numOfAnswers = db.getNumerOfAnswers();
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","questionnaire");
-//            JSONObject ans1 = new JSONObject();
-//            ans1.put("answer", 2);
-//            ans.put(2, ans1);
-//            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
-//            Assert.fail();
-//        } catch (FormatException ignore) {
-//            Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers);
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in questions (second) stage, good format should pass
-//        fillInQuestionnaire(graderCode,graderExpeeParticipant);
-//        Assert.assertEquals(db.getNumerOfAnswers(), numOfAnswers + 2);
-//
-//        // fill in code (third) stage, fucked format should fail
-//        long numOfCodeRes = db.getNumerOfCodeResults();
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","code");
-//            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
-//            Assert.fail();
-//        } catch (FormatException ignore) {
-//            Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes);
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in code (third) stage, good format should pass
-//        fillInCode(graderCode,graderExpeeParticipant);
-//        Assert.assertEquals(db.getNumerOfCodeResults(), numOfCodeRes + 1);
-//
-//        // fill in tagging (last) stage, fucked format should fail
-//        long numOfTagRes = db.getNumberOfTagResults();
-//        try {
-//            JSONObject ans = new JSONObject();
-//            ans.put("stageType","tagging");
-//            graderBusiness.fillInStage(expee.getAccessCode(),expee.getParticipant().getParticipantId(), ans);
-//            Assert.fail();
-//        } catch (FormatException ignore) {
-//            Assert.assertEquals(numOfTagRes,db.getNumberOfTagResults());
-//        } catch (Exception e) {
-//            Assert.fail();
-//        }
-//
-//        // fill in code (third) stage, good format should pass
-//        fillInTagging(graderExpeeParticipant);
-//        Assert.assertEquals(db.getNumberOfTagResults(), numOfTagRes + 3);
-//
-//        // end of experiment
-//        try{
-//            graderBusiness.getNextStage(expee.getAccessCode(),expee.getParticipant().getParticipantId());
-//            Assert.fail();
-//        }catch (ExpEndException ignore){
-//            Assert.assertTrue(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().isDone());
-//        }
-//        catch (Exception e){
-//            Assert.fail();
-//        }
-    }
+    public void grade2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
+        String expee_mail= "different@post.bgu.ac.il";
+        creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
+        creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee_mail);
 
-    private void fillInTagging(Participant p) {
-        try {
-            Utils.fillInTagging(graderBusiness, p);
-//            experimenteeBusiness.getNextStage(expee.getAccessCode());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.fail();
-        }
-    }
+        List<Participant> participants = graderBusiness.getParticipantsByTask(graderCode);
 
-    private void fillInQuestionnaire(UUID code, Participant p) {
-        try {
-            Utils.fillInQuestionnaire(graderBusiness, p);
-            graderBusiness.getNextStage(code, p.getParticipantId());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.fail();
-        }
-    }
+        int pid = participants.get(0).getParticipantId();
+        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is stupid","fuck shit")));
 
-    void fillInCode(UUID code, Participant p) {
         try {
-            Utils.fillInCode(graderBusiness, p);
-            graderBusiness.getNextStage(code, p.getParticipantId());
-        } catch (Exception e) {
+            graderBusiness.getNextStage(graderCode, pid);
             Assert.fail();
+        } catch (ExpEndException ignore) {
         }
+
+        graderBusiness.submitGradingResults(graderCode,pid);
+        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+
+        pid = participants.get(1).getParticipantId();
+        Assert.assertFalse(graderBusiness.isSubmitted(graderCode,pid));
+
+        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is smart","List.of(\"this student is stupid\",\"fuck shit\")")));
+
+        try {
+            graderBusiness.getNextStage(graderCode, pid);
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+        graderBusiness.submitGradingResults(graderCode,pid);
+        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
     }
 }

@@ -133,7 +133,7 @@ public class ManagerTests {
     @Test
     @Transactional
     public void addAlly() throws NotExistException, ExistException {
-        String allyMail = "ally@post";
+        String allyMail = "other@post";
         long managerCount = db.getNumberOfManagers();
         Assert.assertFalse(creatorBusiness.researcherLogin(allyMail, "TEMP"));
         creatorBusiness.addAlly(manager.getBguUsername(), allyMail, List.of("PERMISSION"));

@@ -109,7 +109,8 @@ public class Utils {
 
         try {
             experimenteeBusiness.getNextStage(code);
-        }catch (ExpEndException ignore){}
+        } catch (ExpEndException ignore) {
+        }
     }
 
     public static int fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
@@ -194,27 +195,50 @@ public class Utils {
         graderBusiness.fillInStage(p, ans);
     }
 
-    private static List<JSONObject> buildSimpleExpQuestion(String question) {
+    private static List<JSONObject> buildSimpleExpQuestion(List<String> questions) {
         List<JSONObject> stages = new ArrayList<>();
 
         JSONObject questionnaire = new JSONObject();
         questionnaire.put("type", "questionnaire");
-        List<JSONObject> questions = new ArrayList<>();
-        JSONObject q1 = new JSONObject();
+        List<JSONObject> JQuestions = new ArrayList<>();
 
-        q1.put("type", "open");
-        q1.put("question", question);
-        questions.add(q1);
+        for (String question : questions) {
+            JSONObject q1 = new JSONObject();
 
-        questionnaire.put("questions", questions);
+            q1.put("type", "open");
+            q1.put("question", question);
+            JQuestions.add(q1);
+
+        }
+        questionnaire.put("questions", JQuestions);
         stages.add(questionnaire);
         return stages;
     }
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
         int tid = creatorBusiness.addGradingTask(manager.getBguUsername(), exp.getExperimentId(), "TestGradingTask",
-                buildSimpleExpQuestion("what do you think about the experimentee results?"), List.of(1, 2)
-                , buildSimpleExpQuestion("what is your best score in minesweeper?"));
+                buildSimpleExpQuestion(List.of("what do you think about the experimentee results?", "state your favorite curs word")), List.of(1, 2)
+                , buildSimpleExpQuestion(List.of("what is your best score in minesweeper?")));
         return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
+    }
+
+    public static JSONObject getPersonalAnswers() {
+        JSONObject JAnswers = new JSONObject();
+        JAnswers.put("stageType", "questionnaire");
+        JSONObject ans1 = new JSONObject();
+        ans1.put("answer", "I saw an arab dude fucking a sheep.. ho minesweeper? I don't know");
+        JAnswers.put("1", ans1);
+        return JAnswers;
+    }
+
+    public static JSONObject getGradingAnswers(List<String> answers) {
+        JSONObject JAnswers = new JSONObject();
+        JAnswers.put("stageType", "questionnaire");
+        for (int i = 0; i < answers.size(); i++) {
+            JSONObject ans1 = new JSONObject();
+            ans1.put("answer", answers.get(i));
+            JAnswers.put(i + 1 + "", ans1);
+        }
+        return JAnswers;
     }
 }

@@ -78,9 +78,6 @@ public class GraderToParticipant {
         this.graderToGradingTask = graderToGradingTask;
     }
 
-    public boolean isGradingState() {
-        return gradingState;
-    }
 
     public void setGradingState(boolean gradingState) {
         this.gradingState = gradingState;
