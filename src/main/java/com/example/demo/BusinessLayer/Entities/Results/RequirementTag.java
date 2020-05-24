@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,46 +19,57 @@ public class RequirementTag {
     public static class RequirementTagID implements Serializable {
         @Column(name = "start_char_loc")
         private int startCharLoc;
-        private Requirement.RequirementID requirementID;
+        @Column(name = "requirement_index")
+        private int requirementIndex;
         @Column(name = "participant_id")
         private int participantId;
+        @Column(name = "tagging_stage_index")
+        private int taggingIndex;
+        @Column(name = "code_stage_index")
+        private int codeIndex;
+        @Column(name = "experiment_id")
+        private int experimentId;
 
         public RequirementTagID() { }
 
-        public RequirementTagID(int startCharLoc, Requirement.RequirementID requirementID, int participantId) {
+        public RequirementTagID(int startCharLoc, int requirementIndex, int participantId, int taggingIndex, int codeIndex, int experimentId) {
             this.startCharLoc = startCharLoc;
-            this.requirementID = requirementID;
+            this.requirementIndex = requirementIndex;
             this.participantId = participantId;
+            this.taggingIndex = taggingIndex;
+            this.codeIndex = codeIndex;
+            this.experimentId = experimentId;
         }
     }
 
     @EmbeddedId
     private RequirementTagID requirementTagID;
-    @MapsId("taggingResult")
+
+    @MapsId("resultID")
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
-            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
-            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+            @JoinColumn(name = "tagging_stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id"),
+            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id")
     })
     private TaggingResult taggingResult;
 
-    @Column(name = "length")
-    private int length;
-
-    @MapsId("taggingResult")
+    @MapsId("requirementID")
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "requirement_index", referencedColumnName = "requirement_index"),
-            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "code_stage_index", referencedColumnName = "stage_index"),
             @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
     })
     private Requirement requirement;
 
+    @Column(name = "length")
+    private int length;
+
     public RequirementTag() { }
 
     public RequirementTag(int startCharLoc, int length, Requirement requirement, TaggingResult taggingResult) {
-        this.requirementTagID = new RequirementTagID(startCharLoc, requirement.getRequirementID(), taggingResult.getParticipant().getParticipantId());
+        this.requirementTagID = new RequirementTagID(startCharLoc, requirement.getRequirementID().getRequirementIndex(), taggingResult.getParticipant().getParticipantId(), taggingResult.getStage().getStageID().getStageIndex(), requirement.getStageID().getStageIndex(), taggingResult.getStage().getExperiment().getExperimentId());
         this.length = length;
         this.taggingResult = taggingResult;
         this.requirement = requirement;

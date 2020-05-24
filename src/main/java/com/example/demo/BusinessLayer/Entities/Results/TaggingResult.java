@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.json.simple.JSONObject;
 
