@@ -18,14 +18,22 @@ public class Requirement {
     public static class RequirementID implements Serializable {
         @Column(name = "requirement_index")
         private int requirementIndex;
-        private Stage.StageID stageID;
+        @Column(name = "stage_index")
+        private int stageIndex;
+        @Column(name = "experiment_id")
+        private int experimentId;
 
         public RequirementID() {
         }
 
-        public RequirementID(int requirementIndex, Stage.StageID stageID) {
+        public RequirementID(int requirementIndex, int stageIndex, int experimentId) {
             this.requirementIndex = requirementIndex;
-            this.stageID = stageID;
+            this.stageIndex = stageIndex;
+            this.experimentId = experimentId;
+        }
+
+        public int getRequirementIndex() {
+            return requirementIndex;
         }
     }
 
@@ -43,28 +51,17 @@ public class Requirement {
     @Column(name = "text")
     private String text;
 
-    @OneToMany(mappedBy = "requirement")
-    private List<RequirementTag> requirementTags = new ArrayList<>();
-
     public Requirement() {
     }
 
     public Requirement(CodeStage codeStage, String text) {
-        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID());
+        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
         this.codeStage = codeStage;
         this.text = text;
     }
 
     public RequirementID getRequirementID() {
         return requirementID;
-    }
-
-    public List<RequirementTag> getRequirementTags() {
-        return requirementTags;
-    }
-
-    public void setRequirementTags(List<RequirementTag> requirementTags) {
-        this.requirementTags = requirementTags;
     }
 
     public void setText(String text) {

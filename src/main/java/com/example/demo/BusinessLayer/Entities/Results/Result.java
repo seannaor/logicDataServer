@@ -3,6 +3,7 @@ package com.example.demo.BusinessLayer.Entities.Results;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import org.hibernate.annotations.Columns;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;

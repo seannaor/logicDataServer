@@ -4,8 +4,8 @@ USE `experimentation_system_db`;
 
 CREATE TABLE `management_users`
 (
-    `bgu_username` varchar(10)  NOT NULL,
-    `bgu_password` varchar(10)  NOT NULL,
+    `bgu_username` varchar(255)  NOT NULL,
+    `bgu_password` varchar(255)  NOT NULL,
     `user_email`   varchar(255) NOT NULL,
     PRIMARY KEY (`bgu_username`)
 );
@@ -22,7 +22,7 @@ CREATE TABLE `permissions`
 
 CREATE TABLE `management_users_permissions`
 (
-    `bgu_username`  varchar(10) NOT NULL,
+    `bgu_username`  varchar(255) NOT NULL,
     `permission_id` int         NOT NULL,
     FOREIGN KEY (`bgu_username`) REFERENCES management_users (`bgu_username`) ON DELETE CASCADE,
     FOREIGN KEY (`permission_id`) REFERENCES permissions (`permission_id`) ON DELETE CASCADE,
@@ -32,7 +32,7 @@ CREATE TABLE `management_users_permissions`
 CREATE TABLE `experiments`
 (
     `experiment_id`   int          NOT NULL AUTO_INCREMENT,
-    `experiment_name` varchar(100) NOT NULL,
+    `experiment_name` varchar(255) NOT NULL,
     `published`       boolean      NOT NULL,
     `is_grading_task_exp` boolean  NOT NULL,
     PRIMARY KEY (`experiment_id`)
@@ -40,9 +40,9 @@ CREATE TABLE `experiments`
 
 CREATE TABLE `management_users_to_experiments`
 (
-    `bgu_username`  varchar(10)  NOT NULL,
+    `bgu_username`  varchar(255)  NOT NULL,
     `experiment_id` int          NOT NULL,
-    `role`          varchar(100) NOT NULL,
+    `role`          varchar(255) NOT NULL,
     FOREIGN KEY (`bgu_username`) REFERENCES management_users (`bgu_username`) ON DELETE CASCADE,
     FOREIGN KEY (`experiment_id`) REFERENCES experiments (`experiment_id`) ON DELETE CASCADE,
     PRIMARY KEY (`bgu_username`, `experiment_id`)
@@ -84,7 +84,7 @@ CREATE TABLE `stages`
 CREATE TABLE `grading_tasks`
 (
     `grading_task_id`    int NOT NULL AUTO_INCREMENT,
-    `grading_task_name`  varchar(100) NOT NULL,
+    `grading_task_name`  varchar(255) NOT NULL,
     `grading_experiment` int NOT NULL,
     `base_experiment`    int NOT NULL,
     `general_experiment` int,
@@ -230,10 +230,12 @@ CREATE TABLE `requirement_tags`
     `start_char_loc`    int NOT NULL,
     `length`            int NOT NULL,
     `requirement_index` int NOT NULL,
-    `stage_index`    int  NOT NULL REFERENCES tagging_results (`stage_index`) ON DELETE CASCADE,
-    `experiment_id`  int  NOT NULL REFERENCES tagging_results (`experiment_id`) ON DELETE CASCADE,
-    `participant_id` int  NOT NULL REFERENCES tagging_results (`participant_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`requirement_index`, `stage_index`, `experiment_id`) REFERENCES requirements (`requirement_index`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
-    PRIMARY KEY (`start_char_loc`, `requirement_index`, `participant_id`, `stage_index`, `experiment_id`)
+    `code_stage_index`  int NOT NULL,
+    `tagging_stage_index` int NOT NULL,
+    `experiment_id`  int  NOT NULL,
+    `participant_id` int  NOT NULL,
+    FOREIGN KEY (`participant_id`, `tagging_stage_index`, `experiment_id`) REFERENCES tagging_results (`participant_id`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`requirement_index`, `code_stage_index`, `experiment_id`) REFERENCES requirements (`requirement_index`, `stage_index`, `experiment_id`) ON DELETE CASCADE,
+    PRIMARY KEY (`start_char_loc`, `requirement_index`, `participant_id`, `tagging_stage_index`, `code_stage_index`, `experiment_id`)
 );
 
