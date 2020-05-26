@@ -9,6 +9,7 @@ import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(name = "tagging_stages")
@@ -57,7 +58,7 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
         TaggingResult taggingResult = (TaggingResult)participant.getResult(this.getStageID().getStageIndex());
         if(taggingResult == null) {
             taggingResult = new TaggingResult(this, participant);

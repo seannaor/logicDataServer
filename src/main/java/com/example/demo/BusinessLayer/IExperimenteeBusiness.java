@@ -7,7 +7,10 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.springframework.data.util.Pair;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IExperimenteeBusiness {
@@ -16,7 +19,7 @@ public interface IExperimenteeBusiness {
     Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException;
 
     //UC 2.2.*
-    void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException;
+    void fillInStage(UUID accessCode, Map<String,Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException;
 
     Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException;
 

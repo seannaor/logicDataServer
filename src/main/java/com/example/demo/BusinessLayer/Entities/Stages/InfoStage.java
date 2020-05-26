@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.util.Map;
 
 @Entity
 @Table(name = "info_stages")
@@ -45,5 +46,5 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillInfo(JSONObject data, Participant participant) {}
+    public void fillInfo(Map<String,Object> data, Participant participant) {}
 }

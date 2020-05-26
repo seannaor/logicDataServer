@@ -3,9 +3,7 @@ package com.example.demo.RoutingLayer;
 import com.example.demo.ServiceLayer.CreatorService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +12,16 @@ import java.util.Map;
 import static com.example.demo.RoutingLayer.RouterUtils.*;
 
 @RestController
-@RequestMapping("/manager")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/admin")
 public class managerRouter {
     @Autowired
     private CreatorService creator;
 
-    @RequestMapping("")
-    public Map<String, Object> managerLogin(@RequestParam String username, @RequestParam String password) {
+    @PostMapping("/login")
+    public boolean managerLogin(@RequestBody Map<String, String> credentials){
+        String username = credentials.get("username"),
+                password = credentials.get("password");
         return creator.researcherLogin(username, password);
     }
 

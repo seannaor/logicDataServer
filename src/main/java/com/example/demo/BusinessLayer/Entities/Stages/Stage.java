@@ -11,6 +11,7 @@ import org.json.simple.parser.ParseException;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "stages")
@@ -94,19 +95,19 @@ public abstract class Stage {
     public abstract String getType();
 
 
-    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException, NotInReachException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(JSONObject data, Participant participant) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
         throw new FormatException("tagging stage answers");
     }
 
-    public void fillInfo(JSONObject data, Participant participant)throws FormatException {
+    public void fillInfo(Map<String,Object> data, Participant participant)throws FormatException {
         throw new FormatException("info stage");
     }
 

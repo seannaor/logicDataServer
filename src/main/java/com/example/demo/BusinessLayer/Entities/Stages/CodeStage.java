@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "code_stages")
@@ -68,7 +69,7 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
         if(!data.containsKey("userCode")) throw new FormatException("user code");
         return new CodeResult(participant,this,(String) data.get("userCode"));
     }

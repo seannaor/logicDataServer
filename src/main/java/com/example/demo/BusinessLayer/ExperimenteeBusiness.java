@@ -14,9 +14,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -38,7 +42,7 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public void fillInStage(UUID accessCode, JSONObject data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException {
+    public void fillInStage(UUID accessCode, Map<String,Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
         Result result = part.fillInStage(data);
         db.saveStageResult(result);

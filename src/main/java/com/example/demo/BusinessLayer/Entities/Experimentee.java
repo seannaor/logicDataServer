@@ -64,6 +64,10 @@ public class Experimentee {
         return participant.getCurrStage();
     }
 
+    public int getCurrStageIdx()  {
+        return participant.getCurrStageIdx();
+    }
+
     public Stage getNextStage() throws ExpEndException {
         return participant.getNextStage();
     }

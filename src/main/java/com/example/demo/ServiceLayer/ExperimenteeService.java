@@ -1,12 +1,16 @@
 package com.example.demo.ServiceLayer;
 
+import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,7 +57,7 @@ public class ExperimenteeService {
 
 
     //UC 2.2.*
-    public Map<String, Object> fillInStage(String accessCode, JSONObject data) {
+    public Map<String, Object> fillInStage(String accessCode, Map data) {
         String res = "OK";
         try {
             experimenteeBusiness.fillInStage(UUID.fromString(accessCode), data);
@@ -69,6 +73,30 @@ public class ExperimenteeService {
             Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), id);
             if(res==null)  return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
             return Map.of("response", "OK", "stage", s.getJson(), "results", res.getJson());
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
+
+    public Map<String, Object> reachableStages(String accessCode) {
+        UUID code = UUID.fromString(accessCode);
+        try{
+            Stage currentStage = experimenteeBusiness.getCurrentStage(code);
+            int idx = currentStage.getStageID().getStageIndex();
+            Result currentRes = experimenteeBusiness.getResult(UUID.fromString(accessCode), idx);
+            Map<String, Object> expMap = Map.of("expName", currentStage.getExperiment().getExperimentName());
+            List<Map<String, Object>> stagesMapList = new ArrayList<>();
+            for (int i = 0; i < idx; i++) {
+                Stage s = experimenteeBusiness.getStage(code, i);
+                Result r = experimenteeBusiness.getResult(code, i);
+                Map<String, Object> stageResultMap = Map.of("type", s.getType(),
+                        "stage", s.getJson());
+                if (r != null) stageResultMap.put("results", r.getJson());
+
+                stagesMapList.add(stageResultMap);
+            }
+            expMap.put("stages", stagesMapList);
+            return expMap;
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }

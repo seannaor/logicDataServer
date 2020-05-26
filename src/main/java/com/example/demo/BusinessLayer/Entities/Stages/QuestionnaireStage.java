@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "questionnaire_stages")
@@ -68,7 +69,7 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(JSONObject data, Participant participant) throws FormatException, ParseException, NotInReachException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
         QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
         if(questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);

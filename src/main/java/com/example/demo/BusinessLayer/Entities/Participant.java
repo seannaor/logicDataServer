@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "participants")
@@ -82,11 +83,15 @@ public class Participant {
             isDone = true;
     }
 
+    public int getCurrStageIdx(){
+        return this.currStage;
+    }
+
     public boolean isDone() {
         return isDone;
     }
 
-    public Result fillInStage(JSONObject data) throws ExpEndException, FormatException, ParseException, NotInReachException {
+    public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException {
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
         switch (type) {
