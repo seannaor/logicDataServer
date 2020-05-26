@@ -57,6 +57,16 @@ public class GraderBusiness implements IGraderBusiness {
         fillInStage(getParticipant(accessCode,pid), data);
     }
 
+    public void submitGradingResults(UUID accessCode, int pid) throws NotExistException, CodeException {
+        GraderToGradingTask task = cache.getTaskByCode(accessCode);
+        task.submitResults(pid);
+    }
+
+    public boolean isSubmitted(UUID accessCode, int pid) throws NotExistException, CodeException {
+        GraderToGradingTask task = cache.getTaskByCode(accessCode);
+        return task.isSubmitted(pid);
+    }
+
     public Stage getNextStage(UUID accessCode, int pid) throws CodeException, ExpEndException, NotExistException {
         Participant participant = getParticipant(accessCode,pid);
         Stage s = participant.getNextStage();

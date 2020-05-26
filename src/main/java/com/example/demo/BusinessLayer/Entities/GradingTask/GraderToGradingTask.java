@@ -4,10 +4,7 @@ import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import com.example.demo.BusinessLayer.Exceptions.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -143,6 +140,25 @@ public class GraderToGradingTask {
         return ret;
     }
 
+    public void submitResults(int pid) throws NotExistException {
+        for (GraderToParticipant graderToParticipant : graderToParticipants) {
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+                graderToParticipant.setGradingState(true);
+                return;
+            }
+        }
+        throw new NotExistException("participant", "" + pid);
+    }
+
+    public boolean isSubmitted(int pid) throws NotExistException {
+        for (GraderToParticipant graderToParticipant : graderToParticipants) {
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+                return graderToParticipant.getGradingState();
+            }
+        }
+        throw new NotExistException("participant", "" + pid);
+    }
+
     private Participant getExperimenteeParticipant(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
             if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid)
@@ -154,6 +170,9 @@ public class GraderToGradingTask {
     public Participant getGraderParticipant(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
             if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid)
+//                if(graderToParticipant.getGradingState()) {
+//                    //TODO:?
+//                }
                 return graderToParticipant.getGraderParticipant();
         }
         throw new NotExistException("participant", "" + pid);

@@ -133,7 +133,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void endExperimentTest() throws CodeException, ExpEndException {
+    public void endExperimentTest() throws CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
         nextStageFor(3, expee.getAccessCode());
 
         // end of exp - next should fail
@@ -148,6 +148,12 @@ public class ExpeeTests {
         // current stage should fail because next was activated first
         try {
             experimenteeBusiness.getCurrentStage(expee.getAccessCode());
+            Assert.fail();
+        } catch (ExpEndException ignore) {
+        }
+
+        try {
+            experimenteeBusiness.fillInStage(expee.getAccessCode(),new JSONObject());
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
