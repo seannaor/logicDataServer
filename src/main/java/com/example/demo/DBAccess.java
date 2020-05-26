@@ -206,31 +206,33 @@ public class DBAccess {
         experimentRep.save(s.getExperiment());
     }
 
-    public void saveStageResult(Result result) {
-        String sourceStage = result.getAsJson().get("source stage").toString();
-        Participant p = result.getParticipant();
-        switch (sourceStage) {
-            case "code":
-                break;
-            case "tagging":
-                List<RequirementTag> temp1 = ((TaggingResult) result).getTags();
-                ((TaggingResult) result).setTags(new ArrayList<>());
-                saveResult(result);
-                for (RequirementTag tag : temp1) {
-                    saveRequirementTag(tag);
-                }
-                ((TaggingResult) result).setTags(temp1);
-                break;
-            case "questionnaire":
-                List<Answer> temp2 = ((QuestionnaireResult) result).getAnswers();
-                ((QuestionnaireResult) result).setAnswers(new ArrayList<>());
-                saveResult(result);
-                for (Answer ans : temp2) {
-                    saveAnswer(ans);
-                }
-                ((QuestionnaireResult) result).setAnswers(temp2);
-                break;
+    public void saveStageResult(TaggingResult result){
+        List<RequirementTag> temp1 = result.getTags();
+        result.setTags(new ArrayList<>());
+        saveResult(result);
+        for (RequirementTag tag : temp1) {
+            saveRequirementTag(tag);
         }
+        result.setTags(temp1);
+    }
+
+    public void saveStageResult(QuestionnaireResult result){
+        List<Answer> temp2 = result.getAnswers();
+        result.setAnswers(new ArrayList<>());
+        saveResult(result);
+        for (Answer ans : temp2) {
+            saveAnswer(ans);
+        }
+        result.setAnswers(temp2);
+    }
+
+    public void saveStageResult(Result result) {
+        Participant p = result.getParticipant();
+        if(result instanceof TaggingResult)
+            saveStageResult((TaggingResult)result);
+        else if(result instanceof QuestionnaireResult)
+            saveStageResult((QuestionnaireResult)result);
+
         saveResult(result);
         saveParticipant(p);
     }

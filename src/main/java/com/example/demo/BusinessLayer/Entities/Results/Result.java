@@ -70,6 +70,8 @@ public abstract class Result {
         return resultID;
     }
 
-    public abstract JSONObject getAsJson();
+    public abstract JSONObject getJson();
+
+
 
 }

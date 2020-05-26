@@ -37,7 +37,7 @@ public class TaggingResult extends Result {
     }
 
     @Override
-    public JSONObject getAsJson() {
+    public JSONObject getJson() {
         JSONObject json = new JSONObject();
         json.put("source stage","tagging");
         return json;

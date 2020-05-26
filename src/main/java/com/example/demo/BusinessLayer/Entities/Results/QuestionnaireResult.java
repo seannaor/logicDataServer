@@ -37,9 +37,13 @@ public class QuestionnaireResult extends Result {
     }
 
     @Override
-    public JSONObject getAsJson() {
+    public JSONObject getJson() {
         JSONObject json = new JSONObject();
-        json.put("source stage","questionnaire");
+        List<String> answers = new ArrayList<>();
+        for(Answer ans : this.answers){
+            answers.add(ans.getAnswerJson());
+        }
+        json.put("answers",answers);
         return json;
     }
 }

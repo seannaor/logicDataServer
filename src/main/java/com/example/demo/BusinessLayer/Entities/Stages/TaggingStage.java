@@ -44,6 +44,7 @@ public class TaggingStage extends Stage {
         this.codeStage = codeStage;
     }
 
+    @Override
     public JSONObject getJson() {
         JSONObject jStage = new org.json.simple.JSONObject();
         jStage.put("type","tagging");

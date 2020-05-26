@@ -195,8 +195,14 @@ public class Utils {
         graderBusiness.fillInStage(p, ans);
     }
 
-    private static List<JSONObject> buildSimpleExpQuestion(List<String> questions) {
+    private static List<JSONObject> buildSimpleExp(List<String> questions) {
         List<JSONObject> stages = new ArrayList<>();
+
+        JSONObject info = new JSONObject();
+        info.put("type", "info");
+        info.put("info", "some information and stuff");
+
+        stages.add(info);
 
         JSONObject questionnaire = new JSONObject();
         questionnaire.put("type", "questionnaire");
@@ -217,8 +223,8 @@ public class Utils {
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
         int tid = creatorBusiness.addGradingTask(manager.getBguUsername(), exp.getExperimentId(), "TestGradingTask",
-                buildSimpleExpQuestion(List.of("what do you think about the experimentee results?", "state your favorite curs word")), List.of(1, 2)
-                , buildSimpleExpQuestion(List.of("what is your best score in minesweeper?")));
+                buildSimpleExp(List.of("what do you think about the experimentee results?", "state your favorite curs word")), List.of(1, 2)
+                , buildSimpleExp(List.of("what is your best score in minesweeper?")));
         return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
     }
 

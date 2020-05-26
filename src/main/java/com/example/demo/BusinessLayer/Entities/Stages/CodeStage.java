@@ -24,6 +24,7 @@ public class CodeStage extends Stage {
     @OneToMany(mappedBy = "codeStage")
     private List<Requirement> requirements = new ArrayList<>();
 
+
     public CodeStage() {
     }
 
@@ -47,16 +48,17 @@ public class CodeStage extends Stage {
         super(experiment, stage_index);
     }
 
+    @Override
     public JSONObject getJson(){
         JSONObject jStage = new JSONObject();
-        jStage.put("type","code");
         jStage.put("description",this.description);
         jStage.put("template",this.template);
-        List<String> jRequirements = new LinkedList<>();
-        for (Requirement r : requirements) {
-            jRequirements.add(r.getText());
+        jStage.put("language","None");
+        List<String> requirements = new LinkedList<>();
+        for (Requirement r : this.requirements) {
+            requirements.add(r.getText());
         }
-        jStage.put("requirements",jRequirements);
+        jStage.put("requirements",requirements);
         return jStage;
     }
 

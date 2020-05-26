@@ -12,15 +12,19 @@ import java.util.UUID;
 
 @Service
 public class ExperimenteeService {
-    @Autowired
+
     private ExperimenteeBusiness experimenteeBusiness;
+
+    @Autowired
+    public ExperimenteeService(ExperimenteeBusiness experimenteeBusiness){
+        this.experimenteeBusiness=experimenteeBusiness;
+    }
 
     //UC 2.1 - Login
     public Map<String, Object> beginParticipation(String accessCode) {
-
         try {
-            Stage s = experimenteeBusiness.beginParticipation(UUID.fromString(accessCode));
-            return Map.of("response", "OK", "type", s.getType());
+            experimenteeBusiness.beginParticipation(UUID.fromString(accessCode));
+            return Map.of("response", "OK");
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
 
@@ -30,7 +34,8 @@ public class ExperimenteeService {
     public Map<String, Object> getCurrentStage(String accessCode) {
         try {
             Stage s = experimenteeBusiness.getCurrentStage(UUID.fromString(accessCode));
-            return Map.of("response", "OK", "stage", s.getJson());
+            Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode),s.getStageID().getStageIndex());
+            return Map.of("response", "OK", "type",s.getType(),"stage", s.getJson(),"result",res.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -39,7 +44,8 @@ public class ExperimenteeService {
     public Map<String, Object> getNextStage(String accessCode) {
         try {
             Stage s = experimenteeBusiness.getNextStage(UUID.fromString(accessCode));
-            return Map.of("response", "OK", "stage", s.getJson());
+            Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode),s.getStageID().getStageIndex());
+            return Map.of("response", "OK", "type",s.getType(),"stage", s.getJson(),"result",res.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -57,12 +63,12 @@ public class ExperimenteeService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> getStageAt(String code, int id) {
+    public Map<String, Object> getStageAt(String accessCode, int id) {
         try {
-            Stage s = experimenteeBusiness.getStage(UUID.fromString(code), id);
-            Result res = experimenteeBusiness.getResult(UUID.fromString(code), id);
+            Stage s = experimenteeBusiness.getStage(UUID.fromString(accessCode), id);
+            Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), id);
             if(res==null)  return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
-            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getAsJson());
+            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }

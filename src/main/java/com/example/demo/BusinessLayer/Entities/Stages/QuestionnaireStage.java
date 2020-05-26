@@ -2,9 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
-import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
@@ -32,14 +30,12 @@ public class QuestionnaireStage extends Stage {
         super(experiment);
     }
 
-    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
+    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) throws FormatException {
         super(experiment);
         questions = new ArrayList<>();
         int QIdx = 1;
         for (JSONObject JQuestion : JQuestions) {
-            Question q = new Question(QIdx, this, JQuestion.toString());
-            questions.add(q);
-            QIdx++;
+            questions.add(buildQuestion(JQuestion,QIdx++));
         }
     }
 
@@ -55,9 +51,9 @@ public class QuestionnaireStage extends Stage {
         this.questions.add(question);
     }
 
+    @Override
     public JSONObject getJson() {
         JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type", "questionnaire");
         List<String> jQuestions = new LinkedList<>();
         for (Question q : questions) {
             jQuestions.add(q.getQuestionJson());
@@ -85,5 +81,9 @@ public class QuestionnaireStage extends Stage {
             q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
         }
         return questionnaireResult;
+    }
+
+    private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException{
+        return new Question(QIdx, this, jQuestion.toString());
     }
 }

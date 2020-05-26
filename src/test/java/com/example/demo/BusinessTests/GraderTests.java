@@ -113,9 +113,8 @@ public class GraderTests {
     public void currNextStageTest() throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException, NotExistException, ExistException {
 
         Stage s = graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
-        Assert.assertEquals("questionnaire", s.getType());
+        Assert.assertEquals("info", s.getType());
 
-        //different questionnaire
         s = graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
         Assert.assertEquals("questionnaire", s.getType());
 
@@ -149,22 +148,23 @@ public class GraderTests {
 
     @Test
     public void fillPersonal() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException {
+        graderBusiness.getNextStage(graderCode,-1);//pass info
         graderBusiness.fillInStage(graderCode,-1,Utils.getPersonalAnswers());
 
         try {
-            graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
+            graderBusiness.getNextStage(graderCode, -1);
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
 
         try {
-            graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
+            graderBusiness.getCurrentStage(graderCode, -1);
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
 
         try {
-            graderBusiness.fillInStage(graderCode, expee.getParticipant().getParticipantId(),new JSONObject());
+            graderBusiness.fillInStage(graderCode, -1,new JSONObject());
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
@@ -180,6 +180,7 @@ public class GraderTests {
         List<Participant> participants = graderBusiness.getParticipantsByTask(graderCode);
 
         int pid = participants.get(0).getParticipantId();
+        graderBusiness.getNextStage(graderCode,pid);//pass info
         graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is stupid","fuck shit")));
 
         try {
@@ -194,6 +195,7 @@ public class GraderTests {
         pid = participants.get(1).getParticipantId();
         Assert.assertFalse(graderBusiness.isSubmitted(graderCode,pid));
 
+        graderBusiness.getNextStage(graderCode,pid);// pass info
         graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is smart","List.of(\"this student is stupid\",\"fuck shit\")")));
 
         try {

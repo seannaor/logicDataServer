@@ -19,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 @Sql({"/create_database.sql"})
@@ -237,7 +236,7 @@ public class ExpeeTests {
         //fill tagging dont really answer this stage, sill got weird problem there
         int numofTags = Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
-        Assert.assertTrue(expee.getResult(3).getAsJson().get("source stage").equals("tagging"));
+        Assert.assertTrue(expee.getResult(3).getJson().get("source stage").equals("tagging"));
         Assert.assertEquals(numOfTagRes + numofTags, db.getNumberOfTagResults());
     }
 
@@ -249,7 +248,7 @@ public class ExpeeTests {
         int numOfquestionsAnswered = Utils.fillInQuestionnaire(experimenteeBusiness, expee.getAccessCode());
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
-        Assert.assertTrue(expee.getResult(1).getAsJson().get("source stage").equals("questionnaire"));
+        Assert.assertEquals("questionnaire", expee.getResult(1).getStage().getType());
         Assert.assertEquals(numOfAnswers + numOfquestionsAnswered, db.getNumerOfAnswers());
     }
 
@@ -261,7 +260,7 @@ public class ExpeeTests {
         Utils.fillInCode(experimenteeBusiness, expee.getAccessCode());
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
-        Assert.assertTrue(expee.getResult(2).getAsJson().get("source stage").equals("code"));
+        Assert.assertEquals("code", expee.getResult(2).getStage().getType());
         Assert.assertEquals(numOfCodeRes+1, db.getNumerOfCodeResults());
     }
 

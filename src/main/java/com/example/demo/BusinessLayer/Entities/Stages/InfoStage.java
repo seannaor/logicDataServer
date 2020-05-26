@@ -32,10 +32,10 @@ public class InfoStage extends Stage {
         this.info = info;
     }
 
+    @Override
     public JSONObject getJson(){
         JSONObject jStage = new JSONObject();
-        jStage.put("type","info");
-        jStage.put("info",info);
+        jStage.put("text",info);
         return jStage;
     }
 

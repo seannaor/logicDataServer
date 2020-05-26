@@ -30,10 +30,9 @@ public class CodeResult extends Result {
     }
 
     @Override
-    public JSONObject getAsJson() {
+    public JSONObject getJson() {
         JSONObject JResult = getStage().getJson();
-        JResult.put("user code",userCode);
-        JResult.put("source stage","code");
+        JResult.put("code",userCode);
         return JResult;
     }
 }

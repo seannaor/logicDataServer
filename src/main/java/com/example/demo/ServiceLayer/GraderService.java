@@ -6,7 +6,6 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.BusinessLayer.GraderBusiness;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +62,7 @@ public class GraderService {
             Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);
             Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);
             if (res == null) return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
-            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getAsJson());
+            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getJson());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -86,7 +85,7 @@ public class GraderService {
         try {
             List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code), participantId);
             List<JSONObject> JResults = new ArrayList<>();
-            results.forEach((resultWrapper -> JResults.add(resultWrapper.getAsJson())));
+            results.forEach((resultWrapper -> JResults.add(resultWrapper.getJson())));
             return Map.of("response", "OK", "results", JResults);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
