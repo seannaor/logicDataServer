@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "questionnaire_results")
@@ -37,13 +38,11 @@ public class QuestionnaireResult extends Result {
     }
 
     @Override
-    public JSONObject getJson() {
-        JSONObject json = new JSONObject();
+    public Map<String, Object> getAsMap() {
         List<String> answers = new ArrayList<>();
         for(Answer ans : this.answers){
             answers.add(ans.getAnswerJson());
         }
-        json.put("answers",answers);
-        return json;
+        return Map.of("answers",answers);
     }
 }

@@ -46,10 +46,8 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public JSONObject getJson() {
-        JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type","tagging");
-        return jStage;
+    public Map<String,Object> getAsMap() {
+        return Map.of();
     }
 
     @Override

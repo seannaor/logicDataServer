@@ -53,14 +53,12 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public JSONObject getJson() {
-        JSONObject jStage = new org.json.simple.JSONObject();
-        List<String> jQuestions = new LinkedList<>();
-        for (Question q : questions) {
-            jQuestions.add(q.getQuestionJson());
+    public Map<String, Object> getAsMap() {
+        List<String> questions = new LinkedList<>();
+        for (Question q : this.questions) {
+            questions.add(q.getQuestionJson());
         }
-        jStage.put("questions", jQuestions);
-        return jStage;
+        return Map.of("questions", questions);
     }
 
     @Override

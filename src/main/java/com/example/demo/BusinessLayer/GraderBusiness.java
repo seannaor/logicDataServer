@@ -97,7 +97,7 @@ public class GraderBusiness implements IGraderBusiness {
         return task.getGraderParticipant(pid);
     }
 
-    public void fillInStage(Participant p, JSONObject data) throws NotInReachException, ExpEndException, ParseException, FormatException {
+    public void fillInStage(Participant p, JSONObject data) throws NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
         Result result = p.fillInStage(data);
         db.saveStageResult(result);
     }

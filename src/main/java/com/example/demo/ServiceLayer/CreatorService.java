@@ -253,9 +253,9 @@ public class CreatorService {
     // Utils
 
     private Map<String, Object> stagesResponse(List<Stage> stages) {
-        List<JSONObject> jsons = new ArrayList<>();
+        List<Map<String, Object>> jsons = new ArrayList<>();
         for (Stage stage : stages) {
-            jsons.add(stage.getJson());
+            jsons.add(stage.getAsMap());
         }
         return Map.of("response", "OK", "stages", jsons);
     }

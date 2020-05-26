@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Map;
 
 @Entity
 @Table(name = "results")
@@ -70,7 +71,7 @@ public abstract class Result {
         return resultID;
     }
 
-    public abstract JSONObject getJson();
+    public abstract Map<String, Object> getAsMap();
 
 
 

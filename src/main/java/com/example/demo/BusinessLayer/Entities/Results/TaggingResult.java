@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "tagging_results")
@@ -37,9 +38,7 @@ public class TaggingResult extends Result {
     }
 
     @Override
-    public JSONObject getJson() {
-        JSONObject json = new JSONObject();
-        json.put("source stage","tagging");
-        return json;
+    public Map<String, Object> getAsMap() {
+        return Map.of();
     }
 }

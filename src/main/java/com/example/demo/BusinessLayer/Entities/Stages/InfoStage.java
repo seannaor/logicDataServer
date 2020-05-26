@@ -34,10 +34,8 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public JSONObject getJson(){
-        JSONObject jStage = new JSONObject();
-        jStage.put("text",info);
-        return jStage;
+    public Map<String, Object> getAsMap(){
+        return Map.of("text",info);
     }
 
     @Override

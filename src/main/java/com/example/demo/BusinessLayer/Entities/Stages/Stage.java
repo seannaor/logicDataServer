@@ -90,7 +90,7 @@ public abstract class Stage {
         this.experiment = experiment;
     }
 
-    public abstract JSONObject getJson();
+    public abstract Map<String,Object> getAsMap();
 
     public abstract String getType();
 

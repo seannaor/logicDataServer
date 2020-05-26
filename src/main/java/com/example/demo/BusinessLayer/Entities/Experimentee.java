@@ -3,6 +3,7 @@ package com.example.demo.BusinessLayer.Entities;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -60,7 +61,7 @@ public class Experimentee {
         this.participant = participant;
     }
 
-    public Stage getCurrStage() throws ExpEndException {
+    public Stage getCurrStage() throws ExpEndException, NotExistException {
         return participant.getCurrStage();
     }
 
@@ -68,11 +69,11 @@ public class Experimentee {
         return participant.getCurrStageIdx();
     }
 
-    public Stage getNextStage() throws ExpEndException {
+    public Stage getNextStage() throws ExpEndException, NotExistException {
         return participant.getNextStage();
     }
 
-    public Stage getStage(int idx) throws NotInReachException{
+    public Stage getStage(int idx) throws NotInReachException, NotExistException {
         return participant.getStage(idx);
     }
 

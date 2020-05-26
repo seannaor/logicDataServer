@@ -42,7 +42,7 @@ public class GraderService {
     public Map<String, Object> getNextStage(String accessCode, int pid) {
         try {
             Stage s = graderBusiness.getNextStage(UUID.fromString(accessCode), pid);
-            return Map.of("response", "OK", "stage", s.getJson());
+            return Map.of("response", "OK", "stage", s.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -51,7 +51,7 @@ public class GraderService {
     public Map<String, Object> getCurrentStage(String accessCode, int pid) {
         try {
             Stage s = graderBusiness.getCurrentStage(UUID.fromString(accessCode), pid);
-            return Map.of("response", "OK", "stage", s.getJson());
+            return Map.of("response", "OK", "stage", s.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -61,8 +61,8 @@ public class GraderService {
         try {
             Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);
             Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);
-            if (res == null) return Map.of("response", "OK", "stage", s.getJson(), "results", "None");
-            return Map.of("response", "OK", "stage", s.getJson(), "results", res.getJson());
+            if (res == null) return Map.of("response", "OK", "stage", s.getAsMap(), "results", "None");
+            return Map.of("response", "OK", "stage", s.getAsMap(), "results", res.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -84,8 +84,8 @@ public class GraderService {
     public Map<String, Object> getExperimenteeResults(String code, int participantId) {
         try {
             List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code), participantId);
-            List<JSONObject> JResults = new ArrayList<>();
-            results.forEach((resultWrapper -> JResults.add(resultWrapper.getJson())));
+            List<Map<String, Object>> JResults = new ArrayList<>();
+            results.forEach((resultWrapper -> JResults.add(resultWrapper.getAsMap())));
             return Map.of("response", "OK", "results", JResults);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());

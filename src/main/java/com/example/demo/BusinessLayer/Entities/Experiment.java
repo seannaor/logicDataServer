@@ -1,6 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,8 +25,8 @@ public class Experiment {
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "experiment")
-    private List<Stage> stages = new ArrayList<>();
+    @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
+    private List<Stage> stages= new ArrayList<>();
 
     public Experiment() {
     }
@@ -72,6 +74,13 @@ public class Experiment {
 
     public List<Stage> getStages() {
         return stages;
+    }
+
+    public Stage getStage(int idx) throws NotExistException {
+        for(Stage s:stages){
+            if(s.getStageID().getStageIndex()==idx)return s;
+        }
+        throw new NotExistException("stage",idx+"");
     }
 
     public void setStages(List<Stage> stages) {

@@ -3,11 +3,9 @@ package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
+import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
-import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.SpringBooter;
 import org.json.simple.JSONObject;
@@ -36,26 +34,29 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public Stage beginParticipation(UUID accessCode) throws ExpEndException, CodeException {
-        Experimentee expee = cache.getExpeeByCode(accessCode);
-        return expee.getParticipant().getCurrStage();
+    public boolean beginParticipation(UUID accessCode) {
+        try {
+            cache.getExpeeByCode(accessCode);
+        }catch (CodeException ignore) {return false;}
+        return true;
     }
 
     @Override
-    public void fillInStage(UUID accessCode, Map<String,Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException {
+    public void fillInStage(UUID accessCode, Map<String, Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException, NotExistException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
+        if (part.getCurrStage() instanceof InfoStage) return;
         Result result = part.fillInStage(data);
         db.saveStageResult(result);
     }
 
     @Override
-    public Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException {
+    public Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException, NotExistException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
     }
 
     @Override
-    public Stage getStage(UUID accessCode, int idx) throws CodeException, NotInReachException {
+    public Stage getStage(UUID accessCode, int idx) throws CodeException, NotInReachException, NotExistException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getStage(idx);
     }
@@ -67,13 +68,12 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     }
 
     @Override
-    public Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException {
+    public Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException, NotExistException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         Stage nextStage;
         try {
             nextStage = expee.getNextStage();
-        }
-        catch (ExpEndException e){
+        } catch (ExpEndException | NotExistException e) {
             db.saveExperimentee(expee); //current stage has changed, need to save
             throw e;
         }

@@ -6,6 +6,7 @@ import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -29,7 +30,7 @@ public class Participant {
     @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
-    @OneToMany(mappedBy = "participant")
+    @OneToMany(mappedBy = "participant", fetch = FetchType.EAGER)
     private List<Result> results;
 
     public Participant() {
@@ -51,20 +52,20 @@ public class Participant {
         return participantId;
     }
 
-    public Stage getCurrStage() throws ExpEndException {
+    public Stage getCurrStage() throws ExpEndException, NotExistException {
         if (isDone) throw new ExpEndException();
-        return experiment.getStages().get(currStage);
+        return experiment.getStage(currStage);
     }
 
-    public Stage getNextStage() throws ExpEndException {
+    public Stage getNextStage() throws ExpEndException, NotExistException {
         advanceStage();
         if (isDone) throw new ExpEndException();
         return getCurrStage();
     }
 
-    public Stage getStage(int idx) throws NotInReachException {
+    public Stage getStage(int idx) throws NotInReachException, NotExistException {
         if (currStage < idx) throw new NotInReachException("stage " + idx);
-        return this.experiment.getStages().get(idx);
+        return this.experiment.getStage(idx);
     }
 
     public Result getResult(int idx) throws NotInReachException {
@@ -91,7 +92,7 @@ public class Participant {
         return isDone;
     }
 
-    public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException {
+    public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
         switch (type) {

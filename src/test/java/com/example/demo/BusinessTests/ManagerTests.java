@@ -17,7 +17,8 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import static org.jvnet.fastinfoset.EncodingAlgorithmIndexes.UUID;
 
 @Sql({"/create_database.sql"})
 @SpringBootTest
@@ -53,6 +54,7 @@ public class ManagerTests {
 
         creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), "gili@post.bgu.ac.il");
         expee = cache.getExpeeByMailAndExp("gili@post.bgu.ac.il", experiment.getExperimentId());
+        System.out.println(expee.getAccessCode());
 
         int gradingTaskId = creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(),
                 "The Grading Task", new ArrayList<>(), List.of(), new ArrayList<>());

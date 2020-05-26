@@ -57,32 +57,17 @@ public class ExpeeTests {
     }
 
     @Test
-    public void loginFailTest() {
-        //not exist code should fail
-        UUID someCode = UUID.randomUUID();
-        try {
-            experimenteeBusiness.beginParticipation(someCode);
-            Assert.fail();
-        } catch (CodeException ignore) {
-        } catch (ExpEndException e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
     public void loginTest() {
-        // real code should get us the first stage - info
-        try {
-            Stage first = experimenteeBusiness.beginParticipation(expee.getAccessCode());
-            Assert.assertEquals(first.getType(), "info");
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        //not exist code should return false
+        UUID someCode = UUID.randomUUID();
+        Assert.assertFalse(experimenteeBusiness.beginParticipation(someCode));
+        //real code should return true
+        Assert.assertTrue(experimenteeBusiness.beginParticipation(expee.getAccessCode()));
     }
 
     @Test
 //    @Transactional
-    public void currStageFailTest() throws ExpEndException {
+    public void currStageFailTest() throws NotExistException, ExpEndException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
@@ -94,7 +79,7 @@ public class ExpeeTests {
 
     @Test
 //    @Transactional
-    public void nextStageFailTest() throws ExpEndException {
+    public void nextStageFailTest() throws NotExistException, ExpEndException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
@@ -106,7 +91,7 @@ public class ExpeeTests {
 
     @Test
     @Transactional
-    public void currStageTest() throws CodeException, ExpEndException {
+    public void currStageTest() throws NotExistException, CodeException, ExpEndException {
         // real code should get us the first stage - info
         Stage first = experimenteeBusiness.getCurrentStage(expee.getAccessCode());
         Assert.assertEquals(first.getType(), "info");
@@ -115,7 +100,7 @@ public class ExpeeTests {
 
     @Test
     @Transactional
-    public void nextStageTest() throws CodeException, ExpEndException {
+    public void nextStageTest() throws NotExistException, CodeException, ExpEndException {
         // real code should get us the next stages
 
         Stage s = experimenteeBusiness.getNextStage(expee.getAccessCode());
@@ -132,7 +117,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void endExperimentTest() throws CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
+    public void endExperimentTest() throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
         nextStageFor(3, expee.getAccessCode());
 
         // end of exp - next should fail
@@ -159,7 +144,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillStageFail() throws NotInReachException, ParseException, ExpEndException, FormatException {
+    public void fillStageFail() throws NotExistException, NotInReachException, ParseException, ExpEndException, FormatException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         try {
@@ -172,7 +157,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillQuestionsFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
+    public void fillQuestionsFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
         // fill in questions (second) stage, fucked format should fail
@@ -193,7 +178,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillCodeFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
+    public void fillCodeFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
         nextStageFor(2, expee.getAccessCode());
 
         // fill in code (third) stage, fucked format should fail
@@ -211,7 +196,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillTaggingFail() throws CodeException, ExpEndException, NotInReachException, ParseException {
+    public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
         nextStageFor(3, expee.getAccessCode());
         // fill in tagging (last) stage, fucked format should fail
         long numOfTagRes = db.getNumberOfTagResults();
@@ -229,19 +214,19 @@ public class ExpeeTests {
 
     @Test
     @Transactional
-    public void fillInTagging() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+    public void fillInTagging() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
         nextStageFor(3, expee.getAccessCode());
         long numOfTagRes = db.getNumberOfTagResults();
 
         //fill tagging dont really answer this stage, sill got weird problem there
         int numofTags = Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
-        Assert.assertTrue(expee.getResult(3).getJson().get("source stage").equals("tagging"));
+        Assert.assertEquals("tagging", expee.getResult(3).getStage().getType());
         Assert.assertEquals(numOfTagRes + numofTags, db.getNumberOfTagResults());
     }
 
     @Test
-    public void fillInQuestionnaire() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+    public void fillInQuestionnaire() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
         long numOfAnswers = db.getNumerOfAnswers();
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
@@ -253,7 +238,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillInCode() throws CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+    public void fillInCode() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
         long numOfCodeRes = db.getNumerOfCodeResults();
         nextStageFor(2, expee.getAccessCode());
 
@@ -264,7 +249,7 @@ public class ExpeeTests {
         Assert.assertEquals(numOfCodeRes+1, db.getNumerOfCodeResults());
     }
 
-    private void nextStageFor(int i, UUID code) throws CodeException, ExpEndException {
+    private void nextStageFor(int i, UUID code) throws NotExistException, CodeException, ExpEndException {
         for (int j = 0; j < i; j++) experimenteeBusiness.getNextStage(code);
     }
 }

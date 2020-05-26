@@ -7,10 +7,7 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "code_stages")
@@ -31,17 +28,17 @@ public class CodeStage extends Stage {
 
     public CodeStage(String desc, String template, Experiment experiment) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
     }
 
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
         this.requirements = new ArrayList<>();
-        for(String req:requirements){
-            this.requirements.add(new Requirement(this,req));
+        for (String req : requirements) {
+            this.requirements.add(new Requirement(this, req));
         }
     }
 
@@ -50,17 +47,17 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public JSONObject getJson(){
-        JSONObject jStage = new JSONObject();
-        jStage.put("description",this.description);
-        jStage.put("template",this.template);
-        jStage.put("language","None");
+    public Map<String, Object> getAsMap() {
+        Map<String, Object> stageMap = new HashMap<>();
+        stageMap.put("description", this.description);
+        stageMap.put("template", this.template);
+        stageMap.put("language", "None");
         List<String> requirements = new LinkedList<>();
         for (Requirement r : this.requirements) {
             requirements.add(r.getText());
         }
-        jStage.put("requirements",requirements);
-        return jStage;
+        stageMap.put("requirements", requirements);
+        return stageMap;
     }
 
     @Override
@@ -69,9 +66,9 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
-        if(!data.containsKey("userCode")) throw new FormatException("user code");
-        return new CodeResult(participant,this,(String) data.get("userCode"));
+    public CodeResult fillCode(Map<String, Object> data, Participant participant) throws FormatException {
+        if (!data.containsKey("userCode")) throw new FormatException("user code");
+        return new CodeResult(participant, this, (String) data.get("userCode"));
     }
 
     public String getDescription() {
