@@ -527,7 +527,7 @@ class PersistenceTests {
 	void addAndUpdateRequirementsForExpTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "", e, " java");
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
 		addRequirementsToStage(codeStage);
@@ -546,7 +546,7 @@ class PersistenceTests {
 	void addAndUpdateCodeResultForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "", e, "java");
 		stageRep.save(codeStage);
 		Participant p1 = createExpeeAndParticipant();
 		assertEquals(participantRep.count(), 1);
@@ -566,7 +566,7 @@ class PersistenceTests {
 	void addAndUpdateTaggingStageForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "", e, "java");
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
@@ -591,7 +591,7 @@ class PersistenceTests {
 	void deleteReqsAndExpeeResultTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "", e, "java");
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
@@ -650,7 +650,7 @@ class PersistenceTests {
 		stageRep.save(s21);
 		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
 		stageRep.save(s31);
-		CodeStage s41 = new CodeStage("enter your code", "", experimentRep.findAll().get(0));
+		CodeStage s41 = new CodeStage("enter your code", "", experimentRep.findAll().get(0), "java");
 		stageRep.save(s41);
 		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
 		stageRep.save(s51);
@@ -660,7 +660,7 @@ class PersistenceTests {
 		stageRep.save(s22);
 		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
 		stageRep.save(s32);
-		CodeStage s42 = new CodeStage("enter your code", "", experimentRep.findAll().get(1));
+		CodeStage s42 = new CodeStage("enter your code", "", experimentRep.findAll().get(1), "java");
 		stageRep.save(s42);
 		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
 		stageRep.save(s52);

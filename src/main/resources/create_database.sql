@@ -158,6 +158,7 @@ CREATE TABLE `code_stages`
     `experiment_id` int  NOT NULL REFERENCES stages (`experiment_id`) ON DELETE CASCADE,
     `description`   TEXT NOT NULL,
     `template`      TEXT NOT NULL,
+    `language`      VARCHAR(50) NOT NULL,
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );
 
