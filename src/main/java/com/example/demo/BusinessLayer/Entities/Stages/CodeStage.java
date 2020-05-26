@@ -21,22 +21,26 @@ public class CodeStage extends Stage {
     @Lob
     @Column(name = "template")
     private String template;
+    @Column(name = "language")
+    private String language;
     @OneToMany(mappedBy = "codeStage")
     private List<Requirement> requirements = new ArrayList<>();
 
     public CodeStage() {
     }
 
-    public CodeStage(String desc, String template, Experiment experiment) {
+    public CodeStage(String desc, String template, Experiment experiment, String language) {
         super(experiment);
         this.description=desc;
         this.template=template;
+        this.language = language;
     }
 
-    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
+    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment, String language) {
         super(experiment);
         this.description=desc;
         this.template=template;
+        this.language = language;
         this.requirements = new ArrayList<>();
         for(String req:requirements){
             this.requirements.add(new Requirement(this,req));
@@ -99,4 +103,11 @@ public class CodeStage extends Stage {
         this.requirements.add(requirement);
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }
