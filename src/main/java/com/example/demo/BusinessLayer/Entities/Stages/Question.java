@@ -80,10 +80,10 @@ public class Question {
     public Answer answer(Object data, QuestionnaireResult questionnaireResult) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
 
-        switch ((String) jQuestion.get("type")){
+        switch ((String) jQuestion.get("questionType")){
             case "open":
             case "american":
-            case "multi-choice":
+            case "multiChoice":
                 return new Answer(data.toString(),this, questionnaireResult);
             default:
                 throw new FormatException("american, open or multi-choice question");

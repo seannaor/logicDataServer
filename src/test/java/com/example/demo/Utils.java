@@ -20,10 +20,10 @@ public class Utils {
     public static List<JSONObject> buildStages() {
         List<JSONObject> stages = new ArrayList<>();
 
+        stages.add(getStumpInfoStage());
         stages.add(getStumpQuestionsStage());
         stages.add(getStumpCodeStage());
         stages.add(getStumpTaggingStage());
-        stages.add(getStumpInfoStage());
 
         return stages;
     }
@@ -211,7 +211,7 @@ public class Utils {
         for (String question : questions) {
             JSONObject q1 = new JSONObject();
 
-            q1.put("type", "open");
+            q1.put("questionType", "open");
             q1.put("question", question);
             JQuestions.add(q1);
 
