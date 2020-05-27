@@ -44,5 +44,5 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillInfo(Map<String,Object> data, Participant participant) {}
+    public void fillInfo(Object data, Participant participant) {}
 }

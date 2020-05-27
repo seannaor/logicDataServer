@@ -72,9 +72,8 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(Map<String, Object> data, Participant participant) throws FormatException {
-        if (!data.containsKey("userCode")) throw new FormatException("user code");
-        return new CodeResult(participant, this, (String) data.get("userCode"));
+    public CodeResult fillCode(String code, Participant participant) throws FormatException {
+        return new CodeResult(participant, this, code);
     }
 
     public String getDescription() {

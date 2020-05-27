@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Sql({"/create_database.sql"})
@@ -201,9 +202,7 @@ public class ExpeeTests {
         // fill in tagging (last) stage, fucked format should fail
         long numOfTagRes = db.getNumberOfTagResults();
         try {
-            JSONObject ans = new JSONObject();
-            ans.put("stageType", "tagging");
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), ans);
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), new HashMap<>());
             Assert.fail();
         } catch (FormatException ignore) {
             Assert.assertEquals(numOfTagRes, db.getNumberOfTagResults());

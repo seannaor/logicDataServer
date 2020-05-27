@@ -4,6 +4,7 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -95,11 +96,11 @@ public abstract class Stage {
     public abstract String getType();
 
 
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
+    public CodeResult fillCode(String code, Participant participant) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
+    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         throw new FormatException("questionnaire stage answers");
     }
 
@@ -107,7 +108,7 @@ public abstract class Stage {
         throw new FormatException("tagging stage answers");
     }
 
-    public void fillInfo(Map<String,Object> data, Participant participant)throws FormatException {
+    public void fillInfo(Object data, Participant participant)throws FormatException {
         throw new FormatException("info stage");
     }
 

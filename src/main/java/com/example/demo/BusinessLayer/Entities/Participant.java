@@ -97,10 +97,16 @@ public class Participant {
 
     public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
         Stage curr = getCurrStage();
-        String type = (String) data.getOrDefault("stageType", "no stage stated");
-        switch (type) {
+//        String type = (String) data.getOrDefault("stageType", "no stage stated");
+        switch (curr.getType()) {
             case "code":
-                CodeResult codeResult = curr.fillCode(data,this);
+                String code;
+                try{
+                    code = (String) data.get("code");
+                }catch (Exception e) {
+                    throw new FormatException("user code");
+                }
+                CodeResult codeResult = curr.fillCode(code,this);
                 this.results.add(codeResult);
                 return codeResult;
             case "tagging":
@@ -108,11 +114,17 @@ public class Participant {
                 this.results.add(taggingResult);
                 return taggingResult;
             case "questionnaire":
-                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data,this);
+                List<String> Answers;
+                try{
+                    Answers = (List<String>) data.get("answers");
+                }catch (Exception e) {
+                    throw new FormatException("list of answers");
+                }
+                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(Answers,this);
                 this.results.add(questionnaireResult);
                 return questionnaireResult;
             default:
-                throw new FormatException(curr.getType(), type);
+                throw new FormatException(curr.getType());
         }
     }
 

@@ -4,6 +4,7 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -71,19 +72,31 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
+    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
         if(questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);
         }
-        for (Question q : questions) {
-            int i = q.getIndex();
-            if (!data.containsKey(i+""))
-                throw new FormatException("answer #" + i);
 
-            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = getQuestion(i);
+            q.answer(answers.get(i),questionnaireResult);
         }
+//        for (Question q : questions) {
+//            int i = q.getIndex();
+//            if (!data.containsKey(i+""))
+//                throw new FormatException("answer #" + i);
+//
+//            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
+//        }
         return questionnaireResult;
+    }
+
+    private Question getQuestion(int i) throws NotExistException {
+        for(Question q: questions){
+            if(q.getIndex()==i+1) return q;
+        }
+        throw new NotExistException("question", (i+1)+"");
     }
 
     private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException{

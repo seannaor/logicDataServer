@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Utils {
@@ -115,23 +116,23 @@ public class Utils {
     }
 
     public static int fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "questionnaire");
-        JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "a lot!");
-        ans.put("1", ans1);
-        JSONObject ans2 = new JSONObject();
-        ans2.put("answer", 3);
-        ans.put("2", ans2);
-        experimenteeBusiness.fillInStage(code, ans);
+//        JSONObject ans = new JSONObject();
+//        ans.put("stageType", "questionnaire");
+//        JSONObject ans1 = new JSONObject();
+//        ans1.put("answer", "a lot!");
+//        ans.put("1", ans1);
+//        JSONObject ans2 = new JSONObject();
+//        ans2.put("answer", 3);
+//        ans.put("2", ans2);
+        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("answers",List.of("a lot!","22"))));
         return 2;
     }
 
     public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "code");
-        ans.put("userCode", "return -1");
-        experimenteeBusiness.fillInStage(code, ans);
+//        JSONObject ans = new JSONObject();
+//        ans.put("stageType", "code");
+//        ans.put("userCode", "return -1");
+        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("code","return -1")));
     }
 
     public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
