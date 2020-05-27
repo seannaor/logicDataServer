@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class EnviromentController {
@@ -27,7 +26,7 @@ public class EnviromentController {
 
     @GetMapping("/getStages/{accessCode}")
     public Map<String, Object> getStages(@PathVariable String accessCode) {
-        System.out.println("/getStages "+ accessCode);
+        System.out.println("/getStages " + accessCode);
         return expee.reachableStages(accessCode);
     }
 

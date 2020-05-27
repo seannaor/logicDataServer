@@ -4,7 +4,10 @@ import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,30 +19,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "graders_to_grading_tasks")
 public class GraderToGradingTask {
-    @Embeddable
-    public static class GraderToGradingTaskID implements Serializable {
-        @Column(name = "grading_task_id")
-        private int gradingTaskId;
-        @Column(name = "grader_email")
-        private String graderEmail;
-
-        public GraderToGradingTaskID() {
-        }
-
-        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
-            this.gradingTaskId = gradingTaskId;
-            this.graderEmail = graderEmail;
-        }
-
-        public int getGradingTaskId() {
-            return gradingTaskId;
-        }
-
-        public String getGraderEmail() {
-            return graderEmail;
-        }
-    }
-
     @EmbeddedId
     private GraderToGradingTaskID graderToGradingTaskID;
     @MapsId("gradingTaskId")
@@ -59,7 +38,6 @@ public class GraderToGradingTask {
     private Participant generalExpParticipant;
     @OneToMany(mappedBy = "graderToGradingTask")
     private List<GraderToParticipant> graderToParticipants = new ArrayList<>();
-
     public GraderToGradingTask() {
     }
 
@@ -100,7 +78,7 @@ public class GraderToGradingTask {
 
     public List<Participant> getParticipants() {
         List<Participant> participants = new ArrayList<>();
-        for(GraderToParticipant graderToparticipant: graderToParticipants){
+        for (GraderToParticipant graderToparticipant : graderToParticipants) {
             participants.add(graderToparticipant.getExpeeParticipant());
         }
         return participants;
@@ -108,7 +86,7 @@ public class GraderToGradingTask {
 
     public void addParticipant(Participant p) throws ExistException {
         //TODO: check with sean
-        GraderToParticipant graderToParticipant = new GraderToParticipant(this,p);
+        GraderToParticipant graderToParticipant = new GraderToParticipant(this, p);
         if (graderToParticipants.contains(graderToParticipant))
             throw new ExistException("user with id " + p.getParticipantId(), this.grader.getGraderEmail() + " participants");
         graderToParticipants.add(graderToParticipant);
@@ -132,7 +110,7 @@ public class GraderToGradingTask {
 
     public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException, NotInReachException {
         Participant p = getExperimenteeParticipant(pid);
-        if(!p.isDone()) throw new NotInReachException(pid+ " results", pid+ " didn't finish the experiment");
+        if (!p.isDone()) throw new NotInReachException(pid + " results", pid + " didn't finish the experiment");
         List<Result> ret = new ArrayList<>();
         for (Stage visible : gradingTask.getStages()) {
             ret.add(p.getResultsOf(visible));
@@ -142,7 +120,7 @@ public class GraderToGradingTask {
 
     public void submitResults(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
-            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid) {
                 graderToParticipant.setGradingState(true);
                 return;
             }
@@ -152,7 +130,7 @@ public class GraderToGradingTask {
 
     public boolean isSubmitted(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
-            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid) {
                 return graderToParticipant.getGradingState();
             }
         }
@@ -176,5 +154,29 @@ public class GraderToGradingTask {
                 return graderToParticipant.getGraderParticipant();
         }
         throw new NotExistException("participant", "" + pid);
+    }
+
+    @Embeddable
+    public static class GraderToGradingTaskID implements Serializable {
+        @Column(name = "grading_task_id")
+        private int gradingTaskId;
+        @Column(name = "grader_email")
+        private String graderEmail;
+
+        public GraderToGradingTaskID() {
+        }
+
+        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
+            this.gradingTaskId = gradingTaskId;
+            this.graderEmail = graderEmail;
+        }
+
+        public int getGradingTaskId() {
+            return gradingTaskId;
+        }
+
+        public String getGraderEmail() {
+            return graderEmail;
+        }
     }
 }

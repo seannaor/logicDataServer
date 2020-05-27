@@ -46,7 +46,8 @@ public class CreatorBusiness implements ICreatorBusiness {
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
-        } catch (NotExistException ignore) {}
+        } catch (NotExistException ignore) {
+        }
 
         Experiment exp = new Experiment(expName, c);
         db.saveExperiment(exp, c);
@@ -67,8 +68,8 @@ public class CreatorBusiness implements ICreatorBusiness {
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
+        } catch (NotExistException ignore) {
         }
-        catch (NotExistException ignore) { }
         Experiment exp = buildExperiment(stages, expName, c);
         return exp.getExperimentId();
     }
@@ -77,9 +78,9 @@ public class CreatorBusiness implements ICreatorBusiness {
     public int addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp, List<Integer> stagesToCheck, List<JSONObject> personalExp) throws NotExistException, FormatException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
-        Experiment personal = buildExperiment(personalExp, gradTaskName+"/personal", c);
-        Experiment forExpee = buildExperiment(ExpeeExp, gradTaskName+"/forExpee", c);
-        GradingTask gt  = new GradingTask(gradTaskName, exp, personal, forExpee);
+        Experiment personal = buildExperiment(personalExp, gradTaskName + "/personal", c);
+        Experiment forExpee = buildExperiment(ExpeeExp, gradTaskName + "/forExpee", c);
+        GradingTask gt = new GradingTask(gradTaskName, exp, personal, forExpee);
         gt.setStagesByIdx(stagesToCheck);
         cache.addGradingTask(gt);
         return gt.getGradingTaskId();
@@ -124,14 +125,15 @@ public class CreatorBusiness implements ICreatorBusiness {
 //        //TODO:implements CreatorBusiness.saveGradingTask??
 //    }
 
-    public void addAlly(String researcherName,String allyMail, List<String> permissions) throws NotExistException, ExistException {
+    public void addAlly(String researcherName, String allyMail, List<String> permissions) throws NotExistException, ExistException {
         // When adding a new ally, his password is TEMP and username is his mail
         cache.getManagerByName(researcherName);
-        try{
+        try {
             cache.getManagerByEMail(allyMail);
             throw new ExistException(allyMail);
-        }catch (NotExistException ignore){}
-        ManagementUser ally = new ManagementUser(allyMail,"TEMP",allyMail);
+        } catch (NotExistException ignore) {
+        }
+        ManagementUser ally = new ManagementUser(allyMail, "TEMP", allyMail);
         cache.addManager(ally);
         for (String per : permissions) {
             Permission toAdd = new Permission(per, ally);
@@ -146,9 +148,9 @@ public class CreatorBusiness implements ICreatorBusiness {
         Experiment exp = c.getExperiment(expId);
 
         ManagementUser ally;
-        try{
+        try {
             ally = cache.getManagerByEMail(allieMail);
-        }catch (NotExistException ignore){
+        } catch (NotExistException ignore) {
             throw new NotExistException("set allie permissions", "allie not found");
         }
         ManagementUserToExperiment m = new ManagementUserToExperiment(ally, exp, allieRole);
@@ -166,7 +168,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         Grader grader;
         try {
             grader = cache.getGraderByEMail(graderMail);
-        }catch (NotExistException ignore){
+        } catch (NotExistException ignore) {
             grader = new Grader(graderMail, gt.getBaseExperiment());
             cache.addGrader(grader);
         }
@@ -178,7 +180,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
         if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
-        Experimentee expee =new Experimentee(expeeMail, exp);
+        Experimentee expee = new Experimentee(expeeMail, exp);
         cache.addExperimentee(expee);
         return expee.getAccessCode().toString();
     }
@@ -189,10 +191,9 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Participant participant = cache.getExpeeByMailAndExp(expeeMail, expId).getParticipant();
         GraderToParticipant g = cache.getGraderToParticipants(cache.getGraderToGradingTask(grader, gt), participant);
-        if(g != null) { //this participant is already in the graderToGraderTask
-            throw new ExistException("user with id "+participant.getParticipantId(),graderMail+" participants");
-        }
-        else {
+        if (g != null) { //this participant is already in the graderToGraderTask
+            throw new ExistException("user with id " + participant.getParticipantId(), graderMail + " participants");
+        } else {
             g = new GraderToParticipant(cache.getGraderToGradingTask(grader, gt), participant);
         }
         cache.addExpeeToGradingTask(gt, grader, g);
@@ -205,13 +206,13 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser manager = cache.getManagerByName(username);
         List<Experiment> experiments = manager.getExperimentes();
         List<Experiment> experimentsToRes = new ArrayList<>();
-        for(Experiment exp:experiments){
-            if(!exp.isGradingTaskExp())experimentsToRes.add(exp);
+        for (Experiment exp : experiments) {
+            if (!exp.isGradingTaskExp()) experimentsToRes.add(exp);
         }
         return experimentsToRes;
     }
 
-    public List<Stage> getStages(String username,int expId) throws NotExistException {
+    public List<Stage> getStages(String username, int expId) throws NotExistException {
         ManagementUser c = cache.getManagerByName(username);
         Experiment exp = c.getExperiment(expId);
         return exp.getStages();
@@ -229,8 +230,8 @@ public class CreatorBusiness implements ICreatorBusiness {
         return exp.getManagementUserToExperiments();
     }
 
-    public List<GradingTask> getGradingTasks(String username, int expId) throws NotExistException{
-        return cache.getAllGradingTasks(username,expId);
+    public List<GradingTask> getGradingTasks(String username, int expId) throws NotExistException {
+        return cache.getAllGradingTasks(username, expId);
     }
 
     @Override
@@ -250,7 +251,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
         List<GraderToGradingTask> assignedGradingTasks = gt.getAssignedGradingTasks();
         List<Grader> graders = new ArrayList<>();
-        for(GraderToGradingTask graderToTask:assignedGradingTasks){
+        for (GraderToGradingTask graderToTask : assignedGradingTasks) {
             graders.add(graderToTask.getGrader());
         }
         return graders;
@@ -261,7 +262,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskById(username, expId, taskId);
         List<GraderToGradingTask> assignedGradingTasks = gt.getAssignedGradingTasks();
         List<Participant> experimentees = new ArrayList<>();
-        for(GraderToGradingTask graderToTask:assignedGradingTasks){
+        for (GraderToGradingTask graderToTask : assignedGradingTasks) {
             experimentees.addAll(graderToTask.getParticipants());
         }
         return experimentees;
@@ -272,10 +273,10 @@ public class CreatorBusiness implements ICreatorBusiness {
         Experiment exp = new Experiment(expName, creator);
         db.saveExperiment(exp, creator);
         for (JSONObject jStage : stages) {
-            try{
+            try {
                 Stage toAdd = Stage.parseStage(jStage, exp);
                 db.saveStage(toAdd);
-            }catch (FormatException e){
+            } catch (FormatException e) {
                 creator.removeManagementUserToExperimentById(exp);
                 db.deleteExperiment(exp);
                 throw e;

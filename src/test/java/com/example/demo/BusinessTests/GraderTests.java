@@ -1,12 +1,14 @@
 package com.example.demo.BusinessTests;
 
-import com.example.demo.BusinessLayer.*;
+import com.example.demo.BusinessLayer.CreatorBusiness;
+import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.ExperimenteeBusiness;
+import com.example.demo.BusinessLayer.GraderBusiness;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
@@ -31,7 +33,13 @@ public class GraderTests {
     private ExperimenteeBusiness experimenteeBusiness;
     private DataCache cache;
     private DBAccess db;
-
+    private Grader grader;
+    private ManagementUser manager;
+    private Experimentee expee;
+    private Experiment experiment;
+    private GradingTask task;
+    private Participant graderExpeeParticipant;
+    private UUID graderCode;
     @Autowired
     public GraderTests(GraderBusiness graderBusiness, CreatorBusiness creatorBusiness, ExperimenteeBusiness experimenteeBusiness, DataCache cache, DBAccess db) {
         this.graderBusiness = graderBusiness;
@@ -40,15 +48,6 @@ public class GraderTests {
         this.cache = cache;
         this.db = db;
     }
-
-    private Grader grader;
-    private ManagementUser manager;
-    private Experimentee expee;
-    private Experiment experiment;
-    private GradingTask task;
-    private Participant graderExpeeParticipant;
-    private UUID graderCode;
-
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException, ExpEndException, NotInReachException, ParseException {
@@ -148,8 +147,8 @@ public class GraderTests {
 
     @Test
     public void fillPersonal() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException {
-        graderBusiness.getNextStage(graderCode,-1);//pass info
-        graderBusiness.fillInStage(graderCode,-1,Utils.getPersonalAnswers());
+        graderBusiness.getNextStage(graderCode, -1);//pass info
+        graderBusiness.fillInStage(graderCode, -1, Utils.getPersonalAnswers());
 
         try {
             graderBusiness.getNextStage(graderCode, -1);
@@ -164,7 +163,7 @@ public class GraderTests {
         }
 
         try {
-            graderBusiness.fillInStage(graderCode, -1,new JSONObject());
+            graderBusiness.fillInStage(graderCode, -1, new JSONObject());
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
@@ -173,15 +172,15 @@ public class GraderTests {
     @Test
     @Transactional
     public void grade2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
-        String expee_mail= "different@post.bgu.ac.il";
+        String expee_mail = "different@post.bgu.ac.il";
         creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee_mail);
 
         List<Participant> participants = graderBusiness.getParticipantsByTask(graderCode);
 
         int pid = participants.get(0).getParticipantId();
-        graderBusiness.getNextStage(graderCode,pid);//pass info
-        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is stupid","fuck shit")));
+        graderBusiness.getNextStage(graderCode, pid);//pass info
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is stupid", "fuck shit")));
 
         try {
             graderBusiness.getNextStage(graderCode, pid);
@@ -189,21 +188,21 @@ public class GraderTests {
         } catch (ExpEndException ignore) {
         }
 
-        graderBusiness.submitGradingResults(graderCode,pid);
-        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        graderBusiness.submitGradingResults(graderCode, pid);
+        Assert.assertTrue(graderBusiness.isSubmitted(graderCode, pid));
 
         pid = participants.get(1).getParticipantId();
-        Assert.assertFalse(graderBusiness.isSubmitted(graderCode,pid));
+        Assert.assertFalse(graderBusiness.isSubmitted(graderCode, pid));
 
-        graderBusiness.getNextStage(graderCode,pid);// pass info
-        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is smart","List.of(\"this student is stupid\",\"fuck shit\")")));
+        graderBusiness.getNextStage(graderCode, pid);// pass info
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is smart", "List.of(\"this student is stupid\",\"fuck shit\")")));
 
         try {
             graderBusiness.getNextStage(graderCode, pid);
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
-        graderBusiness.submitGradingResults(graderCode,pid);
-        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        graderBusiness.submitGradingResults(graderCode, pid);
+        Assert.assertTrue(graderBusiness.isSubmitted(graderCode, pid));
     }
 }

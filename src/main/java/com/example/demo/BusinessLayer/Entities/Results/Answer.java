@@ -9,6 +9,58 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answers")
 public class Answer {
+    @EmbeddedId
+    private AnswerID answerID;
+    @MapsId("resultID")
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private QuestionnaireResult questionnaireResult;
+    @MapsId("questionID")
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id"),
+            @JoinColumn(name = "question_index", referencedColumnName = "question_index")
+    })
+    private Question question;
+    @Column(name = "answer_json", columnDefinition = "json")
+    private String answerJson;
+
+    public Answer() {
+    }
+
+    public Answer(String answerJson, Question question, QuestionnaireResult questionnaireResult) {
+        this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
+        this.answerJson = answerJson;
+        this.question = question;
+        this.questionnaireResult = questionnaireResult;
+        this.questionnaireResult.addAns(this);
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public Stage.StageID getStageID() {
+        return this.question.getStageID();
+    }
+
+    public QuestionnaireResult getQuestionnaireResult() {
+        return questionnaireResult;
+    }
+
+    public String getAnswerJson() {
+        return answerJson;
+    }
+
+    public void setAnswerJson(String answerJson) {
+        this.answerJson = answerJson;
+    }
+
     @Embeddable
     public static class AnswerID implements Serializable {
         @Column(name = "participant_id")
@@ -23,67 +75,13 @@ public class Answer {
             this.questionID = questionID;
         }
 
-        public void setQuestionID(Question.QuestionID questionID){
+        public void setQuestionID(Question.QuestionID questionID) {
             this.questionID = questionID;
         }
 
-        public void setParticipantId(int participantId){
+        public void setParticipantId(int participantId) {
             this.participantId = participantId;
         }
-    }
-
-    @EmbeddedId
-    private AnswerID answerID;
-
-    @MapsId("resultID")
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
-            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
-            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
-    })
-    private QuestionnaireResult questionnaireResult;
-
-    @MapsId("questionID")
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
-            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id"),
-            @JoinColumn(name = "question_index", referencedColumnName = "question_index")
-    })
-    private Question question;
-
-    @Column(name = "answer_json", columnDefinition = "json")
-    private String answerJson;
-
-    public Answer (){ }
-
-    public Answer (String answerJson, Question question, QuestionnaireResult questionnaireResult) {
-        this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
-        this.answerJson = answerJson;
-        this.question = question;
-        this.questionnaireResult = questionnaireResult;
-        this.questionnaireResult.addAns(this);
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public Stage.StageID getStageID(){
-        return this.question.getStageID();
-    }
-
-    public QuestionnaireResult getQuestionnaireResult() {
-        return questionnaireResult;
-    }
-
-    public String getAnswerJson() {
-        return answerJson;
-    }
-
-    public void setAnswerJson(String answerJson) {
-        this.answerJson = answerJson;
     }
 
 }

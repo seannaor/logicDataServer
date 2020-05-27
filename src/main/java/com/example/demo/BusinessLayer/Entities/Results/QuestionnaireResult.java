@@ -2,7 +2,6 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
-import org.json.simple.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -17,15 +16,16 @@ public class QuestionnaireResult extends Result {
     @OneToMany(mappedBy = "questionnaireResult")
     private List<Answer> answers;
 
-    public QuestionnaireResult() { }
+    public QuestionnaireResult() {
+    }
 
     public QuestionnaireResult(QuestionnaireStage questionnaireStage, Participant participant) {
         super(questionnaireStage, participant);
         this.answers = new ArrayList<>();
     }
 
-    public void addAns(Answer ans){
-        if(!answers.contains(ans))
+    public void addAns(Answer ans) {
+        if (!answers.contains(ans))
             answers.add(ans);
     }
 
@@ -40,9 +40,9 @@ public class QuestionnaireResult extends Result {
     @Override
     public Map<String, Object> getAsMap() {
         List<String> answers = new ArrayList<>();
-        for(Answer ans : this.answers){
+        for (Answer ans : this.answers) {
             answers.add(ans.getAnswerJson());
         }
-        return Map.of("answers",answers);
+        return Map.of("answers", answers);
     }
 }

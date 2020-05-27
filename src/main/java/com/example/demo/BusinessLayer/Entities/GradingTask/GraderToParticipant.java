@@ -9,23 +9,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "grader_to_participant")
 public class GraderToParticipant {
-    @Embeddable
-    public static class GraderToParticipantID implements Serializable {
-        @Column(name = "grading_task_id")
-        private int gradingTaskId;
-        @Column(name = "grader_email")
-        private String graderEmail;
-        @Column(name = "expee_participant_id")
-        private int expeeParticipantId;
-
-        public GraderToParticipantID() { }
-
-        public GraderToParticipantID(int gradingTaskId, String graderEmail, int expeeParticipantId) {
-            this.gradingTaskId = gradingTaskId;
-            this.graderEmail = graderEmail;
-            this.expeeParticipantId = expeeParticipantId;
-        }
-    }
     @EmbeddedId
     private GraderToParticipantID graderToParticipantID;
     @Column(name = "grading_state")
@@ -44,8 +27,9 @@ public class GraderToParticipant {
     @OneToOne
     @JoinColumn(name = "grader_participant_id", referencedColumnName = "participant_id")
     private Participant graderParticipant;
+    public GraderToParticipant() {
+    }
 
-    public GraderToParticipant() { }
     public GraderToParticipant(GraderToGradingTask graderToGradingTask, Participant expeeParticipant) {
         this.graderToParticipantID = new GraderToParticipantID(graderToGradingTask.getGradingTask().getGradingTaskId(), graderToGradingTask.getGrader().getGraderEmail(), expeeParticipant.getParticipantId());
         this.graderToGradingTask = graderToGradingTask;
@@ -78,12 +62,31 @@ public class GraderToParticipant {
         this.graderToGradingTask = graderToGradingTask;
     }
 
+    public boolean getGradingState() {
+        return this.gradingState;
+    }
 
     public void setGradingState(boolean gradingState) {
         this.gradingState = gradingState;
     }
-    public boolean getGradingState() {
-        return this.gradingState;
+
+    @Embeddable
+    public static class GraderToParticipantID implements Serializable {
+        @Column(name = "grading_task_id")
+        private int gradingTaskId;
+        @Column(name = "grader_email")
+        private String graderEmail;
+        @Column(name = "expee_participant_id")
+        private int expeeParticipantId;
+
+        public GraderToParticipantID() {
+        }
+
+        public GraderToParticipantID(int gradingTaskId, String graderEmail, int expeeParticipantId) {
+            this.gradingTaskId = gradingTaskId;
+            this.graderEmail = graderEmail;
+            this.expeeParticipantId = expeeParticipantId;
+        }
     }
 
 }

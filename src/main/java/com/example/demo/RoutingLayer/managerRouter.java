@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.RoutingLayer.RouterUtils.*;
+import static com.example.demo.RoutingLayer.RouterUtils.decode;
+import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -19,7 +20,7 @@ public class managerRouter {
     private CreatorService creator;
 
     @PostMapping("/login")
-    public boolean managerLogin(@RequestBody Map<String, String> credentials){
+    public boolean managerLogin(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username"),
                 password = credentials.get("password");
         return creator.researcherLogin(username, password);
@@ -142,7 +143,7 @@ public class managerRouter {
     public Map<String, Object> getPersonalStages(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
         return creator.getPersonalStages(username, exp_id, task_id);
     }
-    
+
     @RequestMapping("/get_evaluation_stages")
     public Map<String, Object> getEvaluationStages(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
         return creator.getEvaluationStages(username, exp_id, task_id);

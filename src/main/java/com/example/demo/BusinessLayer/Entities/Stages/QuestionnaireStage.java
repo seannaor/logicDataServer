@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class QuestionnaireStage extends Stage {
         questions = new ArrayList<>();
         int QIdx = 1;
         for (JSONObject JQuestion : JQuestions) {
-            questions.add(buildQuestion(JQuestion,QIdx++));
+            questions.add(buildQuestion(JQuestion, QIdx++));
         }
     }
 
@@ -71,22 +70,22 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
-        QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
-        if(questionnaireResult == null) {
+    public QuestionnaireResult fillQuestionnaire(Map<String, Object> data, Participant participant) throws FormatException, ParseException, NotInReachException {
+        QuestionnaireResult questionnaireResult = (QuestionnaireResult) participant.getResult(this.getStageID().getStageIndex());
+        if (questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);
         }
         for (Question q : questions) {
             int i = q.getIndex();
-            if (!data.containsKey(i+""))
+            if (!data.containsKey(i + ""))
                 throw new FormatException("answer #" + i);
 
-            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
+            q.answer(data.get(i + ""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
         }
         return questionnaireResult;
     }
 
-    private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException{
+    private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException {
         return new Question(QIdx, this, jQuestion.toString());
     }
 }

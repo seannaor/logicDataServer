@@ -1,9 +1,12 @@
 package com.example.demo.BusinessTests;
 
-import com.example.demo.BusinessLayer.*;
+import com.example.demo.BusinessLayer.CreatorBusiness;
+import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
@@ -18,8 +21,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.jvnet.fastinfoset.EncodingAlgorithmIndexes.UUID;
-
 @Sql({"/create_database.sql"})
 @SpringBootTest
 public class ManagerTests {
@@ -27,14 +28,6 @@ public class ManagerTests {
     private CreatorBusiness creatorBusiness;
     private DataCache cache;
     private DBAccess db;
-
-    @Autowired
-    public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
-        this.creatorBusiness = creatorBusiness;
-        this.cache = cache;
-        this.db = db;
-    }
-
     private ManagementUser manager;
     private ManagementUser ally;
     private Experiment experiment;
@@ -42,6 +35,12 @@ public class ManagerTests {
     private GradingTask task;
     private Grader grader;
     private String graderCode;
+    @Autowired
+    public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+        this.creatorBusiness = creatorBusiness;
+        this.cache = cache;
+        this.db = db;
+    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {

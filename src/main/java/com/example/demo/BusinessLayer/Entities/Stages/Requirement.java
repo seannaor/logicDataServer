@@ -1,18 +1,62 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "requirements")
 public class Requirement {
+
+    @EmbeddedId
+    private RequirementID requirementID;
+    @MapsId("stageID")
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private CodeStage codeStage;
+    @Lob
+    @Column(name = "text")
+    private String text;
+
+    public Requirement() {
+    }
+
+    public Requirement(CodeStage codeStage, String text) {
+        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
+        this.codeStage = codeStage;
+        this.text = text;
+    }
+
+    public RequirementID getRequirementID() {
+        return requirementID;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getIndex() {
+        return this.requirementID.requirementIndex;
+    }
+
+    public RequirementTag tag(JSONObject data, TaggingResult taggingResult) {
+        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"), this, taggingResult);
+        return tag;
+    }
+
+    public Stage.StageID getStageID() {
+        return this.codeStage.getStageID();
+    }
 
     @Embeddable
     public static class RequirementID implements Serializable {
@@ -35,53 +79,5 @@ public class Requirement {
         public int getRequirementIndex() {
             return requirementIndex;
         }
-    }
-
-    @EmbeddedId
-    private RequirementID requirementID;
-    @MapsId("stageID")
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
-            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
-    })
-    private CodeStage codeStage;
-
-    @Lob
-    @Column(name = "text")
-    private String text;
-
-    public Requirement() {
-    }
-
-    public Requirement(CodeStage codeStage, String text) {
-        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
-        this.codeStage = codeStage;
-        this.text = text;
-    }
-
-    public RequirementID getRequirementID() {
-        return requirementID;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public int getIndex() {
-        return this.requirementID.requirementIndex;
-    }
-
-    public RequirementTag tag(JSONObject data, TaggingResult taggingResult) {
-        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"), this, taggingResult);
-        return tag;
-    }
-
-    public Stage.StageID getStageID() {
-        return this.codeStage.getStageID();
     }
 }

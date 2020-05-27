@@ -41,7 +41,7 @@ public class ExperimenteeService {
             UUID code = UUID.fromString(accessCode);
             experimenteeBusiness.fillInStage(code, data);
             Stage next = experimenteeBusiness.getNextStage(code);
-            Result res = experimenteeBusiness.getResult(code,next.getStageID().getStageIndex());
+            Result res = experimenteeBusiness.getResult(code, next.getStageID().getStageIndex());
             return makeStageAndResult(next, res);
         } catch (Exception e) {
             return Map.of("Error", e.getMessage());

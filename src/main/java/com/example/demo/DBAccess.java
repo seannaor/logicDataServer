@@ -206,7 +206,7 @@ public class DBAccess {
         experimentRep.save(s.getExperiment());
     }
 
-    public void saveStageResult(TaggingResult result){
+    public void saveStageResult(TaggingResult result) {
         List<RequirementTag> temp1 = result.getTags();
         result.setTags(new ArrayList<>());
         saveResult(result);
@@ -216,7 +216,7 @@ public class DBAccess {
         result.setTags(temp1);
     }
 
-    public void saveStageResult(QuestionnaireResult result){
+    public void saveStageResult(QuestionnaireResult result) {
         List<Answer> temp2 = result.getAnswers();
         result.setAnswers(new ArrayList<>());
         saveResult(result);
@@ -228,10 +228,10 @@ public class DBAccess {
 
     public void saveStageResult(Result result) {
         Participant p = result.getParticipant();
-        if(result instanceof TaggingResult)
-            saveStageResult((TaggingResult)result);
-        else if(result instanceof QuestionnaireResult)
-            saveStageResult((QuestionnaireResult)result);
+        if (result instanceof TaggingResult)
+            saveStageResult((TaggingResult) result);
+        else if (result instanceof QuestionnaireResult)
+            saveStageResult((QuestionnaireResult) result);
 
         saveResult(result);
         saveParticipant(p);

@@ -6,7 +6,6 @@ import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.util.*;
@@ -33,15 +32,15 @@ public class CodeStage extends Stage {
 
     public CodeStage(String desc, String template, Experiment experiment, String language) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
         this.language = language;
     }
 
     public CodeStage(String desc, String template, List<String> requirements, Experiment experiment, String language) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
         this.language = language;
         this.requirements = new ArrayList<>();
         for (String req : requirements) {
@@ -82,16 +81,16 @@ public class CodeStage extends Stage {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Requirement> getRequirements() {
         return requirements;
     }
 
     public void setRequirements(List<Requirement> requirements) {
         this.requirements = requirements;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getTemplate() {

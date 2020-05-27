@@ -1,8 +1,9 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.*;
-
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -10,7 +11,6 @@ import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
@@ -74,7 +74,7 @@ public class Participant {
     public Result getResult(int idx) throws NotInReachException {
         if (currStage < idx) throw new NotInReachException("result of stage " + idx);
         for (Result result : this.results) {
-            if(result.getStage().getStageID().getStageIndex() == idx) {
+            if (result.getStage().getStageID().getStageIndex() == idx) {
                 return result;
             }
         }
@@ -87,7 +87,7 @@ public class Participant {
             isDone = true;
     }
 
-    public int getCurrStageIdx(){
+    public int getCurrStageIdx() {
         return this.currStage;
     }
 
@@ -95,20 +95,20 @@ public class Participant {
         return isDone;
     }
 
-    public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
+    public Result fillInStage(Map<String, Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
         Stage curr = getCurrStage();
         String type = (String) data.getOrDefault("stageType", "no stage stated");
         switch (type) {
             case "code":
-                CodeResult codeResult = curr.fillCode(data,this);
+                CodeResult codeResult = curr.fillCode(data, this);
                 this.results.add(codeResult);
                 return codeResult;
             case "tagging":
-                TaggingResult taggingResult = curr.fillTagging(data,this);
+                TaggingResult taggingResult = curr.fillTagging(data, this);
                 this.results.add(taggingResult);
                 return taggingResult;
             case "questionnaire":
-                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data,this);
+                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data, this);
                 this.results.add(questionnaireResult);
                 return questionnaireResult;
             default:

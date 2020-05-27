@@ -23,7 +23,7 @@ public class Permission {
         this.permissionName = permissionName;
     }
 
-    public Permission(String permissionName,ManagementUser man) {
+    public Permission(String permissionName, ManagementUser man) {
         this.permissionName = permissionName;
         this.managementUsers.add(man);
         man.addPermission(this);

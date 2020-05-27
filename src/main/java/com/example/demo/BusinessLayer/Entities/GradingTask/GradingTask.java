@@ -42,14 +42,15 @@ public class GradingTask {
     )
     private List<Stage> stages;
 
-    public GradingTask() { }
+    public GradingTask() {
+    }
 
     public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment) {
         this.gradingTaskName = gradingTaskName;
         this.baseExperiment = baseExperiment;
         this.generalExperiment = generalExperiment;
         this.gradingExperiment = gradingExperiment;
-        this.stages =new ArrayList<>();
+        this.stages = new ArrayList<>();
     }
 
     public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
@@ -71,9 +72,10 @@ public class GradingTask {
     public void setStagesByIdx(List<Integer> stages_idxs) throws NotExistException, FormatException {
         List<Stage> baseStages = this.baseExperiment.getStages();
         List<Stage> newStages = new ArrayList<>();
-        for(int i:stages_idxs){
-            if(i>=baseStages.size()||i<0) throw new NotExistException("stage",""+i);
-            if(baseStages.get(i).getType().equals("info")) throw new FormatException("stage with result","info stage");
+        for (int i : stages_idxs) {
+            if (i >= baseStages.size() || i < 0) throw new NotExistException("stage", "" + i);
+            if (baseStages.get(i).getType().equals("info"))
+                throw new FormatException("stage with result", "info stage");
             newStages.add(baseStages.get(i));
         }
         this.stages = newStages;
@@ -93,11 +95,12 @@ public class GradingTask {
 
     public GraderToGradingTask graderToGradingTask(Grader g) throws NotExistException {
         // for tests use
-        for(GraderToGradingTask gtgt:assignedGradingTasks){
-            if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
+        for (GraderToGradingTask gtgt : assignedGradingTasks) {
+            if (gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
         }
-        throw new NotExistException("grader",g.getGraderEmail());
+        throw new NotExistException("grader", g.getGraderEmail());
     }
+
     public Experiment getBaseExperiment() {
         return baseExperiment;
     }

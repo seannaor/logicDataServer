@@ -1,12 +1,14 @@
 package com.example.demo.BusinessTests;
 
-import com.example.demo.BusinessLayer.*;
+import com.example.demo.BusinessLayer.CreatorBusiness;
+import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
@@ -29,7 +31,9 @@ public class ExpeeTests {
     private CreatorBusiness creatorBusiness;
     private DataCache cache;
     private DBAccess db;
-
+    private ManagementUser manager;
+    private Experiment experiment;
+    private Experimentee expee;
     @Autowired
     public ExpeeTests(ExperimenteeBusiness experimenteeBusiness, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.experimenteeBusiness = experimenteeBusiness;
@@ -37,10 +41,6 @@ public class ExpeeTests {
         this.cache = cache;
         this.db = db;
     }
-
-    private ManagementUser manager;
-    private Experiment experiment;
-    private Experimentee expee;
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException {
@@ -137,7 +137,7 @@ public class ExpeeTests {
         }
 
         try {
-            experimenteeBusiness.fillInStage(expee.getAccessCode(),new JSONObject());
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), new JSONObject());
             Assert.fail();
         } catch (ExpEndException ignore) {
         }
@@ -246,7 +246,7 @@ public class ExpeeTests {
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
         Assert.assertEquals("code", expee.getResult(2).getStage().getType());
-        Assert.assertEquals(numOfCodeRes+1, db.getNumerOfCodeResults());
+        Assert.assertEquals(numOfCodeRes + 1, db.getNumerOfCodeResults());
     }
 
     private void nextStageFor(int i, UUID code) throws NotExistException, CodeException, ExpEndException {

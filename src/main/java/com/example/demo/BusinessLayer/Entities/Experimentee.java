@@ -8,7 +8,6 @@ import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -53,19 +52,19 @@ public class Experimentee {
         return participant;
     }
 
-    public Experiment getExperiment(){
-        return participant.getExperiment();
-    }
-
     public void setParticipant(Participant participant) {
         this.participant = participant;
+    }
+
+    public Experiment getExperiment() {
+        return participant.getExperiment();
     }
 
     public Stage getCurrStage() throws ExpEndException, NotExistException {
         return participant.getCurrStage();
     }
 
-    public int getCurrStageIdx()  {
+    public int getCurrStageIdx() {
         return participant.getCurrStageIdx();
     }
 
@@ -77,7 +76,7 @@ public class Experimentee {
         return participant.getStage(idx);
     }
 
-    public Result getResult(int idx) throws NotInReachException{
+    public Result getResult(int idx) throws NotInReachException {
         return participant.getResult(idx);
     }
 }

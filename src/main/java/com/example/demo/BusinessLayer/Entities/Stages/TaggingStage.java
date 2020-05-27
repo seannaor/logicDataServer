@@ -2,7 +2,6 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
@@ -28,7 +27,7 @@ public class TaggingStage extends Stage {
     public TaggingStage() {
     }
 
-    public TaggingStage(CodeStage codeStage, Experiment experiment){
+    public TaggingStage(CodeStage codeStage, Experiment experiment) {
         super(experiment);
         this.codeStage = codeStage;
     }
@@ -46,7 +45,7 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public Map<String,Object> getAsMap() {
+    public Map<String, Object> getAsMap() {
         return Map.of();
     }
 
@@ -56,9 +55,9 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
-        TaggingResult taggingResult = (TaggingResult)participant.getResult(this.getStageID().getStageIndex());
-        if(taggingResult == null) {
+    public TaggingResult fillTagging(Map<String, Object> data, Participant participant) throws FormatException, NotInReachException {
+        TaggingResult taggingResult = (TaggingResult) participant.getResult(this.getStageID().getStageIndex());
+        if (taggingResult == null) {
             taggingResult = new TaggingResult(this, participant);
         }
         for (Requirement r : codeStage.getRequirements()) {

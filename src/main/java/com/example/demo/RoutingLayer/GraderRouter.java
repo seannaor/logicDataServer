@@ -1,7 +1,10 @@
 package com.example.demo.RoutingLayer;
+
 import com.example.demo.ServiceLayer.GraderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -24,8 +27,8 @@ public class GraderRouter {
     }
 
     @RequestMapping("get_experimentee_results")
-    public Map<String, Object> getExperimentees(@RequestParam String code,@RequestParam int participant_id) {
-        return grader.getExperimenteeResults(code,participant_id);
+    public Map<String, Object> getExperimentees(@RequestParam String code, @RequestParam int participant_id) {
+        return grader.getExperimenteeResults(code, participant_id);
     }
 }
 

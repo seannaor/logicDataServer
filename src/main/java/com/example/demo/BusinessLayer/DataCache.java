@@ -34,7 +34,7 @@ public class DataCache {
 
     public void setCache() {
         managers = new ArrayList<>();
-        addManager(new ManagementUser("ADMIN","13579", "admin@post.bgu.ac.il"));
+        addManager(new ManagementUser("ADMIN", "13579", "admin@post.bgu.ac.il"));
         experimentees = new ArrayList<>();
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();
@@ -136,7 +136,7 @@ public class DataCache {
         ManagementUser man = getManagerByName(researcherName);
         Experiment exp = man.getExperiment(expId);
         for (GradingTask gt : gradingTasks) {
-            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId()==id)
+            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == id)
                 return gt;
         }
         GradingTask gt = db.getGradingTaskById(id);
@@ -144,7 +144,7 @@ public class DataCache {
             gradingTasks.add(gt);
             return gt;
         }
-        throw new NotExistException("grading task", ""+id);
+        throw new NotExistException("grading task", "" + id);
     }
 
     public List<GradingTask> getAllGradingTasks(String researcherName, int expId) throws NotExistException {
@@ -153,7 +153,7 @@ public class DataCache {
         List<GradingTask> ret = new ArrayList<>();
         // no need to go over cache because anyway we need to go over all grading tasks in db to insure we are not missing some in cache
         for (GradingTask gt : db.getAllGradingTasks()) {
-            if (gt.getBaseExperiment().getExperimentId()==exp.getExperimentId())
+            if (gt.getBaseExperiment().getExperimentId() == exp.getExperimentId())
                 ret.add(gt);
         }
         return ret;
@@ -161,7 +161,7 @@ public class DataCache {
 
     public GraderToGradingTask getGraderToGradingTask(Grader grader, GradingTask gradingTask) throws NotExistException {
         for (GraderToGradingTask g : graderToGradingTasks) {
-            if (g.getGraderToGradingTaskID().getGraderEmail().equals(grader.getGraderEmail()) && g.getGraderToGradingTaskID().getGradingTaskId()==gradingTask.getGradingTaskId())
+            if (g.getGraderToGradingTaskID().getGraderEmail().equals(grader.getGraderEmail()) && g.getGraderToGradingTaskID().getGradingTaskId() == gradingTask.getGradingTaskId())
                 return g;
         }
         GraderToGradingTask g2gt = db.getGraderToGradingTaskById(gradingTask.getGradingTaskId(), grader.getGraderEmail());
@@ -169,7 +169,7 @@ public class DataCache {
             graderToGradingTasks.add(g2gt);
             return g2gt;
         }
-        throw new NotExistException("grading task", ""+gradingTask.getGradingTaskId());
+        throw new NotExistException("grading task", "" + gradingTask.getGradingTaskId());
     }
 
     public GraderToParticipant getGraderToParticipants(GraderToGradingTask graderToGradingTask, Participant participant) {
@@ -199,16 +199,16 @@ public class DataCache {
     //=======================================================================
 
     public void addManager(ManagementUser manager) {
-        for(ManagementUser m : managers)
-            if(m.getBguUsername().equals(manager.getBguUsername()))
+        for (ManagementUser m : managers)
+            if (m.getBguUsername().equals(manager.getBguUsername()))
                 return;
         db.saveManagementUser(manager);
         managers.add(manager);
     }
 
     public void addGrader(Grader grader) {
-        for(Grader g : graders)
-            if(g.getGraderEmail().equals(grader.getGraderEmail()))
+        for (Grader g : graders)
+            if (g.getGraderEmail().equals(grader.getGraderEmail()))
                 return;
         db.saveGrader(grader);
         graders.add(grader);
@@ -220,17 +220,17 @@ public class DataCache {
     }
 
     public void addGradingTask(GradingTask gt) {
-        for(GradingTask g : gradingTasks)
-            if(g.getGradingTaskId() == gt.getGradingTaskId())
+        for (GradingTask g : gradingTasks)
+            if (g.getGradingTaskId() == gt.getGradingTaskId())
                 return;
         db.saveGradingTask(gt);
         gradingTasks.add(gt);
     }
 
     public UUID addGraderToGradingTask(GradingTask gt, Grader g) throws ExistException {
-        for(GraderToGradingTask g2gt : graderToGradingTasks)
-            if(g2gt.getGrader().getGraderEmail().equals(g.getGraderEmail()) && g2gt.getGradingTask().getGradingTaskId() == gt.getGradingTaskId())
-                throw new ExistException("grader "+ g.getGraderEmail(),"grading task "+gt.getGradingTaskName());
+        for (GraderToGradingTask g2gt : graderToGradingTasks)
+            if (g2gt.getGrader().getGraderEmail().equals(g.getGraderEmail()) && g2gt.getGradingTask().getGradingTaskId() == gt.getGradingTaskId())
+                throw new ExistException("grader " + g.getGraderEmail(), "grading task " + gt.getGradingTaskName());
         GraderToGradingTask gtgt = new GraderToGradingTask(gt, g);
         UUID id = UUID.randomUUID();
         gtgt.setGraderAccessCode(id);
@@ -242,7 +242,7 @@ public class DataCache {
 
     public void addExpeeToGradingTask(GradingTask gt, Grader grader, GraderToParticipant participantInGradingTask) {
         for (GraderToParticipant g : graderToParticipants)
-            if(g.getExpeeParticipant().getParticipantId() == participantInGradingTask.getExpeeParticipant().getParticipantId() &&
+            if (g.getExpeeParticipant().getParticipantId() == participantInGradingTask.getExpeeParticipant().getParticipantId() &&
                     g.getGraderToGradingTask().getGrader().getGraderEmail().equals(participantInGradingTask.getGraderToGradingTask().getGrader().getGraderEmail())
                     && g.getGraderToGradingTask().getGradingTask().getGradingTaskId() == participantInGradingTask.getGraderToGradingTask().getGradingTask().getGradingTaskId()) {
                 return;
@@ -261,7 +261,7 @@ public class DataCache {
         return false;
     }
 
-    public boolean isGraderInTask(String email, int expId, int taskId){
+    public boolean isGraderInTask(String email, int expId, int taskId) {
         return false;
     }
 
