@@ -58,7 +58,7 @@ public class QuestionnaireStage extends Stage {
 
     @Override
     public Map<String, Object> getAsMap() {
-        List<String> questions = new LinkedList<>();
+        List<JSONObject> questions = new LinkedList<>();
         for (Question q : this.questions) {
             questions.add(q.getQuestionJson());
         }

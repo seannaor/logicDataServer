@@ -30,7 +30,7 @@ public class Utils {
 
     public static JSONObject buildResearcher() {
         JSONObject researcher = new JSONObject();
-        researcher.put("email", "shit@fuck.ac.il");
+        researcher.put("email", "manager@post.ac.il");
         researcher.put("username", "manager");
         researcher.put("password", "password");
         return researcher;
@@ -51,7 +51,7 @@ public class Utils {
         List<String> requirements = new ArrayList<>();
         requirements.add("do that");
         requirements.add("do this");
-        requirements.add("fuck off");
+        requirements.add("do stuff");
         code.put("requirements", requirements);
         return code;
     }
@@ -63,7 +63,7 @@ public class Utils {
         JSONObject q1 = new JSONObject();
 
         q1.put("questionType", "open");
-        q1.put("question", "WTF?!?");
+        q1.put("question", "how much");
         questions.add(q1);
 
         JSONObject q2 = new JSONObject();
@@ -117,7 +117,7 @@ public class Utils {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "WTF!!!");
+        ans1.put("answer", "a lot!");
         ans.put("1", ans1);
         JSONObject ans2 = new JSONObject();
         ans2.put("answer", 3);
@@ -159,7 +159,7 @@ public class Utils {
         JSONObject ans = new JSONObject();
         ans.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "WTF!!!");
+        ans1.put("answer", "a lot!");
         ans.put("1", ans1);
         JSONObject ans2 = new JSONObject();
         ans2.put("answer", 3);
@@ -232,7 +232,7 @@ public class Utils {
         JSONObject JAnswers = new JSONObject();
         JAnswers.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "I saw an arab dude fucking a sheep.. ho minesweeper? I don't know");
+        ans1.put("answer", "100");
         JAnswers.put("1", ans1);
         return JAnswers;
     }

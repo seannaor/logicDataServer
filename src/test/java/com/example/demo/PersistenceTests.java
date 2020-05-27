@@ -416,7 +416,7 @@ class PersistenceTests {
 		stageRep.save(s);
 		questionRep.save(q);
 		assertEquals(questionRep.count(), 2);
-		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toString());
+		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion);
 	}
 
 	private List<JSONObject> createQuestionJsons() {

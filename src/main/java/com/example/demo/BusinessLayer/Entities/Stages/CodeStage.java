@@ -6,7 +6,6 @@ import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.util.*;

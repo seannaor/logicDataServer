@@ -65,8 +65,14 @@ public class Question {
         this.questionID = questionID;
     }
 
-    public String getQuestionJson() {
-        return questionJson;
+    public JSONObject getQuestionJson() {
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject)parser.parse(questionJson);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new JSONObject();
+        }
     }
 
     public void setQuestionJson(String questionJson) {
