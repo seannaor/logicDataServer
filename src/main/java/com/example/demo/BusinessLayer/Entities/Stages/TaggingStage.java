@@ -8,6 +8,7 @@ import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -60,12 +61,18 @@ public class TaggingStage extends Stage {
         if(taggingResult == null) {
             taggingResult = new TaggingResult(this, participant);
         }
+        JSONObject tags;
+        try{
+            tags = (JSONObject) data.get("tagging");
+        }catch (Exception e) {
+            throw new FormatException("tags list");
+        }
         for (Requirement r : codeStage.getRequirements()) {
             int i = r.getIndex();
-            if (!data.containsKey(i))
+            if (!tags.containsKey(i))
                 throw new FormatException("tag for requirement #" + i);
 
-            r.tag((JSONObject) data.get(i), taggingResult); //adds the new tag to the taggingResult automatically
+            r.tag((JSONObject) tags.get(i), taggingResult); //adds the new tag to the taggingResult automatically
         }
         return taggingResult;
     }

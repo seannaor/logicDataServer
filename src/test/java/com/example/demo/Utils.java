@@ -137,7 +137,7 @@ public class Utils {
 
     public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         JSONObject ans = new JSONObject();
-        ans.put("stageType", "tagging");
+        //ans.put("stageType", "tagging");
 
         JSONObject tag1 = new JSONObject();
         tag1.put("start_loc", 0);
@@ -153,7 +153,8 @@ public class Utils {
         tag3.put("start_loc", 0);
         tag3.put("length", 10);
         ans.put(2, tag3);
-        experimenteeBusiness.fillInStage(code, ans);
+        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("tagging", ans)));
+        //experimenteeBusiness.fillInStage(code, ans);
         return 3;
     }
 

@@ -2,7 +2,6 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
-import org.json.simple.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -41,7 +40,7 @@ public class QuestionnaireResult extends Result {
     public Map<String, Object> getAsMap() {
         List<String> answers = new ArrayList<>();
         for(Answer ans : this.answers){
-            answers.add(ans.getAnswerJson());
+            answers.add(ans.getAnswer());
         }
         return Map.of("answers",answers);
     }

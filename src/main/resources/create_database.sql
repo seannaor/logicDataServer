@@ -217,7 +217,7 @@ CREATE TABLE `code_results`
 
 CREATE TABLE `answers`
 (
-    `answer_json`    JSON,
+    `answer`    VARCHAR(255) NOT NULL,
     `question_index` int NOT NULL,
     `stage_index`    int  NOT NULL REFERENCES questionnaire_results (`stage_index`) ON DELETE CASCADE,
     `experiment_id`  int  NOT NULL REFERENCES questionnaire_results (`experiment_id`) ON DELETE CASCADE,

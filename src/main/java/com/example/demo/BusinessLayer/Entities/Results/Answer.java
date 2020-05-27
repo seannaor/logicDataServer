@@ -53,14 +53,14 @@ public class Answer {
     })
     private Question question;
 
-    @Column(name = "answer_json", columnDefinition = "json")
-    private String answerJson;
+    @Column(name = "answer")
+    private String answer;
 
     public Answer (){ }
 
-    public Answer (String answerJson, Question question, QuestionnaireResult questionnaireResult) {
+    public Answer (String answer, Question question, QuestionnaireResult questionnaireResult) {
         this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
-        this.answerJson = answerJson;
+        this.answer = answer;
         this.question = question;
         this.questionnaireResult = questionnaireResult;
         this.questionnaireResult.addAns(this);
@@ -78,12 +78,12 @@ public class Answer {
         return questionnaireResult;
     }
 
-    public String getAnswerJson() {
-        return answerJson;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setAnswerJson(String answerJson) {
-        this.answerJson = answerJson;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
 }

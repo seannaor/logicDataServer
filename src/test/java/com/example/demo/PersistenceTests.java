@@ -460,15 +460,10 @@ class PersistenceTests {
 		assertEquals(((QuestionnaireResult)resultRep.findAll().get(0)).getAnswers().size(), 2);
 		assertEquals(answerRep.count(), 2);
 		Answer answer = answerRep.findAll().get(0);
-		JSONObject jAns = (JSONObject) new JSONParser().parse(answerRep.findAll().get(0).getAnswerJson());
-		assertEquals(jAns.get("answer"), (long)2);
-		JSONObject jsonAns = new JSONObject();
-		jsonAns.put("type", "american");
-		jsonAns.put("answer", 3);
-		answer.setAnswerJson(jsonAns.toString());
+		assertEquals(answer.getAnswer(), "2");
+		answer.setAnswer("4");
 		answerRep.save(answer);
-		JSONObject jAnsNew = (JSONObject) new JSONParser().parse(answerRep.findAll().get(0).getAnswerJson());
-		assertEquals(jAnsNew.get("answer"), (long)3);
+		assertEquals(answerRep.findAll().get(0).getAnswer(), "4");
 	}
 
 	@Test
@@ -498,16 +493,10 @@ class PersistenceTests {
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
 		QuestionnaireResult q = new QuestionnaireResult(questionnaireStageRep.findAll().get(0), p1);
 		resultRep.save(q);
-		JSONObject jsonAns1 = new JSONObject();
-		jsonAns1.put("type", "american");
-		jsonAns1.put("answer", 2);
-		Answer answer1 = new Answer(jsonAns1.toString(), s.getQuestions().get(0), q);
+		Answer answer1 = new Answer("2", s.getQuestions().get(0), q);
 		answerRep.save(answer1);
 		resultRep.save(q);
-		JSONObject jsonAns2 = new JSONObject();
-		jsonAns2.put("type", "american");
-		jsonAns2.put("answer", 3);
-		Answer answer2 = new Answer(jsonAns2.toString(), s.getQuestions().get(1), q);
+		Answer answer2 = new Answer("3", s.getQuestions().get(1), q);
 		answerRep.save(answer2);
 		resultRep.save(q);
 	}
