@@ -3,6 +3,8 @@ package com.example.demo.BusinessLayer.Entities;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class Experiment {
     @OneToMany(mappedBy = "experiment")
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages= new ArrayList<>();
 
     public Experiment() {

@@ -4,6 +4,8 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -20,6 +22,7 @@ public class CodeStage extends Stage {
     @Column(name = "template")
     private String template;
     @OneToMany(mappedBy = "codeStage")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Requirement> requirements = new ArrayList<>();
 
 

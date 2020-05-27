@@ -20,10 +20,10 @@ public class Utils {
     public static List<JSONObject> buildStages() {
         List<JSONObject> stages = new ArrayList<>();
 
-        stages.add(getStumpInfoStage());
         stages.add(getStumpQuestionsStage());
         stages.add(getStumpCodeStage());
         stages.add(getStumpTaggingStage());
+        stages.add(getStumpInfoStage());
 
         return stages;
     }
@@ -62,19 +62,19 @@ public class Utils {
         List<JSONObject> questions = new ArrayList<>();
         JSONObject q1 = new JSONObject();
 
-        q1.put("type", "open");
+        q1.put("questionType", "open");
         q1.put("question", "WTF?!?");
         questions.add(q1);
 
         JSONObject q2 = new JSONObject();
-        q2.put("type", "american");
+        q2.put("questionType", "multiChoice");
         q2.put("question", "who?");
         List<String> answers = new ArrayList<>();
         answers.add("me");
         answers.add("you");
         answers.add("no one");
         answers.add("we both");
-        q2.put("answers", answers);
+        q2.put("possibleAnswers", answers);
         questions.add(q2);
         questionnaire.put("questions", questions);
         return questionnaire;

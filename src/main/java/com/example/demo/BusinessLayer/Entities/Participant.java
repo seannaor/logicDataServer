@@ -8,6 +8,8 @@ import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -30,7 +32,8 @@ public class Participant {
     @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
-    @OneToMany(mappedBy = "participant", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "participant")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Result> results;
 
     public Participant() {

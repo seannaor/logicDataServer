@@ -5,10 +5,13 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.Map;
 public class QuestionnaireStage extends Stage {
 
     @OneToMany(mappedBy = "questionnaireStage")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Question> questions = new ArrayList<>();
 
     public QuestionnaireStage() {
