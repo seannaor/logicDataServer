@@ -119,7 +119,7 @@ public abstract class Stage {
 
                 case "code":
                     return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"), exp);
+                            (List<String>) stage.get("requirements"),(String) stage.get("language"), exp);
 
                 case "questionnaire":
                     return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);

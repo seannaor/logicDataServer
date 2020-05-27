@@ -20,6 +20,8 @@ public class CodeStage extends Stage {
     @Lob
     @Column(name = "template")
     private String template;
+    @Column(name = "language")
+    private String language;
     @OneToMany(mappedBy = "codeStage")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Requirement> requirements = new ArrayList<>();
@@ -28,16 +30,18 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
-    public CodeStage(String desc, String template, Experiment experiment) {
+    public CodeStage(String desc, String template,String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
         this.template = template;
+        this.language =language;
     }
 
-    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
+    public CodeStage(String desc, String template, List<String> requirements,String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
         this.template = template;
+        this.language =language;
         this.requirements = new ArrayList<>();
         for (String req : requirements) {
             this.requirements.add(new Requirement(this, req));

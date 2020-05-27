@@ -48,6 +48,7 @@ public class Utils {
         code.put("type", "code");
         code.put("description", "design me a system that can create & manage & run experiments");
         code.put("template", "");
+        code.put("language", "C++");
         List<String> requirements = new ArrayList<>();
         requirements.add("do that");
         requirements.add("do this");
