@@ -126,7 +126,7 @@ public abstract class Stage {
 
                 case "tagging":
                     int codeIdx = (int)stage.get("codeIndex");
-                    CodeStage codeStage = (CodeStage) exp.getStages().get(codeIdx);
+                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
                     return new TaggingStage(codeStage,exp);
             }
         } catch (Exception ignore) {
