@@ -22,10 +22,10 @@ public class Utils {
     public static List<JSONObject> buildStages() {
         List<JSONObject> stages = new ArrayList<>();
 
+        stages.add(getStumpInfoStage());
         stages.add(getStumpQuestionsStage());
         stages.add(getStumpCodeStage());
         stages.add(getStumpTaggingStage());
-        stages.add(getStumpInfoStage());
 
         return stages;
     }
@@ -55,6 +55,7 @@ public class Utils {
         requirements.add("do this");
         requirements.add("fuck off");
         code.put("requirements", requirements);
+        code.put("language","JAVA");
         return code;
     }
 
@@ -65,7 +66,7 @@ public class Utils {
         JSONObject q1 = new JSONObject();
 
         q1.put("questionType", "open");
-        q1.put("question", "WTF?!?");
+        q1.put("question", "age?");
         questions.add(q1);
 
         JSONObject q2 = new JSONObject();
@@ -213,7 +214,7 @@ public class Utils {
         for (String question : questions) {
             JSONObject q1 = new JSONObject();
 
-            q1.put("type", "open");
+            q1.put("questionType", "open");
             q1.put("question", question);
             JQuestions.add(q1);
 
@@ -225,7 +226,7 @@ public class Utils {
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
         int tid = creatorBusiness.addGradingTask(manager.getBguUsername(), exp.getExperimentId(), "TestGradingTask",
-                buildSimpleExp(List.of("what do you think about the experimentee results?", "state your favorite curs word")), List.of(1, 2)
+                buildSimpleExp(List.of("what do you think about the experimentee results?", "state your favorite car")), List.of(1, 2)
                 , buildSimpleExp(List.of("what is your best score in minesweeper?")));
         return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
     }
@@ -234,7 +235,7 @@ public class Utils {
         JSONObject JAnswers = new JSONObject();
         JAnswers.put("stageType", "questionnaire");
         JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "I saw an arab dude fucking a sheep.. ho minesweeper? I don't know");
+        ans1.put("answer", "5");
         JAnswers.put("1", ans1);
         return JAnswers;
     }
