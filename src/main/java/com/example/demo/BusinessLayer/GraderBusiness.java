@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -53,7 +54,7 @@ public class GraderBusiness implements IGraderBusiness {
         return task.getExpeeRes(pid);
     }
 
-    public void fillInStage(UUID accessCode, int pid, JSONObject data) throws CodeException, NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
+    public void fillInStage(UUID accessCode, int pid, Map<String, Object> data) throws CodeException, NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
         fillInStage(getParticipant(accessCode,pid), data);
     }
 
@@ -97,8 +98,8 @@ public class GraderBusiness implements IGraderBusiness {
         return task.getGraderParticipant(pid);
     }
 
-    public void fillInStage(Participant p, JSONObject data) throws NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
-        Result result = p.fillInStage(data);
+    public void fillInStage(Participant p, Map<String, Object> data) throws NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
+        Result result = p.fillInStage((Map<String, Object>) data.get("data"));
         db.saveStageResult(result);
     }
 

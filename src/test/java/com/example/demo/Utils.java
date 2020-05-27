@@ -231,23 +231,25 @@ public class Utils {
         return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
     }
 
-    public static JSONObject getPersonalAnswers() {
-        JSONObject JAnswers = new JSONObject();
-        JAnswers.put("stageType", "questionnaire");
-        JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "100");
-        JAnswers.put("1", ans1);
-        return JAnswers;
+    public static Map<String, Object> getPersonalAnswers() {
+//        JSONObject JAnswers = new JSONObject();
+//        JAnswers.put("stageType", "questionnaire");
+//        JSONObject ans1 = new JSONObject();
+//        ans1.put("answer", "100");
+//        JAnswers.put("1", ans1);
+//        return JAnswers;
+        return Map.of("data",Map.of("answers",List.of("100")));
     }
 
-    public static JSONObject getGradingAnswers(List<String> answers) {
-        JSONObject JAnswers = new JSONObject();
-        JAnswers.put("stageType", "questionnaire");
-        for (int i = 0; i < answers.size(); i++) {
-            JSONObject ans1 = new JSONObject();
-            ans1.put("answer", answers.get(i));
-            JAnswers.put(i + 1 + "", ans1);
-        }
-        return JAnswers;
+    public static Map<String, Object> getGradingAnswers(List<String> answers) {
+//        JSONObject JAnswers = new JSONObject();
+//        JAnswers.put("stageType", "questionnaire");
+//        for (int i = 0; i < answers.size(); i++) {
+//            JSONObject ans1 = new JSONObject();
+//            ans1.put("answer", answers.get(i));
+//            JAnswers.put(i + 1 + "", ans1);
+//        }
+//        return JAnswers;
+        return Map.of("data",Map.of("answers", answers));
     }
 }
