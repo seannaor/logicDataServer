@@ -1,12 +1,14 @@
 package com.example.demo.BusinessLayer.Entities;
 
-import com.example.demo.BusinessLayer.Entities.Results.ResultWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -59,19 +61,23 @@ public class Experimentee {
         this.participant = participant;
     }
 
-    public Stage getCurrStage() throws ExpEndException {
+    public Stage getCurrStage() throws ExpEndException, NotExistException {
         return participant.getCurrStage();
     }
 
-    public Stage getNextStage() throws ExpEndException {
+    public int getCurrStageIdx()  {
+        return participant.getCurrStageIdx();
+    }
+
+    public Stage getNextStage() throws ExpEndException, NotExistException {
         return participant.getNextStage();
     }
 
-    public Stage getStage(int idx) throws NotInReachException{
+    public Stage getStage(int idx) throws NotInReachException, NotExistException {
         return participant.getStage(idx);
     }
 
-    public ResultWrapper getResults(int idx) throws NotInReachException{
-        return participant.getResults(idx);
+    public Result getResult(int idx) throws NotInReachException{
+        return participant.getResult(idx);
     }
 }

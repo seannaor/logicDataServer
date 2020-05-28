@@ -2,14 +2,14 @@ package com.example.demo;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.DataAccessLayer.Reps.*;
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +57,8 @@ class PersistenceTests {
 	@Autowired
 	CodeResultRep codeResultRep;
 	@Autowired
+	TaggingStageRep taggingStageRep;
+	@Autowired
 	RequirementRep requirementRep;
 	@Autowired
 	RequirementTagRep requirementTagRep;
@@ -65,9 +67,11 @@ class PersistenceTests {
 	@Autowired
 	GraderToGradingTaskRep graderToGradingTaskRep;
 	@Autowired
-	GradersGTToParticipantsRep gradersGTToParticipantsRep;
+	GraderToParticipantRep graderToParticipantRep;
 	@Autowired
 	ManagementUserToExperimentRep managementUserToExperimentRep;
+	@Autowired
+	ResultRep resultRep;
 
 	@BeforeEach
 	void clean() {
@@ -82,6 +86,7 @@ class PersistenceTests {
 				infoStageRep,
 				questionnaireStageRep,
 				codeStageRep,
+				taggingStageRep,
 				questionRep,
 				answerRep,
 				codeResultRep,
@@ -89,8 +94,9 @@ class PersistenceTests {
 				requirementTagRep,
 				gradingTaskRep,
 				graderToGradingTaskRep,
-				gradersGTToParticipantsRep,
-				managementUserToExperimentRep
+				graderToParticipantRep,
+				managementUserToExperimentRep,
+				resultRep
 		};
 		for (JpaRepository rep : reps)
 			rep.deleteAll();
@@ -240,13 +246,15 @@ class PersistenceTests {
 	private void createGradingTask(Experiment baseExp) {
 		Experiment gradingExp = new Experiment("gradingExp");
 		experimentRep.save(gradingExp);
+		Experiment generalExp = new Experiment("generalExp");
+		experimentRep.save(generalExp);
 		List<Stage> stagesForGT1 = new ArrayList<>();
 		stagesForGT1.add(stageRep.findAll().get(0));
-		GradingTask gt1 = new GradingTask("gt1", baseExp, null, gradingExp, stagesForGT1);
+		GradingTask gt1 = new GradingTask("gt1", baseExp, generalExp, gradingExp, stagesForGT1);
 		gradingTaskRep.save(gt1);
 		List<Stage> stagesForGT2 = new ArrayList<>();
 		stagesForGT2.add(stageRep.findAll().get(0));
-		GradingTask gt2 = new GradingTask("gt2", baseExp, null, gradingExp, stagesForGT2);
+		GradingTask gt2 = new GradingTask("gt2", baseExp, generalExp, gradingExp, stagesForGT2);
 		gradingTaskRep.save(gt2);
 	}
 
@@ -270,8 +278,9 @@ class PersistenceTests {
 		GraderToGradingTask graderToGradingTask2 = new GraderToGradingTask(gt2, g2);
 		graderToGradingTask1.setGraderAccessCode(UUID.randomUUID());
 		graderToGradingTask2.setGraderAccessCode(UUID.randomUUID());
+		participantRep.save(graderToGradingTask1.getGeneralExpParticipant());
 		graderToGradingTaskRep.save(graderToGradingTask1);
-		assertEquals(graderToGradingTaskRep.count(), 1);
+		participantRep.save(graderToGradingTask2.getGeneralExpParticipant());
 		graderToGradingTaskRep.save(graderToGradingTask2);
 	}
 
@@ -289,20 +298,22 @@ class PersistenceTests {
 		assignExpeesToGradingTasks();
 		assertEquals(graderRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
 		assertEquals(gradingTaskRep.findAll().get(0).getAssignedGradingTasks().size(), 1);
-		GradersGTToParticipants participant1Gt1 = gradersGTToParticipantsRep.findAll().get(0);
+		GraderToParticipant participant1Gt1 = graderToParticipantRep.findAll().get(0);
 		participant1Gt1.setGradingState(true);
-		gradersGTToParticipantsRep.save(participant1Gt1);
-		assertEquals(gradersGTToParticipantsRep.findAll().get(0).getGradingState(), true);
+		graderToParticipantRep.save(participant1Gt1);
+		assertEquals(graderToParticipantRep.findAll().get(0).getGradingState(), true);
 	}
 
 	private void assignExpeesToGradingTasks() {
 		GraderToGradingTask graderToGradingTask1 = graderToGradingTaskRep.findAll().get(0);
 		GraderToGradingTask graderToGradingTask2 = graderToGradingTaskRep.findAll().get(1);
-		GradersGTToParticipants participant1Gt1 = new GradersGTToParticipants(graderToGradingTask1, participantRep.findAll().get(0));
-		GradersGTToParticipants participant1Gt2 = new GradersGTToParticipants(graderToGradingTask2, participantRep.findAll().get(1));
-		gradersGTToParticipantsRep.save(participant1Gt1);
-		gradersGTToParticipantsRep.save(participant1Gt2);
-		assertEquals(gradersGTToParticipantsRep.count(), 2);
+		GraderToParticipant participant1Gt1 = new GraderToParticipant(graderToGradingTask1, participantRep.findAll().get(0));
+		GraderToParticipant participant1Gt2 = new GraderToParticipant(graderToGradingTask2, participantRep.findAll().get(1));
+		participantRep.save(participant1Gt1.getGraderParticipant());
+		graderToParticipantRep.save(participant1Gt1);
+		participantRep.save(participant1Gt2.getGraderParticipant());
+		graderToParticipantRep.save(participant1Gt2);
+		assertEquals(graderToParticipantRep.count(), 2);
 		graderToGradingTaskRep.save(graderToGradingTask1);
 		graderToGradingTaskRep.save(graderToGradingTask2);
 		Grader g1 = graderRep.findAll().get(0);
@@ -337,13 +348,9 @@ class PersistenceTests {
 	}
 
 	private void createGradersForGradingTasks(Experiment e) {
-		Participant pOfGrader1 = new Participant(e);
-		participantRep.save(pOfGrader1);
-		Grader g1 = new Grader("mosh@gmail.com", pOfGrader1);
+		Grader g1 = new Grader("mosh@gmail.com");
 		graderRep.save(g1);
-		Participant pOfGrader2 = new Participant(e);
-		participantRep.save(pOfGrader2);
-		Grader g2 = new Grader("shalom@gmail.com", pOfGrader2);
+		Grader g2 = new Grader("shalom@gmail.com");
 		graderRep.save(g2);
 	}
 
@@ -401,20 +408,26 @@ class PersistenceTests {
 		assertEquals(questionRep.count(), 2);
 		assertEquals(questionnaireStageRep.findAll().get(0).getQuestions().size(), 2);
 		JSONObject updatedJsonQuestion = new JSONObject();
-		updatedJsonQuestion.put("how old are you?", new String[] {"10-20", "21-30", "31-40", "41+"});
+		List<String> answers1 = new ArrayList<>();
+		answers1.add("10-20");answers1.add("21-30");answers1.add("31-40");answers1.add("41+");
+		updatedJsonQuestion.put("how old are you?", answers1);
 		Question q = s.getQuestions().get(0);
-		q.setQuestionJson(updatedJsonQuestion.toJSONString());
+		q.setQuestionJson(updatedJsonQuestion.toString());
 		stageRep.save(s);
 		questionRep.save(q);
 		assertEquals(questionRep.count(), 2);
-		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion.toJSONString());
+		assertEquals(questionRep.findById(q.getQuestionID()).orElse(null).getQuestionJson(), updatedJsonQuestion);
 	}
 
 	private List<JSONObject> createQuestionJsons() {
 		JSONObject jsonQuestion1 = new JSONObject();
-		jsonQuestion1.put("how old are you?", new String[] {"10-20", "20-30", "30-40", "40+"});
+		List<String> answers1 = new ArrayList<>();
+		answers1.add("10-20");answers1.add("20-30");answers1.add("30-40");answers1.add("40+");
+		jsonQuestion1.put("how old are you?", answers1);
 		JSONObject jsonQuestion2 = new JSONObject();
-		jsonQuestion2.put("favorite programming language?", new String[] {"c", "c++", "java", "python"});
+		List<String> answers2 = new ArrayList<>();
+		answers2.add("c");answers2.add("c++");answers2.add("java");answers2.add("python");
+		jsonQuestion2.put("favorite programming language?", answers2);
 		List<JSONObject> questions = new ArrayList<>();
 		questions.add(jsonQuestion1);
 		questions.add(jsonQuestion2);
@@ -424,7 +437,7 @@ class PersistenceTests {
 	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
 		int QIdx = 1;
 		for (JSONObject JQuestion : questions) {
-			Question q = new Question(QIdx, s, JQuestion.toJSONString());
+			Question q = new Question(QIdx, s, JQuestion.toString());
 			questionRep.save(q);
 			s.addQuestion(q);
 			QIdx++;
@@ -434,7 +447,7 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void addAndUpdateAnswersTest() {
+	void addAndUpdateAnswersTest() throws ParseException {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
@@ -443,12 +456,14 @@ class PersistenceTests {
 		createAndSaveQuestions(questions, s);
 		Participant p1 = createExpeeAndParticipant();
 		addAnswers(s, p1);
+		assertEquals(resultRep.count(), 1);
+		assertEquals(((QuestionnaireResult)resultRep.findAll().get(0)).getAnswers().size(), 2);
 		assertEquals(answerRep.count(), 2);
 		Answer answer = answerRep.findAll().get(0);
-		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 2);
-		answer.setNumeralAnswer(3);
+		assertEquals(answer.getAnswer(), "2");
+		answer.setAnswer("4");
 		answerRep.save(answer);
-		assertEquals(answerRep.findAll().get(0).getNumeralAnswer().intValue(), 3);
+		assertEquals(answerRep.findAll().get(0).getAnswer(), "4");
 	}
 
 	@Test
@@ -476,10 +491,14 @@ class PersistenceTests {
 	}
 
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
-		Answer answer1 = new Answer(2, s.getQuestions().get(0), p1);
+		QuestionnaireResult q = new QuestionnaireResult(questionnaireStageRep.findAll().get(0), p1);
+		resultRep.save(q);
+		Answer answer1 = new Answer("2", s.getQuestions().get(0), q);
 		answerRep.save(answer1);
-		Answer answer2 = new Answer(3, s.getQuestions().get(1), p1);
+		resultRep.save(q);
+		Answer answer2 = new Answer("3", s.getQuestions().get(1), q);
 		answerRep.save(answer2);
+		resultRep.save(q);
 	}
 
 	private Participant createExpeeAndParticipant() {
@@ -497,7 +516,7 @@ class PersistenceTests {
 	void addAndUpdateRequirementsForExpTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
 		addRequirementsToStage(codeStage);
@@ -516,7 +535,7 @@ class PersistenceTests {
 	void addAndUpdateCodeResultForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
 		stageRep.save(codeStage);
 		Participant p1 = createExpeeAndParticipant();
 		assertEquals(participantRep.count(), 1);
@@ -536,7 +555,7 @@ class PersistenceTests {
 	void addAndUpdateTaggingStageForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
@@ -545,7 +564,8 @@ class PersistenceTests {
 		TaggingStage taggingStage = new TaggingStage(codeStage, e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
-		addRequirementTags(codeStage, p1);
+		TaggingResult t = addRequirementTags(codeStage, p1);
+		assertEquals(((TaggingResult)resultRep.findById(t.getResultID()).orElse(null)).getTags().size(), 2);
 		assertEquals(requirementTagRep.count(), 2);
 		assertEquals(requirementTagRep.findAll().get(0).getLength(), 10);
 		RequirementTag req = requirementTagRep.findAll().get(0);
@@ -560,7 +580,7 @@ class PersistenceTests {
 	void deleteReqsAndExpeeResultTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "", e);
+		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
@@ -577,20 +597,21 @@ class PersistenceTests {
 		assertEquals(requirementRep.count(), 1);
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 1);
-		codeResultRep.deleteById(codeResult.getCodeResultID());
+		codeResultRep.deleteById(codeResult.getResultID());
 		assertEquals(codeResultRep.count(), 0);
 	}
 
-	private void addRequirementTags(CodeStage codeStage, Participant p1) {
-		List<Requirement> requirementsFor_rt1 = new ArrayList<>();
-		requirementsFor_rt1.add(codeStage.getRequirements().get(0));
-		requirementsFor_rt1.add(codeStage.getRequirements().get(1));
-		RequirementTag rt1 = new RequirementTag(0, 10, p1, requirementsFor_rt1);
-		List<Requirement> requirementsFor_rt2 = new ArrayList<>();
-		requirementsFor_rt2.add(codeStage.getRequirements().get(0));
-		RequirementTag rt2 = new RequirementTag(10, 15, p1, requirementsFor_rt2);
+	private TaggingResult addRequirementTags(CodeStage codeStage, Participant p1) {
+		TaggingResult q = new TaggingResult(taggingStageRep.findAll().get(0), p1);
+		resultRep.save(q);
+		Requirement requirementFor_rt1 = codeStage.getRequirements().get(0);
+		RequirementTag rt1 = new RequirementTag(0, 10, requirementFor_rt1, q);
+		Requirement requirementFor_rt2 = codeStage.getRequirements().get(1);
+		RequirementTag rt2 = new RequirementTag(10, 15, requirementFor_rt2, q);
 		requirementTagRep.save(rt1);
 		requirementTagRep.save(rt2);
+		resultRep.save(q);
+		return q;
 	}
 
 	private void addRequirementsToStage(CodeStage codeStage) {
@@ -618,7 +639,7 @@ class PersistenceTests {
 		stageRep.save(s21);
 		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
 		stageRep.save(s31);
-		CodeStage s41 = new CodeStage("enter your code", "", experimentRep.findAll().get(0));
+		CodeStage s41 = new CodeStage("enter your code", "","JAVA", experimentRep.findAll().get(0));
 		stageRep.save(s41);
 		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
 		stageRep.save(s51);
@@ -628,7 +649,7 @@ class PersistenceTests {
 		stageRep.save(s22);
 		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
 		stageRep.save(s32);
-		CodeStage s42 = new CodeStage("enter your code", "", experimentRep.findAll().get(1));
+		CodeStage s42 = new CodeStage("enter your code", "","JAVA", experimentRep.findAll().get(1));
 		stageRep.save(s42);
 		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
 		stageRep.save(s52);

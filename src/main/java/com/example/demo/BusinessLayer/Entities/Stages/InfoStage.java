@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.util.Map;
 
 @Entity
 @Table(name = "info_stages")
@@ -32,11 +33,9 @@ public class InfoStage extends Stage {
         this.info = info;
     }
 
-    public JSONObject getJson(){
-        JSONObject jStage = new JSONObject();
-        jStage.put("type","info");
-        jStage.put("info",info);
-        return jStage;
+    @Override
+    public Map<String, Object> getAsMap(){
+        return Map.of("text",info);
     }
 
     @Override
@@ -45,5 +44,5 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillInfo(JSONObject data, Participant participant) {}
+    public void fillInfo(Object data, Participant participant) {}
 }

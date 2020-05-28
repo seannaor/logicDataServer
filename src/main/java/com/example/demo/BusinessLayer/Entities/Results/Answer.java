@@ -1,6 +1,5 @@
 package com.example.demo.BusinessLayer.Entities.Results;
 
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Question;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 
@@ -10,7 +9,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answers")
 public class Answer {
-
     @Embeddable
     public static class AnswerID implements Serializable {
         @Column(name = "participant_id")
@@ -36,10 +34,16 @@ public class Answer {
 
     @EmbeddedId
     private AnswerID answerID;
-    @MapsId("participantId")
+
+    @MapsId("resultID")
     @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
+    @JoinColumns({
+            @JoinColumn(name = "participant_id", referencedColumnName = "participant_id"),
+            @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
+            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+    })
+    private QuestionnaireResult questionnaireResult;
+
     @MapsId("questionID")
     @ManyToOne
     @JoinColumns({
@@ -49,61 +53,37 @@ public class Answer {
     })
     private Question question;
 
-    @Lob
-    @Column(name = "textual_answer")
-    private String textualAnswer;
-
-    @Column(name = "numeral_answer")
-    private Integer numeralAnswer;
+    @Column(name = "answer")
+    private String answer;
 
     public Answer (){ }
 
-    public Answer (String textualAnswer, Question question, Participant participant) {
-        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
-        this.textualAnswer = textualAnswer;
-        this.numeralAnswer = null;
+    public Answer (String answer, Question question, QuestionnaireResult questionnaireResult) {
+        this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
+        this.answer = answer;
         this.question = question;
-        this.participant = participant;
-    }
-
-    public Answer (Integer numeralAnswer, Question question, Participant participant) {
-        this.answerID = new AnswerID(participant.getParticipantId(), question.getQuestionID());
-        this.textualAnswer = null;
-        this.numeralAnswer = numeralAnswer;
-        this.question = question;
-        this.participant = participant;
-    }
-
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-        this.answerID = new AnswerID(participant.getParticipantId(),this.question.getQuestionID());
+        this.questionnaireResult = questionnaireResult;
+        this.questionnaireResult.addAns(this);
     }
 
     public void setQuestion(Question question) {
         this.question = question;
     }
 
-    public void setTextualAnswer(String textualAnswer) {
-        this.textualAnswer = textualAnswer;
-    }
-
-    public void setNumeralAnswer(Integer numeralAnswer) {
-        this.numeralAnswer = numeralAnswer;
-    }
-
     public Stage.StageID getStageID(){
         return this.question.getStageID();
     }
 
-    public Integer getNumeralAnswer() {
-        return numeralAnswer;
+    public QuestionnaireResult getQuestionnaireResult() {
+        return questionnaireResult;
     }
 
-    public Participant getParticipant() {
-        return participant;
+    public String getAnswer() {
+        return answer;
     }
 
-    public String getTextualAnswer() {
-        return textualAnswer;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
+
 }

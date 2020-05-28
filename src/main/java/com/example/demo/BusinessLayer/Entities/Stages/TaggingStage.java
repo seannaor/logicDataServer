@@ -2,15 +2,14 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
-import com.example.demo.BusinessLayer.Entities.Results.TagsWrapper;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "tagging_stages")
@@ -46,10 +45,9 @@ public class TaggingStage extends Stage {
         this.codeStage = codeStage;
     }
 
-    public JSONObject getJson() {
-        JSONObject jStage = new org.json.simple.JSONObject();
-        jStage.put("type","tagging");
-        return jStage;
+    @Override
+    public Map<String,Object> getAsMap() {
+        return Map.of();
     }
 
     @Override
@@ -58,18 +56,24 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public List<RequirementTag> fillTagging(JSONObject data, Participant participant) throws FormatException {
-        TagsWrapper tagsWrapper = new TagsWrapper();
-        List<RequirementTag> tags = new ArrayList<>();
-
+    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
+        TaggingResult taggingResult = (TaggingResult)participant.getResult(this.getStageID().getStageIndex());
+        if(taggingResult == null) {
+            taggingResult = new TaggingResult(this, participant);
+        }
+        JSONObject tags;
+        try{
+            tags = (JSONObject) data.get("tagging");
+        }catch (Exception e) {
+            throw new FormatException("tags list");
+        }
         for (Requirement r : codeStage.getRequirements()) {
             int i = r.getIndex();
-            if (!data.containsKey(i))
+            if (!tags.containsKey(i))
                 throw new FormatException("tag for requirement #" + i);
 
-            tags.add(r.tag((JSONObject) data.get(i),participant));
+            r.tag((JSONObject) tags.get(i), taggingResult); //adds the new tag to the taggingResult automatically
         }
-
-        return tags;
+        return taggingResult;
     }
 }

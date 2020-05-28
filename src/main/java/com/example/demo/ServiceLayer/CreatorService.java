@@ -18,8 +18,8 @@ public class CreatorService {
     private CreatorBusiness creatorBusiness;
 
     //Login
-    public Map<String, Object> researcherLogin(String username, String password) {
-        return Map.of("response", creatorBusiness.researcherLogin(username, password));
+    public boolean researcherLogin(String username, String password) {
+        return creatorBusiness.researcherLogin(username, password);
     }
 
     public Map<String, Object> createExperiment(String researcherName, String expName) {
@@ -253,9 +253,9 @@ public class CreatorService {
     // Utils
 
     private Map<String, Object> stagesResponse(List<Stage> stages) {
-        List<JSONObject> jsons = new ArrayList<>();
+        List<Map<String, Object>> jsons = new ArrayList<>();
         for (Stage stage : stages) {
-            jsons.add(stage.getJson());
+            jsons.add(stage.getAsMap());
         }
         return Map.of("response", "OK", "stages", jsons);
     }

@@ -35,7 +35,7 @@ public interface ICreatorBusiness {
 
     void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException;
 
-    void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException;
+    void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException, FormatException;
 
     //String saveGradingTask(String researcherName, int expId, int taskId) throws NotExistException;
 

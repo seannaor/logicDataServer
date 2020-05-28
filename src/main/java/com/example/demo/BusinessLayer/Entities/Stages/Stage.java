@@ -2,16 +2,17 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.Answer;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
-import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "stages")
@@ -20,7 +21,9 @@ public abstract class Stage {
 
     @Embeddable
     public static class StageID implements Serializable {
+        @Column(name = "stage_index")
         private int stageIndex;
+        @Column(name = "experiment_id")
         private int experimentId;
 
         public StageID() {
@@ -34,13 +37,17 @@ public abstract class Stage {
             this.experimentId = experimentId;
             this.stageIndex = stageIndex;
         }
+
+        public int getStageIndex() {
+            return stageIndex;
+        }
+
+        public void setStageIndex(int stageIndex) {
+            this.stageIndex = stageIndex;
+        }
     }
 
     @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(name = "stageIndex", column = @Column(name = "stage_index")),
-            @AttributeOverride(name = "experimentId", column = @Column(name = "experiment_id"))
-    })
     private StageID stageID;
 
     @MapsId("experimentId")
@@ -84,24 +91,24 @@ public abstract class Stage {
         this.experiment = experiment;
     }
 
-    public abstract JSONObject getJson();
+    public abstract Map<String,Object> getAsMap();
 
     public abstract String getType();
 
 
-    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
+    public CodeResult fillCode(String code, Participant participant) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public List<Answer> fillQuestionnaire(JSONObject data,Participant participant) throws FormatException, ParseException {
+    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public List<RequirementTag> fillTagging(JSONObject data,Participant participant) throws FormatException {
+    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
         throw new FormatException("tagging stage answers");
     }
 
-    public void fillInfo(JSONObject data,Participant participant)throws FormatException {
+    public void fillInfo(Object data, Participant participant)throws FormatException {
         throw new FormatException("info stage");
     }
 
@@ -112,13 +119,16 @@ public abstract class Stage {
                     return new InfoStage((String) stage.get("info"), exp);
 
                 case "code":
-                    String desc = (String) stage.get("description");
-                    String template = (String) stage.get("template");
-                    List<String> requirements = (List<String>) stage.get("requirements");
-                    return new CodeStage(desc, template, requirements, exp);
+                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
+                            (List<String>) stage.get("requirements"),(String) stage.get("language"), exp);
 
                 case "questionnaire":
                     return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);
+
+                case "tagging":
+                    int codeIdx = (int)stage.get("codeIndex");
+                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
+                    return new TaggingStage(codeStage,exp);
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");

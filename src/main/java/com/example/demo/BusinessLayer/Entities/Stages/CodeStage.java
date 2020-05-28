@@ -4,12 +4,11 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.json.simple.JSONObject;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "code_stages")
@@ -21,25 +20,31 @@ public class CodeStage extends Stage {
     @Lob
     @Column(name = "template")
     private String template;
+    @Column(name = "language")
+    private String language;
     @OneToMany(mappedBy = "codeStage")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Requirement> requirements = new ArrayList<>();
+
 
     public CodeStage() {
     }
 
-    public CodeStage(String desc, String template, Experiment experiment) {
+    public CodeStage(String desc, String template, String language, Experiment experiment) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
+        this.language = language;
     }
 
-    public CodeStage(String desc, String template, List<String> requirements, Experiment experiment) {
+    public CodeStage(String desc, String template, List<String> requirements, String language, Experiment experiment) {
         super(experiment);
-        this.description=desc;
-        this.template=template;
+        this.description = desc;
+        this.template = template;
+        this.language = language;
         this.requirements = new ArrayList<>();
-        for(String req:requirements){
-            this.requirements.add(new Requirement(this,req));
+        for (String req : requirements) {
+            this.requirements.add(new Requirement(this, req));
         }
     }
 
@@ -47,17 +52,18 @@ public class CodeStage extends Stage {
         super(experiment, stage_index);
     }
 
-    public JSONObject getJson(){
-        JSONObject jStage = new JSONObject();
-        jStage.put("type","code");
-        jStage.put("description",this.description);
-        jStage.put("template",this.template);
-        List<String> jRequirements = new LinkedList<>();
-        for (Requirement r : requirements) {
-            jRequirements.add(r.getText());
+    @Override
+    public Map<String, Object> getAsMap() {
+        Map<String, Object> stageMap = new HashMap<>();
+        stageMap.put("description", this.description);
+        stageMap.put("template", this.template);
+        stageMap.put("language", this.language);
+        List<String> requirements = new LinkedList<>();
+        for (Requirement r : this.requirements) {
+            requirements.add(r.getText());
         }
-        jStage.put("requirements",jRequirements);
-        return jStage;
+        stageMap.put("requirements", requirements);
+        return stageMap;
     }
 
     @Override
@@ -66,9 +72,8 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(JSONObject data, Participant participant) throws FormatException {
-        if(!data.containsKey("userCode")) throw new FormatException("user code");
-        return new CodeResult(participant,this,(String) data.get("userCode"));
+    public CodeResult fillCode(String code, Participant participant) throws FormatException {
+        return new CodeResult(participant, this, code);
     }
 
     public String getDescription() {

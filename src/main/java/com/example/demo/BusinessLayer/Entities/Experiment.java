@@ -1,6 +1,10 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,12 +21,15 @@ public class Experiment {
     private String experimentName;
     @Column(name = "published")
     private boolean published = false;
+    @Column(name = "is_grading_task_exp")
+    private boolean isGradingTaskExp = false;
     @OneToMany(mappedBy = "experiment")
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "experiment")
-    private List<Stage> stages = new ArrayList<>();
+    @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Stage> stages= new ArrayList<>();
 
     public Experiment() {
     }
@@ -72,6 +79,13 @@ public class Experiment {
         return stages;
     }
 
+    public Stage getStage(int idx) throws NotExistException {
+        for(Stage s:stages){
+            if(s.getStageID().getStageIndex()==idx)return s;
+        }
+        throw new NotExistException("stage",idx+"");
+    }
+
     public void setStages(List<Stage> stages) {
         this.stages = stages;
     }
@@ -103,5 +117,13 @@ public class Experiment {
             }
         }
         return false;
+    }
+
+    public boolean isGradingTaskExp() {
+        return isGradingTaskExp;
+    }
+
+    public void setGradingTaskExp(boolean gradingTaskExp) {
+        isGradingTaskExp = gradingTaskExp;
     }
 }

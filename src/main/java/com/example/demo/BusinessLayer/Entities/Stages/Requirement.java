@@ -2,12 +2,11 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "requirements")
@@ -17,14 +16,22 @@ public class Requirement {
     public static class RequirementID implements Serializable {
         @Column(name = "requirement_index")
         private int requirementIndex;
-        private Stage.StageID stageID;
+        @Column(name = "stage_index")
+        private int stageIndex;
+        @Column(name = "experiment_id")
+        private int experimentId;
 
         public RequirementID() {
         }
 
-        public RequirementID(int requirementIndex, Stage.StageID stageID) {
+        public RequirementID(int requirementIndex, int stageIndex, int experimentId) {
             this.requirementIndex = requirementIndex;
-            this.stageID = stageID;
+            this.stageIndex = stageIndex;
+            this.experimentId = experimentId;
+        }
+
+        public int getRequirementIndex() {
+            return requirementIndex;
         }
     }
 
@@ -42,28 +49,17 @@ public class Requirement {
     @Column(name = "text")
     private String text;
 
-    @ManyToMany(mappedBy = "requirements")
-    private List<RequirementTag> requirementTags = new ArrayList<>();
-
     public Requirement() {
     }
 
     public Requirement(CodeStage codeStage, String text) {
-        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID());
+        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
         this.codeStage = codeStage;
         this.text = text;
     }
 
     public RequirementID getRequirementID() {
         return requirementID;
-    }
-
-    public List<RequirementTag> getRequirementTags() {
-        return requirementTags;
-    }
-
-    public void setRequirementTags(List<RequirementTag> requirementTags) {
-        this.requirementTags = requirementTags;
     }
 
     public void setText(String text) {
@@ -78,12 +74,8 @@ public class Requirement {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data, Participant participant) {
-        RequirementTag tag = new RequirementTag();
-        tag.setRequirement(this);
-        tag.setStart((int) data.get("start_loc"));
-        tag.setLength((int) data.get("length"));
-        tag.setParticipant(participant);
+    public RequirementTag tag(JSONObject data, TaggingResult taggingResult) {
+        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"), this, taggingResult);
         return tag;
     }
 

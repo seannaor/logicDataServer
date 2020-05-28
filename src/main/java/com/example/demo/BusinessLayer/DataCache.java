@@ -2,7 +2,7 @@ package com.example.demo.BusinessLayer;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GradersGTToParticipants;
+import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
@@ -30,7 +30,7 @@ public class DataCache {
     private List<Grader> graders = new ArrayList<>();
     private List<GradingTask> gradingTasks = new ArrayList<>();
     private List<GraderToGradingTask> graderToGradingTasks = new ArrayList<>();
-    private List<GradersGTToParticipants> gradersGTToParticipants = new ArrayList<>();
+    private List<GraderToParticipant> graderToParticipants = new ArrayList<>();
 
     public void setCache() {
         managers = new ArrayList<>();
@@ -39,7 +39,7 @@ public class DataCache {
         graders = new ArrayList<>();
         gradingTasks = new ArrayList<>();
         graderToGradingTasks = new ArrayList<>();
-        gradersGTToParticipants = new ArrayList<>();
+        graderToParticipants = new ArrayList<>();
     }
 
     public ManagementUser getManagerByName(String name) throws NotExistException {
@@ -132,16 +132,6 @@ public class DataCache {
         throw new NotExistException("experimentee", email);
     }
 
-//    public GradingTask getGradingTaskByName(String researcherName, int expId, int taskId) throws NotExistException {
-//        ManagementUser man = getManagerByName(researcherName);
-//        Experiment exp = man.getExperiment(expId);
-//        for (GradingTask gt : gradingTasks) {
-//            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == taskId)
-//                return gt;
-//        }
-//        throw new NotExistException("grading task", ""+taskId);
-//    }
-
     public GradingTask getGradingTaskById(String researcherName, int expId, int id) throws NotExistException {
         ManagementUser man = getManagerByName(researcherName);
         Experiment exp = man.getExperiment(expId);
@@ -163,7 +153,7 @@ public class DataCache {
         List<GradingTask> ret = new ArrayList<>();
         // no need to go over cache because anyway we need to go over all grading tasks in db to insure we are not missing some in cache
         for (GradingTask gt : db.getAllGradingTasks()) {
-            if (gt.getBaseExperiment().equals(exp))
+            if (gt.getBaseExperiment().getExperimentId()==exp.getExperimentId())
                 ret.add(gt);
         }
         return ret;
@@ -182,20 +172,29 @@ public class DataCache {
         throw new NotExistException("grading task", ""+gradingTask.getGradingTaskId());
     }
 
-    public GradersGTToParticipants getGradersGTToParticipants(GraderToGradingTask graderToGradingTask, Participant participant) {
-        for (GradersGTToParticipants g : gradersGTToParticipants) {
-            if (g.getGraderToGradingTask().equals(graderToGradingTask) && g.getParticipant().equals(participant)) {
+    public GraderToParticipant getGraderToParticipants(GraderToGradingTask graderToGradingTask, Participant participant) {
+        for (GraderToParticipant g : graderToParticipants) {
+            if (g.getGraderToGradingTask().equals(graderToGradingTask) && g.getExpeeParticipant().equals(participant)) {
                 return g;
             }
         }
-        GradersGTToParticipants g = db.getGradersGTToParticipantsById(graderToGradingTask.getGradingTask().getGradingTaskId(), graderToGradingTask.getGrader().getGraderEmail(), participant.getParticipantId());
+        GraderToParticipant g = db.getGraderToParticipantById(graderToGradingTask.getGradingTask().getGradingTaskId(), graderToGradingTask.getGrader().getGraderEmail(), participant.getParticipantId());
         if (g != null) {
-            gradersGTToParticipants.add(g);
+            graderToParticipants.add(g);
             return g;
         }
         return null;
     }
 
+//    public GradingTask getGradingTaskByName(String researcherName, int expId, int taskId) throws NotExistException {
+//        ManagementUser man = getManagerByName(researcherName);
+//        Experiment exp = man.getExperiment(expId);
+//        for (GradingTask gt : gradingTasks) {
+//            if (gt.getBaseExperiment().equals(exp) && gt.getGradingTaskId() == taskId)
+//                return gt;
+//        }
+//        throw new NotExistException("grading task", ""+taskId);
+//    }
 
     //=======================================================================
 
@@ -241,15 +240,15 @@ public class DataCache {
         //TODO: maybe should add new one after checking that there's no GraderToGradingTask with gt and g
     }
 
-    public void addExpeeToGradingTask(GradingTask gt, Grader grader, GradersGTToParticipants participantInGradingTask) {
-        for (GradersGTToParticipants g : gradersGTToParticipants)
-            if(g.getParticipant().getParticipantId() == participantInGradingTask.getParticipant().getParticipantId() &&
+    public void addExpeeToGradingTask(GradingTask gt, Grader grader, GraderToParticipant participantInGradingTask) {
+        for (GraderToParticipant g : graderToParticipants)
+            if(g.getExpeeParticipant().getParticipantId() == participantInGradingTask.getExpeeParticipant().getParticipantId() &&
                     g.getGraderToGradingTask().getGrader().getGraderEmail().equals(participantInGradingTask.getGraderToGradingTask().getGrader().getGraderEmail())
                     && g.getGraderToGradingTask().getGradingTask().getGradingTaskId() == participantInGradingTask.getGraderToGradingTask().getGradingTask().getGradingTaskId()) {
                 return;
             }
-        db.saveGradersGTToParticipants(participantInGradingTask);
-        gradersGTToParticipants.add(participantInGradingTask);
+        db.saveGraderToParticipant(participantInGradingTask);
+        graderToParticipants.add(participantInGradingTask);
     }
 
     //=======================================================================
