@@ -30,18 +30,18 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
-    public CodeStage(String desc, String template,String language, Experiment experiment) {
+    public CodeStage(String desc, String template, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
         this.template = template;
-        this.language =language;
+        this.language = language;
     }
 
-    public CodeStage(String desc, String template, List<String> requirements,String language, Experiment experiment) {
+    public CodeStage(String desc, String template, List<String> requirements, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
         this.template = template;
-        this.language =language;
+        this.language = language;
         this.requirements = new ArrayList<>();
         for (String req : requirements) {
             this.requirements.add(new Requirement(this, req));
@@ -57,7 +57,7 @@ public class CodeStage extends Stage {
         Map<String, Object> stageMap = new HashMap<>();
         stageMap.put("description", this.description);
         stageMap.put("template", this.template);
-        stageMap.put("language", "None");
+        stageMap.put("language", this.language);
         List<String> requirements = new LinkedList<>();
         for (Requirement r : this.requirements) {
             requirements.add(r.getText());

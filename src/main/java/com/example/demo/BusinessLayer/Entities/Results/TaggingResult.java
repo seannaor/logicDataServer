@@ -2,7 +2,8 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
-import org.json.simple.JSONObject;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -15,17 +16,19 @@ import java.util.Map;
 @Table(name = "tagging_results")
 public class TaggingResult extends Result {
     @OneToMany(mappedBy = "taggingResult")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<RequirementTag> tags;
 
-    public TaggingResult() { }
+    public TaggingResult() {
+    }
 
     public TaggingResult(TaggingStage taggingStage, Participant participant) {
         super(taggingStage, participant);
         this.tags = new ArrayList<>();
     }
 
-    public void addTag(RequirementTag tag){
-        if(!tags.contains(tag))
+    public void addTag(RequirementTag tag) {
+        if (!tags.contains(tag))
             tags.add(tag);
     }
 

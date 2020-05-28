@@ -14,7 +14,7 @@ import static com.example.demo.RoutingLayer.RouterUtils.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/admin")
-public class managerRouter {
+public class ManagerRouter {
     @Autowired
     private CreatorService creator;
 

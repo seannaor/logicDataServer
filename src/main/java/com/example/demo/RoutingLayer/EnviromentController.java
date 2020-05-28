@@ -34,7 +34,7 @@ public class EnviromentController {
     @PostMapping("/submitStage/{accessCode}")
     public Map<String, Object> submitStage(@PathVariable String accessCode,
                                            @RequestBody Map<String, Object> stageInfo) {
-        System.out.println("/submitStage " + accessCode);
+        System.out.println("/submitStage " + accessCode + " data " + stageInfo);
         return expee.fillInStage(accessCode, stageInfo);
     }
 

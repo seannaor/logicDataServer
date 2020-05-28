@@ -76,7 +76,7 @@ public class ManagerTests {
 
         // real password - should pass
         Assert.assertTrue(creatorBusiness.researcherLogin(manager.getBguUsername(), manager.getBguPassword()));
-        Assert.assertTrue(db.getManagementUserByName(manager.getBguUsername()).getBguPassword().equals(manager.getBguPassword()));
+        Assert.assertEquals(db.getManagementUserByName(manager.getBguUsername()).getBguPassword(), manager.getBguPassword());
 
         // username not exist - should fail
         Assert.assertFalse(creatorBusiness.researcherLogin("some not exist username", "a password"));

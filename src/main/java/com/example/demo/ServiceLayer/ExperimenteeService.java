@@ -2,6 +2,7 @@ package com.example.demo.ServiceLayer;
 
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,13 @@ public class ExperimenteeService {
             UUID code = UUID.fromString(accessCode);
             experimenteeBusiness.fillInStage(code, data);
             Stage next = experimenteeBusiness.getNextStage(code);
-            Result res = experimenteeBusiness.getResult(code,next.getStageID().getStageIndex());
+            Result res = experimenteeBusiness.getResult(code, next.getStageID().getStageIndex());
             return makeStageAndResult(next, res);
+        } catch (ExpEndException e) {
+            return Map.of(
+                    "type", "complete",
+                    "stage", Map.of()
+            );
         } catch (Exception e) {
             return Map.of("Error", e.getMessage());
         }

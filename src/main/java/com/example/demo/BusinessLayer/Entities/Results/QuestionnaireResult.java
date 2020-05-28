@@ -2,6 +2,8 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -14,6 +16,7 @@ import java.util.Map;
 @Table(name = "questionnaire_results")
 public class QuestionnaireResult extends Result {
     @OneToMany(mappedBy = "questionnaireResult")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Answer> answers;
 
     public QuestionnaireResult() { }
