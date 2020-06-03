@@ -78,7 +78,7 @@ public class QuestionnaireStage extends Stage {
             questionnaireResult = new QuestionnaireResult(this, participant);
         }
 
-        for (int i = 0; i < questions.size(); i++) {
+        for (int i = 0; i < this.questions.size(); i++) {
             Question q = getQuestion(i);
             q.answer(answers.get(i),questionnaireResult);
         }
