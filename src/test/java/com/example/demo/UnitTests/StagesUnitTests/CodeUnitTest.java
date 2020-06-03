@@ -74,7 +74,7 @@ public class CodeUnitTest {
     public void fillIn(){
         String code = "x++;\nreturn x;";
         try{
-            CodeResult res = codeStage.fillCode(code,participant);
+            CodeResult res = codeStage.fillCode(Map.of("code",code),participant);
             Assert.assertEquals(code,res.getUserCode());
         } catch (FormatException e) {
             Assert.fail();

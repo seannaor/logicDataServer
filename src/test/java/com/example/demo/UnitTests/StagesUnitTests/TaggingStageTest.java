@@ -66,7 +66,7 @@ public class TaggingStageTest {
             tag1.put("start_loc", 0);
             tag1.put("length", 10);
             ans.put(0, tag1);
-            expee.getParticipant().setCurrStage(1);
+            expee.getParticipant().getNextStage();
             TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans), expee.getParticipant());
             Assert.assertEquals(tr.getTags().size(), 1);
         } catch (Exception e) {

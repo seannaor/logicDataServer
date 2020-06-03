@@ -44,7 +44,7 @@ public class GraderToGradingTaskUnitTests {
         graderToParticipant1 = new GraderToParticipant(graderToGradingTask, p1);
         p2 = new Participant(exp);
         p2.setParticipantId(2);
-        p2.fillInStage(Map.of());
+        p2.fillInStage(Map.of("answers", List.of()));
         try{p2.getNextStage();}
         catch (ExpEndException ignored){}
         graderToGradingTask.addParticipant(p2);

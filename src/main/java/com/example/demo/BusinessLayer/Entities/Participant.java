@@ -55,10 +55,6 @@ public class Participant {
         return participantId;
     }
 
-    public void setCurrStage(int currStage) {
-        this.currStage = currStage;
-    }
-
     public void setParticipantId(int participantId) {
         this.participantId = participantId;
     }

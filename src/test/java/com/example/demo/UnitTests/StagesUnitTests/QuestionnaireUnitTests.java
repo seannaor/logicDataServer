@@ -44,7 +44,7 @@ public class QuestionnaireUnitTests {
     @Test
     public void fillIn() throws NotInReachException, NotExistException, ParseException, FormatException {
         List<String> SAnswers  = List.of("a lot", "you");
-        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(SAnswers, participant);
+        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(Map.of("answers",SAnswers), participant);
 
         List<Answer> answers = res.getAnswers();
 
