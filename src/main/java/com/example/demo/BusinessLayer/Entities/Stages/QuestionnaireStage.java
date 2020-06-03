@@ -86,7 +86,7 @@ public class QuestionnaireStage extends Stage {
             throw new FormatException("list of answers");
         }
 
-        for (int i = 0; i < questions.size(); i++) {
+        for (int i = 0; i < this.questions.size(); i++) {
             Question q = getQuestion(i);
             q.answer(answers.get(i),questionnaireResult);
         }

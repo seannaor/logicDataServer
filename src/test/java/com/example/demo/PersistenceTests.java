@@ -6,6 +6,7 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -282,7 +283,7 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void addExpeesToGradingTasksTest() {
+	void addExpeesToGradingTasksTest() throws ExistException {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		createStagesForGradingTasks(e);
@@ -300,7 +301,7 @@ class PersistenceTests {
 		assertEquals(graderToParticipantRep.findAll().get(0).getGradingState(), true);
 	}
 
-	private void assignExpeesToGradingTasks() {
+	private void assignExpeesToGradingTasks() throws ExistException {
 		GraderToGradingTask graderToGradingTask1 = graderToGradingTaskRep.findAll().get(0);
 		GraderToGradingTask graderToGradingTask2 = graderToGradingTaskRep.findAll().get(1);
 		GraderToParticipant participant1Gt1 = new GraderToParticipant(graderToGradingTask1, participantRep.findAll().get(0));

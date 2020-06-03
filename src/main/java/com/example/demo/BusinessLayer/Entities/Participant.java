@@ -59,6 +59,10 @@ public class Participant {
         this.currStage = currStage;
     }
 
+    public void setParticipantId(int participantId) {
+        this.participantId = participantId;
+    }
+
     public Stage getCurrStage() throws ExpEndException, NotExistException {
         if (isDone) throw new ExpEndException();
         return experiment.getStage(currStage);

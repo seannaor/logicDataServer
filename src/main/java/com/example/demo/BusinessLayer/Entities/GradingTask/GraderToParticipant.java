@@ -18,7 +18,8 @@ public class GraderToParticipant {
         @Column(name = "expee_participant_id")
         private int expeeParticipantId;
 
-        public GraderToParticipantID() { }
+        public GraderToParticipantID() {
+        }
 
         public GraderToParticipantID(int gradingTaskId, String graderEmail, int expeeParticipantId) {
             this.gradingTaskId = gradingTaskId;
@@ -26,6 +27,7 @@ public class GraderToParticipant {
             this.expeeParticipantId = expeeParticipantId;
         }
     }
+
     @EmbeddedId
     private GraderToParticipantID graderToParticipantID;
     @Column(name = "grading_state")
@@ -45,45 +47,48 @@ public class GraderToParticipant {
     @JoinColumn(name = "grader_participant_id", referencedColumnName = "participant_id")
     private Participant graderParticipant;
 
-    public GraderToParticipant() { }
-    public GraderToParticipant(GraderToGradingTask graderToGradingTask, Participant expeeParticipant) {
-        this.graderToParticipantID = new GraderToParticipantID(graderToGradingTask.getGradingTask().getGradingTaskId(), graderToGradingTask.getGrader().getGraderEmail(), expeeParticipant.getParticipantId());
+    public GraderToParticipant() {
+    }
+
+    public GraderToParticipant(GraderToGradingTask graderToGradingTask, Participant expeeParticipant) throws ExistException {
+        this.graderToParticipantID = new GraderToParticipantID(graderToGradingTask.getGradingTask().getGradingTaskId(),
+                graderToGradingTask.getGrader().getGraderEmail(), expeeParticipant.getParticipantId());
         this.graderToGradingTask = graderToGradingTask;
         this.expeeParticipant = expeeParticipant;
         this.graderParticipant = new Participant(graderToGradingTask.getGradingTask().getGradingExperiment());
-        try {
-            this.graderToGradingTask.addGraderToParticipant(this);
-        } catch (ExistException e) {
-            e.printStackTrace();
-        }
+
+        this.graderToGradingTask.addGraderToParticipant(this);
+
     }
 
-    public Participant getExpeeParticipant() {
-        return expeeParticipant;
-    }
-
+    //setters
     public void setExpeeParticipant(Participant expeeParticipant) {
         this.expeeParticipant = expeeParticipant;
-    }
-
-    public Participant getGraderParticipant() {
-        return graderParticipant;
-    }
-
-    public GraderToGradingTask getGraderToGradingTask() {
-        return graderToGradingTask;
     }
 
     public void setGraderToGradingTask(GraderToGradingTask graderToGradingTask) {
         this.graderToGradingTask = graderToGradingTask;
     }
 
-
     public void setGradingState(boolean gradingState) {
         this.gradingState = gradingState;
     }
+
+    //getters
     public boolean getGradingState() {
         return this.gradingState;
+    }
+
+    public GraderToGradingTask getGraderToGradingTask() {
+        return graderToGradingTask;
+    }
+
+    public Participant getGraderParticipant() {
+        return graderParticipant;
+    }
+
+    public Participant getExpeeParticipant() {
+        return expeeParticipant;
     }
 
 }

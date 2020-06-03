@@ -65,6 +65,7 @@ public class Question {
         this.questionID = questionID;
     }
 
+    //TODO: maybe change to Map
     public JSONObject getQuestionJson() {
         JSONParser parser = new JSONParser();
         try {
