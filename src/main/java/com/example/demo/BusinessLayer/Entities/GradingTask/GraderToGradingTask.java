@@ -72,77 +72,24 @@ public class GraderToGradingTask {
         this.grader.assignGradingTasks(this);
     }
 
-    public Participant getGeneralExpParticipant() {
-        return generalExpParticipant;
-    }
-
-    public void setGeneralExpParticipant(Participant generalExpParticipant) {
-        this.generalExpParticipant = generalExpParticipant;
-    }
-
-    public GraderToGradingTaskID getGraderToGradingTaskID() {
-        return graderToGradingTaskID;
-    }
-
-    public List<GraderToParticipant> getGraderToParticipants() {
-        return this.graderToParticipants;
-    }
-
-    public void setGraderToParticipants(List<GraderToParticipant> graderToParticipants) {
-        this.graderToParticipants = graderToParticipants;
-    }
 
     public void addGraderToParticipant(GraderToParticipant g) throws ExistException {
-        if (this.graderToParticipants.contains(g))
-            throw new ExistException("user with id " + g.getExpeeParticipant().getParticipantId(), this.grader.getGraderEmail() + " participants");
-        this.graderToParticipants.add(g);
-    }
-
-    public List<Participant> getParticipants() {
-        List<Participant> participants = new ArrayList<>();
-        for(GraderToParticipant graderToparticipant: graderToParticipants){
-            participants.add(graderToparticipant.getExpeeParticipant());
+        for (GraderToParticipant graderToParticipant : this.graderToParticipants) {
+            if(graderToParticipant.getExpeeParticipant().getParticipantId()==g.getExpeeParticipant().getParticipantId())
+                throw new ExistException("user with id " + g.getExpeeParticipant().getParticipantId(), this.grader.getGraderEmail() + " participants");
         }
-        return participants;
+        this.graderToParticipants.add(g);
     }
 
     public void addParticipant(Participant p) throws ExistException {
         //TODO: check with sean
-        GraderToParticipant graderToParticipant = new GraderToParticipant(this,p);
-        if (graderToParticipants.contains(graderToParticipant))
-            throw new ExistException("user with id " + p.getParticipantId(), this.grader.getGraderEmail() + " participants");
-        graderToParticipants.add(graderToParticipant);
-    }
-
-    public GradingTask getGradingTask() {
-        return gradingTask;
-    }
-
-    public Grader getGrader() {
-        return grader;
-    }
-
-    public UUID getGraderAccessCode() {
-        return graderAccessCode;
-    }
-
-    public void setGraderAccessCode(UUID graderAccessCode) {
-        this.graderAccessCode = graderAccessCode;
-    }
-
-    public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException, NotInReachException {
-        Participant p = getExperimenteeParticipant(pid);
-        if(!p.isDone()) throw new NotInReachException(pid+ " results", pid+ " didn't finish the experiment");
-        List<Result> ret = new ArrayList<>();
-        for (Stage visible : gradingTask.getStages()) {
-            ret.add(p.getResultsOf(visible));
-        }
-        return ret;
+        GraderToParticipant g = new GraderToParticipant(this, p);
+//        addGraderToParticipant(g);
     }
 
     public void submitResults(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
-            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid) {
                 graderToParticipant.setGradingState(true);
                 return;
             }
@@ -152,14 +99,46 @@ public class GraderToGradingTask {
 
     public boolean isSubmitted(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
-            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid){
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid) {
                 return graderToParticipant.getGradingState();
             }
         }
         throw new NotExistException("participant", "" + pid);
     }
 
-    private Participant getExperimenteeParticipant(int pid) throws NotExistException {
+    //setters
+    public void setGeneralExpParticipant(Participant generalExpParticipant) {
+        this.generalExpParticipant = generalExpParticipant;
+    }
+
+    public void setGraderAccessCode(UUID graderAccessCode) {
+        this.graderAccessCode = graderAccessCode;
+    }
+
+    public void setGraderToParticipants(List<GraderToParticipant> graderToParticipants) {
+        this.graderToParticipants = graderToParticipants;
+    }
+
+    //getters
+    public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException, NotInReachException {
+        Participant p = getExperimenteeParticipant(pid);
+        if (!p.isDone()) throw new NotInReachException(pid + " results", pid + " didn't finish the experiment");
+        List<Result> ret = new ArrayList<>();
+        for (Stage visible : gradingTask.getStages()) {
+            ret.add(p.getResultsOf(visible));
+        }
+        return ret;
+    }
+
+    public List<Participant> getParticipants() {
+        List<Participant> participants = new ArrayList<>();
+        for (GraderToParticipant graderToparticipant : graderToParticipants) {
+            participants.add(graderToparticipant.getExpeeParticipant());
+        }
+        return participants;
+    }
+
+    public Participant getExperimenteeParticipant(int pid) throws NotExistException {
         for (GraderToParticipant graderToParticipant : graderToParticipants) {
             if (graderToParticipant.getExpeeParticipant().getParticipantId() == pid)
                 return graderToParticipant.getExpeeParticipant();
@@ -177,4 +156,30 @@ public class GraderToGradingTask {
         }
         throw new NotExistException("participant", "" + pid);
     }
+
+    public GradingTask getGradingTask() {
+        return gradingTask;
+    }
+
+    public Grader getGrader() {
+        return grader;
+    }
+
+    public UUID getGraderAccessCode() {
+        return graderAccessCode;
+    }
+
+    public Participant getGeneralExpParticipant() {
+        return generalExpParticipant;
+    }
+
+    public GraderToGradingTaskID getGraderToGradingTaskID() {
+        return graderToGradingTaskID;
+    }
+
+    public List<GraderToParticipant> getGraderToParticipants() {
+        return this.graderToParticipants;
+    }
+
+
 }
