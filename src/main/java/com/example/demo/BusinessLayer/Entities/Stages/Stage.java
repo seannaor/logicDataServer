@@ -96,11 +96,11 @@ public abstract class Stage {
     public abstract String getType();
 
 
-    public CodeResult fillCode(String code, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         throw new FormatException("questionnaire stage answers");
     }
 

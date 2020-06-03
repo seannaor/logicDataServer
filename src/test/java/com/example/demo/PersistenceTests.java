@@ -119,8 +119,6 @@ class PersistenceTests {
 		assertEquals(managementUserRep.findAll().get(0).getPermissions().get(0).getPermissionName(), "Super Manager");
 		assertEquals(managementUserRep.findAll().get(1).getPermissions().size(), 1);
 		assertEquals(managementUserRep.findAll().get(1).getPermissions().get(0).getPermissionName(), "Noob");
-		assertEquals(permissionRep.findAll().get(0).getManagementUsers().size(), 1);
-		assertEquals(permissionRep.findAll().get(1).getManagementUsers().size(), 1);
 	}
 
 	@Test
@@ -154,8 +152,6 @@ class PersistenceTests {
 	private void addPermissionsToManagementUsers() {
 		Permission p1 = new Permission("Super Manager"),
 				p2 = new Permission("Noob");
-		p1.getManagementUsers().add(managementUserRep.findAll().get(0));
-		p2.getManagementUsers().add(managementUserRep.findAll().get(1));
 		managementUserRep.findAll().get(0).getPermissions().add(p1);
 		managementUserRep.findAll().get(1).getPermissions().add(p2);
 		permissionRep.save(p1);

@@ -72,10 +72,18 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
         if(questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);
+        }
+        List<String> answers;
+        try{
+            answers = (List<String>) data.get("answers");
+            if (answers == null)
+                throw new FormatException("list of answers");
+        }catch (Exception e) {
+            throw new FormatException("list of answers");
         }
 
         for (int i = 0; i < questions.size(); i++) {

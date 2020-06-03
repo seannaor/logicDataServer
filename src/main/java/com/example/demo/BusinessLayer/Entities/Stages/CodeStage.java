@@ -53,7 +53,15 @@ public class CodeStage extends Stage {
     }
 
     @Override
-    public CodeResult fillCode(String code, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
+        String code;
+        try{
+            code = (String) data.get("code");
+            if (code == null)
+                throw new FormatException("user code");
+        }catch (Exception e) {
+            throw new FormatException("user code");
+        }
         return new CodeResult(participant, this, code);
     }
 
