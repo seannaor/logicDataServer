@@ -6,6 +6,7 @@ import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Stages.Question;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
@@ -72,6 +73,13 @@ public class QuestionnaireUnitTests {
         List<JSONObject> qs = (List<JSONObject>) qestionnaireMap.get("questions");
         Assert.assertEquals(questionnaireStage.getQuestions().get(0).getQuestionJson(), qs.get(0));
         Assert.assertEquals(questionnaireStage.getQuestions().get(1).getQuestionJson(), qs.get(1));
+    }
+
+    @Test
+    public void buildFromJson() throws FormatException {
+        JSONObject JQuestionnaireStage = getStumpQuestionsStage();
+        Stage stage = Stage.parseStage(JQuestionnaireStage,exp);
+        Assert.assertEquals("questionnaire",stage.getType());
     }
 
     private Question buildOpenQuestion() {

@@ -5,10 +5,12 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +18,17 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.demo.Utils.getStumpCodeStage;
+
 public class CodeUnitTest {
 
     private CodeStage codeStage;
     private Participant participant;
+    private Experiment exp;
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException {
-        Experiment exp = new Experiment("Experiment Name");
+        exp = new Experiment("Experiment Name");
         exp.setExperimentId(100);
         codeStage = new CodeStage("make me hello world program","//write code here","JAVA",exp);
         participant = new Participant(exp);
@@ -88,5 +93,12 @@ public class CodeUnitTest {
         Assert.assertEquals(codeStage.getTemplate(),codeMap.get("template"));
         Assert.assertEquals(codeStage.getLanguage(),codeMap.get("language"));
         Assert.assertEquals(codeStage.getRequirements().size(),((List)codeMap.get("requirements")).size());
+    }
+
+    @Test
+    public void buildFromJson() throws FormatException {
+        JSONObject JCodeStage = getStumpCodeStage();
+        Stage stage = Stage.parseStage(JCodeStage,exp);
+        Assert.assertEquals("code",stage.getType());
     }
 }
