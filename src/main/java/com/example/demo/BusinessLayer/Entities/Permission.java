@@ -41,6 +41,7 @@ public class Permission {
         this.permissionName = permission_name;
     }
 
+    // TODO: maybe no need for managementUsers list here
     public List<ManagementUser> getManagementUsers() {
         return managementUsers;
     }
