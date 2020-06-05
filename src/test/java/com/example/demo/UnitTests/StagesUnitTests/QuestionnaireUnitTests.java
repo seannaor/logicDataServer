@@ -15,6 +15,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class QuestionnaireUnitTests {
         participant.setParticipantId(10);
 
         questionnaireStage = new QuestionnaireStage(exp);
-        questions = List.of(buildOpenQuestion(), buildmultiChoiceQuestion());
+        questions = List.of(buildOpenQuestion(), buildMultiChoiceQuestion());
         questionnaireStage.addQuestion(questions.get(0));
         questionnaireStage.addQuestion(questions.get(1));
 
@@ -43,24 +44,57 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void fillIn() throws NotInReachException, NotExistException, ParseException, FormatException {
-        List<String> SAnswers  = List.of("a lot", "you");
-        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(Map.of("answers",SAnswers), participant);
+        List<String> SAnswers = List.of("a lot", "you");
+        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), participant);
 
         List<Answer> answers = res.getAnswers();
 
-        Assert.assertEquals(SAnswers.get(0),answers.get(0).getAnswer());
-        Assert.assertEquals(SAnswers.get(1),answers.get(1).getAnswer());
+        Assert.assertEquals(SAnswers.get(0), answers.get(0).getAnswer());
+        Assert.assertEquals(SAnswers.get(1), answers.get(1).getAnswer());
+
+        // can change answers
+        SAnswers = List.of("none", "me");
+        res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), participant);
+
+        answers = res.getAnswers();
+
+        Assert.assertEquals(SAnswers.get(0), answers.get(0).getAnswer());
+        Assert.assertEquals(SAnswers.get(1), answers.get(1).getAnswer());
+    }
+
+    @Test
+    public void fillInFormatFail() throws ParseException, NotExistException, NotInReachException, FormatException {
+        try {
+            //no answers
+            questionnaireStage.fillQuestionnaire(Map.of(), participant);
+            Assert.fail();
+        } catch (FormatException ignored) {
+        }
+
+        try {
+            //answers is not a list of strings
+            questionnaireStage.fillQuestionnaire(Map.of("answers", -1), participant);
+            Assert.fail();
+        } catch (FormatException ignored) {
+        }
+
+        try {
+            //missing answers
+            questionnaireStage.fillQuestionnaire(Map.of("answers", List.of()), participant);
+            Assert.fail();
+        } catch (FormatException ignored) {
+        }
     }
 
     @Test
     public void buildQuestionnaire() throws FormatException {
 
         List<JSONObject> JQuestions = (List<JSONObject>) getStumpQuestionsStage().get("questions");
-        QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions,exp);
+        QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions, exp);
 
-        Assert.assertEquals(JQuestions.size(),questionnaire.getQuestions().size());
-        Assert.assertEquals(JQuestions.get(0),questionnaire.getQuestions().get(0).getQuestionJson());
-        Assert.assertEquals(JQuestions.get(1),questionnaire.getQuestions().get(1).getQuestionJson());
+        Assert.assertEquals(JQuestions.size(), questionnaire.getQuestions().size());
+        Assert.assertEquals(JQuestions.get(0), questionnaire.getQuestions().get(0).getQuestionJson());
+        Assert.assertEquals(JQuestions.get(1), questionnaire.getQuestions().get(1).getQuestionJson());
     }
 
     @Test
@@ -76,14 +110,32 @@ public class QuestionnaireUnitTests {
     }
 
     @Test
+    public void setQuestions(){
+        questionnaireStage.setQuestions(List.of(questions.get(1),
+                questions.get(0)));
+
+        Assert.assertEquals(questions.get(0),questionnaireStage.getQuestions().get(1));
+        Assert.assertEquals(questions.get(1),questionnaireStage.getQuestions().get(0));
+    }
+
+
+    @Test
+    public void questionIndexFail(){
+        try{
+            questionnaireStage.getQuestion(-1);
+            Assert.fail();
+        }catch (NotExistException ignored) {}
+    }
+
+    @Test
     public void buildFromJson() throws FormatException {
         JSONObject JQuestionnaireStage = getStumpQuestionsStage();
-        Stage stage = Stage.parseStage(JQuestionnaireStage,exp);
-        Assert.assertEquals("questionnaire",stage.getType());
+        Stage stage = Stage.parseStage(JQuestionnaireStage, exp);
+        Assert.assertEquals("questionnaire", stage.getType());
     }
 
     private Question buildOpenQuestion() {
-        Question q = new Question(1,questionnaireStage,"");
+        Question q = new Question(1, questionnaireStage, "");
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "open");
         JQuestion.put("question", "how much");
@@ -91,12 +143,12 @@ public class QuestionnaireUnitTests {
         return q;
     }
 
-    private Question buildmultiChoiceQuestion() {
-        Question q= new Question(2,questionnaireStage,"");
+    private Question buildMultiChoiceQuestion() {
+        Question q = new Question(2, questionnaireStage, "");
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "multiChoice");
         JQuestion.put("question", "who?");
-        JQuestion.put("possibleAnswers", List.of("me","you","no one","we both"));
+        JQuestion.put("possibleAnswers", List.of("me", "you", "no one", "we both"));
         q.setQuestionJson(JQuestion.toString());
         return q;
     }

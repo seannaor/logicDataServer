@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class CodeUnitTest {
     private void init() throws NotExistException, FormatException, ExistException, CodeException {
         exp = new Experiment("Experiment Name");
         exp.setExperimentId(100);
-        codeStage = new CodeStage("make me hello world program","//write code here","JAVA",exp);
+        codeStage = new CodeStage("make me hello world program","//write code here", List.of("THE REQUIREMENT"),"JAVA",exp);
         participant = new Participant(exp);
         participant.setParticipantId(10);
     }
@@ -49,6 +50,7 @@ public class CodeUnitTest {
 
     @Test
     public void requirements(){
+        codeStage.setRequirements(new ArrayList<>());
         Assert.assertEquals(0,codeStage.getRequirements().size());
 
         Requirement r1 = new Requirement(codeStage,"R1");

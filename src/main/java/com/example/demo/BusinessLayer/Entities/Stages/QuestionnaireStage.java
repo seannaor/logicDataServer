@@ -77,37 +77,40 @@ public class QuestionnaireStage extends Stage {
         if(questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);
         }
-        List<String> answers;
-        try{
-            answers = (List<String>) data.get("answers");
-            if (answers == null)
-                throw new FormatException("list of answers");
-        }catch (Exception e) {
-            throw new FormatException("list of answers");
-        }
+
+        List<String> answers = getAnswersFromMap(data);
 
         for (int i = 0; i < this.questions.size(); i++) {
             Question q = getQuestion(i);
             q.answer(answers.get(i),questionnaireResult);
         }
-//        for (Question q : questions) {
-//            int i = q.getIndex();
-//            if (!data.containsKey(i+""))
-//                throw new FormatException("answer #" + i);
-//
-//            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
-//        }
+
         return questionnaireResult;
     }
 
-    private Question getQuestion(int i) throws NotExistException {
+    // validate answers list and return it
+    private List<String> getAnswersFromMap(Map<String,Object> data) throws FormatException {
+        List<String> answers;
+        try{
+            answers = (List<String>) data.get("answers");
+            if (answers == null||answers.size()<this.questions.size())
+                throw new FormatException("list of answers");
+        }catch (Exception e) {
+            throw new FormatException("list of answers");
+        }
+
+        return answers;
+
+    }
+
+    public Question getQuestion(int i) throws NotExistException {
         for(Question q: questions){
             if(q.getIndex()==i+1) return q;
         }
         throw new NotExistException("question", (i+1)+"");
     }
 
-    private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException{
+    private Question buildQuestion(JSONObject jQuestion, int QIdx){
         return new Question(QIdx, this, jQuestion.toString());
     }
 }
