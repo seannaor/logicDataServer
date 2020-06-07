@@ -26,7 +26,7 @@ public class GraderService {
         return Map.of("response", new CodeException(code));
     }
 
-    public Map<String, Object> fillInStage(String accessCode, int pid, JSONObject data) {
+    public Map<String, Object> fillInStage(String accessCode, int pid, Map<String, Object> data) {
         String res = "OK";
         try {
             graderBusiness.fillInStage(UUID.fromString(accessCode), pid, data);

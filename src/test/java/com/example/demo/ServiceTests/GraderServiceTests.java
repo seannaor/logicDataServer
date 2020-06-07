@@ -4,6 +4,7 @@ import com.example.demo.BusinessLayer.CreatorBusiness;
 import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Exceptions.*;
@@ -76,6 +77,23 @@ public class GraderServiceTests {
     }
 
     @Test
+    public void fillInStageTest() throws NotExistException, NotInReachException {
+        // some random wrong access code, should fai
+        Map<String,Object> ansWrong = graderService.fillInStage(UUID.randomUUID().toString(), expee.getParticipant().getParticipantId(), new JSONObject());
+        Assert.assertFalse(ansWrong.get("response").equals("OK"));
+        // nothing to fill in for info stage
+        Map<String,Object> ansRight = graderService.fillInStage(graderCode.toString(), expee.getParticipant().getParticipantId(), Map.of());
+        Assert.assertFalse(ansRight.get("response").equals("OK"));
+        //filling questionnaire stage
+        graderService.getNextStage(graderCode.toString(), expee.getParticipant().getParticipantId());
+        ansRight = graderService.fillInStage(graderCode.toString(), expee.getParticipant().getParticipantId(), Map.of("data",Map.of("answers",List.of("hi","bye"))));
+        Assert.assertTrue(ansRight.get("response").equals("OK"));
+        Participant graderParticipant = cache.getGraderToGradingTask(grader,task).getGraderToParticipants().get(0).getGraderParticipant();
+        Assert.assertEquals(((QuestionnaireResult)graderParticipant.getResult(1)).getAnswers().size(), 2);
+        Assert.assertEquals(((QuestionnaireResult)graderParticipant.getResult(1)).getAnswers().get(0).getAnswer(), "hi");
+    }
+
+    @Test
     public void getNextStageTest() throws NotExistException {
         // some random wrong access code, should fail
         Map<String,Object> ansWrong = graderService.getNextStage(UUID.randomUUID().toString(), expee.getParticipant().getParticipantId());
@@ -119,7 +137,6 @@ public class GraderServiceTests {
         Assert.assertFalse(ansWrong.get("response").equals("OK"));
     }
 
-
     @Test
     public void getStageTest() throws NotExistException {
         Map<String, Object> ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 0);
@@ -132,6 +149,34 @@ public class GraderServiceTests {
         ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 1);
         List<JSONObject> questionsOfStage = ((List<JSONObject>)((Map<String, Object>)ansRight.get("stage")).get("questions"));
         Assert.assertEquals(questionsOfStage.size(), ((QuestionnaireStage)experiment.getStage(1)).getQuestions().size());
+    }
+
+    @Test
+    public void getExperimenteesTest() throws NotExistException {
+        // some random wrong access code, should fail
+        Map<String,Object> ansWrong = graderService.getExperimentees(UUID.randomUUID().toString());
+        Assert.assertFalse(ansWrong.get("response").equals("OK"));
+        Map<String,Object> ansRight = graderService.getExperimentees(graderCode.toString());
+        Assert.assertTrue(ansRight.get("response").equals("OK"));
+        List<Integer> experimentees = (List<Integer>)(ansRight.get("experimentees"));
+        Assert.assertEquals(experimentees.size(), cache.getGraderToGradingTask(grader, task).getGraderToParticipants().size());
+        Assert.assertEquals(experimentees.get(0).intValue(), cache.getGraderToGradingTask(grader, task).getGraderToParticipants().get(0).getExpeeParticipant().getParticipantId());
+    }
+
+    @Test
+    public void getExperimenteeResultsTest() throws NotInReachException {
+        // some random wrong access code, should fail
+        Map<String,Object> ansWrong = graderService.getExperimenteeResults(UUID.randomUUID().toString(), expee.getParticipant().getParticipantId());
+        Assert.assertFalse(ansWrong.get("response").equals("OK"));
+        // invalid pid
+        ansWrong = graderService.getExperimenteeResults(graderCode.toString(),9090);
+        Assert.assertFalse(ansWrong.get("response").equals("OK"));
+        Map<String,Object> ansRight = graderService.getExperimenteeResults(graderCode.toString(), expee.getParticipant().getParticipantId());
+        Assert.assertTrue(ansRight.get("response").equals("OK"));
+        List<Map<String, Object>> results = (List<Map<String, Object>>)(ansRight.get("results"));
+        // expee has already finished the experiment (since we got results), grader can only see results that are visible to him (which are in the gradingTask)
+        Assert.assertEquals(results.size(), task.getStages().size());
+        Assert.assertEquals(results.get(0), expee.getParticipant().getResult(1).getAsMap());
     }
 
 }

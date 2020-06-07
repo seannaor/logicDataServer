@@ -75,7 +75,7 @@ public class GraderToGradingTask {
 
     public void addGraderToParticipant(GraderToParticipant g) throws ExistException {
         for (GraderToParticipant graderToParticipant : this.graderToParticipants) {
-            if(graderToParticipant.getExpeeParticipant().getParticipantId()==g.getExpeeParticipant().getParticipantId())
+            if (graderToParticipant.getExpeeParticipant().getParticipantId() == g.getExpeeParticipant().getParticipantId())
                 throw new ExistException("user with id " + g.getExpeeParticipant().getParticipantId(), this.grader.getGraderEmail() + " participants");
         }
         this.graderToParticipants.add(g);
@@ -180,6 +180,4 @@ public class GraderToGradingTask {
     public List<GraderToParticipant> getGraderToParticipants() {
         return this.graderToParticipants;
     }
-
-
 }
