@@ -5,6 +5,8 @@ import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class GradingTask {
                     @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
                     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages;
 
     public GradingTask() { }
