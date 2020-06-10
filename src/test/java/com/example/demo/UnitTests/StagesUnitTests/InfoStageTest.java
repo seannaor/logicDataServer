@@ -29,9 +29,9 @@ public class InfoStageTest {
     }
 
     @Test
-    public void setterGetter(){
+    public void setterGetter() {
         infoStage.setInfo("goodBye");
-        Assert.assertEquals("goodBye",infoStage.getInfo());
+        Assert.assertEquals("goodBye", infoStage.getInfo());
     }
 
     @Test
@@ -52,28 +52,33 @@ public class InfoStageTest {
         try {
             infoStage.fillCode(new HashMap<>(), expee.getParticipant());
             Assert.fail();
-        } catch (FormatException ignored) {}
+        } catch (FormatException ignored) {
+        }
 
         // fails because infoStage can not be filled as a questionnaire stage
         try {
             infoStage.fillQuestionnaire(new HashMap<>(), expee.getParticipant());
             Assert.fail();
-        } catch (FormatException ignored) {}
+        } catch (FormatException ignored) {
+        }
 
         // fails because infoStage can not be filled as a tag stage
         try {
             infoStage.fillTagging(new HashMap<>(), expee.getParticipant());
             Assert.fail();
-        } catch (FormatException ignored) {}
+        } catch (FormatException ignored) {
+        }
 
         try {
             infoStage.fillInfo(new Object(), expee.getParticipant());
-        } catch (Exception e) {Assert.fail();}
+        } catch (Exception e) {
+            Assert.fail();
+        }
     }
 
     @Test
-    public void parseStageTest() throws FormatException {
+    public void buildFromJson() throws FormatException {
         Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), expee.getExperiment());
-        Assert.assertEquals("info",stage.getType());
+        Assert.assertEquals("info", stage.getType());
     }
 }

@@ -56,7 +56,6 @@ public class GraderToParticipant {
         this.graderToGradingTask = graderToGradingTask;
         this.expeeParticipant = expeeParticipant;
         this.graderParticipant = new Participant(graderToGradingTask.getGradingTask().getGradingExperiment());
-
         this.graderToGradingTask.addGraderToParticipant(this);
 
     }

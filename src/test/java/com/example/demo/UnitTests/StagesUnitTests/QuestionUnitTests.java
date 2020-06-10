@@ -16,66 +16,68 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class QuestionUnitTests {
-    private Question open ;
-    private Question multi ;
+    private Question open;
+    private Question multi;
     private QuestionnaireStage stage;
     private Participant p;
 
 
     @BeforeEach
-    private void init(){
+    private void init() {
         p = new Participant();
         p.setParticipantId(10);
-        stage= new QuestionnaireStage();
+        stage = new QuestionnaireStage();
         stage.setStageID(new Stage.StageID(1));
         open = buildOpenQuestion(stage);
         stage.addQuestion(open);
-        multi= buildmultiChoiceQuestion(stage) ;
+        multi = buildmultiChoiceQuestion(stage);
         stage.addQuestion(open);
     }
 
     @Test
     public void answer() throws ParseException, FormatException {
-        QuestionnaireResult res = new QuestionnaireResult(stage,p);
+        QuestionnaireResult res = new QuestionnaireResult(stage, p);
 
-        Answer openAns = open.answer("a lot",res);
-        Answer multiAns = multi.answer("me",res);
-        Assert.assertEquals("a lot",openAns.getAnswer());
-        Assert.assertEquals("me",multiAns.getAnswer());
+        Answer openAns = open.answer("a lot", res);
+        Answer multiAns = multi.answer("me", res);
+        Assert.assertEquals("a lot", openAns.getAnswer());
+        Assert.assertEquals("me", multiAns.getAnswer());
     }
 
     @Test
     public void answerFailFormat() throws ParseException, FormatException {
-        QuestionnaireResult res = new QuestionnaireResult(stage,p);
+        QuestionnaireResult res = new QuestionnaireResult(stage, p);
 
         Question q = new Question();
         q.setQuestionJson("not a JSON");
 
-        try{
-            q.answer("answer",res);
+        try {
+            q.answer("answer", res);
             Assert.fail();
-        }catch (ParseException ignored){}
+        } catch (ParseException ignored) {
+        }
 
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "not a type");
         q.setQuestionJson(JQuestion.toString());
-        try{
-            q.answer("answer",res);
+        try {
+            q.answer("answer", res);
             Assert.fail();
-        }catch (FormatException ignored){}
+        } catch (FormatException ignored) {
+        }
     }
 
     @Test
-    public void ID(){
-        Assert.assertEquals(1,open.getStageID().getStageIndex());
-        Assert.assertEquals(1,multi.getStageID().getStageIndex());
+    public void ID() {
+        Assert.assertEquals(1, open.getStageID().getStageIndex());
+        Assert.assertEquals(1, multi.getStageID().getStageIndex());
 
-        Assert.assertEquals(0,open.getIndex());
-        Assert.assertEquals(1,multi.getIndex());
+        Assert.assertEquals(0, open.getIndex());
+        Assert.assertEquals(1, multi.getIndex());
     }
 
     @Test
-    public void getJson(){
+    public void getJson() {
         JSONObject JOpen = open.getQuestionJson();
         JSONObject JMulti = multi.getQuestionJson();
 
@@ -85,27 +87,27 @@ public class QuestionUnitTests {
         Assert.assertTrue(JMulti.containsKey("question"));
         Assert.assertTrue(JMulti.containsKey("possibleAnswers"));
 
-        Assert.assertEquals("open",JOpen.get("questionType"));
-        Assert.assertEquals("how much",JOpen.get("question"));
+        Assert.assertEquals("open", JOpen.get("questionType"));
+        Assert.assertEquals("how much", JOpen.get("question"));
 
-        Assert.assertEquals("multiChoice",JMulti.get("questionType"));
-        Assert.assertEquals("who?",JMulti.get("question"));
-        Assert.assertEquals(4,((List)JMulti.get("possibleAnswers")).size());
+        Assert.assertEquals("multiChoice", JMulti.get("questionType"));
+        Assert.assertEquals("who?", JMulti.get("question"));
+        Assert.assertEquals(4, ((List) JMulti.get("possibleAnswers")).size());
     }
 
     @Test
-    public void getJsonFail(){
+    public void getJsonFail() {
         Question q = new Question();
         q.setQuestionJson("not a JSON");
 
-        Assert.assertEquals(new JSONObject().toString(),q.getQuestionJson().toString());
+        Assert.assertEquals(new JSONObject().toString(), q.getQuestionJson().toString());
     }
 
     private Question buildOpenQuestion(QuestionnaireStage stage) {
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "open");
         JQuestion.put("question", "how much");
-        return new Question(stage.getQuestions().size(),stage,JQuestion.toString());
+        return new Question(stage.getQuestions().size(), stage, JQuestion.toString());
     }
 
     private Question buildmultiChoiceQuestion(QuestionnaireStage stage) {
@@ -113,7 +115,7 @@ public class QuestionUnitTests {
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "multiChoice");
         JQuestion.put("question", "who?");
-        JQuestion.put("possibleAnswers", List.of("me","you","no one","we both"));
-        return new Question(stage.getQuestions().size(),stage,JQuestion.toString());
+        JQuestion.put("possibleAnswers", List.of("me", "you", "no one", "we both"));
+        return new Question(stage.getQuestions().size(), stage, JQuestion.toString());
     }
 }

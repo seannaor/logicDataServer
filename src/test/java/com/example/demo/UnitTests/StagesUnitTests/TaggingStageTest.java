@@ -6,7 +6,9 @@ import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
-import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
@@ -28,18 +30,21 @@ public class TaggingStageTest {
         exp.setExperimentId(100);
         List<String> requirements = new ArrayList<>();
         requirements.add("do that");
-        taggingStage = new TaggingStage(new CodeStage("make me hello world program","//write code here",requirements,"JAVA",exp),exp);
+        taggingStage = new TaggingStage(new CodeStage("make me hello world program", "//write code here", requirements, "JAVA", exp), exp);
         expee = new Experimentee("a@a.a", exp);
     }
+
     @Test
-    public void getAsMapTest(){
+    public void getAsMapTest() {
         Map<String, Object> map = new HashMap<>();
         Assert.assertEquals(map, taggingStage.getAsMap());
     }
+
     @Test
-    public void getTypeTest(){
+    public void getTypeTest() {
         Assert.assertEquals("tagging", taggingStage.getType());
     }
+
     @Test
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
         // fails because taggingStage can not be filled as a code stage
@@ -60,6 +65,11 @@ public class TaggingStageTest {
             Assert.fail();
         } catch (FormatException e) {
         }
+
+    }
+
+    @Test
+    public void fillIn() {
         try {
             JSONObject ans = new JSONObject();
             JSONObject tag1 = new JSONObject();

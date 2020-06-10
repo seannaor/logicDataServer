@@ -36,7 +36,7 @@ public class QuestionnaireStage extends Stage {
         super(experiment);
     }
 
-    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) throws FormatException {
+    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment)  {
         super(experiment);
         questions = new ArrayList<>();
         int QIdx = 1;
@@ -44,6 +44,7 @@ public class QuestionnaireStage extends Stage {
             questions.add(buildQuestion(JQuestion,QIdx++));
         }
     }
+
 
     public List<Question> getQuestions() {
         return this.questions;
@@ -88,6 +89,18 @@ public class QuestionnaireStage extends Stage {
         return questionnaireResult;
     }
 
+
+    public Question getQuestion(int i) throws NotExistException {
+        for(Question q: questions){
+            if(q.getIndex()==i+1) return q;
+        }
+        throw new NotExistException("question", (i+1)+"");
+    }
+
+    private Question buildQuestion(JSONObject jQuestion, int QIdx){
+        return new Question(QIdx, this, jQuestion.toString());
+    }
+
     // validate answers list and return it
     private List<String> getAnswersFromMap(Map<String,Object> data) throws FormatException {
         List<String> answers;
@@ -101,16 +114,5 @@ public class QuestionnaireStage extends Stage {
 
         return answers;
 
-    }
-
-    public Question getQuestion(int i) throws NotExistException {
-        for(Question q: questions){
-            if(q.getIndex()==i+1) return q;
-        }
-        throw new NotExistException("question", (i+1)+"");
-    }
-
-    private Question buildQuestion(JSONObject jQuestion, int QIdx){
-        return new Question(QIdx, this, jQuestion.toString());
     }
 }

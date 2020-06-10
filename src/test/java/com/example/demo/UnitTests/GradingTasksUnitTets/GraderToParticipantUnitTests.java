@@ -22,21 +22,21 @@ public class GraderToParticipantUnitTests {
         evaluate = new Experiment("Evaluation");
         Experiment general = new Experiment("General");
         evaluate.setGradingTaskExp(true);
-        GradingTask gradingTask = new GradingTask("Grading Task",exp,general,evaluate);
+        GradingTask gradingTask = new GradingTask("Grading Task", exp, general, evaluate);
         Grader grader = new Grader("grader@mail");
-        GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask,grader);
+        GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask, grader);
         Participant participant = new Participant(exp);
-        graderToParticipant = new GraderToParticipant(graderToGradingTask,participant);
+        graderToParticipant = new GraderToParticipant(graderToGradingTask, participant);
     }
 
     @Test
-    public void graderToParticipant(){
+    public void graderToParticipant() {
 
         Assert.assertFalse(graderToParticipant.getGradingState());
 
         // maybe move to GraderToGradingTaskTests
         Participant graderParticipant = graderToParticipant.getGraderParticipant();
-        Assert.assertEquals(evaluate,graderParticipant.getExperiment());
+        Assert.assertEquals(evaluate, graderParticipant.getExperiment());
 
         GraderToGradingTask graderToGradingTask = graderToParticipant.getGraderToGradingTask();
 

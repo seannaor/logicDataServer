@@ -94,13 +94,14 @@ public class GradingTask {
         this.assignedGradingTasks.add(assignedGradingTask);
     }
 
-    public GraderToGradingTask graderToGradingTask(Grader g) throws NotExistException {
+    public GraderToGradingTask getGraderToGradingTask(Grader g) throws NotExistException {
         // for tests use
         for(GraderToGradingTask gtgt:assignedGradingTasks){
             if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
         }
         throw new NotExistException("grader",g.getGraderEmail());
     }
+
     public Experiment getBaseExperiment() {
         return baseExperiment;
     }

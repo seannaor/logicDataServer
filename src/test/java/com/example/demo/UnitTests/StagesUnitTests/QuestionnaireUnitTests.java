@@ -110,21 +110,32 @@ public class QuestionnaireUnitTests {
     }
 
     @Test
-    public void setQuestions(){
+    public void setQuestions() {
         questionnaireStage.setQuestions(List.of(questions.get(1),
                 questions.get(0)));
 
-        Assert.assertEquals(questions.get(0),questionnaireStage.getQuestions().get(1));
-        Assert.assertEquals(questions.get(1),questionnaireStage.getQuestions().get(0));
+        Assert.assertEquals(questions.get(0), questionnaireStage.getQuestions().get(1));
+        Assert.assertEquals(questions.get(1), questionnaireStage.getQuestions().get(0));
     }
 
+    @Test
+    public void addQuestion() throws NotExistException {
+        int numQuestions = questionnaireStage.getQuestions().size();
+        Question newQ = questions.get(0);
+        newQ.setQuestionID(new Question.QuestionID(3, questionnaireStage.getStageID()));
+        questionnaireStage.addQuestion(newQ);
+        Assert.assertEquals(numQuestions + 1, questionnaireStage.getQuestions().size());
+
+        Assert.assertEquals(newQ, questionnaireStage.getQuestion(2));
+    }
 
     @Test
-    public void questionIndexFail(){
-        try{
+    public void questionIndexFail() {
+        try {
             questionnaireStage.getQuestion(-1);
             Assert.fail();
-        }catch (NotExistException ignored) {}
+        } catch (NotExistException ignored) {
+        }
     }
 
     @Test

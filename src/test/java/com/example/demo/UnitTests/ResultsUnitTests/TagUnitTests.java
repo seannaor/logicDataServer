@@ -1,4 +1,4 @@
-package com.example.demo.UnitTests.StagesUnitTests;
+package com.example.demo.UnitTests.ResultsUnitTests;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
@@ -15,11 +15,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class RequirementTest {
+public class TagUnitTests {
 
     private TaggingStage taggingStage;
     private Requirement requirement;
     private Participant participant;
+    private RequirementTag tag;
 
     @BeforeEach
     public void init() {
@@ -29,15 +30,30 @@ public class RequirementTest {
         taggingStage = new TaggingStage(codeStage, exp);
         participant = new Experimentee("a@a.a", exp).getParticipant();
         requirement = codeStage.getRequirements().get(0);
-    }
 
-    @Test
-    public void tagTest() {
         JSONObject tag1 = new JSONObject();
         tag1.put("start_loc", 0);
         tag1.put("length", 10);
 
-        RequirementTag tag = requirement.tag(tag1, new TaggingResult(taggingStage, participant));
-        Assert.assertEquals(tag.getRequirement(), requirement);
+        tag = requirement.tag(tag1, new TaggingResult(taggingStage, participant));
     }
+
+    @Test
+    public void constructor() {
+        RequirementTag newTag = new RequirementTag(10, 2, requirement, new TaggingResult(taggingStage, participant));
+
+        Assert.assertEquals(10, newTag.getStart());
+        Assert.assertEquals(2, newTag.getLength());
+        Assert.assertEquals(requirement, newTag.getRequirement());
+    }
+
+    @Test
+    public void setterGetterTest() {
+        tag.setLength(2);
+        Assert.assertEquals(2, tag.getLength());
+
+        tag.setStart(2);
+        Assert.assertEquals(2, tag.getStart());
+    }
+
 }

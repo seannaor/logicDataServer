@@ -70,6 +70,10 @@ public class Answer {
         this.question = question;
     }
 
+    public Question getQuestion() {
+        return question;
+    }
+
     public Stage.StageID getStageID(){
         return this.question.getStageID();
     }

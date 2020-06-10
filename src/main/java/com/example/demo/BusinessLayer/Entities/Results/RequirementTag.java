@@ -92,6 +92,10 @@ public class RequirementTag {
         this.requirementTagID.startCharLoc=startCharLoc;
     }
 
+    public int getStart(){
+        return this.requirementTagID.startCharLoc;
+    }
+
     public TaggingResult getTaggingResult() {
         return taggingResult;
     }

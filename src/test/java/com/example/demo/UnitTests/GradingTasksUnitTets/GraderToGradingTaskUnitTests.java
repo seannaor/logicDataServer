@@ -45,8 +45,10 @@ public class GraderToGradingTaskUnitTests {
         p2 = new Participant(exp);
         p2.setParticipantId(2);
         p2.fillInStage(Map.of("answers", List.of()));
-        try{p2.getNextStage();}
-        catch (ExpEndException ignored){}
+        try {
+            p2.getNextStage();
+        } catch (ExpEndException ignored) {
+        }
         graderToGradingTask.addParticipant(p2);
     }
 
@@ -140,21 +142,23 @@ public class GraderToGradingTaskUnitTests {
 
     @Test
     public void getResults() throws NotInReachException, FormatException, NotExistException {
-        try{
+        try {
             //not exist user
             graderToGradingTask.getExpeeRes(-1);
             Assert.fail();
-        }catch (NotExistException ignored) {}
+        } catch (NotExistException ignored) {
+        }
 
-        try{
+        try {
             //didn't finish exp
             graderToGradingTask.getExpeeRes(graderToParticipant1.getExpeeParticipant().getParticipantId());
             Assert.fail();
-        }catch (NotInReachException ignored) {}
+        } catch (NotInReachException ignored) {
+        }
 
         List<Result> results = graderToGradingTask.getExpeeRes(p2.getParticipantId());
-        Assert.assertEquals(1,results.size());
+        Assert.assertEquals(1, results.size());
         Assert.assertTrue((results.get(0) instanceof QuestionnaireResult));
-        Assert.assertEquals(0,((QuestionnaireResult)results.get(0)).getAnswers().size());
+        Assert.assertEquals(0, ((QuestionnaireResult) results.get(0)).getAnswers().size());
     }
 }

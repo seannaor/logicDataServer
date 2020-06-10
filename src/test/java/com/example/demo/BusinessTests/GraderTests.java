@@ -71,7 +71,7 @@ public class GraderTests {
 
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee.getExperimenteeEmail());
 
-        graderExpeeParticipant = task.graderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
+        graderExpeeParticipant = task.getGraderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
         Utils.fillInExp(experimenteeBusiness, expee.getAccessCode());
     }
 
