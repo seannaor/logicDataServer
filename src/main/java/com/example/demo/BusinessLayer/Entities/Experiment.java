@@ -98,6 +98,10 @@ public class Experiment {
         this.published = published;
     }
 
+    public void setExperimentId(int experimentId) {
+        this.experimentId = experimentId;
+    }
+
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {

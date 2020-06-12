@@ -5,6 +5,8 @@ import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class GradingTask {
                     @JoinColumn(name = "stage_index", referencedColumnName = "stage_index"),
                     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")}
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages;
 
     public GradingTask() { }
@@ -91,13 +94,14 @@ public class GradingTask {
         this.assignedGradingTasks.add(assignedGradingTask);
     }
 
-    public GraderToGradingTask graderToGradingTask(Grader g) throws NotExistException {
+    public GraderToGradingTask getGraderToGradingTask(Grader g) throws NotExistException {
         // for tests use
         for(GraderToGradingTask gtgt:assignedGradingTasks){
             if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
         }
         throw new NotExistException("grader",g.getGraderEmail());
     }
+
     public Experiment getBaseExperiment() {
         return baseExperiment;
     }

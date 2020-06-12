@@ -36,7 +36,7 @@ public class QuestionnaireStage extends Stage {
         super(experiment);
     }
 
-    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) throws FormatException {
+    public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment)  {
         super(experiment);
         questions = new ArrayList<>();
         int QIdx = 1;
@@ -44,6 +44,7 @@ public class QuestionnaireStage extends Stage {
             questions.add(buildQuestion(JQuestion,QIdx++));
         }
     }
+
 
     public List<Question> getQuestions() {
         return this.questions;
@@ -72,34 +73,46 @@ public class QuestionnaireStage extends Stage {
     }
 
     @Override
-    public QuestionnaireResult fillQuestionnaire(List<String> answers, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
         QuestionnaireResult questionnaireResult = (QuestionnaireResult)participant.getResult(this.getStageID().getStageIndex());
         if(questionnaireResult == null) {
             questionnaireResult = new QuestionnaireResult(this, participant);
         }
 
-        for (int i = 0; i < questions.size(); i++) {
+        List<String> answers = getAnswersFromMap(data);
+
+        for (int i = 0; i < this.questions.size(); i++) {
             Question q = getQuestion(i);
             q.answer(answers.get(i),questionnaireResult);
         }
-//        for (Question q : questions) {
-//            int i = q.getIndex();
-//            if (!data.containsKey(i+""))
-//                throw new FormatException("answer #" + i);
-//
-//            q.answer(data.get(i+""), questionnaireResult); //adds the new answer to the questionnaireResult automatically
-//        }
+
         return questionnaireResult;
     }
 
-    private Question getQuestion(int i) throws NotExistException {
+
+    public Question getQuestion(int i) throws NotExistException {
         for(Question q: questions){
             if(q.getIndex()==i+1) return q;
         }
         throw new NotExistException("question", (i+1)+"");
     }
 
-    private Question buildQuestion(JSONObject jQuestion, int QIdx) throws FormatException{
+    private Question buildQuestion(JSONObject jQuestion, int QIdx){
         return new Question(QIdx, this, jQuestion.toString());
+    }
+
+    // validate answers list and return it
+    private List<String> getAnswersFromMap(Map<String,Object> data) throws FormatException {
+        List<String> answers;
+        try{
+            answers = (List<String>) data.get("answers");
+            if (answers == null||answers.size()<this.questions.size())
+                throw new FormatException("list of answers");
+        }catch (Exception e) {
+            throw new FormatException("list of answers");
+        }
+
+        return answers;
+
     }
 }

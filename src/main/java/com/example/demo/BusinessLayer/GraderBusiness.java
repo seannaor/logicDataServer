@@ -29,7 +29,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     @Override
-    public boolean beginGrading(UUID accessCode) {
+    public boolean beginGrading(UUID accessCode)  {
         try {
             cache.getGraderByCode(accessCode);
             return true;

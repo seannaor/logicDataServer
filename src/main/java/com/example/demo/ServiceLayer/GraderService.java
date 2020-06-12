@@ -21,15 +21,12 @@ public class GraderService {
 
     public Map<String, Object> beginGrading(String code) {
         String res = "OK";
-        try {
-            graderBusiness.beginGrading(UUID.fromString(code));
-        } catch (Exception e) {
-            res = e.getMessage();
-        }
-        return Map.of("response", res);
+        if(graderBusiness.beginGrading(UUID.fromString(code)))
+            return Map.of("response", "OK");
+        return Map.of("response", new CodeException(code));
     }
 
-    public Map<String, Object> fillInStage(String accessCode, int pid, JSONObject data) {
+    public Map<String, Object> fillInStage(String accessCode, int pid, Map<String, Object> data) {
         String res = "OK";
         try {
             graderBusiness.fillInStage(UUID.fromString(accessCode), pid, data);

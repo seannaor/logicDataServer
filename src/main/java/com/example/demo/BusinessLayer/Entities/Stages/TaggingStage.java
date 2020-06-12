@@ -64,6 +64,8 @@ public class TaggingStage extends Stage {
         JSONObject tags;
         try{
             tags = (JSONObject) data.get("tagging");
+            if(tags == null)
+                throw new FormatException("tags list");
         }catch (Exception e) {
             throw new FormatException("tags list");
         }

@@ -2,7 +2,6 @@ package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.*;
 import com.example.demo.BusinessLayer.Entities.*;
-import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
@@ -72,7 +71,7 @@ public class GraderTests {
 
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee.getExperimenteeEmail());
 
-        graderExpeeParticipant = task.graderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
+        graderExpeeParticipant = task.getGraderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
         Utils.fillInExp(experimenteeBusiness, expee.getAccessCode());
     }
 

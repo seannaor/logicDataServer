@@ -55,6 +55,10 @@ public class Participant {
         return participantId;
     }
 
+    public void setParticipantId(int participantId) {
+        this.participantId = participantId;
+    }
+
     public Stage getCurrStage() throws ExpEndException, NotExistException {
         if (isDone) throw new ExpEndException();
         return experiment.getStage(currStage);
@@ -100,13 +104,7 @@ public class Participant {
 //        String type = (String) data.getOrDefault("stageType", "no stage stated");
         switch (curr.getType()) {
             case "code":
-                String code;
-                try{
-                    code = (String) data.get("code");
-                }catch (Exception e) {
-                    throw new FormatException("user code");
-                }
-                CodeResult codeResult = curr.fillCode(code,this);
+                CodeResult codeResult = curr.fillCode(data,this);
                 this.results.add(codeResult);
                 return codeResult;
             case "tagging":
@@ -114,13 +112,7 @@ public class Participant {
                 this.results.add(taggingResult);
                 return taggingResult;
             case "questionnaire":
-                List<String> Answers;
-                try{
-                    Answers = (List<String>) data.get("answers");
-                }catch (Exception e) {
-                    throw new FormatException("list of answers");
-                }
-                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(Answers,this);
+                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data,this);
                 this.results.add(questionnaireResult);
                 return questionnaireResult;
             default:

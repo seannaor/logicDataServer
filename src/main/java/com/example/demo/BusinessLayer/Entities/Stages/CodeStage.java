@@ -53,6 +53,57 @@ public class CodeStage extends Stage {
     }
 
     @Override
+    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
+        String code;
+        try{
+            code = (String) data.get("code");
+            if (code == null)
+                throw new FormatException("user code");
+        }catch (Exception e) {
+            throw new FormatException("user code");
+        }
+        return new CodeResult(participant, this, code);
+    }
+
+    public void addRequirement(Requirement requirement) {
+        this.requirements.add(requirement);
+    }
+
+    // setters
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
+    }
+
+    // getters
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public List<Requirement> getRequirements() {
+        return requirements;
+    }
+
+    @Override
     public Map<String, Object> getAsMap() {
         Map<String, Object> stageMap = new HashMap<>();
         stageMap.put("description", this.description);
@@ -70,38 +121,5 @@ public class CodeStage extends Stage {
     public String getType() {
         return "code";
     }
-
-    @Override
-    public CodeResult fillCode(String code, Participant participant) throws FormatException {
-        return new CodeResult(participant, this, code);
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<Requirement> getRequirements() {
-        return requirements;
-    }
-
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    public void addRequirement(Requirement requirement) {
-        this.requirements.add(requirement);
-    }
-
+    
 }

@@ -38,7 +38,7 @@ public class Experimentee {
     }
 
     public UUID getAccessCode() {
-        return accessCode;
+        return this.accessCode;
     }
 
     public String getExperimenteeEmail() {

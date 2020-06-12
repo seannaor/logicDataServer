@@ -13,8 +13,6 @@ public class Permission {
     private int permissionId;
     @Column(name = "permission_name")
     private String permissionName;
-    @ManyToMany(mappedBy = "permissions")
-    private List<ManagementUser> managementUsers = new ArrayList<>();
 
     public Permission() {
     }
@@ -25,7 +23,6 @@ public class Permission {
 
     public Permission(String permissionName,ManagementUser man) {
         this.permissionName = permissionName;
-        this.managementUsers.add(man);
         man.addPermission(this);
     }
 
@@ -39,13 +36,5 @@ public class Permission {
 
     public void setPermissionName(String permission_name) {
         this.permissionName = permission_name;
-    }
-
-    public List<ManagementUser> getManagementUsers() {
-        return managementUsers;
-    }
-
-    public void setManagementUsers(List<ManagementUser> managementUsers) {
-        this.managementUsers = managementUsers;
     }
 }

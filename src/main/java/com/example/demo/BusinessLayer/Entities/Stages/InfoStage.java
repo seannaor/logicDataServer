@@ -25,6 +25,10 @@ public class InfoStage extends Stage {
         this.info = info;
     }
 
+    public InfoStage(String info) {
+        this.info = info;
+    }
+
     public String getInfo() {
         return info;
     }

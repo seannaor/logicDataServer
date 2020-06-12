@@ -6,6 +6,7 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.*;
 import com.example.demo.BusinessLayer.Entities.Stages.*;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -119,8 +120,6 @@ class PersistenceTests {
 		assertEquals(managementUserRep.findAll().get(0).getPermissions().get(0).getPermissionName(), "Super Manager");
 		assertEquals(managementUserRep.findAll().get(1).getPermissions().size(), 1);
 		assertEquals(managementUserRep.findAll().get(1).getPermissions().get(0).getPermissionName(), "Noob");
-		assertEquals(permissionRep.findAll().get(0).getManagementUsers().size(), 1);
-		assertEquals(permissionRep.findAll().get(1).getManagementUsers().size(), 1);
 	}
 
 	@Test
@@ -154,8 +153,6 @@ class PersistenceTests {
 	private void addPermissionsToManagementUsers() {
 		Permission p1 = new Permission("Super Manager"),
 				p2 = new Permission("Noob");
-		p1.getManagementUsers().add(managementUserRep.findAll().get(0));
-		p2.getManagementUsers().add(managementUserRep.findAll().get(1));
 		managementUserRep.findAll().get(0).getPermissions().add(p1);
 		managementUserRep.findAll().get(1).getPermissions().add(p2);
 		permissionRep.save(p1);
@@ -286,7 +283,7 @@ class PersistenceTests {
 
 	@Test
 	@Transactional
-	void addExpeesToGradingTasksTest() {
+	void addExpeesToGradingTasksTest() throws ExistException {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		createStagesForGradingTasks(e);
@@ -304,7 +301,7 @@ class PersistenceTests {
 		assertEquals(graderToParticipantRep.findAll().get(0).getGradingState(), true);
 	}
 
-	private void assignExpeesToGradingTasks() {
+	private void assignExpeesToGradingTasks() throws ExistException {
 		GraderToGradingTask graderToGradingTask1 = graderToGradingTaskRep.findAll().get(0);
 		GraderToGradingTask graderToGradingTask2 = graderToGradingTaskRep.findAll().get(1);
 		GraderToParticipant participant1Gt1 = new GraderToParticipant(graderToGradingTask1, participantRep.findAll().get(0));
