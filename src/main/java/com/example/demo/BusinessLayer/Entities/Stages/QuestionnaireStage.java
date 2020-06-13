@@ -39,9 +39,23 @@ public class QuestionnaireStage extends Stage {
     public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment)  {
         super(experiment);
         questions = new ArrayList<>();
-        int QIdx = 1;
         for (JSONObject JQuestion : JQuestions) {
-            questions.add(buildQuestion(JQuestion,QIdx++));
+            questions.add(buildQuestion(JQuestion));
+        }
+    }
+
+    public QuestionnaireStage(List<JSONObject> JQuestions)  {
+        questions = new ArrayList<>();
+        for (JSONObject JQuestion : JQuestions) {
+            questions.add(buildQuestion(JQuestion));
+        }
+    }
+
+    @Override
+    public void setExperiment(Experiment experiment){
+        super.setExperiment(experiment);
+        for (Question q : this.questions) {
+            q.setQuestionnaireStage(this);
         }
     }
 
@@ -97,8 +111,10 @@ public class QuestionnaireStage extends Stage {
         throw new NotExistException("question", (i+1)+"");
     }
 
-    private Question buildQuestion(JSONObject jQuestion, int QIdx){
-        return new Question(QIdx, this, jQuestion.toString());
+    private Question buildQuestion(JSONObject jQuestion){
+        Question newQuestion = new Question(jQuestion.toString());
+        newQuestion.setQuestionnaireStage(this);
+        return newQuestion;
     }
 
     // validate answers list and return it

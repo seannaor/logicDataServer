@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -105,7 +104,7 @@ public class Experiment {
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
-        stage.setExp(this);
+        stage.setExperiment(this);
         stages.add(stage);
     }
 

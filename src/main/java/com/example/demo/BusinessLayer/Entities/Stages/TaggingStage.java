@@ -33,6 +33,11 @@ public class TaggingStage extends Stage {
         this.codeStage = codeStage;
     }
 
+
+    public TaggingStage(CodeStage codeStage){
+        this.codeStage = codeStage;
+    }
+
     public TaggingStage(Experiment experiment, int stage_index) {
         super(experiment, stage_index);
     }

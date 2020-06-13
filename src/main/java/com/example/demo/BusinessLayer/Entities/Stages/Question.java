@@ -47,10 +47,20 @@ public class Question {
     public Question() {
     }
 
+    public Question(String questionJson){
+        this.questionJson = questionJson;
+    }
+
     public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
         this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
         this.questionnaireStage = questionnaireStage;
         this.questionJson = questionJson;
+    }
+
+    public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
+        this.questionnaireStage = questionnaireStage;
+        this.questionID = new QuestionID(questionnaireStage.getQuestions().size()+1,
+                questionnaireStage.getStageID());
     }
 
     public int getIndex() {

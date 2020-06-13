@@ -58,6 +58,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(id);
         Stage toAdd = Stage.parseStage(stage, exp);
+        exp.addStage(toAdd);
         db.saveStage(toAdd);
     }
 
@@ -90,6 +91,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment personal = gt.getGeneralExperiment();
         Stage toAdd = Stage.parseStage(stage, personal);
+        personal.addStage(toAdd);
         db.saveStage(toAdd);
     }
 
@@ -98,6 +100,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment resExp = gt.getGradingExperiment();
         Stage toAdd = Stage.parseStage(stage, resExp);
+        resExp.addStage(toAdd);
         db.saveStage(toAdd);
     }
 
@@ -274,6 +277,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         for (JSONObject jStage : stages) {
             try{
                 Stage toAdd = Stage.parseStage(jStage, exp);
+                exp.addStage(toAdd);
                 db.saveStage(toAdd);
             }catch (FormatException e){
                 creator.removeManagementUserToExperimentById(exp);

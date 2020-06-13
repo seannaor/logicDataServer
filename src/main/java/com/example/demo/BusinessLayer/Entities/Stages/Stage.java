@@ -64,15 +64,15 @@ public abstract class Stage {
         experiment.addStage(this);
     }
 
-    public void setExp(Experiment experiment){
-        this.experiment = experiment;
-        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
-    }
-
     public Stage(Experiment experiment, int stage_index) {
         this.stageID = new StageID(experiment.getExperimentId(), stage_index);
         this.experiment = experiment;
         experiment.addStage(this);
+    }
+
+    public void setExperiment(Experiment experiment){
+        this.experiment = experiment;
+        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
     }
 
     public StageID getStageID() {
@@ -85,10 +85,6 @@ public abstract class Stage {
 
     public Experiment getExperiment() {
         return experiment;
-    }
-
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
     }
 
     public abstract Map<String,Object> getAsMap();
@@ -116,19 +112,19 @@ public abstract class Stage {
         try {
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"), exp);
+                    return new InfoStage((String) stage.get("info"));
 
                 case "code":
                     return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"),(String) stage.get("language"), exp);
+                            (List<String>) stage.get("requirements"),(String) stage.get("language"));
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
 
                 case "tagging":
                     int codeIdx = (int)stage.get("codeIndex");
                     CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
-                    return new TaggingStage(codeStage,exp);
+                    return new TaggingStage(codeStage);
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");

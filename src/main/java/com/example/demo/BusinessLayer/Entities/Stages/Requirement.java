@@ -58,6 +58,16 @@ public class Requirement {
         this.text = text;
     }
 
+    public Requirement(String text){
+        this.text = text;
+    }
+
+    public void setCodeStage(CodeStage codeStage){
+        this.requirementID = new RequirementID(codeStage.getRequirements().size(),
+                codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
+        this.codeStage = codeStage;
+    }
+
     public RequirementID getRequirementID() {
         return requirementID;
     }

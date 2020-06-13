@@ -30,6 +30,7 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public CodeStage(String desc, String template, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
@@ -37,6 +38,7 @@ public class CodeStage extends Stage {
         this.language = language;
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public CodeStage(String desc, String template, List<String> requirements, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
@@ -48,9 +50,25 @@ public class CodeStage extends Stage {
         }
     }
 
-    public CodeStage(Experiment experiment, int stage_index) {
-        super(experiment, stage_index);
+    public CodeStage(String desc, String template, List<String> requirements, String language) {
+        this.description = desc;
+        this.template = template;
+        this.language = language;
+        this.requirements = new ArrayList<>();
+        for (String req : requirements) {
+            this.requirements.add(new Requirement(req));
+        }
     }
+
+
+    @Override
+    public void setExperiment(Experiment experiment){
+        super.setExperiment(experiment);
+        for (Requirement req : this.requirements) {
+            req.setCodeStage(this);
+        }
+    }
+
 
     @Override
     public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
