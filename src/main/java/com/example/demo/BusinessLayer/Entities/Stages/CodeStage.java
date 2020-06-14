@@ -56,8 +56,14 @@ public class CodeStage extends Stage {
         this.language = language;
         this.requirements = new ArrayList<>();
         for (String req : requirements) {
-            this.requirements.add(new Requirement(req));
+            this.requirements.add(buildRequirement(req));
         }
+    }
+
+    private Requirement buildRequirement(String req) {
+        Requirement newRequirement = new Requirement(req);
+        newRequirement.setCodeStage(this);
+        return newRequirement;
     }
 
 
@@ -70,17 +76,21 @@ public class CodeStage extends Stage {
     }
 
 
+    // if old is null, new CodeResult will be created, else, old will be chanced
     @Override
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
-        String code;
+    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
+        String code = validate(data);
+        if(old == null) old = new CodeResult(code);
+        else old.setUserCode(code);
+        return old; // old is actually new :)
+    }
+
+    private String validate(Map<String,Object> data) throws FormatException {
         try{
-            code = (String) data.get("code");
-            if (code == null)
-                throw new FormatException("user code");
-        }catch (Exception e) {
-            throw new FormatException("user code");
-        }
-        return new CodeResult(participant, this, code);
+            String code = (String) data.get("code");
+            if (code != null) return code;
+        }catch (Exception ignored) {}
+        throw new FormatException("user code");
     }
 
     public void addRequirement(Requirement requirement) {

@@ -92,15 +92,15 @@ public abstract class Stage {
     public abstract String getType();
 
 
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, QuestionnaireResult old) throws FormatException, ParseException, NotInReachException, NotExistException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String,Object> data, TaggingResult old) throws FormatException, NotInReachException {
         throw new FormatException("tagging stage answers");
     }
 

@@ -31,7 +31,8 @@ public class CodeUnitTest {
     private void init() {
         exp = new Experiment("Experiment Name");
         exp.setExperimentId(100);
-        codeStage = new CodeStage("make me hello world program", "//write code here", List.of("THE REQUIREMENT"), "JAVA", exp);
+        codeStage = new CodeStage("make me hello world program", "//write code here", List.of("THE REQUIREMENT"), "JAVA");
+        exp.addStage(codeStage);
         participant = new Participant(exp);
         participant.setParticipantId(10);
     }
@@ -76,7 +77,7 @@ public class CodeUnitTest {
     public void fillIn() {
         String code = "x++;\nreturn x;";
         try {
-            CodeResult res = codeStage.fillCode(Map.of("code", code), participant);
+            CodeResult res = codeStage.fillCode(Map.of("code", code), null);
             Assert.assertEquals(code, res.getUserCode());
         } catch (FormatException e) {
             Assert.fail();
@@ -107,7 +108,7 @@ public class CodeUnitTest {
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
         // fails because infoStage can not be filled as a code stage
         try {
-            codeStage.fillCode(Map.of("code", "hello world"), participant);
+            codeStage.fillCode(Map.of("code", "hello world"), null);
 
         } catch (FormatException ignored) {
             Assert.fail();
@@ -115,14 +116,14 @@ public class CodeUnitTest {
 
         // fails because infoStage can not be filled as a questionnaire stage
         try {
-            codeStage.fillQuestionnaire(new HashMap<>(), participant);
+            codeStage.fillQuestionnaire(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         // fails because infoStage can not be filled as a tag stage
         try {
-            codeStage.fillTagging(new HashMap<>(), participant);
+            codeStage.fillTagging(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }

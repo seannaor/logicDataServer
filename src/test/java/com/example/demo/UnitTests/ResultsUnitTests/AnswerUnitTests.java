@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class AnswerUnitTests {
@@ -36,7 +37,10 @@ public class AnswerUnitTests {
 
         res = new QuestionnaireResult(stage, p);
 
-        openAns = q1.answer("a lot", res);
+        openAns = q1.answer("a lot");
+        List<Answer> answers = new LinkedList<>();
+        answers.add(openAns);
+        res.setAnswers(answers);
     }
 
     @Test

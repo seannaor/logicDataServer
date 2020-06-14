@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class RequirementTest {
@@ -25,7 +26,8 @@ public class RequirementTest {
     public void init() {
         Experiment exp = new Experiment("Experiment Name");
         exp.setExperimentId(100);
-        CodeStage codeStage = new CodeStage("make me hello world program", "//write code here", List.of("a requirement"), "JAVA", exp);
+        CodeStage codeStage = new CodeStage("make me hello world program", "//write code here", List.of("a requirement"), "JAVA");
+        exp.addStage(codeStage);
         taggingStage = new TaggingStage(codeStage, exp);
         participant = new Experimentee("a@a.a", exp).getParticipant();
         requirement = codeStage.getRequirements().get(0);
@@ -37,7 +39,8 @@ public class RequirementTest {
         tag1.put("start_loc", 0);
         tag1.put("length", 10);
 
-        RequirementTag tag = requirement.tag(tag1, new TaggingResult(taggingStage, participant));
+        RequirementTag tag = requirement.tag(tag1);
+
         Assert.assertEquals(tag.getRequirement(), requirement);
     }
 }

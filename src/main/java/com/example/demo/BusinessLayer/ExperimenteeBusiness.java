@@ -44,7 +44,7 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     @Override
     public void fillInStage(UUID accessCode, Map<String, Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException, NotExistException {
         Participant part = cache.getExpeeByCode(accessCode).getParticipant();
-        if (part.getCurrStage() instanceof InfoStage) return;
+        if (part.getCurrStage().getType().equals("info")) return;
         Result result = part.fillInStage((Map<String, Object>) data.get("data"));
         db.saveStageResult(result);
     }

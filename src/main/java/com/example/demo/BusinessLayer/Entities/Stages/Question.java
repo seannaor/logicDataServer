@@ -28,6 +28,14 @@ public class Question {
             this.questionIndex = questionIndex;
             this.stageID = stageID;
         }
+
+        public void setQuestionIndex(int questionIndex) {
+            this.questionIndex = questionIndex;
+        }
+
+        public void setStageID(Stage.StageID stageID) {
+            this.stageID = stageID;
+        }
     }
 
     @EmbeddedId
@@ -59,8 +67,12 @@ public class Question {
 
     public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
         this.questionnaireStage = questionnaireStage;
-        this.questionID = new QuestionID(questionnaireStage.getQuestions().size()+1,
-                questionnaireStage.getStageID());
+        if(this.questionID==null)
+            this.questionID = new QuestionID(questionnaireStage.getQuestions().size()+1,
+                    questionnaireStage.getStageID());
+        else{
+            this.questionID.setStageID(questionnaireStage.getStageID());
+        }
     }
 
     public int getIndex() {
@@ -94,14 +106,14 @@ public class Question {
         return this.questionnaireStage.getStageID();
     }
 
-    public Answer answer(Object data, QuestionnaireResult questionnaireResult) throws ParseException, FormatException {
+    public Answer answer(Object data) throws ParseException, FormatException {
         JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);
 
         switch ((String) jQuestion.get("questionType")){
             case "open":
             case "american":
             case "multiChoice":
-                return new Answer(data.toString(),this, questionnaireResult);
+                return new Answer(data.toString(),this);
             default:
                 throw new FormatException("american, open or multi-choice question");
         }

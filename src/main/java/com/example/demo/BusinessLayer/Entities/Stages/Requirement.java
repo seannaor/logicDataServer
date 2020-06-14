@@ -33,6 +33,18 @@ public class Requirement {
         public int getRequirementIndex() {
             return requirementIndex;
         }
+
+        public void setRequirementIndex(int requirementIndex) {
+            this.requirementIndex = requirementIndex;
+        }
+
+        public void setStageIndex(int stageIndex) {
+            this.stageIndex = stageIndex;
+        }
+
+        public void setExperimentId(int experimentId) {
+            this.experimentId = experimentId;
+        }
     }
 
     @EmbeddedId
@@ -63,9 +75,16 @@ public class Requirement {
     }
 
     public void setCodeStage(CodeStage codeStage){
-        this.requirementID = new RequirementID(codeStage.getRequirements().size(),
-                codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
         this.codeStage = codeStage;
+        if(this.requirementID==null) {
+            this.requirementID = new RequirementID();
+            this.requirementID.setRequirementIndex(codeStage.getRequirements().size());
+        }
+        else {
+            this.requirementID.setStageIndex(codeStage.getStageID().getStageIndex());
+            this.requirementID.setExperimentId(codeStage.getExperiment().getExperimentId());
+        }
+
     }
 
     public RequirementID getRequirementID() {
@@ -84,8 +103,9 @@ public class Requirement {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data, TaggingResult taggingResult) {
-        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"), this, taggingResult);
+    public RequirementTag tag(JSONObject data) {
+        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
+                this);
         return tag;
     }
 

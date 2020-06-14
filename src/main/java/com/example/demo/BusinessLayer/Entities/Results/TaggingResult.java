@@ -2,6 +2,8 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -44,4 +46,5 @@ public class TaggingResult extends Result {
     public Map<String, Object> getAsMap() {
         return Map.of();
     }
+
 }

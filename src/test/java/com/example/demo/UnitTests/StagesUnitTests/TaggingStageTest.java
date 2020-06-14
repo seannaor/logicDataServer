@@ -30,7 +30,10 @@ public class TaggingStageTest {
         exp.setExperimentId(100);
         List<String> requirements = new ArrayList<>();
         requirements.add("do that");
-        taggingStage = new TaggingStage(new CodeStage("make me hello world program", "//write code here", requirements, "JAVA", exp), exp);
+        CodeStage codeStage = new CodeStage("make me hello world program", "//write code here", requirements, "JAVA");
+        exp.addStage(codeStage);
+        taggingStage = new TaggingStage(codeStage);
+        exp.addStage(taggingStage);
         expee = new Experimentee("a@a.a", exp);
     }
 
@@ -49,13 +52,13 @@ public class TaggingStageTest {
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
         // fails because taggingStage can not be filled as a code stage
         try {
-            taggingStage.fillCode(new HashMap<>(), expee.getParticipant());
+            taggingStage.fillCode(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException e) {
         }
         // fails because taggingStage can not be filled as a questionnaire stage
         try {
-            taggingStage.fillQuestionnaire(new HashMap<>(), expee.getParticipant());
+            taggingStage.fillQuestionnaire(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException e) {
         }
@@ -71,13 +74,13 @@ public class TaggingStageTest {
     @Test
     public void fillIn() {
         try {
+            expee.getParticipant().getNextStage();
             JSONObject ans = new JSONObject();
             JSONObject tag1 = new JSONObject();
             tag1.put("start_loc", 0);
             tag1.put("length", 10);
             ans.put(0, tag1);
-            expee.getParticipant().getNextStage();
-            TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans), expee.getParticipant());
+            TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans), null);
             Assert.assertEquals(tr.getTags().size(), 1);
         } catch (Exception e) {
             Assert.fail();
@@ -90,6 +93,6 @@ public class TaggingStageTest {
         JTagging.put("type", "tagging");
         JTagging.put("codeIndex", taggingStage.getCodeStage().getStageID().getStageIndex());
         Stage stage = Stage.parseStage(JTagging, expee.getExperiment());
-        Assert.assertTrue(stage instanceof TaggingStage);
+        Assert.assertEquals("tagging",stage.getType());
     }
 }

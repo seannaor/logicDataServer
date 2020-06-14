@@ -17,6 +17,11 @@ public class CodeResult extends Result {
 
     public CodeResult() { }
 
+    public CodeResult(String userCode){
+        this.userCode = userCode;
+    }
+
+    //TODO: remove constructor when no test need it anymore
     public CodeResult(Participant participant, CodeStage codeStage, String userCode) {
         super(codeStage, participant);
         this.userCode = userCode;

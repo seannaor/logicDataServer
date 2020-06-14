@@ -100,24 +100,25 @@ public class Participant {
     }
 
     public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
-        Stage curr = getCurrStage();
-//        String type = (String) data.getOrDefault("stageType", "no stage stated");
-        switch (curr.getType()) {
+        Stage currStage = getCurrStage();
+        Result currResult;
+        switch (currStage.getType()) {
             case "code":
-                CodeResult codeResult = curr.fillCode(data,this);
-                this.results.add(codeResult);
-                return codeResult;
+                currResult = currStage.fillCode(data,(CodeResult) getResult(currStage.getStageID().getStageIndex()));
+                break;
             case "tagging":
-                TaggingResult taggingResult = curr.fillTagging(data,this);
-                this.results.add(taggingResult);
-                return taggingResult;
+                currResult = currStage.fillTagging(data,(TaggingResult) getResult(currStage.getStageID().getStageIndex()));
+                break;
             case "questionnaire":
-                QuestionnaireResult questionnaireResult = curr.fillQuestionnaire(data,this);
-                this.results.add(questionnaireResult);
-                return questionnaireResult;
+                currResult = currStage.fillQuestionnaire(data,(QuestionnaireResult) getResult(currStage.getStageID().getStageIndex()));
+                break;
             default:
-                throw new FormatException(curr.getType());
+                throw new FormatException(currStage.getType());
         }
+        currResult.setStageAndParticipant(currStage,this);
+        if(!this.results.contains(currResult))
+            this.results.add(currResult);
+        return currResult;
     }
 
     public Result getResultsOf(Stage visible) throws FormatException {

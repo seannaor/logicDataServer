@@ -36,10 +36,10 @@ public class QuestionUnitTests {
 
     @Test
     public void answer() throws ParseException, FormatException {
-        QuestionnaireResult res = new QuestionnaireResult(stage, p);
+//        QuestionnaireResult res = new QuestionnaireResult(stage, p);
 
-        Answer openAns = open.answer("a lot", res);
-        Answer multiAns = multi.answer("me", res);
+        Answer openAns = open.answer("a lot");
+        Answer multiAns = multi.answer("me");
         Assert.assertEquals("a lot", openAns.getAnswer());
         Assert.assertEquals("me", multiAns.getAnswer());
     }
@@ -52,7 +52,7 @@ public class QuestionUnitTests {
         q.setQuestionJson("not a JSON");
 
         try {
-            q.answer("answer", res);
+            q.answer("answer");
             Assert.fail();
         } catch (ParseException ignored) {
         }
@@ -61,7 +61,7 @@ public class QuestionUnitTests {
         JQuestion.put("questionType", "not a type");
         q.setQuestionJson(JQuestion.toString());
         try {
-            q.answer("answer", res);
+            q.answer("answer");
             Assert.fail();
         } catch (FormatException ignored) {
         }

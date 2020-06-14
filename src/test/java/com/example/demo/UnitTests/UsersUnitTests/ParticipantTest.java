@@ -29,9 +29,9 @@ public class ParticipantTest {
         Experiment exp = new Experiment("Experiment Name");
         exp.setExperimentId(100);
         List<JSONObject> stagesJson = Utils.buildStages();
-        List<Stage> stages = new ArrayList<>();
         for (JSONObject stageJ : stagesJson) {
-            stages.add(Stage.parseStage(stageJ, exp));
+            Stage s = Stage.parseStage(stageJ, exp);
+            exp.addStage(s);
         }
         participant = new Participant(exp);
     }

@@ -35,7 +35,8 @@ public class QuestionnaireUnitTests {
         participant = new Participant(exp);
         participant.setParticipantId(10);
 
-        questionnaireStage = new QuestionnaireStage(exp);
+        questionnaireStage = new QuestionnaireStage();
+        exp.addStage(questionnaireStage);
         questions = List.of(buildOpenQuestion(), buildMultiChoiceQuestion());
         questionnaireStage.addQuestion(questions.get(0));
         questionnaireStage.addQuestion(questions.get(1));
@@ -45,7 +46,7 @@ public class QuestionnaireUnitTests {
     @Test
     public void fillIn() throws NotInReachException, NotExistException, ParseException, FormatException {
         List<String> SAnswers = List.of("a lot", "you");
-        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), participant);
+        QuestionnaireResult res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), null);
 
         List<Answer> answers = res.getAnswers();
 
@@ -54,7 +55,7 @@ public class QuestionnaireUnitTests {
 
         // can change answers
         SAnswers = List.of("none", "me");
-        res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), participant);
+        res = questionnaireStage.fillQuestionnaire(Map.of("answers", SAnswers), null);
 
         answers = res.getAnswers();
 
@@ -66,21 +67,21 @@ public class QuestionnaireUnitTests {
     public void fillInFormatFail() throws ParseException, NotExistException, NotInReachException, FormatException {
         try {
             //no answers
-            questionnaireStage.fillQuestionnaire(Map.of(), participant);
+            questionnaireStage.fillQuestionnaire(Map.of(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         try {
             //answers is not a list of strings
-            questionnaireStage.fillQuestionnaire(Map.of("answers", -1), participant);
+            questionnaireStage.fillQuestionnaire(Map.of("answers", -1), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         try {
             //missing answers
-            questionnaireStage.fillQuestionnaire(Map.of("answers", List.of()), participant);
+            questionnaireStage.fillQuestionnaire(Map.of("answers", List.of()), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
@@ -90,7 +91,7 @@ public class QuestionnaireUnitTests {
     public void buildQuestionnaire() throws FormatException {
 
         List<JSONObject> JQuestions = (List<JSONObject>) getStumpQuestionsStage().get("questions");
-        QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions, exp);
+        QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions);
 
         Assert.assertEquals(JQuestions.size(), questionnaire.getQuestions().size());
         Assert.assertEquals(JQuestions.get(0), questionnaire.getQuestions().get(0).getQuestionJson());
