@@ -74,20 +74,21 @@ public class Answer {
         this.questionnaireResult.addAns(this);
     }
 
+    // Setters
     public void setQuestion(Question question) {
         this.question = question;
         this.answerID.setQuestionID(question.getQuestionID());
     }
-
-    public void setQuestionnaireResult(QuestionnaireResult questionnaireResult) {
-        this.questionnaireResult = questionnaireResult;
-        this.answerID.setParticipantId(questionnaireResult.getParticipant().getParticipantId());
+    
+    public void setParticipantId(int participantId) {
+        this.answerID.setParticipantId(participantId);
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
     }
 
+    // Getters
     public Question getQuestion() {
         return question;
     }
@@ -96,9 +97,6 @@ public class Answer {
         return this.question.getStageID();
     }
 
-    public QuestionnaireResult getQuestionnaireResult() {
-        return questionnaireResult;
-    }
 
     public String getAnswer() {
         return answer;

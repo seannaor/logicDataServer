@@ -95,8 +95,8 @@ public class RequirementTag {
     public RequirementTag(int startCharLoc, int length, Requirement requirement) {
         this.requirementTagID = new RequirementTagID();
         this.requirementTagID.setStartCharLoc(startCharLoc);
-        this.requirementTagID.setRequirementIndex(requirement.getRequirementID().getRequirementIndex());
-        this.requirementTagID.setCodeIndex(requirement.getStageID().getStageIndex());
+//        this.requirementTagID.setRequirementIndex(requirement.getRequirementID().getRequirementIndex());
+//        this.requirementTagID.setCodeIndex(requirement.getStageID().getStageIndex());
 
         this.length = length;
         this.requirement = requirement;
@@ -113,18 +113,20 @@ public class RequirementTag {
         this.taggingResult.addTag(this);
     }
 
+
     public void setTaggingResult(TaggingResult taggingResult){
         this.taggingResult = taggingResult;
         this.requirementTagID.setParticipantId(taggingResult.getParticipant().getParticipantId());
         this.requirementTagID.setTaggingIndex(taggingResult.getStage().getStageID().getStageIndex());
         this.requirementTagID.setExperimentId(taggingResult.getStage().getExperiment().getExperimentId());
     }
-    public RequirementTagID getRequirementTagID() {
-        return requirementTagID;
+
+    public void setStageIdx(int i){
+        this.requirementTagID.setCodeIndex(i);
     }
 
-    public int getLength() {
-        return length;
+    public void setRequirementIdx(int i){
+        this.requirementTagID.setRequirementIndex(i);
     }
 
     public void setLength(int length) {
@@ -135,8 +137,14 @@ public class RequirementTag {
         this.requirementTagID.startCharLoc=startCharLoc;
     }
 
+
+    // Getters
     public int getStart(){
         return this.requirementTagID.startCharLoc;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public TaggingResult getTaggingResult() {
@@ -149,5 +157,9 @@ public class RequirementTag {
 
     public Stage.StageID getStageID(){
         return this.requirement.getStageID();
+    }
+
+    public RequirementTagID getRequirementTagID() {
+        return requirementTagID;
     }
 }

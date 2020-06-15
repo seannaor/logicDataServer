@@ -22,6 +22,7 @@ public class QuestionnaireResult extends Result {
 
     public QuestionnaireResult() { }
 
+    //TODO: remove constructor when no test need it anymore
     public QuestionnaireResult(QuestionnaireStage questionnaireStage, Participant participant) {
         super(questionnaireStage, participant);
         this.answers = new ArrayList<>();
@@ -44,7 +45,7 @@ public class QuestionnaireResult extends Result {
     public void setStageAndParticipant(Stage stage, Participant participant){
         super.setStageAndParticipant(stage,participant);
         for(Answer ans : answers)
-            ans.setQuestionnaireResult(this);
+            ans.setParticipantId(participant.getParticipantId());
     }
 
     @Override

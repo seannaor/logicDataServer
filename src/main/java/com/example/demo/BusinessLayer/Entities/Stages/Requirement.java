@@ -1,5 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
+import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
@@ -72,27 +73,22 @@ public class Requirement {
 
     public Requirement(String text){
         this.text = text;
+        this.requirementID= new RequirementID();
     }
 
-    public void setCodeStage(CodeStage codeStage){
-        this.codeStage = codeStage;
-        if(this.requirementID==null) {
-            this.requirementID = new RequirementID();
-            this.requirementID.setRequirementIndex(codeStage.getRequirements().size());
-        }
-        else {
-            this.requirementID.setStageIndex(codeStage.getStageID().getStageIndex());
-            this.requirementID.setExperimentId(codeStage.getExperiment().getExperimentId());
-        }
+    public RequirementTag tag(JSONObject data) {
+        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
+                this);
+        return tag;
+    }
 
+    //Getters
+    public Stage.StageID getStageID() {
+        return this.codeStage.getStageID();
     }
 
     public RequirementID getRequirementID() {
         return requirementID;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public String getText() {
@@ -103,13 +99,27 @@ public class Requirement {
         return this.requirementID.requirementIndex;
     }
 
-    public RequirementTag tag(JSONObject data) {
-        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
-                this);
-        return tag;
+    //Setters
+    public void setCodeStage(CodeStage codeStage){
+        this.codeStage = codeStage;
     }
 
-    public Stage.StageID getStageID() {
-        return this.codeStage.getStageID();
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    // for ID propose
+    public void setRequirementIndex(int i){
+        this.requirementID.setRequirementIndex(i);
+    }
+
+    // for ID propose
+    public void setStageIndex(int i){
+        this.requirementID.setStageIndex(i);
+    }
+
+    // for ID propose
+    public void setExperimentId(int expId){
+        this.requirementID.setExperimentId(expId);
     }
 }

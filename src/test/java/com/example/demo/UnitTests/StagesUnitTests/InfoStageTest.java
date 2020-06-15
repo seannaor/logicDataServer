@@ -1,7 +1,5 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -18,14 +16,10 @@ import java.util.Map;
 
 public class InfoStageTest {
     private InfoStage infoStage;
-    private Experimentee expee;
 
     @BeforeEach
     private void init() {
-        Experiment exp = new Experiment("Experiment Name");
-        exp.setExperimentId(100);
         infoStage = new InfoStage("hello");
-        expee = new Experimentee("a@a.a", exp);
     }
 
     @Test
@@ -70,7 +64,7 @@ public class InfoStageTest {
         }
 
         try {
-            infoStage.fillInfo(new Object(), expee.getParticipant());
+            infoStage.fillInfo(new Object(), null);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -78,7 +72,7 @@ public class InfoStageTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), expee.getExperiment());
+        Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), null);
         Assert.assertEquals("info", stage.getType());
     }
 }

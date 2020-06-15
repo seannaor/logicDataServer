@@ -55,13 +55,15 @@ public class CodeStage extends Stage {
         this.template = template;
         this.language = language;
         this.requirements = new ArrayList<>();
+        int reqIdx = 0;
         for (String req : requirements) {
-            this.requirements.add(buildRequirement(req));
+            this.requirements.add(buildRequirement(req,reqIdx++));
         }
     }
 
-    private Requirement buildRequirement(String req) {
+    private Requirement buildRequirement(String req,int idx) {
         Requirement newRequirement = new Requirement(req);
+        newRequirement.setRequirementIndex(idx);
         newRequirement.setCodeStage(this);
         return newRequirement;
     }
@@ -71,7 +73,8 @@ public class CodeStage extends Stage {
     public void setExperiment(Experiment experiment){
         super.setExperiment(experiment);
         for (Requirement req : this.requirements) {
-            req.setCodeStage(this);
+            req.setStageIndex(this.getStageID().getStageIndex());
+            req.setExperimentId(experiment.getExperimentId());
         }
     }
 

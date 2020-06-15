@@ -57,6 +57,7 @@ public class Question {
 
     public Question(String questionJson){
         this.questionJson = questionJson;
+        this.questionID = new QuestionID();
     }
 
     public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
@@ -65,45 +66,17 @@ public class Question {
         this.questionJson = questionJson;
     }
 
+    //Setters
     public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
         this.questionnaireStage = questionnaireStage;
-        if(this.questionID==null)
-            this.questionID = new QuestionID(questionnaireStage.getQuestions().size()+1,
-                    questionnaireStage.getStageID());
-        else{
-            this.questionID.setStageID(questionnaireStage.getStageID());
-        }
-    }
-
-    public int getIndex() {
-        return questionID.questionIndex;
-    }
-
-    public QuestionID getQuestionID() {
-        return questionID;
     }
 
     public void setQuestionID(QuestionID questionID) {
         this.questionID = questionID;
     }
 
-    //TODO: maybe change to Map
-    public JSONObject getQuestionJson() {
-        JSONParser parser = new JSONParser();
-        try {
-            return (JSONObject)parser.parse(questionJson);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new JSONObject();
-        }
-    }
-
     public void setQuestionJson(String questionJson) {
         this.questionJson = questionJson;
-    }
-
-    public Stage.StageID getStageID(){
-        return this.questionnaireStage.getStageID();
     }
 
     public Answer answer(Object data) throws ParseException, FormatException {
@@ -117,5 +90,39 @@ public class Question {
             default:
                 throw new FormatException("american, open or multi-choice question");
         }
+    }
+
+    // Getters
+    public Stage.StageID getStageID(){
+        return this.questionnaireStage.getStageID();
+    }
+
+    //TODO: maybe change to Map
+    public JSONObject getQuestionJson() {
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject)parser.parse(questionJson);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new JSONObject();
+        }
+    }
+
+    public int getIndex() {
+        return questionID.questionIndex;
+    }
+
+    public QuestionID getQuestionID() {
+        return questionID;
+    }
+
+    // for ID propose
+    public void setStageId(Stage.StageID stageID){
+        this.questionID.setStageID(stageID);
+    }
+
+    // for ID propose
+    public void setQuestionIndex(int i){
+        this.questionID.setQuestionIndex(i);
     }
 }

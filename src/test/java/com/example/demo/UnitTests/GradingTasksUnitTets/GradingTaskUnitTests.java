@@ -21,7 +21,7 @@ public class GradingTaskUnitTests {
     private GradingTask gradingTask;
 
     @BeforeEach
-    public void init() throws NotExistException, FormatException {
+    public void init() {
         Experiment exp = new Experiment("Experiment Name");
         Experiment evaluate = new Experiment("Evaluation");
         Experiment general = new Experiment("General");
@@ -30,32 +30,41 @@ public class GradingTaskUnitTests {
     }
 
     @Test
-    public void setStagesToCheckFail() throws FormatException, NotExistException {
+    public void setStagesToCheckFailIllegalIdx() throws FormatException {
         try {
             //illegal stage idx
             gradingTask.setStagesByIdx(List.of(-1));
             Assert.fail();
         } catch (NotExistException ignored) {
-
         }
+    }
 
+    @Test
+    public void setStagesToCheckFailNotExistIdx() throws FormatException {
         try {
             //not exist stage idx
             gradingTask.setStagesByIdx(List.of(0));
             Assert.fail();
         } catch (NotExistException ignored) {
-
         }
+    }
 
+    @Test
+    public void setStagesToCheckFailNoResult() throws NotExistException {
         gradingTask.getBaseExperiment().addStage(new InfoStage("info"));
 
         try {
             //info stage - no result
             gradingTask.setStagesByIdx(List.of(0));
             Assert.fail();
-        } catch (FormatException ignored) {}
+        } catch (FormatException ignored) {
+        }
+    }
 
-        Stage toCheck = new CodeStage("", "",new LinkedList<>(),"");
+    @Test
+    public void setStagesToCheckFail() throws FormatException, NotExistException {
+
+        Stage toCheck = new CodeStage("", "", new LinkedList<>(), "");
         gradingTask.getBaseExperiment().addStage(toCheck);
         gradingTask.setStagesByIdx(List.of(toCheck.getStageID().getStageIndex())); // good
 

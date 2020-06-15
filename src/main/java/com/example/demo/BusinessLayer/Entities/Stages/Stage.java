@@ -38,6 +38,10 @@ public abstract class Stage {
             this.stageIndex = stageIndex;
         }
 
+        public void setExperimentId(int experimentId) {
+            this.experimentId = experimentId;
+        }
+
         public int getStageIndex() {
             return stageIndex;
         }

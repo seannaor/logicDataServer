@@ -30,11 +30,11 @@ public class TaggingStage extends Stage {
     public TaggingStage() {
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public TaggingStage(CodeStage codeStage, Experiment experiment){
         super(experiment);
         this.codeStage = codeStage;
     }
-
 
     public TaggingStage(CodeStage codeStage){
         this.codeStage = codeStage;
@@ -61,8 +61,6 @@ public class TaggingStage extends Stage {
     public String getType() {
         return "tagging";
     }
-
-
 
     // if old is null, new TaggingResult will be created, else, old will be chanced
     //TODO: validate old actually change

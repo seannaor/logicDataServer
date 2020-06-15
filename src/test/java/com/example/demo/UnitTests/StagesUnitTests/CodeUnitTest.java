@@ -1,7 +1,5 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
@@ -24,17 +22,10 @@ import static com.example.demo.Utils.getStumpCodeStage;
 public class CodeUnitTest {
 
     private CodeStage codeStage;
-    private Participant participant;
-    private Experiment exp;
 
     @BeforeEach
     private void init() {
-        exp = new Experiment("Experiment Name");
-        exp.setExperimentId(100);
         codeStage = new CodeStage("make me hello world program", "//write code here", List.of("THE REQUIREMENT"), "JAVA");
-        exp.addStage(codeStage);
-        participant = new Participant(exp);
-        participant.setParticipantId(10);
     }
 
     @Test
@@ -54,8 +45,8 @@ public class CodeUnitTest {
         codeStage.setRequirements(new ArrayList<>());
         Assert.assertEquals(0, codeStage.getRequirements().size());
 
-        Requirement r1 = new Requirement(codeStage, "R1");
-        Requirement r2 = new Requirement(codeStage, "R2");
+        Requirement r1 = new Requirement("R1");
+        Requirement r2 = new Requirement( "R2");
 
         codeStage.addRequirement(r1);
         codeStage.addRequirement(r2);
@@ -100,7 +91,7 @@ public class CodeUnitTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(getStumpCodeStage(), exp);
+        Stage stage = Stage.parseStage(getStumpCodeStage(), null);
         Assert.assertEquals("code", stage.getType());
     }
 
@@ -129,7 +120,7 @@ public class CodeUnitTest {
         }
 
         try {
-            codeStage.fillInfo(new Object(), participant);
+            codeStage.fillInfo(new Object(), null);
             Assert.fail();
         } catch (Exception ignored) {
         }

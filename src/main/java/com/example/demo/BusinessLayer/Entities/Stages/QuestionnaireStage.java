@@ -39,15 +39,17 @@ public class QuestionnaireStage extends Stage {
     public QuestionnaireStage(List<JSONObject> JQuestions, Experiment experiment) {
         super(experiment);
         questions = new ArrayList<>();
+        int QIndx = 0;
         for (JSONObject JQuestion : JQuestions) {
-            questions.add(buildQuestion(JQuestion));
+            questions.add(buildQuestion(JQuestion,QIndx++));
         }
     }
 
     public QuestionnaireStage(List<JSONObject> JQuestions) {
         questions = new ArrayList<>();
+        int QIndx = 0;
         for (JSONObject JQuestion : JQuestions) {
-            questions.add(buildQuestion(JQuestion));
+            questions.add(buildQuestion(JQuestion,QIndx++));
         }
     }
 
@@ -55,7 +57,7 @@ public class QuestionnaireStage extends Stage {
     public void setExperiment(Experiment experiment) {
         super.setExperiment(experiment);
         for (Question q : this.questions) {
-            q.setQuestionnaireStage(this);
+            q.setStageId(this.getStageID());
         }
     }
 
@@ -108,13 +110,14 @@ public class QuestionnaireStage extends Stage {
 
     public Question getQuestion(int i) throws NotExistException {
         for (Question q : questions) {
-            if (q.getIndex() == i + 1) return q;
+            if (q.getIndex() == i) return q;
         }
-        throw new NotExistException("question", (i + 1) + "");
+        throw new NotExistException("question", i + "");
     }
 
-    private Question buildQuestion(JSONObject jQuestion) {
+    private Question buildQuestion(JSONObject jQuestion,int idx) {
         Question newQuestion = new Question(jQuestion.toString());
+        newQuestion.setQuestionIndex(idx);
         newQuestion.setQuestionnaireStage(this);
         return newQuestion;
     }

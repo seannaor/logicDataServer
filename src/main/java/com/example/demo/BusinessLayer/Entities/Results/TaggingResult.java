@@ -24,6 +24,7 @@ public class TaggingResult extends Result {
     public TaggingResult() {
     }
 
+    //TODO: remove constructor when no test need it anymore
     public TaggingResult(TaggingStage taggingStage, Participant participant) {
         super(taggingStage, participant);
         this.tags = new ArrayList<>();
