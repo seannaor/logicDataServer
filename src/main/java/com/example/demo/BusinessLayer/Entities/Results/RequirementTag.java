@@ -95,7 +95,7 @@ public class RequirementTag {
     public RequirementTag(int startCharLoc, int length, Requirement requirement) {
         this.requirementTagID = new RequirementTagID();
         this.requirementTagID.setStartCharLoc(startCharLoc);
-//        this.requirementTagID.setRequirementIndex(requirement.getRequirementID().getRequirementIndex());
+        this.requirementTagID.setRequirementIndex(requirement.getRequirementID().getRequirementIndex());
 //        this.requirementTagID.setCodeIndex(requirement.getStageID().getStageIndex());
 
         this.length = length;
@@ -119,9 +119,10 @@ public class RequirementTag {
         this.requirementTagID.setParticipantId(taggingResult.getParticipant().getParticipantId());
         this.requirementTagID.setTaggingIndex(taggingResult.getStage().getStageID().getStageIndex());
         this.requirementTagID.setExperimentId(taggingResult.getStage().getExperiment().getExperimentId());
+        taggingResult.addTag(this);
     }
 
-    public void setStageIdx(int i){
+    public void setCodeStageIdx(int i){
         this.requirementTagID.setCodeIndex(i);
     }
 

@@ -77,6 +77,7 @@ public abstract class Stage {
     public void setExperiment(Experiment experiment){
         this.experiment = experiment;
         this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
+        experiment.addStage(this);
     }
 
     public StageID getStageID() {

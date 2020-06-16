@@ -20,7 +20,9 @@ public class QuestionnaireResult extends Result {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Answer> answers;
 
-    public QuestionnaireResult() { }
+    public QuestionnaireResult() {
+        this.answers = new ArrayList<>();
+    }
 
     //TODO: remove constructor when no test need it anymore
     public QuestionnaireResult(QuestionnaireStage questionnaireStage, Participant participant) {

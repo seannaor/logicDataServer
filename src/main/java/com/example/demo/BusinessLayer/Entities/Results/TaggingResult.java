@@ -22,6 +22,7 @@ public class TaggingResult extends Result {
     private List<RequirementTag> tags;
 
     public TaggingResult() {
+        this.tags = new ArrayList<>();
     }
 
     //TODO: remove constructor when no test need it anymore

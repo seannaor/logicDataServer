@@ -105,8 +105,10 @@ public class Experiment {
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
-        stage.setExperiment(this);
-        stages.add(stage);
+        if(stage.getExperiment() == null)
+            stage.setExperiment(this);
+        if(!stages.contains(stage))
+            stages.add(stage);
     }
 
     public void addManagementUserToExperiment(ManagementUserToExperiment m){

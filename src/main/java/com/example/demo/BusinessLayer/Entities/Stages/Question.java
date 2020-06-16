@@ -69,6 +69,9 @@ public class Question {
     //Setters
     public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
         this.questionnaireStage = questionnaireStage;
+        if(questionnaireStage.getStageID() != null) {
+            setStageId(questionnaireStage.getStageID());
+        }
     }
 
     public void setQuestionID(QuestionID questionID) {

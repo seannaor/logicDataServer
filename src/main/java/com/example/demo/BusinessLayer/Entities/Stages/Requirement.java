@@ -102,6 +102,10 @@ public class Requirement {
     //Setters
     public void setCodeStage(CodeStage codeStage){
         this.codeStage = codeStage;
+        if(codeStage.getStageID() != null && codeStage.getExperiment() != null) {
+            setStageIndex(codeStage.getStageID().getStageIndex());
+            setExperimentId(codeStage.getExperiment().getExperimentId());
+        }
     }
 
     public void setText(String text) {
