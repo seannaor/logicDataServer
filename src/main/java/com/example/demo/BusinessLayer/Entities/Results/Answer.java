@@ -75,13 +75,6 @@ public class Answer {
     }
 
     // Setters
-    public void setquestionnaireresult(QuestionnaireResult questionnaireResult){
-        this.questionnaireResult = questionnaireResult;
-        this.answerID.setParticipantId(questionnaireResult.getParticipant().getParticipantId());
-        questionnaireResult.addAns(this);
-    }
-
-    // Setters
     public void setQuestionnaireResult(QuestionnaireResult questionnaireResult){
         this.questionnaireResult = questionnaireResult;
         this.answerID.setParticipantId(questionnaireResult.getParticipant().getParticipantId());

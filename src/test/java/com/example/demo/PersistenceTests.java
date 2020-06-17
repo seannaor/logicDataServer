@@ -498,11 +498,13 @@ class PersistenceTests {
 		q.setStageAndParticipant(questionnaireStageRep.findAll().get(0), p1);
 		resultRep.save(q);
 		Answer answer1 = new Answer("2", s.getQuestions().get(0));
-		answer1.setquestionnaireresult(q);
+		answer1.setQuestionnaireResult(q);
+		q.addAns(answer1);
 		answerRep.save(answer1);
 		resultRep.save(q);
 		Answer answer2 = new Answer("3", s.getQuestions().get(1));
-		answer2.setquestionnaireresult(q);
+		answer2.setQuestionnaireResult(q);
+		q.addAns(answer2);
 		answerRep.save(answer2);
 		resultRep.save(q);
 	}
@@ -623,10 +625,12 @@ class PersistenceTests {
 		Requirement requirementFor_rt1 = codeStage.getRequirements().get(0);
 		RequirementTag rt1 = new RequirementTag(0, 10, requirementFor_rt1);
 		rt1.setTaggingResult(q);
+		q.addTag(rt1);
 		rt1.setCodeStageIdx(codeStage.getStageID().getStageIndex());
 		Requirement requirementFor_rt2 = codeStage.getRequirements().get(1);
 		RequirementTag rt2 = new RequirementTag(10, 15, requirementFor_rt2);
 		rt2.setTaggingResult(q);
+		q.addTag(rt2);
 		rt2.setCodeStageIdx(codeStage.getStageID().getStageIndex());
 		requirementTagRep.save(rt1);
 		requirementTagRep.save(rt2);

@@ -40,7 +40,8 @@ public class Experiment {
     public Experiment(String experimentName,ManagementUser creator) {
         this.experimentName = experimentName;
         ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
-        managementUserToExperiments.add(m);
+        if(!managementUserToExperiments.contains(m))
+            managementUserToExperiments.add(m);
     }
 
     public int getExperimentId() {

@@ -119,7 +119,6 @@ public class RequirementTag {
         this.requirementTagID.setParticipantId(taggingResult.getParticipant().getParticipantId());
         this.requirementTagID.setTaggingIndex(taggingResult.getStage().getStageID().getStageIndex());
         this.requirementTagID.setExperimentId(taggingResult.getStage().getExperiment().getExperimentId());
-        taggingResult.addTag(this);
     }
 
     public void setCodeStageIdx(int i){
