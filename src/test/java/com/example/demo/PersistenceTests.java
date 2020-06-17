@@ -9,7 +9,6 @@ import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -499,11 +498,11 @@ class PersistenceTests {
 		q.setStageAndParticipant(questionnaireStageRep.findAll().get(0), p1);
 		resultRep.save(q);
 		Answer answer1 = new Answer("2", s.getQuestions().get(0));
-		answer1.setQuestionnaireResult(q);
+		answer1.setquestionnaireresult(q);
 		answerRep.save(answer1);
 		resultRep.save(q);
 		Answer answer2 = new Answer("3", s.getQuestions().get(1));
-		answer2.setQuestionnaireResult(q);
+		answer2.setquestionnaireresult(q);
 		answerRep.save(answer2);
 		resultRep.save(q);
 	}

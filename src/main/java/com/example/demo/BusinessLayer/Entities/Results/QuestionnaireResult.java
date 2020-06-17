@@ -47,7 +47,7 @@ public class QuestionnaireResult extends Result {
     public void setStageAndParticipant(Stage stage, Participant participant){
         super.setStageAndParticipant(stage,participant);
         for(Answer ans : answers)
-            ans.setParticipantId(participant.getParticipantId());
+            ans.setQuestionnaireResult(this);
     }
 
     @Override

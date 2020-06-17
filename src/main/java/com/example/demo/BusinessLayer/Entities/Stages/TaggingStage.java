@@ -78,6 +78,7 @@ public class TaggingStage extends Stage {
                 throw new FormatException("tag for requirement #" + i);
 
             RequirementTag tag =  r.tag((JSONObject) JTags.get(i));
+            tag.setCodeStageIdx(this.codeStage.getStageID().getStageIndex());
             tags.add(tag);
         }
         old.setTags(tags);

@@ -108,6 +108,7 @@ public class Participant {
                 break;
             case "tagging":
                 currResult = currStage.fillTagging(data,(TaggingResult) getResult(currStage.getStageID().getStageIndex()));
+
                 break;
             case "questionnaire":
                 currResult = currStage.fillQuestionnaire(data,(QuestionnaireResult) getResult(currStage.getStageID().getStageIndex()));
