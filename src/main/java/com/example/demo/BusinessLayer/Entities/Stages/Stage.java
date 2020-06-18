@@ -38,6 +38,10 @@ public abstract class Stage {
             this.stageIndex = stageIndex;
         }
 
+        public void setExperimentId(int experimentId) {
+            this.experimentId = experimentId;
+        }
+
         public int getStageIndex() {
             return stageIndex;
         }
@@ -64,14 +68,15 @@ public abstract class Stage {
         experiment.addStage(this);
     }
 
-    public void setExp(Experiment experiment){
-        this.experiment = experiment;
-        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
-    }
-
     public Stage(Experiment experiment, int stage_index) {
         this.stageID = new StageID(experiment.getExperimentId(), stage_index);
         this.experiment = experiment;
+        experiment.addStage(this);
+    }
+
+    public void setExperiment(Experiment experiment){
+        this.experiment = experiment;
+        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
         experiment.addStage(this);
     }
 
@@ -87,24 +92,20 @@ public abstract class Stage {
         return experiment;
     }
 
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
-    }
-
     public abstract Map<String,Object> getAsMap();
 
     public abstract String getType();
 
 
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
+    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
         throw new FormatException("code stage answers");
     }
 
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, Participant participant) throws FormatException, ParseException, NotInReachException, NotExistException {
+    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, QuestionnaireResult old) throws FormatException, ParseException, NotInReachException, NotExistException {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String,Object> data, TaggingResult old) throws FormatException, NotInReachException {
         throw new FormatException("tagging stage answers");
     }
 
@@ -116,19 +117,19 @@ public abstract class Stage {
         try {
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"), exp);
+                    return new InfoStage((String) stage.get("info"));
 
                 case "code":
                     return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"),(String) stage.get("language"), exp);
+                            (List<String>) stage.get("requirements"),(String) stage.get("language"));
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"), exp);
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
 
                 case "tagging":
                     int codeIdx = (int)stage.get("codeIndex");
                     CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
-                    return new TaggingStage(codeStage,exp);
+                    return new TaggingStage(codeStage);
             }
         } catch (Exception ignore) {
             throw new FormatException("legal stage");

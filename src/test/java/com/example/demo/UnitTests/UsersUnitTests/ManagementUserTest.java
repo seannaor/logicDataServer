@@ -23,8 +23,8 @@ public class ManagementUserTest {
         try {
             man.getExperiment(666);
             Assert.fail();
-        } catch (NotExistException e) {
-        }
+        } catch (NotExistException ignored) {}
+
         Assert.assertEquals(man.getExperiment(exp.getExperimentId()), exp);
     }
 
@@ -33,20 +33,20 @@ public class ManagementUserTest {
         try {
             man.getExperimentByName("666");
             Assert.fail();
-        } catch (NotExistException e) {
-        }
+        } catch (NotExistException ignored) {}
+
         Assert.assertEquals(man.getExperimentByName(exp.getExperimentName()), exp);
     }
 
     @Test
     public void removeManagementUserToExperimentByIdTest() {
-        Assert.assertEquals(man.getManagementUserToExperiments().size(), 1);
+        Assert.assertEquals(1,man.getManagementUserToExperiments().size());
         man.removeManagementUserToExperimentById(exp);
-        Assert.assertEquals(man.getManagementUserToExperiments().size(), 0);
+        Assert.assertEquals(0,man.getManagementUserToExperiments().size());
     }
 
     @Test
     public void getExperimentsTest() {
-        Assert.assertEquals(man.getExperimentes().size(), 1);
+        Assert.assertEquals(1,man.getExperimentes().size());
     }
 }

@@ -61,21 +61,27 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void addGraderToParticipant() throws ExistException {
+    public void addGraderToExistParticipantFail(){
         try {
             // trying to add GraderToParticipant that already there
             graderToGradingTask.addGraderToParticipant(graderToParticipant1);
             Assert.fail();
         } catch (ExistException ignore) {
         }
+    }
 
+    @Test
+    public void addExistParticipantFail(){
         try {
             // trying to add Participant that already there
             graderToGradingTask.addParticipant(p2);
             Assert.fail();
         } catch (ExistException ignore) {
         }
+    }
 
+    @Test
+    public void addGraderToParticipant() throws ExistException {
         Participant p3 = new Participant(exp);
         p3.setParticipantId(3);
         graderToGradingTask.addParticipant(p3);
@@ -85,20 +91,27 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void submitResult() throws NotExistException {
+    public void submitResultNoParticipant() throws NotExistException {
         try {
             //not exist user
             graderToGradingTask.submitResults(-1);
             Assert.fail();
         } catch (NotExistException ignore) {
         }
+    }
 
+    @Test
+    public void isSubmmitedNoParticipant() throws NotExistException {
         try {
             //not exist user
             graderToGradingTask.isSubmitted(-1);
             Assert.fail();
         } catch (NotExistException ignore) {
         }
+    }
+
+    @Test
+    public void submitResult() throws NotExistException {
 
         Assert.assertFalse(graderToGradingTask.isSubmitted(p2.getParticipantId()));
         graderToGradingTask.submitResults(p2.getParticipantId());
@@ -111,13 +124,16 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void getParticipants() throws NotExistException {
+    public void getParticipantNotExist(){
         try {
             graderToGradingTask.getExperimenteeParticipant(-1);
             Assert.fail();
         } catch (NotExistException ignored) {
         }
+    }
 
+    @Test
+    public void getParticipants() throws NotExistException {
         List<Participant> participants = graderToGradingTask.getParticipants();
         Assert.assertEquals(2, participants.size());
 
@@ -125,7 +141,6 @@ public class GraderToGradingTaskUnitTests {
         Assert.assertTrue(participants.contains(graderToParticipant1.getExpeeParticipant()));
 
         Assert.assertEquals(p2, graderToGradingTask.getExperimenteeParticipant(p2.getParticipantId()));
-
     }
 
     @Test
@@ -137,24 +152,30 @@ public class GraderToGradingTaskUnitTests {
             Assert.fail();
         } catch (NotExistException ignored) {
         }
-
     }
 
     @Test
-    public void getResults() throws NotInReachException, FormatException, NotExistException {
+    public void getResultsNotParticipant() throws NotInReachException, FormatException, NotExistException {
         try {
             //not exist user
             graderToGradingTask.getExpeeRes(-1);
             Assert.fail();
         } catch (NotExistException ignored) {
         }
+    }
 
+    @Test
+    public void getResultsNotFinished() throws NotInReachException, FormatException, NotExistException {
         try {
             //didn't finish exp
             graderToGradingTask.getExpeeRes(graderToParticipant1.getExpeeParticipant().getParticipantId());
             Assert.fail();
         } catch (NotInReachException ignored) {
         }
+    }
+
+    @Test
+    public void getResults() throws NotInReachException, FormatException, NotExistException {
 
         List<Result> results = graderToGradingTask.getExpeeRes(p2.getParticipantId());
         Assert.assertEquals(1, results.size());

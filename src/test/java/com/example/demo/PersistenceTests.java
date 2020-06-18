@@ -9,7 +9,6 @@ import com.example.demo.BusinessLayer.Entities.Stages.*;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -323,10 +322,12 @@ class PersistenceTests {
 	}
 
 	private void createStagesForGradingTasks(Experiment e) {
-		InfoStage infoStage1 = new InfoStage("hi", e);
+		InfoStage infoStage1 = new InfoStage("hi");
+		infoStage1.setExperiment(e);
 		stageRep.save(infoStage1);
 		experimentRep.save(e);
-		InfoStage infoStage2 = new InfoStage("bye", e);
+		InfoStage infoStage2 = new InfoStage("bye");
+		infoStage2.setExperiment(e);
 		stageRep.save(infoStage2);
 		experimentRep.save(e);
 	}
@@ -399,7 +400,8 @@ class PersistenceTests {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
-		QuestionnaireStage s = new QuestionnaireStage(e);
+		QuestionnaireStage s = new QuestionnaireStage();
+		s.setExperiment(e);
 		stageRep.save(s);
 		createAndSaveQuestions(questions, s);
 		assertEquals(questionRep.count(), 2);
@@ -434,7 +436,9 @@ class PersistenceTests {
 	private void createAndSaveQuestions(List<JSONObject> questions, QuestionnaireStage s) {
 		int QIdx = 1;
 		for (JSONObject JQuestion : questions) {
-			Question q = new Question(QIdx, s, JQuestion.toString());
+			Question q = new Question(JQuestion.toString());
+			q.setQuestionnaireStage(s);
+			q.setQuestionIndex(QIdx);
 			questionRep.save(q);
 			s.addQuestion(q);
 			QIdx++;
@@ -448,7 +452,8 @@ class PersistenceTests {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
-		QuestionnaireStage s = new QuestionnaireStage(e);
+		QuestionnaireStage s = new QuestionnaireStage();
+		s.setExperiment(e);
 		stageRep.save(s);
 		createAndSaveQuestions(questions, s);
 		Participant p1 = createExpeeAndParticipant();
@@ -469,7 +474,8 @@ class PersistenceTests {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
 		List<JSONObject> questions = createQuestionJsons();
-		QuestionnaireStage s = new QuestionnaireStage(e);
+		QuestionnaireStage s = new QuestionnaireStage();
+		s.setExperiment(e);
 		stageRep.save(s);
 		createAndSaveQuestions(questions, s);
 		Participant p1 = createExpeeAndParticipant();
@@ -488,12 +494,17 @@ class PersistenceTests {
 	}
 
 	private void addAnswers(QuestionnaireStage s, Participant p1) {
-		QuestionnaireResult q = new QuestionnaireResult(questionnaireStageRep.findAll().get(0), p1);
+		QuestionnaireResult q = new QuestionnaireResult();
+		q.setStageAndParticipant(questionnaireStageRep.findAll().get(0), p1);
 		resultRep.save(q);
-		Answer answer1 = new Answer("2", s.getQuestions().get(0), q);
+		Answer answer1 = new Answer("2", s.getQuestions().get(0));
+		answer1.setQuestionnaireResult(q);
+		q.addAns(answer1);
 		answerRep.save(answer1);
 		resultRep.save(q);
-		Answer answer2 = new Answer("3", s.getQuestions().get(1), q);
+		Answer answer2 = new Answer("3", s.getQuestions().get(1));
+		answer2.setQuestionnaireResult(q);
+		q.addAns(answer2);
 		answerRep.save(answer2);
 		resultRep.save(q);
 	}
@@ -513,7 +524,8 @@ class PersistenceTests {
 	void addAndUpdateRequirementsForExpTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
+		CodeStage codeStage = new CodeStage("welcome", "", new ArrayList<>(),"JAVA");
+		codeStage.setExperiment(e);
 		stageRep.save(codeStage);
 		assertEquals(codeStageRep.findAll().get(0).getRequirements().size(), 0);
 		addRequirementsToStage(codeStage);
@@ -532,12 +544,14 @@ class PersistenceTests {
 	void addAndUpdateCodeResultForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
+		CodeStage codeStage = new CodeStage("welcome", "", new ArrayList<>(),"JAVA");
+		codeStage.setExperiment(e);
 		stageRep.save(codeStage);
 		Participant p1 = createExpeeAndParticipant();
 		assertEquals(participantRep.count(), 1);
 		assertEquals(experimenteeRep.count(), 1);
-		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
+		CodeResult codeResult = new CodeResult("System.out.println(\"hello world\");");
+		codeResult.setStageAndParticipant(codeStage, p1);
 		codeResultRep.save(codeResult);
 		assertEquals(codeResultRep.count(), 1);
 		assertEquals(codeResultRep.findAll().get(0).getUserCode(), "System.out.println(\"hello world\");");
@@ -552,13 +566,16 @@ class PersistenceTests {
 	void addAndUpdateTaggingStageForExpeeTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
+		CodeStage codeStage = new CodeStage("welcome", "", new ArrayList<>(),"JAVA");
+		codeStage.setExperiment(e);
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
-		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
+		CodeResult codeResult = new CodeResult("System.out.println(\"hello world\");");
+		codeResult.setStageAndParticipant(codeStage, p1);
 		codeResultRep.save(codeResult);
-		TaggingStage taggingStage = new TaggingStage(codeStage, e);
+		TaggingStage taggingStage = new TaggingStage(codeStage);
+		taggingStage.setExperiment(e);
 		stageRep.save(taggingStage);
 		assertEquals(stageRep.count(), 2);
 		TaggingResult t = addRequirementTags(codeStage, p1);
@@ -577,13 +594,16 @@ class PersistenceTests {
 	void deleteReqsAndExpeeResultTest() {
 		Experiment e = new Experiment("hi");
 		experimentRep.save(e);
-		CodeStage codeStage = new CodeStage("welcome", "","JAVA", e);
+		CodeStage codeStage = new CodeStage("welcome", "", new ArrayList<>(),"JAVA");
+		codeStage.setExperiment(e);
 		stageRep.save(codeStage);
 		addRequirementsToStage(codeStage);
 		Participant p1 = createExpeeAndParticipant();
-		CodeResult codeResult = new CodeResult(p1, codeStage, "System.out.println(\"hello world\");");
+		CodeResult codeResult = new CodeResult("System.out.println(\"hello world\");");
+		codeResult.setStageAndParticipant(codeStage, p1);
 		codeResultRep.save(codeResult);
-		TaggingStage taggingStage = new TaggingStage(codeStage, e);
+		TaggingStage taggingStage = new TaggingStage(codeStage);
+		taggingStage.setExperiment(e);
 		stageRep.save(taggingStage);
 		addRequirementTags(codeStage, p1);
 		requirementTagRep.deleteAll();
@@ -599,12 +619,19 @@ class PersistenceTests {
 	}
 
 	private TaggingResult addRequirementTags(CodeStage codeStage, Participant p1) {
-		TaggingResult q = new TaggingResult(taggingStageRep.findAll().get(0), p1);
+		TaggingResult q = new TaggingResult();
+		q.setStageAndParticipant(taggingStageRep.findAll().get(0), p1);
 		resultRep.save(q);
 		Requirement requirementFor_rt1 = codeStage.getRequirements().get(0);
-		RequirementTag rt1 = new RequirementTag(0, 10, requirementFor_rt1, q);
+		RequirementTag rt1 = new RequirementTag(0, 10, requirementFor_rt1);
+		rt1.setTaggingResult(q);
+		q.addTag(rt1);
+		rt1.setCodeStageIdx(codeStage.getStageID().getStageIndex());
 		Requirement requirementFor_rt2 = codeStage.getRequirements().get(1);
-		RequirementTag rt2 = new RequirementTag(10, 15, requirementFor_rt2, q);
+		RequirementTag rt2 = new RequirementTag(10, 15, requirementFor_rt2);
+		rt2.setTaggingResult(q);
+		q.addTag(rt2);
+		rt2.setCodeStageIdx(codeStage.getStageID().getStageIndex());
 		requirementTagRep.save(rt1);
 		requirementTagRep.save(rt2);
 		resultRep.save(q);
@@ -612,11 +639,15 @@ class PersistenceTests {
 	}
 
 	private void addRequirementsToStage(CodeStage codeStage) {
-		Requirement r1 = new Requirement(codeStage, "write a function that prints Hello World!");
+		Requirement r1 = new Requirement("write a function that prints Hello World!");
+		r1.setCodeStage(codeStage);
+		r1.setRequirementIndex(codeStage.getRequirements().size());
 		codeStage.addRequirement(r1);
 		requirementRep.save(r1);
 		stageRep.save(codeStage);
-		Requirement r2 = new Requirement(codeStage, "function must have 1 line");
+		Requirement r2 = new Requirement("function must have 1 line");
+		r2.setCodeStage(codeStage);
+		r2.setRequirementIndex(codeStage.getRequirements().size());
 		codeStage.addRequirement(r2);
 		requirementRep.save(r2);
 		stageRep.save(codeStage);
@@ -630,25 +661,23 @@ class PersistenceTests {
 	}
 
 	private void assignStagesToExperiments() {
-		InfoStage s11 = new InfoStage("hello", experimentRep.findAll().get(0));
-		stageRep.save(s11);
-		QuestionnaireStage s21 = new QuestionnaireStage(experimentRep.findAll().get(0));
-		stageRep.save(s21);
-		InfoStage s31 = new InfoStage("good luck", experimentRep.findAll().get(0));
-		stageRep.save(s31);
-		CodeStage s41 = new CodeStage("enter your code", "","JAVA", experimentRep.findAll().get(0));
-		stageRep.save(s41);
-		TaggingStage s51 = new TaggingStage(s41, experimentRep.findAll().get(0));
-		stageRep.save(s51);
-		InfoStage s12 = new InfoStage("hello", experimentRep.findAll().get(1));
-		stageRep.save(s12);
-		QuestionnaireStage s22 = new QuestionnaireStage(experimentRep.findAll().get(1));
-		stageRep.save(s22);
-		InfoStage s32 = new InfoStage("good luck", experimentRep.findAll().get(1));
-		stageRep.save(s32);
-		CodeStage s42 = new CodeStage("enter your code", "","JAVA", experimentRep.findAll().get(1));
-		stageRep.save(s42);
-		TaggingStage s52 = new TaggingStage(s41, experimentRep.findAll().get(1));
-		stageRep.save(s52);
+		InfoStage s11 = new InfoStage("hello");
+		QuestionnaireStage s21 = new QuestionnaireStage();
+		InfoStage s31 = new InfoStage("good luck");
+		CodeStage s41 = new CodeStage("enter your code", "", new ArrayList<>() ,"JAVA");
+		TaggingStage s51 = new TaggingStage(s41);
+		for(Stage s : List.of(s11, s21, s31, s41, s51)) {
+			s.setExperiment(experimentRep.findAll().get(0));
+			stageRep.save(s);
+		}
+		InfoStage s12 = new InfoStage("hello");
+		QuestionnaireStage s22 = new QuestionnaireStage();
+		InfoStage s32 = new InfoStage("good luck");
+		CodeStage s42 = new CodeStage("enter your code", "", new ArrayList<>() ,"JAVA");
+		TaggingStage s52 = new TaggingStage(s42);
+		for(Stage s : List.of(s12, s22, s32, s42, s52)) {
+			s.setExperiment(experimentRep.findAll().get(1));
+			stageRep.save(s);
+		}
 	}
 }

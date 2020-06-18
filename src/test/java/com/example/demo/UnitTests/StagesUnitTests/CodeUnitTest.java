@@ -1,7 +1,5 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
@@ -24,16 +22,10 @@ import static com.example.demo.Utils.getStumpCodeStage;
 public class CodeUnitTest {
 
     private CodeStage codeStage;
-    private Participant participant;
-    private Experiment exp;
 
     @BeforeEach
     private void init() {
-        exp = new Experiment("Experiment Name");
-        exp.setExperimentId(100);
-        codeStage = new CodeStage("make me hello world program", "//write code here", List.of("THE REQUIREMENT"), "JAVA", exp);
-        participant = new Participant(exp);
-        participant.setParticipantId(10);
+        codeStage = new CodeStage("make me hello world program", "//write code here", List.of("THE REQUIREMENT"), "JAVA");
     }
 
     @Test
@@ -53,8 +45,8 @@ public class CodeUnitTest {
         codeStage.setRequirements(new ArrayList<>());
         Assert.assertEquals(0, codeStage.getRequirements().size());
 
-        Requirement r1 = new Requirement(codeStage, "R1");
-        Requirement r2 = new Requirement(codeStage, "R2");
+        Requirement r1 = new Requirement("R1");
+        Requirement r2 = new Requirement( "R2");
 
         codeStage.addRequirement(r1);
         codeStage.addRequirement(r2);
@@ -76,7 +68,7 @@ public class CodeUnitTest {
     public void fillIn() {
         String code = "x++;\nreturn x;";
         try {
-            CodeResult res = codeStage.fillCode(Map.of("code", code), participant);
+            CodeResult res = codeStage.fillCode(Map.of("code", code), null);
             Assert.assertEquals(code, res.getUserCode());
         } catch (FormatException e) {
             Assert.fail();
@@ -99,7 +91,7 @@ public class CodeUnitTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(getStumpCodeStage(), exp);
+        Stage stage = Stage.parseStage(getStumpCodeStage(), null);
         Assert.assertEquals("code", stage.getType());
     }
 
@@ -107,7 +99,7 @@ public class CodeUnitTest {
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
         // fails because infoStage can not be filled as a code stage
         try {
-            codeStage.fillCode(Map.of("code", "hello world"), participant);
+            codeStage.fillCode(Map.of("code", "hello world"), null);
 
         } catch (FormatException ignored) {
             Assert.fail();
@@ -115,20 +107,20 @@ public class CodeUnitTest {
 
         // fails because infoStage can not be filled as a questionnaire stage
         try {
-            codeStage.fillQuestionnaire(new HashMap<>(), participant);
+            codeStage.fillQuestionnaire(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         // fails because infoStage can not be filled as a tag stage
         try {
-            codeStage.fillTagging(new HashMap<>(), participant);
+            codeStage.fillTagging(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         try {
-            codeStage.fillInfo(new Object(), participant);
+            codeStage.fillInfo(new Object(), null);
             Assert.fail();
         } catch (Exception ignored) {
         }

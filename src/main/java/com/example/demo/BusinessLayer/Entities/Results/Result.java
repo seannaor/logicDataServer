@@ -3,8 +3,12 @@ package com.example.demo.BusinessLayer.Entities.Results;
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.Columns;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -55,16 +59,8 @@ public abstract class Result {
         return stage;
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     public Participant getParticipant() {
         return participant;
-    }
-
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
     }
 
     public ResultID getResultID() {
@@ -73,6 +69,18 @@ public abstract class Result {
 
     public abstract Map<String, Object> getAsMap();
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+    }
+
+    public void setStageAndParticipant(Stage stage,Participant participant){
+        this.stage = stage;
+        this.participant = participant;
+        this.resultID = new ResultID(participant.getParticipantId(), stage.getStageID());
+    }
 
 }

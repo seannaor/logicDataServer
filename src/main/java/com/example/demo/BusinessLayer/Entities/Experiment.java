@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -41,6 +40,8 @@ public class Experiment {
     public Experiment(String experimentName,ManagementUser creator) {
         this.experimentName = experimentName;
         ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
+        if(!managementUserToExperiments.contains(m))
+            managementUserToExperiments.add(m);
     }
 
     public int getExperimentId() {
@@ -105,8 +106,10 @@ public class Experiment {
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
-        stage.setExp(this);
-        stages.add(stage);
+        if(stage.getExperiment() == null)
+            stage.setExperiment(this);
+        if(!stages.contains(stage))
+            stages.add(stage);
     }
 
     public void addManagementUserToExperiment(ManagementUserToExperiment m){

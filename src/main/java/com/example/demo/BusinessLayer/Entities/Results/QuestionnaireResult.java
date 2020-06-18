@@ -2,6 +2,7 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -19,8 +20,11 @@ public class QuestionnaireResult extends Result {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Answer> answers;
 
-    public QuestionnaireResult() { }
+    public QuestionnaireResult() {
+        this.answers = new ArrayList<>();
+    }
 
+    //TODO: remove constructor when no test need it anymore
     public QuestionnaireResult(QuestionnaireStage questionnaireStage, Participant participant) {
         super(questionnaireStage, participant);
         this.answers = new ArrayList<>();
@@ -37,6 +41,13 @@ public class QuestionnaireResult extends Result {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    @Override
+    public void setStageAndParticipant(Stage stage, Participant participant){
+        super.setStageAndParticipant(stage,participant);
+        for(Answer ans : answers)
+            ans.setQuestionnaireResult(this);
     }
 
     @Override

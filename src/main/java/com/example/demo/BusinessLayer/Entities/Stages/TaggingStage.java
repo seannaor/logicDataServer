@@ -2,12 +2,14 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +30,13 @@ public class TaggingStage extends Stage {
     public TaggingStage() {
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public TaggingStage(CodeStage codeStage, Experiment experiment){
         super(experiment);
+        this.codeStage = codeStage;
+    }
+
+    public TaggingStage(CodeStage codeStage){
         this.codeStage = codeStage;
     }
 
@@ -55,27 +62,35 @@ public class TaggingStage extends Stage {
         return "tagging";
     }
 
+    // if old is null, new TaggingResult will be created, else, old will be chanced
+    //TODO: validate old actually change
     @Override
-    public TaggingResult fillTagging(Map<String,Object> data, Participant participant) throws FormatException, NotInReachException {
-        TaggingResult taggingResult = (TaggingResult)participant.getResult(this.getStageID().getStageIndex());
-        if(taggingResult == null) {
-            taggingResult = new TaggingResult(this, participant);
+    public TaggingResult fillTagging(Map<String,Object> data, TaggingResult old) throws FormatException, NotInReachException {
+        if(old == null) {
+            old = new TaggingResult();
         }
+        JSONObject JTags = validate(data);
+        List<RequirementTag> tags = new LinkedList<>();
+
+        for (Requirement r : codeStage.getRequirements()) {
+            int i = r.getIndex();
+            if (!JTags.containsKey(i))
+                throw new FormatException("tag for requirement #" + i);
+
+            RequirementTag tag =  r.tag((JSONObject) JTags.get(i));
+            tag.setCodeStageIdx(this.codeStage.getStageID().getStageIndex());
+            tags.add(tag);
+        }
+        old.setTags(tags);
+        return old; // old is actually new now :)
+    }
+
+    private JSONObject validate(Map<String,Object> data) throws FormatException {
         JSONObject tags;
         try{
             tags = (JSONObject) data.get("tagging");
-            if(tags == null)
-                throw new FormatException("tags list");
-        }catch (Exception e) {
-            throw new FormatException("tags list");
-        }
-        for (Requirement r : codeStage.getRequirements()) {
-            int i = r.getIndex();
-            if (!tags.containsKey(i))
-                throw new FormatException("tag for requirement #" + i);
-
-            r.tag((JSONObject) tags.get(i), taggingResult); //adds the new tag to the taggingResult automatically
-        }
-        return taggingResult;
+            if(tags != null) return tags;
+        }catch (Exception ignored) {}
+        throw new FormatException("tags list");
     }
 }

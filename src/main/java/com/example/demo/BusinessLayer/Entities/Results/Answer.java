@@ -23,11 +23,11 @@ public class Answer {
             this.questionID = questionID;
         }
 
-        public void setQuestionID(Question.QuestionID questionID){
+        public void setQuestionID(Question.QuestionID questionID) {
             this.questionID = questionID;
         }
 
-        public void setParticipantId(int participantId){
+        public void setParticipantId(int participantId) {
             this.participantId = participantId;
         }
     }
@@ -56,9 +56,17 @@ public class Answer {
     @Column(name = "answer")
     private String answer;
 
-    public Answer (){ }
+    public Answer() {
+    }
 
-    public Answer (String answer, Question question, QuestionnaireResult questionnaireResult) {
+    public Answer(String answer, Question question) {
+        this.answer = answer;
+        this.answerID = new AnswerID();
+        this.question = question;
+        this.answerID.setQuestionID(question.getQuestionID());
+    }
+
+    public Answer(String answer, Question question, QuestionnaireResult questionnaireResult) {
         this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
         this.answer = answer;
         this.question = question;
@@ -66,28 +74,37 @@ public class Answer {
         this.questionnaireResult.addAns(this);
     }
 
+    // Setters
+    public void setQuestionnaireResult(QuestionnaireResult questionnaireResult){
+        this.questionnaireResult = questionnaireResult;
+        this.answerID.setParticipantId(questionnaireResult.getParticipant().getParticipantId());
+    }
+
     public void setQuestion(Question question) {
         this.question = question;
+        this.answerID.setQuestionID(question.getQuestionID());
     }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public Stage.StageID getStageID(){
-        return this.question.getStageID();
-    }
-
-    public QuestionnaireResult getQuestionnaireResult() {
-        return questionnaireResult;
-    }
-
-    public String getAnswer() {
-        return answer;
+    
+    public void setParticipantId(int participantId) {
+        this.answerID.setParticipantId(participantId);
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    // Getters
+    public Question getQuestion() {
+        return question;
+    }
+
+    public Stage.StageID getStageID() {
+        return this.question.getStageID();
+    }
+
+
+    public String getAnswer() {
+        return answer;
     }
 
 }

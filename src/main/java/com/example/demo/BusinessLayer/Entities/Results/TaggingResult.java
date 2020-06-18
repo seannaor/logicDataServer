@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
+import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -20,8 +21,10 @@ public class TaggingResult extends Result {
     private List<RequirementTag> tags;
 
     public TaggingResult() {
+        this.tags = new ArrayList<>();
     }
 
+    //TODO: remove constructor when no test need it anymore
     public TaggingResult(TaggingStage taggingStage, Participant participant) {
         super(taggingStage, participant);
         this.tags = new ArrayList<>();
@@ -41,7 +44,16 @@ public class TaggingResult extends Result {
     }
 
     @Override
+    public void setStageAndParticipant(Stage stage, Participant participant) {
+        super.setStageAndParticipant(stage, participant);
+        for (RequirementTag tag : tags) {
+            tag.setTaggingResult(this);
+        }
+    }
+
+    @Override
     public Map<String, Object> getAsMap() {
         return Map.of();
     }
+
 }

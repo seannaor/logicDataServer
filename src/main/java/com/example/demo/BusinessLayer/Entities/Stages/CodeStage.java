@@ -30,6 +30,7 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public CodeStage(String desc, String template, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
@@ -37,6 +38,7 @@ public class CodeStage extends Stage {
         this.language = language;
     }
 
+    // TODO: remove Experiment form constructor or all constructor
     public CodeStage(String desc, String template, List<String> requirements, String language, Experiment experiment) {
         super(experiment);
         this.description = desc;
@@ -48,21 +50,50 @@ public class CodeStage extends Stage {
         }
     }
 
-    public CodeStage(Experiment experiment, int stage_index) {
-        super(experiment, stage_index);
+    public CodeStage(String desc, String template, List<String> requirements, String language) {
+        this.description = desc;
+        this.template = template;
+        this.language = language;
+        this.requirements = new ArrayList<>();
+        int reqIdx = 0;
+        for (String req : requirements) {
+            this.requirements.add(buildRequirement(req,reqIdx++));
+        }
     }
 
+    private Requirement buildRequirement(String req,int idx) {
+        Requirement newRequirement = new Requirement(req);
+        newRequirement.setRequirementIndex(idx);
+        newRequirement.setCodeStage(this);
+        return newRequirement;
+    }
+
+
     @Override
-    public CodeResult fillCode(Map<String,Object> data, Participant participant) throws FormatException {
-        String code;
-        try{
-            code = (String) data.get("code");
-            if (code == null)
-                throw new FormatException("user code");
-        }catch (Exception e) {
-            throw new FormatException("user code");
+    public void setExperiment(Experiment experiment){
+        super.setExperiment(experiment);
+        for (Requirement req : this.requirements) {
+            req.setStageIndex(this.getStageID().getStageIndex());
+            req.setExperimentId(experiment.getExperimentId());
         }
-        return new CodeResult(participant, this, code);
+    }
+
+
+    // if old is null, new CodeResult will be created, else, old will be chanced
+    @Override
+    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
+        String code = validate(data);
+        if(old == null) old = new CodeResult(code);
+        else old.setUserCode(code);
+        return old; // old is actually new :)
+    }
+
+    private String validate(Map<String,Object> data) throws FormatException {
+        try{
+            String code = (String) data.get("code");
+            if (code != null) return code;
+        }catch (Exception ignored) {}
+        throw new FormatException("user code");
     }
 
     public void addRequirement(Requirement requirement) {

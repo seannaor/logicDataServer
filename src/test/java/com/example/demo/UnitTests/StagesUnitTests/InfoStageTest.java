@@ -1,7 +1,5 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -18,14 +16,10 @@ import java.util.Map;
 
 public class InfoStageTest {
     private InfoStage infoStage;
-    private Experimentee expee;
 
     @BeforeEach
     private void init() {
-        Experiment exp = new Experiment("Experiment Name");
-        exp.setExperimentId(100);
         infoStage = new InfoStage("hello");
-        expee = new Experimentee("a@a.a", exp);
     }
 
     @Test
@@ -50,27 +44,27 @@ public class InfoStageTest {
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
         // fails because infoStage can not be filled as a code stage
         try {
-            infoStage.fillCode(new HashMap<>(), expee.getParticipant());
+            infoStage.fillCode(new HashMap<>(),null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         // fails because infoStage can not be filled as a questionnaire stage
         try {
-            infoStage.fillQuestionnaire(new HashMap<>(), expee.getParticipant());
+            infoStage.fillQuestionnaire(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         // fails because infoStage can not be filled as a tag stage
         try {
-            infoStage.fillTagging(new HashMap<>(), expee.getParticipant());
+            infoStage.fillTagging(new HashMap<>(), null);
             Assert.fail();
         } catch (FormatException ignored) {
         }
 
         try {
-            infoStage.fillInfo(new Object(), expee.getParticipant());
+            infoStage.fillInfo(new Object(), null);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -78,7 +72,7 @@ public class InfoStageTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), expee.getExperiment());
+        Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), null);
         Assert.assertEquals("info", stage.getType());
     }
 }
