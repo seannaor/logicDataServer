@@ -30,14 +30,14 @@ import java.util.UUID;
 
 @Sql({"/create_database.sql"})
 @SpringBootTest
-public class creatorServiceTests {
+public class CreatorServiceTests {
     private CreatorService creatorService;
     private CreatorBusiness creatorBusiness;
     private DataCache cache;
     private DBAccess db;
 
     @Autowired
-    public creatorServiceTests(CreatorService creatorService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+    public CreatorServiceTests(CreatorService creatorService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.creatorService = creatorService;
         this.creatorBusiness = creatorBusiness;
         this.cache = cache;
