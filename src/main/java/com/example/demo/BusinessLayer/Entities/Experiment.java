@@ -30,8 +30,7 @@ public class Experiment {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages= new ArrayList<>();
 
-    public Experiment() {
-    }
+    public Experiment() { }
 
     public Experiment(String experimentName) {
         this.experimentName = experimentName;
@@ -40,6 +39,8 @@ public class Experiment {
     public Experiment(String experimentName,ManagementUser creator) {
         this.experimentName = experimentName;
         ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
+        creator.addManagementUserToExperiment(m);
+        this.addManagementUserToExperiment(m);
         if(!managementUserToExperiments.contains(m))
             managementUserToExperiments.add(m);
     }

@@ -49,12 +49,6 @@ public abstract class Result {
 
     public Result() { }
 
-    public Result(Stage stage, Participant participant) {
-        this.resultID = new ResultID(participant.getParticipantId(), stage.getStageID());
-        this.participant = participant;
-        this.stage = stage;
-    }
-
     public Stage getStage() {
         return stage;
     }
@@ -68,14 +62,6 @@ public abstract class Result {
     }
 
     public abstract Map<String, Object> getAsMap();
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-    }
 
     public void setStageAndParticipant(Stage stage,Participant participant){
         this.stage = stage;

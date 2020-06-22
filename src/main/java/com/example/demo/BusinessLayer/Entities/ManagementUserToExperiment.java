@@ -19,6 +19,14 @@ public class ManagementUserToExperiment {
             this.bguUsername = bguUsername;
             this.experimentId = experimentId;
         }
+
+        public void setBguUsername(String bguUsername) {
+            this.bguUsername = bguUsername;
+        }
+
+        public void setExperimentId(int experimentId) {
+            this.experimentId = experimentId;
+        }
     }
     @EmbeddedId
     private ManagementUserToExperimentID managementUserToExperimentID;
@@ -40,7 +48,6 @@ public class ManagementUserToExperiment {
         this.managementUser = managementUser;
         this.experiment = experiment;
         this.role = role;
-        this.managementUser.addManagementUserToExperiment(this);
         this.experiment.addManagementUserToExperiment(this);
     }
 
@@ -50,6 +57,8 @@ public class ManagementUserToExperiment {
 
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
+        this.managementUserToExperimentID.setExperimentId(experiment.getExperimentId());
+
     }
 
     public ManagementUser getManagementUser() {
@@ -58,6 +67,7 @@ public class ManagementUserToExperiment {
 
     public void setManagementUser(ManagementUser managementUser) {
         this.managementUser = managementUser;
+        this.managementUserToExperimentID.setBguUsername(managementUser.getBguUsername());
     }
 
     public String getRole() {
@@ -66,9 +76,5 @@ public class ManagementUserToExperiment {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public ManagementUserToExperimentID getManagementUserToExperimentID() {
-        return managementUserToExperimentID;
     }
 }

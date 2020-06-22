@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.demo.Utils.getStumpCodeStage;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeUnitTest {
 
@@ -46,7 +47,7 @@ public class CodeUnitTest {
         Assert.assertEquals(0, codeStage.getRequirements().size());
 
         Requirement r1 = new Requirement("R1");
-        Requirement r2 = new Requirement( "R2");
+        Requirement r2 = new Requirement("R2");
 
         codeStage.addRequirement(r1);
         codeStage.addRequirement(r2);
@@ -65,14 +66,16 @@ public class CodeUnitTest {
     }
 
     @Test
-    public void fillIn() {
+    public void fillIn() throws FormatException {
         String code = "x++;\nreturn x;";
-        try {
-            CodeResult res = codeStage.fillCode(Map.of("code", code), null);
-            Assert.assertEquals(code, res.getUserCode());
-        } catch (FormatException e) {
-            Assert.fail();
-        }
+        CodeResult res = null;
+        res = codeStage.fillCode(Map.of("code", code), res);
+        Assert.assertEquals(code, res.getUserCode());
+
+        code = "//x++;\nreturn 0;";
+        res = codeStage.fillCode(Map.of("code", code), res);
+        Assert.assertEquals(code, res.getUserCode());
+
     }
 
     @Test
@@ -96,33 +99,21 @@ public class CodeUnitTest {
     }
 
     @Test
-    public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
-        // fails because infoStage can not be filled as a code stage
-        try {
-            codeStage.fillCode(Map.of("code", "hello world"), null);
+    public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException, FormatException {
+        codeStage.fillCode(Map.of("code", "hello world"), null);
 
-        } catch (FormatException ignored) {
-            Assert.fail();
-        }
-
-        // fails because infoStage can not be filled as a questionnaire stage
-        try {
+        assertThrows(FormatException.class, () -> {
+            // fails because infoStage can not be filled as a questionnaire stage
             codeStage.fillQuestionnaire(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
 
-        // fails because infoStage can not be filled as a tag stage
-        try {
+        assertThrows(FormatException.class, () -> {
+            // fails because infoStage can not be filled as a tag stage
             codeStage.fillTagging(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
 
-        try {
+        assertThrows(FormatException.class, () -> {
             codeStage.fillInfo(new Object(), null);
-            Assert.fail();
-        } catch (Exception ignored) {
-        }
+        });
     }
 }

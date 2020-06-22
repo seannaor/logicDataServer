@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class QuestionUnitTests {
     private Question open;
     private Question multi;
@@ -37,11 +39,9 @@ public class QuestionUnitTests {
         Question q = new Question();
         q.setQuestionJson("not a JSON");
 
-        try {
+        assertThrows(ParseException.class,()->{
             q.answer("answer");
-            Assert.fail();
-        } catch (ParseException ignored) {
-        }
+        });
     }
 
     @Test
@@ -50,11 +50,10 @@ public class QuestionUnitTests {
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "not a type");
         q.setQuestionJson(JQuestion.toString());
-        try {
+
+        assertThrows(FormatException.class,()->{
             q.answer("answer");
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test

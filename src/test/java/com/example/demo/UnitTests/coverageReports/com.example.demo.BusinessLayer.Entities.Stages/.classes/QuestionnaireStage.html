@@ -1,0 +1,205 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: QuestionnaireStage</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Stages</a> ]
+</div>
+
+<h1>Coverage Summary for Class: QuestionnaireStage (com.example.demo.BusinessLayer.Entities.Stages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QuestionnaireStage</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (49/ 49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Stages;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Experiment;
+<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Answer;
+<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+<i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
+<i>8</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+<i>9</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+<i>10</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+<i>11</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+<i>12</i>&nbsp;import org.json.simple.JSONObject;
+<i>13</i>&nbsp;import org.json.simple.parser.ParseException;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;import javax.persistence.Entity;
+<i>16</i>&nbsp;import javax.persistence.OneToMany;
+<i>17</i>&nbsp;import javax.persistence.Table;
+<i>18</i>&nbsp;import java.util.ArrayList;
+<i>19</i>&nbsp;import java.util.LinkedList;
+<i>20</i>&nbsp;import java.util.List;
+<i>21</i>&nbsp;import java.util.Map;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;@Entity
+<i>24</i>&nbsp;@Table(name = &quot;questionnaire_stages&quot;)
+<i>25</i>&nbsp;public class QuestionnaireStage extends Stage {
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;    @OneToMany(mappedBy = &quot;questionnaireStage&quot;)</b>
+<i>28</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
+<i>29</i>&nbsp;    private List&lt;Question&gt; questions = new ArrayList&lt;&gt;();
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public QuestionnaireStage() {
+<b class="fc"><i>32</i>&nbsp;        super();</b>
+<b class="fc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;    public QuestionnaireStage(List&lt;JSONObject&gt; JQuestions) {</b>
+<b class="fc"><i>36</i>&nbsp;        questions = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>37</i>&nbsp;        int QIndx = 0;</b>
+<b class="fc"><i>38</i>&nbsp;        for (JSONObject JQuestion : JQuestions) {</b>
+<b class="fc"><i>39</i>&nbsp;            questions.add(buildQuestion(JQuestion,QIndx++));</b>
+<b class="fc"><i>40</i>&nbsp;        }</b>
+<b class="fc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public void setExperiment(Experiment experiment) {
+<b class="fc"><i>45</i>&nbsp;        super.setExperiment(experiment);</b>
+<b class="fc"><i>46</i>&nbsp;        for (Question q : this.questions) {</b>
+<b class="fc"><i>47</i>&nbsp;            q.setStageId(this.getStageID());</b>
+<b class="fc"><i>48</i>&nbsp;        }</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public List&lt;Question&gt; getQuestions() {
+<b class="fc"><i>53</i>&nbsp;        return this.questions;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public void setQuestions(List&lt;Question&gt; questions) {
+<b class="fc"><i>57</i>&nbsp;        this.questions = questions;</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public void addQuestion(Question question) {
+<b class="fc"><i>61</i>&nbsp;        this.questions.add(question);</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @Override
+<i>65</i>&nbsp;    public Map&lt;String, Object&gt; getAsMap() {
+<b class="fc"><i>66</i>&nbsp;        List&lt;JSONObject&gt; questions = new LinkedList&lt;&gt;();</b>
+<b class="fc"><i>67</i>&nbsp;        for (Question q : this.questions) {</b>
+<b class="fc"><i>68</i>&nbsp;            questions.add(q.getQuestionJson());</b>
+<b class="fc"><i>69</i>&nbsp;        }</b>
+<b class="fc"><i>70</i>&nbsp;        return Map.of(&quot;questions&quot;, questions);</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override
+<i>74</i>&nbsp;    public String getType() {
+<b class="fc"><i>75</i>&nbsp;        return &quot;questionnaire&quot;;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    // if old is null, new QuestionnaireResult will be created, else, old will be chanced
+<i>79</i>&nbsp;    @Override
+<i>80</i>&nbsp;    public QuestionnaireResult fillQuestionnaire(Map&lt;String, Object&gt; data, QuestionnaireResult old) throws FormatException, ParseException, NotInReachException, NotExistException {
+<b class="fc"><i>81</i>&nbsp;        if (old == null) {</b>
+<b class="fc"><i>82</i>&nbsp;            old = new QuestionnaireResult();</b>
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<b class="fc"><i>85</i>&nbsp;        List&lt;String&gt; SAnswers = validate(data);</b>
+<b class="fc"><i>86</i>&nbsp;        List&lt;Answer&gt; answers = new LinkedList&lt;&gt;();</b>
+<i>87</i>&nbsp;
+<b class="fc"><i>88</i>&nbsp;        for (int i = 0; i &lt; this.questions.size(); i++) {</b>
+<b class="fc"><i>89</i>&nbsp;            Question q = getQuestion(i);</b>
+<b class="fc"><i>90</i>&nbsp;            Answer ans = q.answer(SAnswers.get(i));</b>
+<b class="fc"><i>91</i>&nbsp;            answers.add(ans);</b>
+<i>92</i>&nbsp;        }
+<b class="fc"><i>93</i>&nbsp;        old.setAnswers(answers);</b>
+<b class="fc"><i>94</i>&nbsp;        return old; // old is actually new now :D</b>
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public Question getQuestion(int i) throws NotExistException {
+<b class="fc"><i>99</i>&nbsp;        for (Question q : questions) {</b>
+<b class="fc"><i>100</i>&nbsp;            if (q.getIndex() == i) return q;</b>
+<b class="fc"><i>101</i>&nbsp;        }</b>
+<b class="fc"><i>102</i>&nbsp;        throw new NotExistException(&quot;question&quot;, i + &quot;&quot;);</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    private Question buildQuestion(JSONObject jQuestion,int idx) {
+<b class="fc"><i>106</i>&nbsp;        Question newQuestion = new Question(jQuestion.toString());</b>
+<b class="fc"><i>107</i>&nbsp;        newQuestion.setQuestionIndex(idx);</b>
+<b class="fc"><i>108</i>&nbsp;        newQuestion.setQuestionnaireStage(this);</b>
+<b class="fc"><i>109</i>&nbsp;        return newQuestion;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    // validate answers list and return it
+<i>113</i>&nbsp;    private List&lt;String&gt; validate(Map&lt;String, Object&gt; data) throws FormatException {
+<i>114</i>&nbsp;        List&lt;String&gt; answers;
+<i>115</i>&nbsp;        try {
+<b class="fc"><i>116</i>&nbsp;            answers = (List&lt;String&gt;) data.get(&quot;answers&quot;);</b>
+<b class="fc"><i>117</i>&nbsp;            if (answers != null &amp;&amp; answers.size() == this.questions.size())</b>
+<b class="fc"><i>118</i>&nbsp;                return answers;</b>
+<b class="fc"><i>119</i>&nbsp;        } catch (Exception ignored) {}</b>
+<b class="fc"><i>120</i>&nbsp;        throw new FormatException(&quot;list of answers&quot;);</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 21:38</div>
+</div>
+</body>
+</html>

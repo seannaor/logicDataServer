@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class GradingTaskUnitTests {
 
     private GradingTask gradingTask;
@@ -31,34 +33,24 @@ public class GradingTaskUnitTests {
 
     @Test
     public void setStagesToCheckFailIllegalIdx() throws FormatException {
-        try {
-            //illegal stage idx
+        assertThrows(NotExistException.class,()->{
             gradingTask.setStagesByIdx(List.of(-1));
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test
-    public void setStagesToCheckFailNotExistIdx() throws FormatException {
-        try {
-            //not exist stage idx
+    public void setStagesToCheckFailNotExistIdx() {
+        assertThrows(NotExistException.class,()->{
             gradingTask.setStagesByIdx(List.of(0));
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test
-    public void setStagesToCheckFailNoResult() throws NotExistException {
+    public void setStagesToCheckFailNoResult() {
         gradingTask.getBaseExperiment().addStage(new InfoStage("info"));
-
-        try {
-            //info stage - no result
+        assertThrows(FormatException.class, ()->{
             gradingTask.setStagesByIdx(List.of(0));
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
@@ -73,7 +65,7 @@ public class GradingTaskUnitTests {
     }
 
     @Test
-    public void assignGrader() {
+    public void assignGrader() throws NotExistException {
         Grader grader = new Grader("grader@mail");
         GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask, grader);
 
@@ -82,5 +74,19 @@ public class GradingTaskUnitTests {
         Assert.assertEquals(graders + 1, gradingTask.getAssignedGradingTasks().size());
 
         Assert.assertTrue(gradingTask.getAssignedGradingTasks().contains(graderToGradingTask));
+        Assert.assertEquals(graderToGradingTask,gradingTask.getGraderToGradingTask(grader));
+    }
+
+    @Test
+    public void getGraderToGradingTaskFailNoGrader(){
+        Grader grader = new Grader("grader@mail");
+        assertThrows(NotExistException.class, ()->{
+            gradingTask.getGraderToGradingTask(grader);
+        });
+    }
+
+    @Test
+    public void getName(){
+        Assert.assertEquals("Grading Task",gradingTask.getGradingTaskName());
     }
 }

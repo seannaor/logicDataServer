@@ -198,7 +198,7 @@ public class Utils {
         graderBusiness.fillInStage(p, ans);
     }
 
-    private static List<JSONObject> buildSimpleExp(List<String> questions) {
+    public static List<JSONObject> buildSimpleExp(List<String> questions) {
         List<JSONObject> stages = new ArrayList<>();
 
         JSONObject info = new JSONObject();

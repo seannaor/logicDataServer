@@ -55,13 +55,13 @@ public class GradingTask {
         this.stages =new ArrayList<>();
     }
 
-    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
-        this.gradingTaskName = gradingTaskName;
-        this.baseExperiment = baseExperiment;
-        this.generalExperiment = generalExperiment;
-        this.gradingExperiment = gradingExperiment;
-        this.stages = stages;
-    }
+//    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List<Stage> stages) {
+//        this.gradingTaskName = gradingTaskName;
+//        this.baseExperiment = baseExperiment;
+//        this.generalExperiment = generalExperiment;
+//        this.gradingExperiment = gradingExperiment;
+//        this.stages = stages;
+//    }
 
     public int getGradingTaskId() {
         return gradingTaskId;
@@ -95,7 +95,6 @@ public class GradingTask {
     }
 
     public GraderToGradingTask getGraderToGradingTask(Grader g) throws NotExistException {
-        // for tests use
         for(GraderToGradingTask gtgt:assignedGradingTasks){
             if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;
         }

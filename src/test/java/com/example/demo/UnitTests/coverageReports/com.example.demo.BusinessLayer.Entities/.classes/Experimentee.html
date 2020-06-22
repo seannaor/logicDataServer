@@ -1,0 +1,166 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Experimentee</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Experimentee (com.example.demo.BusinessLayer.Entities)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Experimentee</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (13/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (20/ 22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Result;
+<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+<i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+<i>8</i>&nbsp;import org.hibernate.annotations.GenericGenerator;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import javax.persistence.*;
+<i>11</i>&nbsp;import java.util.List;
+<i>12</i>&nbsp;import java.util.UUID;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;@Entity
+<i>15</i>&nbsp;@Table(name = &quot;experimentees&quot;)
+<i>16</i>&nbsp;public class Experimentee {
+<i>17</i>&nbsp;    @GeneratedValue(generator = &quot;uuid2&quot;)
+<i>18</i>&nbsp;    @GenericGenerator(name = &quot;uuid2&quot;, strategy = &quot;uuid2&quot;)
+<i>19</i>&nbsp;    @Column(name = &quot;access_code&quot;, columnDefinition = &quot;BINARY(16)&quot;)
+<i>20</i>&nbsp;    @Id
+<i>21</i>&nbsp;    private UUID accessCode;
+<i>22</i>&nbsp;    @Column(name = &quot;experimentee_email&quot;)
+<i>23</i>&nbsp;    private String experimenteeEmail;
+<i>24</i>&nbsp;    @OneToOne
+<i>25</i>&nbsp;    @JoinColumn(name = &quot;participant_id&quot;)
+<i>26</i>&nbsp;    private Participant participant;
+<i>27</i>&nbsp;
+<b class="nc"><i>28</i>&nbsp;    public Experimentee() {</b>
+<b class="nc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<b class="fc"><i>31</i>&nbsp;    public Experimentee(String experimenteeEmail, Experiment exp) {</b>
+<b class="fc"><i>32</i>&nbsp;        this.experimenteeEmail = experimenteeEmail;</b>
+<b class="fc"><i>33</i>&nbsp;        this.participant = new Participant(exp);</b>
+<b class="fc"><i>34</i>&nbsp;    }</b>
+<i>35</i>&nbsp;
+<b class="fc"><i>36</i>&nbsp;    public Experimentee(String experimenteeEmail) {</b>
+<b class="fc"><i>37</i>&nbsp;        this.experimenteeEmail = experimenteeEmail;</b>
+<b class="fc"><i>38</i>&nbsp;    }</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public UUID getAccessCode() {
+<b class="fc"><i>41</i>&nbsp;        return this.accessCode;</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public String getExperimenteeEmail() {
+<b class="fc"><i>45</i>&nbsp;        return experimenteeEmail;</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public void setExperimenteeEmail(String experimentee_email) {
+<b class="fc"><i>49</i>&nbsp;        this.experimenteeEmail = experimentee_email;</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public Participant getParticipant() {
+<b class="fc"><i>53</i>&nbsp;        return participant;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public Experiment getExperiment(){
+<b class="fc"><i>57</i>&nbsp;        return participant.getExperiment();</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public void setParticipant(Participant participant) {
+<b class="fc"><i>61</i>&nbsp;        this.participant = participant;</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public Stage getCurrStage() throws ExpEndException, NotExistException {
+<b class="fc"><i>65</i>&nbsp;        return participant.getCurrStage();</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public int getCurrStageIdx()  {
+<b class="fc"><i>69</i>&nbsp;        return participant.getCurrStageIdx();</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public Stage getNextStage() throws ExpEndException, NotExistException {
+<b class="fc"><i>73</i>&nbsp;        return participant.getNextStage();</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public Stage getStage(int idx) throws NotInReachException, NotExistException {
+<b class="fc"><i>77</i>&nbsp;        return participant.getStage(idx);</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public Result getResult(int idx) throws NotInReachException{
+<b class="fc"><i>81</i>&nbsp;        return participant.getResult(idx);</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 21:38</div>
+</div>
+</body>
+</html>

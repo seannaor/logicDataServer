@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.demo.Utils.getStumpQuestionsStage;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class QuestionnaireUnitTests {
 
@@ -32,7 +33,6 @@ public class QuestionnaireUnitTests {
         questions.get(1).setQuestionIndex(1);
         questionnaireStage.addQuestion(questions.get(0));
         questionnaireStage.addQuestion(questions.get(1));
-
     }
 
     @Test
@@ -56,30 +56,27 @@ public class QuestionnaireUnitTests {
     }
 
     @Test
-    public void fillInNoAnsFail() throws ParseException, NotExistException, NotInReachException, FormatException {
-        try {
+    public void fillInNoAnsFail() {
+        assertThrows(FormatException.class,()->{
             //no answers
             questionnaireStage.fillQuestionnaire(Map.of(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {}
+        });
     }
 
     @Test
-    public void fillInNoAnsListFail() throws ParseException, NotExistException, NotInReachException {
-        try {
+    public void fillInNoAnsListFail()  {
+        assertThrows(FormatException.class,()->{
             //answers is not a list of strings
             questionnaireStage.fillQuestionnaire(Map.of("answers", -1), null);
-            Assert.fail();
-        } catch (FormatException ignored) { }
+        });
     }
 
     @Test
-    public void fillInNotAllAnsFail() throws ParseException, NotExistException, NotInReachException {
-        try {
+    public void fillInNotAllAnsFail() {
+        assertThrows(FormatException.class,()->{
             //missing answers
             questionnaireStage.fillQuestionnaire(Map.of("answers", List.of()), null);
-            Assert.fail();
-        } catch (FormatException ignored) { }
+        });
     }
 
     @Test
@@ -126,11 +123,9 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void questionIndexFail() {
-        try {
+        assertThrows(NotExistException.class,()->{
             questionnaireStage.getQuestion(-1);
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test

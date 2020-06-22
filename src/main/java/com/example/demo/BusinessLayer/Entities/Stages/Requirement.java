@@ -25,12 +25,6 @@ public class Requirement {
         public RequirementID() {
         }
 
-        public RequirementID(int requirementIndex, int stageIndex, int experimentId) {
-            this.requirementIndex = requirementIndex;
-            this.stageIndex = stageIndex;
-            this.experimentId = experimentId;
-        }
-
         public int getRequirementIndex() {
             return requirementIndex;
         }
@@ -63,12 +57,6 @@ public class Requirement {
     private String text;
 
     public Requirement() {
-    }
-
-    public Requirement(CodeStage codeStage, String text) {
-        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
-        this.codeStage = codeStage;
-        this.text = text;
     }
 
     public Requirement(String text){

@@ -137,7 +137,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         ManagementUser ally = new ManagementUser(allyMail,"TEMP",allyMail);
         cache.addManager(ally);
         for (String per : permissions) {
-            Permission toAdd = new Permission(per, ally);
+            Permission toAdd = new Permission(per);
             ally.addPermission(toAdd);
             db.savePermissionForManagementUser(toAdd, ally);
         }
@@ -155,10 +155,13 @@ public class CreatorBusiness implements ICreatorBusiness {
             throw new NotExistException("set allie permissions", "allie not found");
         }
         ManagementUserToExperiment m = new ManagementUserToExperiment(ally, exp, allieRole);
+        ally.addManagementUserToExperiment(m);
+        exp.addManagementUserToExperiment(m);
         db.saveManagementUserToExperiment(m);
         db.deletePermissionsOfManagementUser(ally);
         for (String per : permissions) {
-            Permission toAdd = new Permission(per, ally);
+            Permission toAdd = new Permission(per);
+            ally.addPermission(toAdd);
             db.savePermissionForManagementUser(toAdd, ally);
         }
     }
@@ -170,7 +173,7 @@ public class CreatorBusiness implements ICreatorBusiness {
         try {
             grader = cache.getGraderByEMail(graderMail);
         }catch (NotExistException ignore){
-            grader = new Grader(graderMail, gt.getBaseExperiment());
+            grader = new Grader(graderMail);
             cache.addGrader(grader);
         }
         return cache.addGraderToGradingTask(gt, grader).toString();

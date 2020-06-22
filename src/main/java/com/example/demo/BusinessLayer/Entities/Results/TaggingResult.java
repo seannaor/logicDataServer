@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.json.simple.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -21,12 +22,6 @@ public class TaggingResult extends Result {
     private List<RequirementTag> tags;
 
     public TaggingResult() {
-        this.tags = new ArrayList<>();
-    }
-
-    //TODO: remove constructor when no test need it anymore
-    public TaggingResult(TaggingStage taggingStage, Participant participant) {
-        super(taggingStage, participant);
         this.tags = new ArrayList<>();
     }
 
@@ -53,7 +48,11 @@ public class TaggingResult extends Result {
 
     @Override
     public Map<String, Object> getAsMap() {
-        return Map.of();
+        List<Map<String, Object>> JTags = new ArrayList<>();
+        for(RequirementTag tag : this.getTags()){
+            JTags.add(tag.getAsMap());
+        }
+        return Map.of("tags",JTags);
     }
 
 }

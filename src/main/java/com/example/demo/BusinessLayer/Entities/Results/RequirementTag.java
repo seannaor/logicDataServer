@@ -6,10 +6,13 @@ import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.hibernate.annotations.ManyToAny;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "requirement_tags")
@@ -31,15 +34,6 @@ public class RequirementTag {
         private int experimentId;
 
         public RequirementTagID() { }
-
-        public RequirementTagID(int startCharLoc, int requirementIndex, int participantId, int taggingIndex, int codeIndex, int experimentId) {
-            this.startCharLoc = startCharLoc;
-            this.requirementIndex = requirementIndex;
-            this.participantId = participantId;
-            this.taggingIndex = taggingIndex;
-            this.codeIndex = codeIndex;
-            this.experimentId = experimentId;
-        }
 
         public void setStartCharLoc(int startCharLoc) {
             this.startCharLoc = startCharLoc;
@@ -64,6 +58,8 @@ public class RequirementTag {
         public void setExperimentId(int experimentId) {
             this.experimentId = experimentId;
         }
+
+        public int getStartCharLoc(){return this.startCharLoc;}
     }
 
     @EmbeddedId
@@ -102,18 +98,6 @@ public class RequirementTag {
         this.requirement = requirement;
     }
 
-    //TODO: remove constructor when unnecessary
-    public RequirementTag(int startCharLoc, int length, Requirement requirement, TaggingResult taggingResult) {
-        this.requirementTagID = new RequirementTagID(startCharLoc, requirement.getRequirementID().getRequirementIndex(),
-                taggingResult.getParticipant().getParticipantId(), taggingResult.getStage().getStageID().getStageIndex(),
-                requirement.getStageID().getStageIndex(), taggingResult.getStage().getExperiment().getExperimentId());
-        this.length = length;
-        this.taggingResult = taggingResult;
-        this.requirement = requirement;
-        this.taggingResult.addTag(this);
-    }
-
-
     public void setTaggingResult(TaggingResult taggingResult){
         this.taggingResult = taggingResult;
         this.requirementTagID.setParticipantId(taggingResult.getParticipant().getParticipantId());
@@ -125,10 +109,6 @@ public class RequirementTag {
         this.requirementTagID.setCodeIndex(i);
     }
 
-    public void setRequirementIdx(int i){
-        this.requirementTagID.setRequirementIndex(i);
-    }
-
     public void setLength(int length) {
         this.length = length;
     }
@@ -136,7 +116,6 @@ public class RequirementTag {
     public void setStart(int startCharLoc){
         this.requirementTagID.startCharLoc=startCharLoc;
     }
-
 
     // Getters
     public int getStart(){
@@ -161,5 +140,10 @@ public class RequirementTag {
 
     public RequirementTagID getRequirementTagID() {
         return requirementTagID;
+    }
+
+    public Map<String, Object> getAsMap() {
+        return Map.of("start Char",this.getRequirementTagID().getStartCharLoc(),
+                "length",length,"requirement index",this.requirement.getIndex());
     }
 }

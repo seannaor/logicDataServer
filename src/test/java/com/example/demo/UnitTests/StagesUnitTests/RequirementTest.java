@@ -30,4 +30,11 @@ public class RequirementTest {
         RequirementTag tag = requirement.tag(tag1);
         Assert.assertEquals(tag.getRequirement(), requirement);
     }
+
+    @Test
+    public void setGetTextTest(){
+        String reqText= "different requirement";
+        requirement.setText(reqText);
+        Assert.assertEquals(reqText,requirement.getText());
+    }
 }

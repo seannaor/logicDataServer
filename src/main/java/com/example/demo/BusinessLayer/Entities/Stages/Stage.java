@@ -29,25 +29,13 @@ public abstract class Stage {
         public StageID() {
         }
 
-        public StageID(int stageIndex) {
-            this.stageIndex = stageIndex;
-        }
-
         public StageID(int experimentId, int stageIndex) {
             this.experimentId = experimentId;
             this.stageIndex = stageIndex;
         }
 
-        public void setExperimentId(int experimentId) {
-            this.experimentId = experimentId;
-        }
-
         public int getStageIndex() {
             return stageIndex;
-        }
-
-        public void setStageIndex(int stageIndex) {
-            this.stageIndex = stageIndex;
         }
     }
 
@@ -60,18 +48,6 @@ public abstract class Stage {
     private Experiment experiment;
 
     public Stage() {
-    }
-
-    public Stage(Experiment experiment) {
-        this.experiment = experiment;
-        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
-        experiment.addStage(this);
-    }
-
-    public Stage(Experiment experiment, int stage_index) {
-        this.stageID = new StageID(experiment.getExperimentId(), stage_index);
-        this.experiment = experiment;
-        experiment.addStage(this);
     }
 
     public void setExperiment(Experiment experiment){

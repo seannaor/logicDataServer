@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class InfoStageTest {
     private InfoStage infoStage;
 
@@ -42,32 +44,23 @@ public class InfoStageTest {
 
     @Test
     public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException {
-        // fails because infoStage can not be filled as a code stage
-        try {
-            infoStage.fillCode(new HashMap<>(),null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        assertThrows(FormatException.class, () -> {
+            // fails because infoStage can not be filled as a code stage
+            infoStage.fillCode(new HashMap<>(), null);
+        });
 
-        // fails because infoStage can not be filled as a questionnaire stage
-        try {
+        assertThrows(FormatException.class, () -> {
+            // fails because infoStage can not be filled as a questionnaire stage
             infoStage.fillQuestionnaire(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
 
-        // fails because infoStage can not be filled as a tag stage
-        try {
+        assertThrows(FormatException.class, () -> {
+            // fails because infoStage can not be filled as a tag stage
             infoStage.fillTagging(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
 
-        try {
-            infoStage.fillInfo(new Object(), null);
-        } catch (Exception e) {
-            Assert.fail();
-        }
+
+        infoStage.fillInfo(new Object(), null);
     }
 
     @Test

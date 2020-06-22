@@ -107,16 +107,9 @@ public class GraderToGradingTask {
     }
 
     //setters
-    public void setGeneralExpParticipant(Participant generalExpParticipant) {
-        this.generalExpParticipant = generalExpParticipant;
-    }
 
     public void setGraderAccessCode(UUID graderAccessCode) {
         this.graderAccessCode = graderAccessCode;
-    }
-
-    public void setGraderToParticipants(List<GraderToParticipant> graderToParticipants) {
-        this.graderToParticipants = graderToParticipants;
     }
 
     //getters

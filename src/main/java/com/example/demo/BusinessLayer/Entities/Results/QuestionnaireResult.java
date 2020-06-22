@@ -24,12 +24,6 @@ public class QuestionnaireResult extends Result {
         this.answers = new ArrayList<>();
     }
 
-    //TODO: remove constructor when no test need it anymore
-    public QuestionnaireResult(QuestionnaireStage questionnaireStage, Participant participant) {
-        super(questionnaireStage, participant);
-        this.answers = new ArrayList<>();
-    }
-
     public void addAns(Answer ans){
         if(!answers.contains(ans))
             answers.add(ans);

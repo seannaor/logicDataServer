@@ -1,0 +1,258 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RequirementTag</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Results</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RequirementTag (com.example.demo.BusinessLayer.Entities.Results)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RequirementTag</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.9%
+  </span>
+  <span class="absValue">
+    (10/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (24/ 27)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RequirementTag$RequirementTagID</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (18/ 21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.7%
+  </span>
+  <span class="absValue">
+    (38/ 41)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Results;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
+<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+<i>7</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
+<i>8</i>&nbsp;import org.hibernate.annotations.ManyToAny;
+<i>9</i>&nbsp;import org.json.simple.JSONObject;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import javax.persistence.*;
+<i>12</i>&nbsp;import java.io.Serializable;
+<i>13</i>&nbsp;import java.util.ArrayList;
+<i>14</i>&nbsp;import java.util.List;
+<i>15</i>&nbsp;import java.util.Map;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;@Entity
+<i>18</i>&nbsp;@Table(name = &quot;requirement_tags&quot;)
+<i>19</i>&nbsp;public class RequirementTag {
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    @Embeddable
+<i>22</i>&nbsp;    public static class RequirementTagID implements Serializable {
+<i>23</i>&nbsp;        @Column(name = &quot;start_char_loc&quot;)
+<i>24</i>&nbsp;        private int startCharLoc;
+<i>25</i>&nbsp;        @Column(name = &quot;requirement_index&quot;)
+<i>26</i>&nbsp;        private int requirementIndex;
+<i>27</i>&nbsp;        @Column(name = &quot;participant_id&quot;)
+<i>28</i>&nbsp;        private int participantId;
+<i>29</i>&nbsp;        @Column(name = &quot;tagging_stage_index&quot;)
+<i>30</i>&nbsp;        private int taggingIndex;
+<i>31</i>&nbsp;        @Column(name = &quot;code_stage_index&quot;)
+<i>32</i>&nbsp;        private int codeIndex;
+<i>33</i>&nbsp;        @Column(name = &quot;experiment_id&quot;)
+<i>34</i>&nbsp;        private int experimentId;
+<i>35</i>&nbsp;
+<b class="fc"><i>36</i>&nbsp;        public RequirementTagID() { }</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;        public void setStartCharLoc(int startCharLoc) {
+<b class="fc"><i>39</i>&nbsp;            this.startCharLoc = startCharLoc;</b>
+<b class="fc"><i>40</i>&nbsp;        }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;        public void setRequirementIndex(int requirementIndex) {
+<b class="fc"><i>43</i>&nbsp;            this.requirementIndex = requirementIndex;</b>
+<b class="fc"><i>44</i>&nbsp;        }</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        public void setParticipantId(int participantId) {
+<b class="fc"><i>47</i>&nbsp;            this.participantId = participantId;</b>
+<b class="fc"><i>48</i>&nbsp;        }</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;        public void setTaggingIndex(int taggingIndex) {
+<b class="fc"><i>51</i>&nbsp;            this.taggingIndex = taggingIndex;</b>
+<b class="fc"><i>52</i>&nbsp;        }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;        public void setCodeIndex(int codeIndex) {
+<b class="fc"><i>55</i>&nbsp;            this.codeIndex = codeIndex;</b>
+<b class="fc"><i>56</i>&nbsp;        }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;        public void setExperimentId(int experimentId) {
+<b class="fc"><i>59</i>&nbsp;            this.experimentId = experimentId;</b>
+<b class="fc"><i>60</i>&nbsp;        }</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;        public int getStartCharLoc(){return this.startCharLoc;}</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    @EmbeddedId
+<i>66</i>&nbsp;    private RequirementTagID requirementTagID;
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @MapsId(&quot;resultID&quot;)
+<i>69</i>&nbsp;    @ManyToOne
+<i>70</i>&nbsp;    @JoinColumns({
+<i>71</i>&nbsp;            @JoinColumn(name = &quot;tagging_stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
+<i>72</i>&nbsp;            @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;),
+<i>73</i>&nbsp;            @JoinColumn(name = &quot;participant_id&quot;, referencedColumnName = &quot;participant_id&quot;)
+<i>74</i>&nbsp;    })
+<i>75</i>&nbsp;    private TaggingResult taggingResult;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    @MapsId(&quot;requirementID&quot;)
+<i>78</i>&nbsp;    @ManyToOne
+<i>79</i>&nbsp;    @JoinColumns({
+<i>80</i>&nbsp;            @JoinColumn(name = &quot;requirement_index&quot;, referencedColumnName = &quot;requirement_index&quot;),
+<i>81</i>&nbsp;            @JoinColumn(name = &quot;code_stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
+<i>82</i>&nbsp;            @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
+<i>83</i>&nbsp;    })
+<i>84</i>&nbsp;    private Requirement requirement;
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    @Column(name = &quot;length&quot;)
+<i>87</i>&nbsp;    private int length;
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;    public RequirementTag() { }</b>
+<i>90</i>&nbsp;
+<b class="fc"><i>91</i>&nbsp;    public RequirementTag(int startCharLoc, int length, Requirement requirement) {</b>
+<b class="fc"><i>92</i>&nbsp;        this.requirementTagID = new RequirementTagID();</b>
+<b class="fc"><i>93</i>&nbsp;        this.requirementTagID.setStartCharLoc(startCharLoc);</b>
+<b class="fc"><i>94</i>&nbsp;        this.requirementTagID.setRequirementIndex(requirement.getRequirementID().getRequirementIndex());</b>
+<i>95</i>&nbsp;//        this.requirementTagID.setCodeIndex(requirement.getStageID().getStageIndex());
+<i>96</i>&nbsp;
+<b class="fc"><i>97</i>&nbsp;        this.length = length;</b>
+<b class="fc"><i>98</i>&nbsp;        this.requirement = requirement;</b>
+<b class="fc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public void setTaggingResult(TaggingResult taggingResult){
+<b class="fc"><i>102</i>&nbsp;        this.taggingResult = taggingResult;</b>
+<b class="fc"><i>103</i>&nbsp;        this.requirementTagID.setParticipantId(taggingResult.getParticipant().getParticipantId());</b>
+<b class="fc"><i>104</i>&nbsp;        this.requirementTagID.setTaggingIndex(taggingResult.getStage().getStageID().getStageIndex());</b>
+<b class="fc"><i>105</i>&nbsp;        this.requirementTagID.setExperimentId(taggingResult.getStage().getExperiment().getExperimentId());</b>
+<b class="fc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public void setCodeStageIdx(int i){
+<b class="fc"><i>109</i>&nbsp;        this.requirementTagID.setCodeIndex(i);</b>
+<b class="fc"><i>110</i>&nbsp;    }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public void setLength(int length) {
+<b class="fc"><i>113</i>&nbsp;        this.length = length;</b>
+<b class="fc"><i>114</i>&nbsp;    }</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public void setStart(int startCharLoc){
+<b class="fc"><i>117</i>&nbsp;        this.requirementTagID.startCharLoc=startCharLoc;</b>
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    // Getters
+<i>121</i>&nbsp;    public int getStart(){
+<b class="fc"><i>122</i>&nbsp;        return this.requirementTagID.startCharLoc;</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public int getLength() {
+<b class="fc"><i>126</i>&nbsp;        return length;</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public TaggingResult getTaggingResult() {
+<b class="nc"><i>130</i>&nbsp;        return taggingResult;</b>
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    public Requirement getRequirement() {
+<b class="fc"><i>134</i>&nbsp;        return requirement;</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public Stage.StageID getStageID(){
+<b class="nc"><i>138</i>&nbsp;        return this.requirement.getStageID();</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public RequirementTagID getRequirementTagID() {
+<b class="fc"><i>142</i>&nbsp;        return requirementTagID;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public Map&lt;String, Object&gt; getAsMap() {
+<b class="fc"><i>146</i>&nbsp;        return Map.of(&quot;start Char&quot;,this.getRequirementTagID().getStartCharLoc(),</b>
+<b class="fc"><i>147</i>&nbsp;                &quot;length&quot;,length,&quot;requirement index&quot;,this.requirement.getIndex());</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 21:38</div>
+</div>
+</body>
+</html>

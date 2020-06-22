@@ -30,26 +30,6 @@ public class CodeStage extends Stage {
     public CodeStage() {
     }
 
-    // TODO: remove Experiment form constructor or all constructor
-    public CodeStage(String desc, String template, String language, Experiment experiment) {
-        super(experiment);
-        this.description = desc;
-        this.template = template;
-        this.language = language;
-    }
-
-    // TODO: remove Experiment form constructor or all constructor
-    public CodeStage(String desc, String template, List<String> requirements, String language, Experiment experiment) {
-        super(experiment);
-        this.description = desc;
-        this.template = template;
-        this.language = language;
-        this.requirements = new ArrayList<>();
-        for (String req : requirements) {
-            this.requirements.add(new Requirement(this, req));
-        }
-    }
-
     public CodeStage(String desc, String template, List<String> requirements, String language) {
         this.description = desc;
         this.template = template;

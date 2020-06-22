@@ -33,8 +33,7 @@ public class ManagementUser {
         this.userEmail = userEmail;
     }
 
-    public ManagementUser() {
-    }
+    public ManagementUser() {}
 
     public String getBguUsername() {
         return bguUsername;

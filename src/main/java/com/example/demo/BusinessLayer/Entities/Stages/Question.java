@@ -24,11 +24,6 @@ public class Question {
         public QuestionID() {
         }
 
-        public QuestionID(int questionIndex, Stage.StageID stageID) {
-            this.questionIndex = questionIndex;
-            this.stageID = stageID;
-        }
-
         public void setQuestionIndex(int questionIndex) {
             this.questionIndex = questionIndex;
         }
@@ -58,12 +53,6 @@ public class Question {
     public Question(String questionJson){
         this.questionJson = questionJson;
         this.questionID = new QuestionID();
-    }
-
-    public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
-        this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
-        this.questionnaireStage = questionnaireStage;
-        this.questionJson = questionJson;
     }
 
     //Setters

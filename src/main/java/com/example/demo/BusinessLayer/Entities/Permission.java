@@ -1,8 +1,6 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "permissions")
@@ -21,11 +19,6 @@ public class Permission {
         this.permissionName = permissionName;
     }
 
-    public Permission(String permissionName,ManagementUser man) {
-        this.permissionName = permissionName;
-        man.addPermission(this);
-    }
-
     public int getPermissionId() {
         return permissionId;
     }
@@ -36,5 +29,9 @@ public class Permission {
 
     public void setPermissionName(String permission_name) {
         this.permissionName = permission_name;
+    }
+
+    public void setPermissionId(int permissionId) {
+        this.permissionId = permissionId;
     }
 }

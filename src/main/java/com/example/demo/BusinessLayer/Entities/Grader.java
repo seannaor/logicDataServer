@@ -17,10 +17,6 @@ public class Grader {
 
     public Grader() { }
 
-    public Grader(String graderEmail, Experiment exp) {
-        this.graderEmail = graderEmail;
-    }
-
     public Grader(String graderEmail) {
         this.graderEmail = graderEmail;
     }

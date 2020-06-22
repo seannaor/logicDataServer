@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class ParticipantTest {
     private Participant participant;
     private List<JSONObject> stagesJson;
@@ -44,12 +46,9 @@ public class ParticipantTest {
             Assert.assertEquals(stagesJson.get(i).get("type"), participant.getNextStage().getType());
         }
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             participant.getNextStage();
-            Assert.fail();
-        } catch (ExpEndException e) {
-            Assert.assertTrue(participant.isDone());
-        }
+        });
     }
 
     @Test
@@ -57,22 +56,21 @@ public class ParticipantTest {
         int idx = 0;
         Assert.assertEquals(stagesJson.get(idx).get("type"),participant.getStage(idx).getType());
         idx++;
-        try {
-            participant.getStage(idx);
-            Assert.fail();
-        } catch (NotInReachException ignored) {}
+
+        int finalIdx = idx;
+        assertThrows(NotInReachException.class,()->{
+            participant.getStage(finalIdx);
+        });
 
         participant.getNextStage();participant.getNextStage();participant.getNextStage(); // after 3 stages
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             participant.getNextStage();
-            Assert.fail();
-        } catch (ExpEndException e) {
-            try {
-                participant.getStage(stagesJson.size());
-                Assert.fail();
-            } catch (NotExistException ignored) {}
-        }
+        });
+
+        assertThrows(NotExistException.class,()->{
+            participant.getStage(stagesJson.size());
+        });
     }
 
     @Test
@@ -85,41 +83,34 @@ public class ParticipantTest {
     @Test
     public void fillQuestionnaireFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException {
         participant.getNextStage();
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("answer231312312", List.of("a lot!", "22")));
-            Assert.fail();
-        } catch (FormatException ignored) {}
+        });
     }
 
     @Test
     public void fillQuestionnaireFailNoQuestionnaire() throws NotInReachException, NotExistException, ExpEndException, ParseException {
         // not in questionnaire stage
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("answers", List.of("a lot!", "22")));
-            Assert.fail();
-        } catch (FormatException ignored) {}
+        });
     }
 
     @Test
     public void fillCodeStageFailNoCode() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         // not in code stage
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("code", "return -1"));
-            Assert.fail();
-        } catch (FormatException ignored) {}
+        });
     }
 
     @Test
     public void fillCodeStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         participant.getNextStage();
         participant.getNextStage();
-
-        // bad format
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("code!1232132", "return -1"));
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
@@ -132,24 +123,18 @@ public class ParticipantTest {
     @Test
     public void fillTaggingStageFailNotTagging() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         JSONObject ans = buildParticipantTag();
-        // not in tagging stage
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("tagging", ans));
-            Assert.fail();
-        } catch (FormatException ignored) {}
+        });
     }
 
     @Test
     public void fillTaggingStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         JSONObject ans = buildParticipantTag();
         participant.getNextStage();participant.getNextStage();participant.getNextStage();
-
-        // bad format
-        try {
+        assertThrows(FormatException.class,()->{
             participant.fillInStage(Map.of("tagging!1232132", ans));
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
@@ -181,10 +166,9 @@ public class ParticipantTest {
     @Test
     public void getResultTest() throws NotInReachException, NotExistException, ExpEndException, FormatException, ParseException {
         participant.getNextStage();
-        try {
+        assertThrows(NotInReachException.class,()->{
             participant.getResult(2);
-            Assert.fail();
-        } catch (NotInReachException ignored) {}
+        });
 
         Assert.assertNull(participant.getResult(1));
         participant.fillInStage(Map.of("answers", List.of("a lot!", "22")));

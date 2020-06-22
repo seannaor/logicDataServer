@@ -18,11 +18,6 @@ public class Answer {
         public AnswerID() {
         }
 
-        public AnswerID(int participantId, Question.QuestionID questionID) {
-            this.participantId = participantId;
-            this.questionID = questionID;
-        }
-
         public void setQuestionID(Question.QuestionID questionID) {
             this.questionID = questionID;
         }
@@ -66,13 +61,6 @@ public class Answer {
         this.answerID.setQuestionID(question.getQuestionID());
     }
 
-    public Answer(String answer, Question question, QuestionnaireResult questionnaireResult) {
-        this.answerID = new AnswerID(questionnaireResult.getParticipant().getParticipantId(), question.getQuestionID());
-        this.answer = answer;
-        this.question = question;
-        this.questionnaireResult = questionnaireResult;
-        this.questionnaireResult.addAns(this);
-    }
 
     // Setters
     public void setQuestionnaireResult(QuestionnaireResult questionnaireResult){
@@ -84,10 +72,7 @@ public class Answer {
         this.question = question;
         this.answerID.setQuestionID(question.getQuestionID());
     }
-    
-    public void setParticipantId(int participantId) {
-        this.answerID.setParticipantId(participantId);
-    }
+
 
     public void setAnswer(String answer) {
         this.answer = answer;
@@ -96,10 +81,6 @@ public class Answer {
     // Getters
     public Question getQuestion() {
         return question;
-    }
-
-    public Stage.StageID getStageID() {
-        return this.question.getStageID();
     }
 
 

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class TaggingStageTest {
     private TaggingStage taggingStage;
     private Experiment exp;
@@ -47,44 +49,54 @@ public class TaggingStageTest {
     }
 
     @Test
-    public void fillCodeInsteadTagging() throws ParseException, NotExistException, NotInReachException {
+    public void fillCodeInsteadTagging() {
         // fails because taggingStage can not be filled as a code stage
-        try {
+        assertThrows(FormatException.class,()->{
             taggingStage.fillCode(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
-    public void fillQuestionnaireInsteadTagging() throws ParseException, NotExistException, NotInReachException {
+    public void fillQuestionnaireInsteadTagging()  {
         // fails because taggingStage can not be filled as a questionnaire stage
-        try {
+        assertThrows(FormatException.class,()->{
             taggingStage.fillQuestionnaire(new HashMap<>(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
-    public void fillInfoInsteadTagging() throws ParseException, NotExistException, NotInReachException {
+    public void fillInfoInsteadTagging()  {
         // fails because taggingStage can not be filled as a info stage
-        try {
+        assertThrows(FormatException.class,()->{
             taggingStage.fillInfo(new Object(), null);
-            Assert.fail();
-        } catch (FormatException ignored) {
-        }
+        });
     }
 
     @Test
-    public void fillIn() throws NotExistException, ExpEndException, NotInReachException, FormatException {
+    public void fillIn() throws NotInReachException, FormatException {
         JSONObject ans = new JSONObject();
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
+        JSONObject tag = getTag();
+        ans.put(0, tag);
         TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans), null);
         Assert.assertEquals(1, tr.getTags().size());
+    }
+
+    @Test
+    public void fillInFailNoRequirementTag() throws NotInReachException {
+        JSONObject ans = new JSONObject();
+        JSONObject tag = getTag();
+        ans.put(1, tag);
+
+        assertThrows(FormatException.class,()->{
+            taggingStage.fillTagging(Map.of("tagging", ans), null);
+        });
+    }
+
+    private JSONObject getTag(){
+        JSONObject tag = new JSONObject();
+        tag.put("start_loc", 0);
+        tag.put("length", 10);
+        return tag;
     }
 
     @Test

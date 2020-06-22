@@ -18,8 +18,7 @@ public class GraderToParticipant {
         @Column(name = "expee_participant_id")
         private int expeeParticipantId;
 
-        public GraderToParticipantID() {
-        }
+        public GraderToParticipantID() {}
 
         public GraderToParticipantID(int gradingTaskId, String graderEmail, int expeeParticipantId) {
             this.gradingTaskId = gradingTaskId;

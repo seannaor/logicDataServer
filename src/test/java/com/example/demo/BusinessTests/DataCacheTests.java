@@ -90,7 +90,7 @@ public class DataCacheTests {
         cache.addManager(creator);
         Experiment exp = new Experiment("hi");
         db.saveExperiment(exp, creator);
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         try {
             Grader fromCache = cache.getGraderByEMail("a@a.a");
@@ -117,7 +117,7 @@ public class DataCacheTests {
         cache.addManager(creator);
         Experiment exp = new Experiment("hi");
         db.saveExperiment(exp, creator);
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp");
         db.saveExperiment(gradingExp, creator);
@@ -152,7 +152,7 @@ public class DataCacheTests {
         cache.addManager(creator);
         Experiment exp = new Experiment("hi");
         db.saveExperiment(exp, creator);
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp");
         db.saveExperiment(gradingExp, creator);
@@ -269,7 +269,7 @@ public class DataCacheTests {
             cache.getGradingTaskById("sean", exp.getExperimentId(), 1);
         } catch (NotExistException ok) {
         }
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);
@@ -303,7 +303,7 @@ public class DataCacheTests {
             cache.getGradingTaskById("sean", exp.getExperimentId(), 1);
         } catch (NotExistException ok) {
         }
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);
@@ -338,7 +338,7 @@ public class DataCacheTests {
             cache.getGradingTaskById("sean", exp.getExperimentId(), 1);
         } catch (NotExistException ok) {
         }
-        Grader g = new Grader("a@a.a", exp);
+        Grader g = new Grader("a@a.a");
         cache.addGrader(g);
         Experiment gradingExp = new Experiment("gradingExp", creator);
         db.saveExperiment(gradingExp, creator);

@@ -30,18 +30,8 @@ public class TaggingStage extends Stage {
     public TaggingStage() {
     }
 
-    // TODO: remove Experiment form constructor or all constructor
-    public TaggingStage(CodeStage codeStage, Experiment experiment){
-        super(experiment);
-        this.codeStage = codeStage;
-    }
-
     public TaggingStage(CodeStage codeStage){
-        this.codeStage = codeStage;
-    }
-
-    public TaggingStage(Experiment experiment, int stage_index) {
-        super(experiment, stage_index);
+        setCodeStage(codeStage);
     }
 
     public CodeStage getCodeStage() {

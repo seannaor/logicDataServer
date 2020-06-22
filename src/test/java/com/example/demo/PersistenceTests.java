@@ -236,7 +236,7 @@ class PersistenceTests {
 		assertEquals(stageRep.count(), 2);
 		createGradingTask(e);
 		assertEquals(gradingTaskRep.count(), 2);
-		assertEquals(gradingTaskRep.findAll().get(0).getStages().size(), 1);
+		assertEquals(gradingTaskRep.findAll().get(0).getStages().size(), 0);
 	}
 
 	private void createGradingTask(Experiment baseExp) {
@@ -244,13 +244,12 @@ class PersistenceTests {
 		experimentRep.save(gradingExp);
 		Experiment generalExp = new Experiment("generalExp");
 		experimentRep.save(generalExp);
-		List<Stage> stagesForGT1 = new ArrayList<>();
-		stagesForGT1.add(stageRep.findAll().get(0));
-		GradingTask gt1 = new GradingTask("gt1", baseExp, generalExp, gradingExp, stagesForGT1);
+		GradingTask gt1 = new GradingTask("gt1", baseExp, generalExp, gradingExp);
+
 		gradingTaskRep.save(gt1);
 		List<Stage> stagesForGT2 = new ArrayList<>();
 		stagesForGT2.add(stageRep.findAll().get(0));
-		GradingTask gt2 = new GradingTask("gt2", baseExp, generalExp, gradingExp, stagesForGT2);
+		GradingTask gt2 = new GradingTask("gt2", baseExp, generalExp, gradingExp);
 		gradingTaskRep.save(gt2);
 	}
 

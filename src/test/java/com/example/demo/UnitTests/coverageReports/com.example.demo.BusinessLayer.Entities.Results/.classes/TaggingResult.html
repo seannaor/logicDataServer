@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TaggingResult</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Results</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TaggingResult (com.example.demo.BusinessLayer.Entities.Results)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaggingResult</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/ 19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Results;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
+<i>6</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+<i>7</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+<i>8</i>&nbsp;import org.json.simple.JSONObject;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import javax.persistence.Entity;
+<i>11</i>&nbsp;import javax.persistence.OneToMany;
+<i>12</i>&nbsp;import javax.persistence.Table;
+<i>13</i>&nbsp;import java.util.ArrayList;
+<i>14</i>&nbsp;import java.util.List;
+<i>15</i>&nbsp;import java.util.Map;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;@Entity
+<i>18</i>&nbsp;@Table(name = &quot;tagging_results&quot;)
+<i>19</i>&nbsp;public class TaggingResult extends Result {
+<i>20</i>&nbsp;    @OneToMany(mappedBy = &quot;taggingResult&quot;)
+<i>21</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
+<i>22</i>&nbsp;    private List&lt;RequirementTag&gt; tags;
+<i>23</i>&nbsp;
+<b class="fc"><i>24</i>&nbsp;    public TaggingResult() {</b>
+<b class="fc"><i>25</i>&nbsp;        this.tags = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>26</i>&nbsp;    }</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public void addTag(RequirementTag tag) {
+<b class="fc"><i>29</i>&nbsp;        if (!tags.contains(tag))</b>
+<b class="fc"><i>30</i>&nbsp;            tags.add(tag);</b>
+<b class="fc"><i>31</i>&nbsp;    }</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public List&lt;RequirementTag&gt; getTags() {
+<b class="fc"><i>34</i>&nbsp;        return tags;</b>
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public void setTags(List&lt;RequirementTag&gt; tags) {
+<b class="fc"><i>38</i>&nbsp;        this.tags = tags;</b>
+<b class="fc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    @Override
+<i>42</i>&nbsp;    public void setStageAndParticipant(Stage stage, Participant participant) {
+<b class="fc"><i>43</i>&nbsp;        super.setStageAndParticipant(stage, participant);</b>
+<b class="fc"><i>44</i>&nbsp;        for (RequirementTag tag : tags) {</b>
+<b class="fc"><i>45</i>&nbsp;            tag.setTaggingResult(this);</b>
+<b class="fc"><i>46</i>&nbsp;        }</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public Map&lt;String, Object&gt; getAsMap() {
+<b class="fc"><i>51</i>&nbsp;        List&lt;Map&lt;String, Object&gt;&gt; JTags = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>52</i>&nbsp;        for(RequirementTag tag : this.getTags()){</b>
+<b class="fc"><i>53</i>&nbsp;            JTags.add(tag.getAsMap());</b>
+<b class="fc"><i>54</i>&nbsp;        }</b>
+<b class="fc"><i>55</i>&nbsp;        return Map.of(&quot;tags&quot;,JTags);</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 21:38</div>
+</div>
+</body>
+</html>

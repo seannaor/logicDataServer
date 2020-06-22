@@ -14,15 +14,17 @@ import org.junit.jupiter.api.Test;
 public class GraderToParticipantUnitTests {
 
     private GraderToParticipant graderToParticipant;
+    private GradingTask gradingTask;
     private Experiment evaluate;
+    private Experiment exp;
 
     @BeforeEach
     private void init() throws ExistException {
-        Experiment exp = new Experiment("Experiment Name");
+        exp = new Experiment("Experiment Name");
         evaluate = new Experiment("Evaluation");
         Experiment general = new Experiment("General");
         evaluate.setGradingTaskExp(true);
-        GradingTask gradingTask = new GradingTask("Grading Task", exp, general, evaluate);
+        gradingTask = new GradingTask("Grading Task", exp, general, evaluate);
         Grader grader = new Grader("grader@mail");
         GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask, grader);
         Participant participant = new Participant(exp);
@@ -42,5 +44,17 @@ public class GraderToParticipantUnitTests {
 
         Assert.assertTrue(graderToGradingTask.getGraderToParticipants().contains(graderToParticipant));
 
+    }
+
+    @Test
+    public void settersGettersTests(){
+        Grader grader = new Grader("DiffGrader@mail");
+        GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask, grader);
+        Participant participant = new Participant(exp);
+        graderToParticipant.setExpeeParticipant(participant);
+        graderToParticipant.setGraderToGradingTask(graderToGradingTask);
+
+        Assert.assertEquals(graderToGradingTask,graderToParticipant.getGraderToGradingTask());
+        Assert.assertEquals(participant,graderToParticipant.getExpeeParticipant());
     }
 }

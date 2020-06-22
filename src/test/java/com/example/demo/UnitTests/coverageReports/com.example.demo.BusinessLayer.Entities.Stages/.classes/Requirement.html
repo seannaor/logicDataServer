@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Requirement</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Stages</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Requirement (com.example.demo.BusinessLayer.Entities.Stages)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Requirement</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (20/ 25)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Requirement$RequirementID</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    88.2%
+  </span>
+  <span class="absValue">
+    (15/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.3%
+  </span>
+  <span class="absValue">
+    (29/ 34)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Stages;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Experiment;
+<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
+<i>7</i>&nbsp;import org.json.simple.JSONObject;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import javax.persistence.*;
+<i>10</i>&nbsp;import java.io.Serializable;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;@Entity
+<i>13</i>&nbsp;@Table(name = &quot;requirements&quot;)
+<i>14</i>&nbsp;public class Requirement {
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Embeddable
+<i>17</i>&nbsp;    public static class RequirementID implements Serializable {
+<i>18</i>&nbsp;        @Column(name = &quot;requirement_index&quot;)
+<i>19</i>&nbsp;        private int requirementIndex;
+<i>20</i>&nbsp;        @Column(name = &quot;stage_index&quot;)
+<i>21</i>&nbsp;        private int stageIndex;
+<i>22</i>&nbsp;        @Column(name = &quot;experiment_id&quot;)
+<i>23</i>&nbsp;        private int experimentId;
+<i>24</i>&nbsp;
+<b class="fc"><i>25</i>&nbsp;        public RequirementID() {</b>
+<b class="fc"><i>26</i>&nbsp;        }</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;//        public RequirementID(int requirementIndex, int stageIndex, int experimentId) {
+<i>29</i>&nbsp;//            this.requirementIndex = requirementIndex;
+<i>30</i>&nbsp;//            this.stageIndex = stageIndex;
+<i>31</i>&nbsp;//            this.experimentId = experimentId;
+<i>32</i>&nbsp;//        }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;        public int getRequirementIndex() {
+<b class="fc"><i>35</i>&nbsp;            return requirementIndex;</b>
+<i>36</i>&nbsp;        }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;        public void setRequirementIndex(int requirementIndex) {
+<b class="fc"><i>39</i>&nbsp;            this.requirementIndex = requirementIndex;</b>
+<b class="fc"><i>40</i>&nbsp;        }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;        public void setStageIndex(int stageIndex) {
+<b class="fc"><i>43</i>&nbsp;            this.stageIndex = stageIndex;</b>
+<b class="fc"><i>44</i>&nbsp;        }</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        public void setExperimentId(int experimentId) {
+<b class="fc"><i>47</i>&nbsp;            this.experimentId = experimentId;</b>
+<b class="fc"><i>48</i>&nbsp;        }</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @EmbeddedId
+<i>52</i>&nbsp;    private RequirementID requirementID;
+<i>53</i>&nbsp;    @MapsId(&quot;stageID&quot;)
+<i>54</i>&nbsp;    @ManyToOne
+<i>55</i>&nbsp;    @JoinColumns({
+<i>56</i>&nbsp;            @JoinColumn(name = &quot;stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
+<i>57</i>&nbsp;            @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
+<i>58</i>&nbsp;    })
+<i>59</i>&nbsp;    private CodeStage codeStage;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Lob
+<i>62</i>&nbsp;    @Column(name = &quot;text&quot;)
+<i>63</i>&nbsp;    private String text;
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;    public Requirement() {</b>
+<b class="nc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;//    public Requirement(CodeStage codeStage, String text) {
+<i>69</i>&nbsp;//        this.requirementID = new RequirementID(codeStage.getRequirements().size(), codeStage.getStageID().getStageIndex(), codeStage.getExperiment().getExperimentId());
+<i>70</i>&nbsp;//        this.codeStage = codeStage;
+<i>71</i>&nbsp;//        this.text = text;
+<i>72</i>&nbsp;//    }
+<i>73</i>&nbsp;
+<b class="fc"><i>74</i>&nbsp;    public Requirement(String text){</b>
+<b class="fc"><i>75</i>&nbsp;        this.text = text;</b>
+<b class="fc"><i>76</i>&nbsp;        this.requirementID= new RequirementID();</b>
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public RequirementTag tag(JSONObject data) {
+<b class="fc"><i>80</i>&nbsp;        RequirementTag tag = new RequirementTag((int) data.get(&quot;start_loc&quot;), (int) data.get(&quot;length&quot;),</b>
+<i>81</i>&nbsp;                this);
+<b class="fc"><i>82</i>&nbsp;        return tag;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    //Getters
+<i>86</i>&nbsp;    public Stage.StageID getStageID() {
+<b class="nc"><i>87</i>&nbsp;        return this.codeStage.getStageID();</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public RequirementID getRequirementID() {
+<b class="fc"><i>91</i>&nbsp;        return requirementID;</b>
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public String getText() {
+<b class="fc"><i>95</i>&nbsp;        return text;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public int getIndex() {
+<b class="fc"><i>99</i>&nbsp;        return this.requirementID.requirementIndex;</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    //Setters
+<i>103</i>&nbsp;    public void setCodeStage(CodeStage codeStage){
+<b class="fc"><i>104</i>&nbsp;        this.codeStage = codeStage;</b>
+<b class="fc"><i>105</i>&nbsp;        if(codeStage.getStageID() != null &amp;&amp; codeStage.getExperiment() != null) {</b>
+<b class="nc"><i>106</i>&nbsp;            setStageIndex(codeStage.getStageID().getStageIndex());</b>
+<b class="nc"><i>107</i>&nbsp;            setExperimentId(codeStage.getExperiment().getExperimentId());</b>
+<i>108</i>&nbsp;        }
+<b class="fc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public void setText(String text) {
+<b class="fc"><i>112</i>&nbsp;        this.text = text;</b>
+<b class="fc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    // for ID propose
+<i>116</i>&nbsp;    public void setRequirementIndex(int i){
+<b class="fc"><i>117</i>&nbsp;        this.requirementID.setRequirementIndex(i);</b>
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    // for ID propose
+<i>121</i>&nbsp;    public void setStageIndex(int i){
+<b class="fc"><i>122</i>&nbsp;        this.requirementID.setStageIndex(i);</b>
+<b class="fc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    // for ID propose
+<i>126</i>&nbsp;    public void setExperimentId(int expId){
+<b class="fc"><i>127</i>&nbsp;        this.requirementID.setExperimentId(expId);</b>
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 21:38</div>
+</div>
+</body>
+</html>

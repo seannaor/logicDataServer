@@ -15,8 +15,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GraderToGradingTaskUnitTests {
 
@@ -52,7 +57,6 @@ public class GraderToGradingTaskUnitTests {
         graderToGradingTask.addParticipant(p2);
     }
 
-
     @Test
     public void initTest() {
         Assert.assertEquals(general, graderToGradingTask.getGeneralExpParticipant().getExperiment());
@@ -62,22 +66,18 @@ public class GraderToGradingTaskUnitTests {
 
     @Test
     public void addGraderToExistParticipantFail(){
-        try {
+        assertThrows(ExistException.class, () -> {
             // trying to add GraderToParticipant that already there
             graderToGradingTask.addGraderToParticipant(graderToParticipant1);
-            Assert.fail();
-        } catch (ExistException ignore) {
-        }
+        });
     }
 
     @Test
     public void addExistParticipantFail(){
-        try {
+        assertThrows(ExistException.class, () -> {
             // trying to add Participant that already there
             graderToGradingTask.addParticipant(p2);
-            Assert.fail();
-        } catch (ExistException ignore) {
-        }
+        });
     }
 
     @Test
@@ -91,28 +91,23 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void submitResultNoParticipant() throws NotExistException {
-        try {
+    public void submitResultNoParticipant()  {
+        assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.submitResults(-1);
-            Assert.fail();
-        } catch (NotExistException ignore) {
-        }
+        });
     }
 
     @Test
-    public void isSubmmitedNoParticipant() throws NotExistException {
-        try {
+    public void isSubmmitedNoParticipant()  {
+        assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.isSubmitted(-1);
-            Assert.fail();
-        } catch (NotExistException ignore) {
-        }
+        });
     }
 
     @Test
     public void submitResult() throws NotExistException {
-
         Assert.assertFalse(graderToGradingTask.isSubmitted(p2.getParticipantId()));
         graderToGradingTask.submitResults(p2.getParticipantId());
         Assert.assertTrue(graderToGradingTask.isSubmitted(p2.getParticipantId()));
@@ -120,16 +115,13 @@ public class GraderToGradingTaskUnitTests {
         Assert.assertFalse(graderToGradingTask.isSubmitted(graderToParticipant1.getExpeeParticipant().getParticipantId()));
         graderToGradingTask.submitResults(graderToParticipant1.getExpeeParticipant().getParticipantId());
         Assert.assertTrue(graderToGradingTask.isSubmitted(graderToParticipant1.getExpeeParticipant().getParticipantId()));
-
     }
 
     @Test
     public void getParticipantNotExist(){
-        try {
+        assertThrows(NotExistException.class, () -> {
             graderToGradingTask.getExperimenteeParticipant(-1);
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test
@@ -147,31 +139,25 @@ public class GraderToGradingTaskUnitTests {
     public void getGraderParticipant() throws NotExistException {
         Assert.assertNotNull(graderToGradingTask.getGraderParticipant(p2.getParticipantId()));
 
-        try {
+        assertThrows(NotExistException.class, () -> {
             graderToGradingTask.getGraderParticipant(-1);
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test
-    public void getResultsNotParticipant() throws NotInReachException, FormatException, NotExistException {
-        try {
+    public void getResultsNotParticipant()  {
+        assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.getExpeeRes(-1);
-            Assert.fail();
-        } catch (NotExistException ignored) {
-        }
+        });
     }
 
     @Test
     public void getResultsNotFinished() throws NotInReachException, FormatException, NotExistException {
-        try {
+        assertThrows(NotInReachException.class, () -> {
             //didn't finish exp
             graderToGradingTask.getExpeeRes(graderToParticipant1.getExpeeParticipant().getParticipantId());
-            Assert.fail();
-        } catch (NotInReachException ignored) {
-        }
+        });
     }
 
     @Test
@@ -181,5 +167,12 @@ public class GraderToGradingTaskUnitTests {
         Assert.assertEquals(1, results.size());
         Assert.assertTrue((results.get(0) instanceof QuestionnaireResult));
         Assert.assertEquals(0, ((QuestionnaireResult) results.get(0)).getAnswers().size());
+    }
+
+    @Test
+    public void setGetCode(){
+        UUID id = new UUID(0,10);
+        graderToGradingTask.setGraderAccessCode(id);
+        assertEquals(id,graderToGradingTask.getGraderAccessCode());
     }
 }
