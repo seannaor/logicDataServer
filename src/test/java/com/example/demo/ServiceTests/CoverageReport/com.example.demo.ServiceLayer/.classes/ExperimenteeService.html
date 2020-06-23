@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    91.8%
+    100%
   </span>
   <span class="absValue">
-    (45/ 49)
+    (49/ 49)
   </span>
 </td>
 </tr>
@@ -123,8 +123,8 @@
 <i>49</i>&nbsp;                    &quot;type&quot;, &quot;complete&quot;,
 <b class="fc"><i>50</i>&nbsp;                    &quot;stage&quot;, Map.of()</b>
 <i>51</i>&nbsp;            );
-<b class="nc"><i>52</i>&nbsp;        } catch (Exception e) {</b>
-<b class="nc"><i>53</i>&nbsp;            return Map.of(&quot;Error&quot;, e.getMessage());</b>
+<b class="fc"><i>52</i>&nbsp;        } catch (Exception e) {</b>
+<b class="fc"><i>53</i>&nbsp;            return Map.of(&quot;Error&quot;, e.getMessage());</b>
 <i>54</i>&nbsp;        }
 <i>55</i>&nbsp;
 <i>56</i>&nbsp;    }
@@ -159,7 +159,7 @@
 <b class="fc"><i>85</i>&nbsp;            Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), s.getStageID().getStageIndex());</b>
 <b class="fc"><i>86</i>&nbsp;            if(res == null)</b>
 <b class="fc"><i>87</i>&nbsp;                return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;type&quot;, s.getType(), &quot;stage&quot;, s.getAsMap());</b>
-<b class="nc"><i>88</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;type&quot;, s.getType(), &quot;stage&quot;, s.getAsMap(), &quot;result&quot;, res.getAsMap());</b>
+<b class="fc"><i>88</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;type&quot;, s.getType(), &quot;stage&quot;, s.getAsMap(), &quot;result&quot;, res.getAsMap());</b>
 <b class="fc"><i>89</i>&nbsp;        } catch (Exception e) {</b>
 <b class="fc"><i>90</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
 <i>91</i>&nbsp;        }
@@ -170,7 +170,7 @@
 <b class="fc"><i>96</i>&nbsp;            Stage s = experimenteeBusiness.getStage(UUID.fromString(accessCode), id);</b>
 <b class="fc"><i>97</i>&nbsp;            Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), id);</b>
 <b class="fc"><i>98</i>&nbsp;            if (res == null) return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, &quot;None&quot;);</b>
-<b class="nc"><i>99</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
+<b class="fc"><i>99</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
 <b class="fc"><i>100</i>&nbsp;        } catch (Exception e) {</b>
 <b class="fc"><i>101</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
 <i>102</i>&nbsp;        }
@@ -181,7 +181,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-06-22 22:24</div>
+    <div style="float:right;">generated on 2020-06-23 02:42</div>
 </div>
 </body>
 </html>

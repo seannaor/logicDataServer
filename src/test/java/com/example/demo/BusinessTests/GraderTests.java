@@ -10,7 +10,6 @@ import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql({"/create_database.sql"})
 @SpringBootTest
@@ -72,16 +73,16 @@ public class GraderTests {
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee.getExperimenteeEmail());
 
         graderExpeeParticipant = task.getGraderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
-        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode());
+        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(),true);
     }
 
     @Test
     public void loginTest() {
         UUID someCode = UUID.randomUUID();
-        Assert.assertFalse(graderBusiness.beginGrading(someCode));
-//        Assert.assertNull(db.getGraderToGradingTaskByCode(someCode));
-        Assert.assertTrue(graderBusiness.beginGrading(graderCode));
-//        Assert.assertNotNull(db.getGraderToGradingTaskByCode(graderCode));
+        assertFalse(graderBusiness.beginGrading(someCode));
+//        assertNull(db.getGraderToGradingTaskByCode(someCode));
+        assertTrue(graderBusiness.beginGrading(graderCode));
+//        assertNotNull(db.getGraderToGradingTaskByCode(graderCode));
     }
 
     @Test
@@ -97,14 +98,14 @@ public class GraderTests {
 
         }
 
-        Assert.assertEquals(expees + expeesForGrader, graderBusiness.getParticipantsByTask(graderCode).size());
+        assertEquals(expees + expeesForGrader, graderBusiness.getParticipantsByTask(graderCode).size());
     }
 
     @Test
     public void getParticipantResults() throws CodeException, FormatException, NotExistException, NotInReachException {
         List<Result> expeeRes = graderBusiness.getExpeeRes(task.getAssignedGradingTasks().get(0).getGraderAccessCode(),
                 expee.getParticipant().getParticipantId());
-        Assert.assertEquals(2, expeeRes.size());
+        assertEquals(2, expeeRes.size());
     }
 
     @Test
@@ -112,22 +113,18 @@ public class GraderTests {
     public void currNextStageTest() throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException, NotExistException, ExistException {
 
         Stage s = graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
-        Assert.assertEquals("info", s.getType());
+        assertEquals("info", s.getType());
 
         s = graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
-        Assert.assertEquals("questionnaire", s.getType());
+        assertEquals("questionnaire", s.getType());
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        });
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        });
 
     }
 
@@ -137,12 +134,10 @@ public class GraderTests {
     public void fillStageNoGrader() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
-        try {
+        assertThrows(CodeException.class,()->{
             graderBusiness.fillInStage(someCode, expee.getParticipant().getParticipantId(), new JSONObject());
-            Assert.fail();
-        } catch (CodeException ignore) {
-//            Assert.assertNull(db.getExperimenteeByCode(someCode));
-        }
+        });
+//            assertNull(db.getExperimenteeByCode(someCode));
     }
 
     @Test
@@ -150,23 +145,17 @@ public class GraderTests {
         graderBusiness.getNextStage(graderCode,-1);//pass info
         graderBusiness.fillInStage(graderCode,-1,Utils.getPersonalAnswers());
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             graderBusiness.getNextStage(graderCode, -1);
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        });
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             graderBusiness.getCurrentStage(graderCode, -1);
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        });
 
-        try {
+        assertThrows(ExpEndException.class,()->{
             graderBusiness.fillInStage(graderCode, -1,new JSONObject());
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        });
     }
 
     @Test
@@ -182,27 +171,25 @@ public class GraderTests {
         graderBusiness.getNextStage(graderCode,pid);//pass info
         graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is stupid","fuck shit")));
 
-        try {
-            graderBusiness.getNextStage(graderCode, pid);
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        int finalPid = pid;
+        assertThrows(ExpEndException.class,()->{
+            graderBusiness.getNextStage(graderCode, finalPid);
+        });
 
         graderBusiness.submitGradingResults(graderCode,pid);
-        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        assertTrue(graderBusiness.isSubmitted(graderCode,pid));
 
         pid = participants.get(1).getParticipantId();
-        Assert.assertFalse(graderBusiness.isSubmitted(graderCode,pid));
+        assertFalse(graderBusiness.isSubmitted(graderCode,pid));
 
         graderBusiness.getNextStage(graderCode,pid);// pass info
         graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is smart","List.of(\"this student is stupid\",\"fuck shit\")")));
 
-        try {
-            graderBusiness.getNextStage(graderCode, pid);
-            Assert.fail();
-        } catch (ExpEndException ignore) {
-        }
+        int finalPid1 = pid;
+        assertThrows(ExpEndException.class,()->{
+            graderBusiness.getNextStage(graderCode, finalPid1);
+        });
         graderBusiness.submitGradingResults(graderCode,pid);
-        Assert.assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        assertTrue(graderBusiness.isSubmitted(graderCode,pid));
     }
 }

@@ -11,10 +11,12 @@ import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.DBAccess;
 import com.example.demo.ServiceLayer.ExperimenteeService;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,20 +28,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Sql({"/create_database.sql"})
 @SpringBootTest
 public class ExperimenteeServiceTests {
-    private ExperimenteeService experimenteeService;
-    private CreatorBusiness creatorBusiness;
-    private DataCache cache;
-    private DBAccess db;
+    private final ExperimenteeService experimenteeService;
+    private final ExperimenteeBusiness experimenteeBusiness;
+    private final CreatorBusiness creatorBusiness;
+    private final DataCache cache;
+    private final DBAccess db;
 
     @Autowired
-    public ExperimenteeServiceTests(ExperimenteeService experimenteeService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+    public ExperimenteeServiceTests(ExperimenteeService experimenteeService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db, ExperimenteeBusiness experimenteeBusiness) {
         this.experimenteeService = experimenteeService;
         this.creatorBusiness = creatorBusiness;
         this.cache = cache;
         this.db = db;
+        this.experimenteeBusiness = experimenteeBusiness;
     }
 
     private Experiment experiment;
@@ -58,99 +64,117 @@ public class ExperimenteeServiceTests {
         String code = creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), "gili@post.bgu.ac.il");
         expee = cache.getExpeeByCode(UUID.fromString(code));
     }
+
     @Test
     public void loginTest() {
         // some random wrong access code, should fail
-        Assert.assertFalse(experimenteeService.beginParticipation(UUID.randomUUID().toString()));
-        Assert.assertTrue(experimenteeService.beginParticipation(expee.getAccessCode().toString()));
+        assertFalse(experimenteeService.beginParticipation(UUID.randomUUID().toString()));
+        assertTrue(experimenteeService.beginParticipation(expee.getAccessCode().toString()));
     }
 
     @Test
     public void getNextStageTest() throws NotExistException {
         // some random wrong access code, should fail
-        Map<String,Object> ansWrong = experimenteeService.getNextStage(UUID.randomUUID().toString());
-        Assert.assertTrue(ansWrong.containsKey("Error"));
-        Map<String,Object> ansRight = experimenteeService.getNextStage(expee.getAccessCode().toString());
-        Assert.assertTrue(ansRight.containsKey("type"));
-        Assert.assertEquals(ansRight.get("type"), "questionnaire");
-        List<JSONObject> questionsOfStage = ((List<JSONObject>)((Map<String, Object>)ansRight.get("stage")).get("questions"));
-        Assert.assertEquals(questionsOfStage.size(), ((QuestionnaireStage)experiment.getStage(1)).getQuestions().size());
-        Assert.assertEquals(experimenteeService.getNextStage(expee.getAccessCode().toString()).get("type"), "code");
+        Map<String, Object> ansWrong = experimenteeService.getNextStage(UUID.randomUUID().toString());
+        assertTrue(ansWrong.containsKey("Error"));
+        Map<String, Object> ansRight = experimenteeService.getNextStage(expee.getAccessCode().toString());
+        assertTrue(ansRight.containsKey("type"));
+        assertEquals(ansRight.get("type"), "questionnaire");
+        List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight.get("stage")).get("questions"));
+        assertEquals(questionsOfStage.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
+        assertEquals(experimenteeService.getNextStage(expee.getAccessCode().toString()).get("type"), "code");
+    }
+
+    @Test
+    public void getStageWithResultsTest() throws ExpEndException, ParseException, NotExistException, FormatException, CodeException, NotInReachException {
+        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(),false);
+        Map<String, Object> ansRight = experimenteeService.getCurrentStage(expee.getAccessCode().toString());
+        assertNotNull(ansRight.get("result"));
+
+        ansRight = experimenteeService.getStageAt(expee.getAccessCode().toString(),1);
+        assertNotNull(ansRight.get("results"));
     }
 
     @Test
     public void getCurrentStageTest() throws NotExistException {
         // some random wrong access code, should fail
-        Map<String,Object> ansWrong = experimenteeService.getCurrentStage(UUID.randomUUID().toString());
-        Assert.assertFalse(ansWrong.get("response").equals("OK"));
-        Map<String,Object> ansRight = experimenteeService.getCurrentStage(expee.getAccessCode().toString());
-        Assert.assertTrue(ansRight.get("response").equals("OK"));
-        Assert.assertEquals(ansRight.get("type"), "info");
-        Assert.assertEquals(((Map<String,Object>)ansRight.get("stage")).get("text"), ((InfoStage)experiment.getStage(0)).getInfo());
+        Map<String, Object> ansWrong = experimenteeService.getCurrentStage(UUID.randomUUID().toString());
+        assertNotEquals("OK", ansWrong.get("response"));
+        Map<String, Object> ansRight = experimenteeService.getCurrentStage(expee.getAccessCode().toString());
+        assertEquals("OK", ansRight.get("response"));
+        assertEquals(ansRight.get("type"), "info");
+        assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         experimenteeService.getNextStage(expee.getAccessCode().toString());
-        Assert.assertEquals(experimenteeService.getCurrentStage(expee.getAccessCode().toString()).get("type"), "questionnaire");
+        assertEquals(experimenteeService.getCurrentStage(expee.getAccessCode().toString()).get("type"), "questionnaire");
     }
 
     @Test
     public void getStageAtTest() throws NotExistException {
         // some random wrong access code, should fail
         Map<String, Object> ansWrong = experimenteeService.getStageAt(UUID.randomUUID().toString(), 0);
-        Assert.assertFalse(ansWrong.get("response").equals("OK"));
+        assertNotEquals("OK", ansWrong.get("response"));
         // invalid stage index
         Map<String, Object> ansWrong1 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 7);
-        Assert.assertFalse(ansWrong1.get("response").equals("OK"));
+        assertNotEquals("OK", ansWrong1.get("response"));
         Map<String, Object> ansRight = experimenteeService.getStageAt(expee.getAccessCode().toString(), 0);
-        Assert.assertTrue(ansRight.get("response").equals("OK"));
-        Assert.assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
+        assertEquals("OK", ansRight.get("response"));
+        assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         // expee 1 did not reach stage 1
         Map<String, Object> ansWrong2 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
-        Assert.assertFalse(ansWrong2.get("response").equals("OK"));
+        assertNotEquals("OK", ansWrong2.get("response"));
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ansRight1 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
-        Assert.assertTrue(ansRight1.get("response").equals("OK"));
-        List<JSONObject> questionsOfStage = ((List<JSONObject>)((Map<String, Object>)ansRight1.get("stage")).get("questions"));
-        Assert.assertEquals(questionsOfStage.size(), ((QuestionnaireStage)experiment.getStage(1)).getQuestions().size());
+        assertEquals("OK", ansRight1.get("response"));
+        List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight1.get("stage")).get("questions"));
+        assertEquals(questionsOfStage.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
     }
 
     @Test
     public void reachableStagesTest() throws NotExistException {
         // some random wrong access code, should fail
         Map<String, Object> ansWrong = experimenteeService.reachableStages(UUID.randomUUID().toString());
-        Assert.assertTrue(ansWrong.get("stages") == null);
+        assertNull(ansWrong.get("stages"));
         // only first info stage is reachable
         Map<String, Object> ansRight = experimenteeService.reachableStages(expee.getAccessCode().toString());
-        Assert.assertEquals(((List<Map<String,Object>>)ansRight.get("stages")).size(), 1);
-        Assert.assertEquals(((List<Map<String,Object>>)ansRight.get("stages")).get(0).get("type"), "info");
+        assertEquals(((List<Map<String, Object>>) ansRight.get("stages")).size(), 1);
+        assertEquals(((List<Map<String, Object>>) ansRight.get("stages")).get(0).get("type"), "info");
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ansRight1 = experimenteeService.reachableStages(expee.getAccessCode().toString());
-        Assert.assertEquals(((List<Map<String,Object>>)ansRight1.get("stages")).size(), 2);
-        Assert.assertEquals(((List<Map<String,Object>>)ansRight1.get("stages")).get(0).get("type"), "info");
-        Assert.assertEquals(((List<Map<String,Object>>)ansRight1.get("stages")).get(1).get("type"), "questionnaire");
-        List<JSONObject> questions =  ((List<JSONObject>)((Map<String,Object>)((List<Map<String,Object>>)ansRight1.get("stages")).get(1).get("stage")).get("questions"));
-        Assert.assertEquals(questions.size(), ((QuestionnaireStage)experiment.getStage(1)).getQuestions().size());
+        assertEquals(((List<Map<String, Object>>) ansRight1.get("stages")).size(), 2);
+        assertEquals(((List<Map<String, Object>>) ansRight1.get("stages")).get(0).get("type"), "info");
+        assertEquals(((List<Map<String, Object>>) ansRight1.get("stages")).get(1).get("type"), "questionnaire");
+        List<JSONObject> questions = ((List<JSONObject>) ((Map<String, Object>) ((List<Map<String, Object>>) ansRight1.get("stages")).get(1).get("stage")).get("questions"));
+        assertEquals(questions.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
     }
 
     @Test
     public void fillInStageTest() throws NotInReachException {
         //filling info does nothing (no result) and moves to next stage
-        Map<String,Object> ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of());
-        Assert.assertTrue(ans.get("result") == null);
-        Assert.assertTrue(ans.get("type").equals("questionnaire"));
+        Map<String, Object> ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of());
+        assertNull(ans.get("result"));
+        assertEquals("questionnaire", ans.get("type"));
         //filling questionnaire stage
-        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data",Map.of("answers",List.of("a lot!","22"))));
-        Assert.assertEquals(((QuestionnaireResult)expee.getParticipant().getResult(1)).getAnswers().size(), 2);
-        Assert.assertTrue(ans.get("type").equals("code"));
+        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("answers", List.of("a lot!", "22"))));
+        assertEquals(((QuestionnaireResult) expee.getParticipant().getResult(1)).getAnswers().size(), 2);
+        assertEquals("code", ans.get("type"));
         //filling code stage
-        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data",Map.of("code","return -1")));
-        Assert.assertEquals(((CodeResult)expee.getParticipant().getResult(2)).getUserCode(), "return -1");
-        Assert.assertTrue(ans.get("type").equals("tagging"));
+        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("code", "return -1")));
+        assertEquals(((CodeResult) expee.getParticipant().getResult(2)).getUserCode(), "return -1");
+        assertEquals("tagging", ans.get("type"));
         //filling tagging
-        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data",Map.of("tagging", getTags())));
-        Assert.assertEquals(((TaggingResult)expee.getParticipant().getResult(3)).getTags().size(), 3);
-        Assert.assertTrue(ans.get("type").equals("complete"));
+        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("tagging", getTags())));
+        assertEquals(((TaggingResult) expee.getParticipant().getResult(3)).getTags().size(), 3);
+        assertEquals("complete", ans.get("type"));
     }
 
-    private JSONObject getTags () {
+    @Test
+    public void fillInStageFailTest(){
+        experimenteeService.getNextStage(expee.getAccessCode().toString());
+        Map<String, Object> ans =experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of()));
+        assertTrue(ans.containsKey("Error"));
+    }
+
+    private JSONObject getTags() {
         JSONObject ans = new JSONObject();
         JSONObject tag1 = new JSONObject();
         tag1.put("start_loc", 0);

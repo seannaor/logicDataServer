@@ -111,22 +111,6 @@ public class CreatorBusiness implements ICreatorBusiness {
         db.saveGradingTask(gt);
     }
 
-//    @Override
-//    public String saveExperiment(String researcherName, int id) throws NotExistException {
-//        ManagementUser c = cache.getManagerByName(researcherName);
-//
-//        return;
-//        //TODO:implements CreatorBusiness.saveExperiment??
-//    }
-
-//    @Override
-//    public String saveGradingTask(String researcherName, int expId, int taskId) throws NotExistException {
-//        ManagementUser c = cache.getManagerByName(researcherName);
-//        if (c == null) return researcherName + " not exist";
-//        return;
-//        //TODO:implements CreatorBusiness.saveGradingTask??
-//    }
-
     public void addAlly(String researcherName,String allyMail, List<String> permissions) throws NotExistException, ExistException {
         // When adding a new ally, his password is TEMP and username is his mail
         cache.getManagerByName(researcherName);

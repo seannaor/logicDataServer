@@ -41,10 +41,6 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> saveExperiment(String researcherName, int id) {
-        return null;
-    }
-
     //UC 1.1 - second choice (ALL)
     public Map<String, Object> addExperiment(String researcherName, String expName, List<JSONObject> stages) {
         try {
@@ -95,10 +91,6 @@ public class CreatorService {
             res = e.getMessage();
         }
         return Map.of("response", res);
-    }
-
-    public Map<String, Object> saveGradingTask(String researcherName, int expId, String gradTaskName) {
-        return null;
     }
 
     //UC 1.3

@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    97.3%
+    100%
   </span>
   <span class="absValue">
-    (36/ 37)
+    (37/ 37)
   </span>
 </td>
 </tr>
@@ -133,7 +133,7 @@
 <b class="fc"><i>59</i>&nbsp;            Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);</b>
 <b class="fc"><i>60</i>&nbsp;            Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);</b>
 <b class="fc"><i>61</i>&nbsp;            if (res == null) return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, &quot;None&quot;);</b>
-<b class="nc"><i>62</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
+<b class="fc"><i>62</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
 <b class="fc"><i>63</i>&nbsp;        } catch (Exception e) {</b>
 <b class="fc"><i>64</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
 <i>65</i>&nbsp;        }
@@ -168,7 +168,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-06-22 22:24</div>
+    <div style="float:right;">generated on 2020-06-23 02:42</div>
 </div>
 </body>
 </html>

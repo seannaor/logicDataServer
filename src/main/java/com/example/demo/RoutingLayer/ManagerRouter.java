@@ -38,10 +38,6 @@ public class ManagerRouter {
         return creator.addStageToExperiment(username, exp_id, strToJSON(stage));
     }
 
-    @RequestMapping("/save_exp")
-    public Map<String, Object> saveExperiment(@RequestParam String username, @RequestParam int exp_id) {
-        return creator.saveExperiment(username, exp_id);
-    }
 
     @RequestMapping("/add_exp")
     public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
@@ -84,11 +80,6 @@ public class ManagerRouter {
     @RequestMapping("/setStagesToCheck")
     public Map<String, Object> setStagesToCheck(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam List<Integer> indexes) {
         return creator.setStagesToCheck(username, exp_id, task_id, indexes);
-    }
-
-    @RequestMapping("/save_grading_task")
-    public Map<String, Object> saveGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name) {
-        return creator.saveGradingTask(username, exp_id, task_name);
     }
 
     @RequestMapping("/add_allie")

@@ -95,7 +95,7 @@ public class Utils {
         return manager.getExperimentByName("The Experiment");
     }
 
-    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
+    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, UUID code,boolean finish) throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
         // pass info (first) stage
         experimenteeBusiness.getNextStage(code);
 
@@ -109,22 +109,16 @@ public class Utils {
 
         fillInTagging(experimenteeBusiness, code);
 
-        try {
-            experimenteeBusiness.getNextStage(code);
-        } catch (ExpEndException ignore) {
-        }
+        if(finish)
+            try {
+                experimenteeBusiness.getNextStage(code);
+            } catch (ExpEndException ignore) {
+            }
     }
 
     public static int fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-//        JSONObject ans = new JSONObject();
-//        ans.put("stageType", "questionnaire");
-//        JSONObject ans1 = new JSONObject();
-//        ans1.put("answer", "a lot!");
-//        ans.put("1", ans1);
-//        JSONObject ans2 = new JSONObject();
-//        ans2.put("answer", 3);
-//        ans.put("2", ans2);
-        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("answers",List.of("a lot!","22"))));
+        experimenteeBusiness.fillInStage(code,
+                Map.of("data",Map.of("answers",List.of("a lot!","22"))));
         return 2;
     }
 

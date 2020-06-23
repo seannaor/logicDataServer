@@ -1,15 +1,17 @@
 package com.example.demo.BusinessTests;
 
 import com.example.demo.BusinessLayer.DataCache;
-import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Experimentee;
+import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToParticipant;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Entities.ManagementUser;
 import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.DBAccess;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql({"/create_database.sql"})
 @SpringBootTest
@@ -36,6 +40,7 @@ public class DataCacheTests {
 
     @Test
     void getManagerByNameTest() {
+
         try {
             cache.getManagerByName("sean");
         } catch (NotExistException ok) {
@@ -44,44 +49,38 @@ public class DataCacheTests {
         cache.addManager(m);
         try {
             ManagementUser fromCache = cache.getManagerByName("sean");
-            Assert.assertEquals(db.getManagementUserByName("sean").getUserEmail(), fromCache.getUserEmail());
+            assertEquals(db.getManagementUserByName("sean").getUserEmail(), fromCache.getUserEmail());
         } catch (NotExistException e) {
-            Assert.fail();
+            fail();
         }
         cache.setCache();
         try {
             ManagementUser fromCache = cache.getManagerByName("sean");
-            Assert.assertEquals(db.getManagementUserByName("sean").getUserEmail(), fromCache.getUserEmail());
+            assertEquals(db.getManagementUserByName("sean").getUserEmail(), fromCache.getUserEmail());
         } catch (NotExistException e) {
-            Assert.fail();
+            fail();
         }
     }
 
     @Test
-    void getManagerByEMailTest() {
-        try {
+    void getManagerByEMailTest() throws NotExistException {
+        assertThrows(NotExistException.class, () -> {
             cache.getManagerByEMail("a@a.a");
-        } catch (NotExistException ok) {
-        }
+        });
         ManagementUser m = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(m);
-        try {
-            ManagementUser fromCache = cache.getManagerByEMail("a@a.a");
-            Assert.assertEquals(db.getManagementUserByEMail("a@a.a").getBguUsername(), fromCache.getBguUsername());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        ManagementUser fromCache = cache.getManagerByEMail("a@a.a");
+        assertEquals(db.getManagementUserByEMail("a@a.a").getBguUsername(), fromCache.getBguUsername());
         cache.setCache();
-        try {
-            ManagementUser fromCache = cache.getManagerByEMail("a@a.a");
-            Assert.assertEquals(db.getManagementUserByEMail("a@a.a").getBguUsername(), fromCache.getBguUsername());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getManagerByEMail("a@a.a");
+        assertEquals(db.getManagementUserByEMail("a@a.a").getBguUsername(), fromCache.getBguUsername());
+
     }
 
     @Test
-    void getGraderByEMailTest() {
+    void getGraderByEMailTest() throws NotExistException {
         try {
             cache.getGraderByEMail("a@a.a");
         } catch (NotExistException ok) {
@@ -92,23 +91,17 @@ public class DataCacheTests {
         db.saveExperiment(exp, creator);
         Grader g = new Grader("a@a.a");
         cache.addGrader(g);
-        try {
-            Grader fromCache = cache.getGraderByEMail("a@a.a");
-            Assert.assertEquals(db.getGraderByEmail("a@a.a").getGraderEmail(), fromCache.getGraderEmail());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+        Grader fromCache = cache.getGraderByEMail("a@a.a");
+        assertEquals(db.getGraderByEmail("a@a.a").getGraderEmail(), fromCache.getGraderEmail());
+
         cache.setCache();
-        try {
-            Grader fromCache = cache.getGraderByEMail("a@a.a");
-            Assert.assertEquals(db.getGraderByEmail("a@a.a").getGraderEmail(), fromCache.getGraderEmail());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getGraderByEMail("a@a.a");
+        assertEquals(db.getGraderByEmail("a@a.a").getGraderEmail(), fromCache.getGraderEmail());
     }
 
     @Test
-    void getGraderByCodeTest() throws NotExistException, ExistException {
+    void getGraderByCodeTest() throws NotExistException, ExistException, CodeException {
         try {
             cache.getGraderByCode(UUID.randomUUID());
         } catch (CodeException ok) {
@@ -127,23 +120,16 @@ public class DataCacheTests {
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         UUID graderCode = cache.getGraderToGradingTask(g, gt).getGraderAccessCode();
-        try {
-            Grader fromCache = cache.getGraderByCode(graderCode);
-            Assert.assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGraderEmail());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+        Grader fromCache = cache.getGraderByCode(graderCode);
+        assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGraderEmail());
         cache.setCache();
-        try {
-            Grader fromCache = cache.getGraderByCode(graderCode);
-            Assert.assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGraderEmail());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+        fromCache = cache.getGraderByCode(graderCode);
+        assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGraderEmail());
+
     }
 
     @Test
-    void getG2GTByCodeTest() throws NotExistException, ExistException {
+    void getG2GTByCodeTest() throws NotExistException, ExistException, CodeException {
         try {
             cache.getTaskByCode(UUID.randomUUID());
         } catch (CodeException ok) {
@@ -162,23 +148,19 @@ public class DataCacheTests {
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
         UUID graderCode = cache.getGraderToGradingTask(g, gt).getGraderAccessCode();
-        try {
-            GraderToGradingTask fromCache = cache.getTaskByCode(graderCode);
-            Assert.assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGrader().getGraderEmail());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+
+        GraderToGradingTask fromCache = cache.getTaskByCode(graderCode);
+        assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGrader().getGraderEmail());
+
         cache.setCache();
-        try {
-            GraderToGradingTask fromCache = cache.getTaskByCode(graderCode);
-            Assert.assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGrader().getGraderEmail());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getTaskByCode(graderCode);
+        assertEquals(db.getGraderToGradingTaskByCode(graderCode).getGrader().getGraderEmail(), fromCache.getGrader().getGraderEmail());
+
     }
 
     @Test
-    void getExpeeByEMailTest() {
+    void getExpeeByEMailTest() throws NotExistException {
         try {
             cache.getExpeeByEMail("a@a.a");
         } catch (NotExistException ok) {
@@ -189,23 +171,19 @@ public class DataCacheTests {
         db.saveExperiment(exp, creator);
         Experimentee expee = new Experimentee("a@a.a", exp);
         cache.addExperimentee(expee);
-        try {
-            Experimentee fromCache = cache.getExpeeByEMail("a@a.a");
-            Assert.assertEquals(db.getExperimenteeByEmail("a@a.a").getAccessCode(), fromCache.getAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        Experimentee fromCache = cache.getExpeeByEMail("a@a.a");
+        assertEquals(db.getExperimenteeByEmail("a@a.a").getAccessCode(), fromCache.getAccessCode());
+
         cache.setCache();
-        try {
-            Experimentee fromCache = cache.getExpeeByEMail("a@a.a");
-            Assert.assertEquals(db.getExperimenteeByEmail("a@a.a").getAccessCode(), fromCache.getAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getExpeeByEMail("a@a.a");
+        assertEquals(db.getExperimenteeByEmail("a@a.a").getAccessCode(), fromCache.getAccessCode());
+
     }
 
     @Test
-    void getExpeeByCodeTest() {
+    void getExpeeByCodeTest() throws CodeException {
         try {
             cache.getExpeeByCode(UUID.randomUUID());
         } catch (CodeException ok) {
@@ -216,23 +194,19 @@ public class DataCacheTests {
         db.saveExperiment(exp, creator);
         Experimentee expee = new Experimentee("a@a.a", exp);
         cache.addExperimentee(expee);
-        try {
-            Experimentee fromCache = cache.getExpeeByCode(expee.getAccessCode());
-            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getAccessCode(), fromCache.getAccessCode());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+
+        Experimentee fromCache = cache.getExpeeByCode(expee.getAccessCode());
+        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getAccessCode(), fromCache.getAccessCode());
+
         cache.setCache();
-        try {
-            Experimentee fromCache = cache.getExpeeByCode(expee.getAccessCode());
-            Assert.assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getAccessCode(), fromCache.getAccessCode());
-        } catch (CodeException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getExpeeByCode(expee.getAccessCode());
+        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getAccessCode(), fromCache.getAccessCode());
+
     }
 
     @Test
-    void getExpeeByMailAndExpTest() {
+    void getExpeeByMailAndExpTest() throws NotExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi");
@@ -243,24 +217,20 @@ public class DataCacheTests {
         }
         Experimentee expee = new Experimentee("a@a.a", exp);
         cache.addExperimentee(expee);
-        try {
-            Experimentee fromCache = cache.getExpeeByMailAndExp("a@a.a", exp.getExperimentId());
-            Assert.assertEquals(db.getExperimenteeByEmailAndExp("a@a.a", exp.getExperimentId()).getAccessCode(), fromCache.getAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        Experimentee fromCache = cache.getExpeeByMailAndExp("a@a.a", exp.getExperimentId());
+        assertEquals(db.getExperimenteeByEmailAndExp("a@a.a", exp.getExperimentId()).getAccessCode(), fromCache.getAccessCode());
+
         cache.setCache();
-        try {
-            Experimentee fromCache = cache.getExpeeByMailAndExp("a@a.a", exp.getExperimentId());
-            Assert.assertEquals(db.getExperimenteeByEmailAndExp("a@a.a", exp.getExperimentId()).getAccessCode(), fromCache.getAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getExpeeByMailAndExp("a@a.a", exp.getExperimentId());
+        assertEquals(db.getExperimenteeByEmailAndExp("a@a.a", exp.getExperimentId()).getAccessCode(), fromCache.getAccessCode());
+
     }
 
     @Test
     @Transactional
-    void getGradingTaskByIdTest() {
+    void getGradingTaskByIdTest() throws NotExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi", creator);
@@ -277,24 +247,20 @@ public class DataCacheTests {
         db.saveExperiment(personalExp, creator);
         GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
-        try {
-            GradingTask fromCache = cache.getGradingTaskById("sean", exp.getExperimentId(), gt.getGradingTaskId());
-            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getGradingTaskId(), fromCache.getGradingTaskId());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        GradingTask fromCache = cache.getGradingTaskById("sean", exp.getExperimentId(), gt.getGradingTaskId());
+        assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getGradingTaskId(), fromCache.getGradingTaskId());
+
         cache.setCache();
-        try {
-            GradingTask fromCache = cache.getGradingTaskById("sean", exp.getExperimentId(), gt.getGradingTaskId());
-            Assert.assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getGradingTaskId(), fromCache.getGradingTaskId());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getGradingTaskById("sean", exp.getExperimentId(), gt.getGradingTaskId());
+        assertEquals(db.getGradingTaskById(gt.getGradingTaskId()).getGradingTaskId(), fromCache.getGradingTaskId());
+
     }
 
     @Test
     @Transactional
-    void getGradingToGradingTaskByIdTest() throws ExistException {
+    void getGradingToGradingTaskByIdTest() throws ExistException, NotExistException {
         ManagementUser creator = new ManagementUser("sean", "123", "a@a.a");
         cache.addManager(creator);
         Experiment exp = new Experiment("hi", creator);
@@ -312,19 +278,13 @@ public class DataCacheTests {
         GradingTask gt = new GradingTask("test", exp, personalExp, gradingExp);
         cache.addGradingTask(gt);
         cache.addGraderToGradingTask(gt, g);
-        try {
-            GraderToGradingTask fromCache = cache.getGraderToGradingTask(g, gt);
-            Assert.assertEquals(db.getGraderToGradingTaskById(gt.getGradingTaskId(), g.getGraderEmail()).getGraderAccessCode(), fromCache.getGraderAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+        GraderToGradingTask fromCache = cache.getGraderToGradingTask(g, gt);
+        assertEquals(db.getGraderToGradingTaskById(gt.getGradingTaskId(), g.getGraderEmail()).getGraderAccessCode(), fromCache.getGraderAccessCode());
         cache.setCache();
-        try {
-            GraderToGradingTask fromCache = cache.getGraderToGradingTask(g, gt);
-            Assert.assertEquals(db.getGraderToGradingTaskById(gt.getGradingTaskId(), g.getGraderEmail()).getGraderAccessCode(), fromCache.getGraderAccessCode());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getGraderToGradingTask(g, gt);
+        assertEquals(db.getGraderToGradingTaskById(gt.getGradingTaskId(), g.getGraderEmail()).getGraderAccessCode(), fromCache.getGraderAccessCode());
+
     }
 
     @Test
@@ -351,18 +311,14 @@ public class DataCacheTests {
         cache.addExperimentee(expee);
         GraderToParticipant participantInGT = new GraderToParticipant(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
         cache.addExpeeToGradingTask(gt, g, participantInGT);
-        try {
-            GraderToParticipant fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
-            Assert.assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        GraderToParticipant fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
+        assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
+
         cache.setCache();
-        try {
-            GraderToParticipant fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
-            Assert.assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
-        } catch (NotExistException e) {
-            Assert.fail();
-        }
+
+        fromCache = cache.getGraderToParticipants(cache.getGraderToGradingTask(g, gt), expee.getParticipant());
+        assertEquals(db.getGraderToParticipantById(gt.getGradingTaskId(), g.getGraderEmail(), expee.getParticipant().getParticipantId()).getExpeeParticipant().getParticipantId(), fromCache.getExpeeParticipant().getParticipantId());
+
     }
 }
