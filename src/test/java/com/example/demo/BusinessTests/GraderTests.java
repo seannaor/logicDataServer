@@ -162,6 +162,19 @@ public class GraderTests {
     }
 
     @Test
+    public void getStageAndResult() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException {
+        graderBusiness.getNextStage(graderCode, -1);//pass info
+        graderBusiness.fillInStage(graderCode, -1, Utils.getPersonalAnswers());
+
+        Stage s = graderBusiness.getStage(graderCode, -1,0);
+        assertEquals("info",s.getType());
+        Result r = graderBusiness.getResult(graderCode, -1,1);
+        assertNotNull(r);
+        System.out.println(r.getAsMap().toString());
+        assertEquals(1,((List)r.getAsMap().get("answers")).size());
+    }
+
+    @Test
     @Transactional
     public void grade2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
         String expee_mail = "different@post.bgu.ac.il";

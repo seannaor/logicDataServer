@@ -220,30 +220,16 @@ public class Utils {
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
         int tid = creatorBusiness.addGradingTask(manager.getBguUsername(), exp.getExperimentId(), "TestGradingTask",
-                buildSimpleExp(List.of("what do you think about the experimentee results?", "state your favorite curs word")), List.of(1, 2)
+                buildSimpleExp(List.of("what do you think about the experimentee results?", "state your favorite food")), List.of(1, 2)
                 , buildSimpleExp(List.of("what is your best score in minesweeper?")));
         return cache.getGradingTaskById(manager.getBguUsername(), exp.getExperimentId(), tid);
     }
 
     public static Map<String, Object> getPersonalAnswers() {
-//        JSONObject JAnswers = new JSONObject();
-//        JAnswers.put("stageType", "questionnaire");
-//        JSONObject ans1 = new JSONObject();
-//        ans1.put("answer", "100");
-//        JAnswers.put("1", ans1);
-//        return JAnswers;
         return Map.of("data",Map.of("answers",List.of("100")));
     }
 
     public static Map<String, Object> getGradingAnswers(List<String> answers) {
-//        JSONObject JAnswers = new JSONObject();
-//        JAnswers.put("stageType", "questionnaire");
-//        for (int i = 0; i < answers.size(); i++) {
-//            JSONObject ans1 = new JSONObject();
-//            ans1.put("answer", answers.get(i));
-//            JAnswers.put(i + 1 + "", ans1);
-//        }
-//        return JAnswers;
         return Map.of("data",Map.of("answers", answers));
     }
 }

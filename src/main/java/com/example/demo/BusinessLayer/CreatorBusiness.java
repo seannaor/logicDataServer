@@ -80,6 +80,8 @@ public class CreatorBusiness implements ICreatorBusiness {
         Experiment exp = c.getExperiment(expId);
         Experiment personal = buildExperiment(personalExp, gradTaskName+"/personal", c);
         Experiment forExpee = buildExperiment(ExpeeExp, gradTaskName+"/forExpee", c);
+        personal.setGradingTaskExp(true);
+        forExpee.setGradingTaskExp(true);
         GradingTask gt  = new GradingTask(gradTaskName, exp, personal, forExpee);
         gt.setStagesByIdx(stagesToCheck);
         cache.addGradingTask(gt);
