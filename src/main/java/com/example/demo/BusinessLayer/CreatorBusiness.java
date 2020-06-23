@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CreatorBusiness implements ICreatorBusiness {
@@ -171,8 +173,38 @@ public class CreatorBusiness implements ICreatorBusiness {
     public String addExperimentee(String researcherName, int expId, String expeeMail) throws NotExistException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
-        if (cache.isExpeeInExperiment(expeeMail, expId)) throw new ExistException(expeeMail, "experiment " + expId);
-        Experimentee expee = new Experimentee(expeeMail, exp);
+        if (cache.isExpeeInExperiment(expeeMail, expId))
+            throw new ExistException(expeeMail, "experiment " + expId);
+
+        return addExperimentee(exp, expeeMail);
+    }
+
+    @Override
+    public List<String> addExperimentees(String researcherName, int expId, List<String> expeeMails) throws NotExistException, ExistException {
+        ManagementUser c = cache.getManagerByName(researcherName);
+        Experiment exp = c.getExperiment(expId);
+
+        validateMails(exp, expeeMails);
+
+        List<String> codes = new ArrayList<>();
+        for (String mail : expeeMails) {
+            codes.add(addExperimentee(exp, mail));
+        }
+        return codes;
+    }
+
+    private void validateMails(Experiment experiment, List<String> mails) throws ExistException {
+        Map<String,Boolean> mailsMap =new HashMap<>();
+        for (String mail : mails) {
+            if(mailsMap.get(mail)!=null) throw new ExistException(mail, "mail list");
+            else mailsMap.put(mail,true);
+            if (cache.isExpeeInExperiment(mail, experiment.getExperimentId()))
+                throw new ExistException(mail, "experiment " + experiment.getExperimentId());
+        }
+    }
+
+    private String addExperimentee(Experiment experiment, String mail) {
+        Experimentee expee = new Experimentee(mail, experiment);
         cache.addExperimentee(expee);
         return expee.getAccessCode().toString();
     }
