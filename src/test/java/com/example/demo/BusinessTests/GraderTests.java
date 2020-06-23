@@ -1,11 +1,14 @@
 package com.example.demo.BusinessTests;
 
-import com.example.demo.BusinessLayer.*;
+import com.example.demo.BusinessLayer.CreatorBusiness;
+import com.example.demo.BusinessLayer.DataCache;
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.ExperimenteeBusiness;
+import com.example.demo.BusinessLayer.GraderBusiness;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
@@ -73,7 +76,7 @@ public class GraderTests {
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee.getExperimenteeEmail());
 
         graderExpeeParticipant = task.getGraderToGradingTask(grader).getGraderParticipant(expee.getParticipant().getParticipantId());
-        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(),true);
+        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(), true);
     }
 
     @Test
@@ -110,7 +113,7 @@ public class GraderTests {
 
     @Test
     @Transactional
-    public void currNextStageTest() throws NotInReachException, ExpEndException, CodeException, ParseException, FormatException, NotExistException, ExistException {
+    public void currNextStageTest() throws ExpEndException, CodeException, NotExistException {
 
         Stage s = graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
         assertEquals("info", s.getType());
@@ -118,11 +121,11 @@ public class GraderTests {
         s = graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
         assertEquals("questionnaire", s.getType());
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getNextStage(graderCode, expee.getParticipant().getParticipantId());
         });
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getCurrentStage(graderCode, expee.getParticipant().getParticipantId());
         });
 
@@ -131,10 +134,10 @@ public class GraderTests {
     // all fill In stage related tests would be positive tests only
     // no need for negative because they been tested in the expeeTests
     @Test
-    public void fillStageNoGrader() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
+    public void fillStageNoGrader() {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
-        assertThrows(CodeException.class,()->{
+        assertThrows(CodeException.class, () -> {
             graderBusiness.fillInStage(someCode, expee.getParticipant().getParticipantId(), new JSONObject());
         });
 //            assertNull(db.getExperimenteeByCode(someCode));
@@ -142,54 +145,54 @@ public class GraderTests {
 
     @Test
     public void fillPersonal() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException {
-        graderBusiness.getNextStage(graderCode,-1);//pass info
-        graderBusiness.fillInStage(graderCode,-1,Utils.getPersonalAnswers());
+        graderBusiness.getNextStage(graderCode, -1);//pass info
+        graderBusiness.fillInStage(graderCode, -1, Utils.getPersonalAnswers());
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getNextStage(graderCode, -1);
         });
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getCurrentStage(graderCode, -1);
         });
 
-        assertThrows(ExpEndException.class,()->{
-            graderBusiness.fillInStage(graderCode, -1,new JSONObject());
+        assertThrows(ExpEndException.class, () -> {
+            graderBusiness.fillInStage(graderCode, -1, new JSONObject());
         });
     }
 
     @Test
     @Transactional
     public void grade2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
-        String expee_mail= "different@post.bgu.ac.il";
+        String expee_mail = "different@post.bgu.ac.il";
         creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee_mail);
 
         List<Participant> participants = graderBusiness.getParticipantsByTask(graderCode);
 
         int pid = participants.get(0).getParticipantId();
-        graderBusiness.getNextStage(graderCode,pid);//pass info
-        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is stupid","fuck shit")));
+        graderBusiness.getNextStage(graderCode, pid);//pass info
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is stupid", "fuck shit")));
 
         int finalPid = pid;
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getNextStage(graderCode, finalPid);
         });
 
-        graderBusiness.submitGradingResults(graderCode,pid);
-        assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        graderBusiness.submitGradingResults(graderCode, pid);
+        assertTrue(graderBusiness.isSubmitted(graderCode, pid));
 
         pid = participants.get(1).getParticipantId();
-        assertFalse(graderBusiness.isSubmitted(graderCode,pid));
+        assertFalse(graderBusiness.isSubmitted(graderCode, pid));
 
-        graderBusiness.getNextStage(graderCode,pid);// pass info
-        graderBusiness.fillInStage(graderCode,pid,Utils.getGradingAnswers(List.of("this student is smart","List.of(\"this student is stupid\",\"fuck shit\")")));
+        graderBusiness.getNextStage(graderCode, pid);// pass info
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is smart", "List.of(\"this student is stupid\",\"fuck shit\")")));
 
         int finalPid1 = pid;
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             graderBusiness.getNextStage(graderCode, finalPid1);
         });
-        graderBusiness.submitGradingResults(graderCode,pid);
-        assertTrue(graderBusiness.isSubmitted(graderCode,pid));
+        graderBusiness.submitGradingResults(graderCode, pid);
+        assertTrue(graderBusiness.isSubmitted(graderCode, pid));
     }
 }

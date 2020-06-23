@@ -71,7 +71,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void currStageFailTest() throws NotExistException, ExpEndException {
+    public void currStageFailTest() {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         assertThrows(CodeException.class, () -> {
@@ -80,7 +80,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void nextStageFailTest() throws NotExistException, ExpEndException {
+    public void nextStageFailTest() {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         assertThrows(CodeException.class, () -> {
@@ -116,7 +116,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void endExperimentTest() throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
+    public void endExperimentTest() throws NotExistException, CodeException, ExpEndException {
         nextStageFor(3, expee.getAccessCode());
 
         assertThrows(ExpEndException.class, () -> {
@@ -137,7 +137,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillStageFail() throws NotExistException, NotInReachException, ParseException, ExpEndException, FormatException {
+    public void fillStageFail() throws NotInReachException {
         //not exist code should fail
         UUID someCode = UUID.randomUUID();
         assertThrows(CodeException.class, () -> {
@@ -148,7 +148,7 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillQuestionsFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
+    public void fillQuestionsFail() throws NotExistException, CodeException, ExpEndException, NotInReachException {
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
         // fill in questions (second) stage, fucked format should fail
@@ -233,10 +233,10 @@ public class ExpeeTests {
         nextStageFor(3, expee.getAccessCode());
         Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
-        Stage s = experimenteeBusiness.getStage(expee.getAccessCode(),3);
-        assertEquals(expee.getExperiment().getStages().get(3),s);
+        Stage s = experimenteeBusiness.getStage(expee.getAccessCode(), 3);
+        assertEquals(expee.getExperiment().getStages().get(3), s);
 
-        Result r = experimenteeBusiness.getResult(expee.getAccessCode(),3);
+        Result r = experimenteeBusiness.getResult(expee.getAccessCode(), 3);
         assertNotNull(r);
     }
 
