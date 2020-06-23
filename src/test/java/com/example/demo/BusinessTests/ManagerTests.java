@@ -487,6 +487,21 @@ public class ManagerTests {
     }
 
     @Test
+    @Transactional
+    public void addExperimentees() throws NotExistException, ExistException {
+        List<String> mails = List.of("m1@post","m2@post");
+
+        int experimenteesCount = creatorBusiness.getExperimentees(manager.getBguUsername(), experiment.getExperimentId()).size();
+
+        creatorBusiness.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(), mails);
+        assertEquals(experimenteesCount + 2, creatorBusiness.getExperimentees(manager.getBguUsername(), experiment.getExperimentId()).size());
+        assertTrue(cache.isExpeeInExperiment(mails.get(0), experiment.getExperimentId()));
+        assertTrue(cache.isExpeeInExperiment(mails.get(1), experiment.getExperimentId()));
+        assertNotNull(db.getExperimenteeByEmail(mails.get(0)));
+        assertNotNull(db.getExperimenteeByEmail(mails.get(1)));
+    }
+
+    @Test
     public void addExperimenteeFailSameExpee() throws NotExistException {
         long currentExpees = db.getNumberOfExperimentees();
         int experimenteesCount = creatorBusiness.getExperimentees(manager.getBguUsername(), experiment.getExperimentId()).size();
@@ -495,6 +510,21 @@ public class ManagerTests {
             creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee.getExperimenteeEmail());
         });
         assertEquals(experimenteesCount, creatorBusiness.getExperimentees(manager.getBguUsername(), experiment.getExperimentId()).size());
+        assertEquals(currentExpees, db.getNumberOfExperimentees());
+    }
+
+    @Test
+    public void addExperimenteesFailSameExpee() throws NotExistException {
+        long currentExpees = db.getNumberOfExperimentees();
+        int experimenteesCount = creatorBusiness.getExperimentees(
+                manager.getBguUsername(), experiment.getExperimentId()).size();
+        assertThrows(ExistException.class, () -> {
+            //list contains two identical mails
+            creatorBusiness.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(),
+                    List.of("mail1","mail1"));
+        });
+        assertEquals(experimenteesCount, creatorBusiness.getExperimentees(manager.getBguUsername(),
+                experiment.getExperimentId()).size());
         assertEquals(currentExpees, db.getNumberOfExperimentees());
     }
 

@@ -333,6 +333,18 @@ public class CreatorServiceTests {
     }
 
     @Test
+    public void addExperimenteesTest() throws CodeException {
+        // list has 2 identical mails
+        Map<String, Object>  ansWrong = creatorService.addExperimentees(manager.getBguUsername(), 9090, List.of("newexpee@gmail.com","newexpee@gmail.com"));
+        assertNotEquals("OK", ansWrong.get("response"));
+
+        Map<String, Object> ansRight = creatorService.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(), List.of("newexpee@gmail.com","newexpee1@gmail.com"));
+        assertEquals("OK", ansRight.get("response"));
+        String newExpeeCode = ((List<String>) ansRight.get("codes")).get(0);
+        assertEquals(cache.getExpeeByCode(UUID.fromString(newExpeeCode)).getExperimenteeEmail(), "newexpee@gmail.com");
+    }
+
+    @Test
     public void addExpeeToGraderNegativeTest() {
         // username not exist - should fail
         Map<String, Object> ansWrong = creatorService.addExpeeToGrader("something", experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee.getExperimenteeEmail());

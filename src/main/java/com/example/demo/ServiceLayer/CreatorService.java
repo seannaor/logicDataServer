@@ -123,6 +123,16 @@ public class CreatorService {
             return Map.of("response", e.getMessage());
         }
     }
+    //addExperimentees
+
+    public Map<String, Object> addExperimentees(String researcherName, int expId, List<String> expeeMails) {
+        try {
+            List<String> codes = creatorBusiness.addExperimentees(researcherName, expId, expeeMails);
+            return Map.of("response", "OK", "codes", codes);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
 
     public Map<String, Object> addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) {
         String res = "OK";

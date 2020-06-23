@@ -49,6 +49,8 @@ public interface ICreatorBusiness {
 
     String addExperimentee(String researcherName, int expId, String ExpeeMail) throws NotExistException, ExistException;
 
+    List<String> addExperimentees(String researcherName, int expId, List<String> expeeMails) throws NotExistException, ExistException;
+
     void addExpeeToGrader(String researcherName, int expId, int taskId, String graderMail, String expeeMail) throws NotExistException, ExistException;
 
     //meaningful getters
