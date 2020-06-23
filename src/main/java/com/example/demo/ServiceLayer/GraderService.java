@@ -3,9 +3,8 @@ package com.example.demo.ServiceLayer;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.Exceptions.CodeException;
 import com.example.demo.BusinessLayer.GraderBusiness;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class GraderService {
 
     public Map<String, Object> beginGrading(String code) {
         String res = "OK";
-        if(graderBusiness.beginGrading(UUID.fromString(code)))
+        if (graderBusiness.beginGrading(UUID.fromString(code)))
             return Map.of("response", "OK");
         return Map.of("response", new CodeException(code));
     }

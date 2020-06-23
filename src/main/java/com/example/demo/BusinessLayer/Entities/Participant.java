@@ -1,8 +1,9 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-import com.example.demo.BusinessLayer.Entities.Results.*;
-
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+import com.example.demo.BusinessLayer.Entities.Results.Result;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -10,7 +11,6 @@ import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
@@ -78,7 +78,7 @@ public class Participant {
     public Result getResult(int idx) throws NotInReachException {
         if (currStage < idx) throw new NotInReachException("result of stage " + idx);
         for (Result result : this.results) {
-            if(result.getStage().getStageID().getStageIndex() == idx) {
+            if (result.getStage().getStageID().getStageIndex() == idx) {
                 return result;
             }
         }
@@ -91,7 +91,7 @@ public class Participant {
             isDone = true;
     }
 
-    public int getCurrStageIdx(){
+    public int getCurrStageIdx() {
         return this.currStage;
     }
 
@@ -99,25 +99,25 @@ public class Participant {
         return isDone;
     }
 
-    public Result fillInStage(Map<String,Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
+    public Result fillInStage(Map<String, Object> data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
         Stage currStage = getCurrStage();
         Result currResult;
         switch (currStage.getType()) {
             case "code":
-                currResult = currStage.fillCode(data,(CodeResult) getResult(currStage.getStageID().getStageIndex()));
+                currResult = currStage.fillCode(data, (CodeResult) getResult(currStage.getStageID().getStageIndex()));
                 break;
             case "tagging":
-                currResult = currStage.fillTagging(data,(TaggingResult) getResult(currStage.getStageID().getStageIndex()));
+                currResult = currStage.fillTagging(data, (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
 
                 break;
             case "questionnaire":
-                currResult = currStage.fillQuestionnaire(data,(QuestionnaireResult) getResult(currStage.getStageID().getStageIndex()));
+                currResult = currStage.fillQuestionnaire(data, (QuestionnaireResult) getResult(currStage.getStageID().getStageIndex()));
                 break;
             default:
                 throw new FormatException(currStage.getType());
         }
-        currResult.setStageAndParticipant(currStage,this);
-        if(!this.results.contains(currResult))
+        currResult.setStageAndParticipant(currStage, this);
+        if (!this.results.contains(currResult))
             this.results.add(currResult);
         return currResult;
     }

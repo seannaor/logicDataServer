@@ -34,7 +34,9 @@ public class ExpeeTests {
     private CreatorBusiness creatorBusiness;
     private DataCache cache;
     private DBAccess db;
-
+    private ManagementUser manager;
+    private Experiment experiment;
+    private Experimentee expee;
     @Autowired
     public ExpeeTests(ExperimenteeBusiness experimenteeBusiness, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.experimenteeBusiness = experimenteeBusiness;
@@ -42,10 +44,6 @@ public class ExpeeTests {
         this.cache = cache;
         this.db = db;
     }
-
-    private ManagementUser manager;
-    private Experiment experiment;
-    private Experimentee expee;
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException {

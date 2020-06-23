@@ -1,8 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import org.json.simple.JSONObject;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,8 +31,8 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public Map<String, Object> getAsMap(){
-        return Map.of("text",info);
+    public Map<String, Object> getAsMap() {
+        return Map.of("text", info);
     }
 
     @Override
@@ -43,5 +41,6 @@ public class InfoStage extends Stage {
     }
 
     @Override
-    public void fillInfo(Object data, Participant participant) {}
+    public void fillInfo(Object data, Participant participant) {
+    }
 }

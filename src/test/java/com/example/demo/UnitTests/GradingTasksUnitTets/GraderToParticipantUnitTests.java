@@ -47,14 +47,14 @@ public class GraderToParticipantUnitTests {
     }
 
     @Test
-    public void settersGettersTests(){
+    public void settersGettersTests() {
         Grader grader = new Grader("DiffGrader@mail");
         GraderToGradingTask graderToGradingTask = new GraderToGradingTask(gradingTask, grader);
         Participant participant = new Participant(exp);
         graderToParticipant.setExpeeParticipant(participant);
         graderToParticipant.setGraderToGradingTask(graderToGradingTask);
 
-        Assert.assertEquals(graderToGradingTask,graderToParticipant.getGraderToGradingTask());
-        Assert.assertEquals(participant,graderToParticipant.getExpeeParticipant());
+        Assert.assertEquals(graderToGradingTask, graderToParticipant.getGraderToGradingTask());
+        Assert.assertEquals(participant, graderToParticipant.getExpeeParticipant());
     }
 }

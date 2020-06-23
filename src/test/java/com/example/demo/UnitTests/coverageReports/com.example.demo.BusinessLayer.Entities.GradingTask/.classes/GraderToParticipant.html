@@ -1,200 +1,202 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: GraderToParticipant</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: GraderToParticipant</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.GradingTask</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.GradingTask</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: GraderToParticipant (com.example.demo.BusinessLayer.Entities.GradingTask)</h1>
+    <h1>Coverage Summary for Class: GraderToParticipant (com.example.demo.BusinessLayer.Entities.GradingTask)</h1>
 
-<table class="coverageStats">
+    <table class="coverageStats">
 
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">GraderToParticipant</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">GraderToParticipant</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (9/ 9)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     90.5%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (19/ 21)
   </span>
-</td>
-</tr>
-  <tr>
-    <td class="name">GraderToParticipant$GraderToParticipantID</td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">GraderToParticipant$GraderToParticipantID</td>
+            <td class="coverageStat">
   <span class="percent">
     50%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 2)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     83.3%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (5/ 6)
   </span>
-</td>
-  </tr>
-<tr>
-  <td class="name"><strong>total</strong></td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name"><strong>total</strong></td>
+            <td class="coverageStat">
   <span class="percent">
     90.9%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (10/ 11)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     88.9%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (24/ 27)
   </span>
-</td>
-</tr>
-</table>
+            </td>
+        </tr>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.GradingTask;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.ExistException;
-<i>5</i>&nbsp;
-<i>6</i>&nbsp;import javax.persistence.*;
-<i>7</i>&nbsp;import java.io.Serializable;
-<i>8</i>&nbsp;
-<i>9</i>&nbsp;@Entity
-<i>10</i>&nbsp;@Table(name = &quot;grader_to_participant&quot;)
-<i>11</i>&nbsp;public class GraderToParticipant {
-<i>12</i>&nbsp;    @Embeddable
-<i>13</i>&nbsp;    public static class GraderToParticipantID implements Serializable {
-<i>14</i>&nbsp;        @Column(name = &quot;grading_task_id&quot;)
-<i>15</i>&nbsp;        private int gradingTaskId;
-<i>16</i>&nbsp;        @Column(name = &quot;grader_email&quot;)
-<i>17</i>&nbsp;        private String graderEmail;
-<i>18</i>&nbsp;        @Column(name = &quot;expee_participant_id&quot;)
-<i>19</i>&nbsp;        private int expeeParticipantId;
-<i>20</i>&nbsp;
-<b class="nc"><i>21</i>&nbsp;        public GraderToParticipantID() {}</b>
-<i>22</i>&nbsp;
-<b class="fc"><i>23</i>&nbsp;        public GraderToParticipantID(int gradingTaskId, String graderEmail, int expeeParticipantId) {</b>
-<b class="fc"><i>24</i>&nbsp;            this.gradingTaskId = gradingTaskId;</b>
-<b class="fc"><i>25</i>&nbsp;            this.graderEmail = graderEmail;</b>
-<b class="fc"><i>26</i>&nbsp;            this.expeeParticipantId = expeeParticipantId;</b>
-<b class="fc"><i>27</i>&nbsp;        }</b>
-<i>28</i>&nbsp;    }
-<i>29</i>&nbsp;
-<i>30</i>&nbsp;    @EmbeddedId
-<i>31</i>&nbsp;    private GraderToParticipantID graderToParticipantID;
-<b class="fc"><i>32</i>&nbsp;    @Column(name = &quot;grading_state&quot;)</b>
-<i>33</i>&nbsp;    private boolean gradingState = false;
-<i>34</i>&nbsp;    @ManyToOne
-<i>35</i>&nbsp;    @MapsId(&quot;graderToGradingTaskID&quot;)
-<i>36</i>&nbsp;    @JoinColumns({
-<i>37</i>&nbsp;            @JoinColumn(name = &quot;grading_task_id&quot;, referencedColumnName = &quot;grading_task_id&quot;),
-<i>38</i>&nbsp;            @JoinColumn(name = &quot;grader_email&quot;, referencedColumnName = &quot;grader_email&quot;)}
-<i>39</i>&nbsp;    )
-<i>40</i>&nbsp;    private GraderToGradingTask graderToGradingTask;
-<i>41</i>&nbsp;    @ManyToOne
-<i>42</i>&nbsp;    @MapsId(&quot;participantId&quot;)
-<i>43</i>&nbsp;    @JoinColumn(name = &quot;expee_participant_id&quot;, referencedColumnName = &quot;participant_id&quot;)
-<i>44</i>&nbsp;    private Participant expeeParticipant;
-<i>45</i>&nbsp;    @OneToOne
-<i>46</i>&nbsp;    @JoinColumn(name = &quot;grader_participant_id&quot;, referencedColumnName = &quot;participant_id&quot;)
-<i>47</i>&nbsp;    private Participant graderParticipant;
-<i>48</i>&nbsp;
-<b class="nc"><i>49</i>&nbsp;    public GraderToParticipant() {</b>
-<b class="nc"><i>50</i>&nbsp;    }</b>
-<i>51</i>&nbsp;
-<b class="fc"><i>52</i>&nbsp;    public GraderToParticipant(GraderToGradingTask graderToGradingTask, Participant expeeParticipant) throws ExistException {</b>
-<b class="fc"><i>53</i>&nbsp;        this.graderToParticipantID = new GraderToParticipantID(graderToGradingTask.getGradingTask().getGradingTaskId(),</b>
-<b class="fc"><i>54</i>&nbsp;                graderToGradingTask.getGrader().getGraderEmail(), expeeParticipant.getParticipantId());</b>
-<b class="fc"><i>55</i>&nbsp;        this.graderToGradingTask = graderToGradingTask;</b>
-<b class="fc"><i>56</i>&nbsp;        this.expeeParticipant = expeeParticipant;</b>
-<b class="fc"><i>57</i>&nbsp;        this.graderParticipant = new Participant(graderToGradingTask.getGradingTask().getGradingExperiment());</b>
-<b class="fc"><i>58</i>&nbsp;        this.graderToGradingTask.addGraderToParticipant(this);</b>
-<i>59</i>&nbsp;
-<b class="fc"><i>60</i>&nbsp;    }</b>
-<i>61</i>&nbsp;
-<i>62</i>&nbsp;    //setters
-<i>63</i>&nbsp;    public void setExpeeParticipant(Participant expeeParticipant) {
-<b class="fc"><i>64</i>&nbsp;        this.expeeParticipant = expeeParticipant;</b>
-<b class="fc"><i>65</i>&nbsp;    }</b>
-<i>66</i>&nbsp;
-<i>67</i>&nbsp;    public void setGraderToGradingTask(GraderToGradingTask graderToGradingTask) {
-<b class="fc"><i>68</i>&nbsp;        this.graderToGradingTask = graderToGradingTask;</b>
-<b class="fc"><i>69</i>&nbsp;    }</b>
-<i>70</i>&nbsp;
-<i>71</i>&nbsp;    public void setGradingState(boolean gradingState) {
-<b class="fc"><i>72</i>&nbsp;        this.gradingState = gradingState;</b>
-<b class="fc"><i>73</i>&nbsp;    }</b>
-<i>74</i>&nbsp;
-<i>75</i>&nbsp;    //getters
-<i>76</i>&nbsp;    public boolean getGradingState() {
-<b class="fc"><i>77</i>&nbsp;        return this.gradingState;</b>
-<i>78</i>&nbsp;    }
-<i>79</i>&nbsp;
-<i>80</i>&nbsp;    public GraderToGradingTask getGraderToGradingTask() {
-<b class="fc"><i>81</i>&nbsp;        return graderToGradingTask;</b>
-<i>82</i>&nbsp;    }
-<i>83</i>&nbsp;
-<i>84</i>&nbsp;    public Participant getGraderParticipant() {
-<b class="fc"><i>85</i>&nbsp;        return graderParticipant;</b>
-<i>86</i>&nbsp;    }
-<i>87</i>&nbsp;
-<i>88</i>&nbsp;    public Participant getExpeeParticipant() {
-<b class="fc"><i>89</i>&nbsp;        return expeeParticipant;</b>
-<i>90</i>&nbsp;    }
-<i>91</i>&nbsp;
-<i>92</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.GradingTask;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.ExistException;
+        <i>5</i>&nbsp;
+        <i>6</i>&nbsp;import javax.persistence.*;
+        <i>7</i>&nbsp;import java.io.Serializable;
+        <i>8</i>&nbsp;
+        <i>9</i>&nbsp;@Entity
+        <i>10</i>&nbsp;@Table(name = &quot;grader_to_participant&quot;)
+        <i>11</i>&nbsp;public class GraderToParticipant {
+        <i>12</i>&nbsp; @Embeddable
+        <i>13</i>&nbsp; public static class GraderToParticipantID implements Serializable {
+        <i>14</i>&nbsp; @Column(name = &quot;grading_task_id&quot;)
+        <i>15</i>&nbsp; private int gradingTaskId;
+        <i>16</i>&nbsp; @Column(name = &quot;grader_email&quot;)
+        <i>17</i>&nbsp; private String graderEmail;
+        <i>18</i>&nbsp; @Column(name = &quot;expee_participant_id&quot;)
+        <i>19</i>&nbsp; private int expeeParticipantId;
+        <i>20</i>&nbsp;
+        <b class="nc"><i>21</i>&nbsp; public GraderToParticipantID() {}</b>
+        <i>22</i>&nbsp;
+        <b class="fc"><i>23</i>&nbsp; public GraderToParticipantID(int gradingTaskId, String graderEmail, int
+            expeeParticipantId) {</b>
+        <b class="fc"><i>24</i>&nbsp; this.gradingTaskId = gradingTaskId;</b>
+        <b class="fc"><i>25</i>&nbsp; this.graderEmail = graderEmail;</b>
+        <b class="fc"><i>26</i>&nbsp; this.expeeParticipantId = expeeParticipantId;</b>
+        <b class="fc"><i>27</i>&nbsp; }</b>
+        <i>28</i>&nbsp; }
+        <i>29</i>&nbsp;
+        <i>30</i>&nbsp; @EmbeddedId
+        <i>31</i>&nbsp; private GraderToParticipantID graderToParticipantID;
+        <b class="fc"><i>32</i>&nbsp; @Column(name = &quot;grading_state&quot;)</b>
+        <i>33</i>&nbsp; private boolean gradingState = false;
+        <i>34</i>&nbsp; @ManyToOne
+        <i>35</i>&nbsp; @MapsId(&quot;graderToGradingTaskID&quot;)
+        <i>36</i>&nbsp; @JoinColumns({
+        <i>37</i>&nbsp; @JoinColumn(name = &quot;grading_task_id&quot;, referencedColumnName = &quot;grading_task_id&quot;),
+        <i>38</i>&nbsp; @JoinColumn(name = &quot;grader_email&quot;, referencedColumnName = &quot;grader_email&quot;)}
+        <i>39</i>&nbsp; )
+        <i>40</i>&nbsp; private GraderToGradingTask graderToGradingTask;
+        <i>41</i>&nbsp; @ManyToOne
+        <i>42</i>&nbsp; @MapsId(&quot;participantId&quot;)
+        <i>43</i>&nbsp; @JoinColumn(name = &quot;expee_participant_id&quot;, referencedColumnName = &quot;participant_id&quot;)
+        <i>44</i>&nbsp; private Participant expeeParticipant;
+        <i>45</i>&nbsp; @OneToOne
+        <i>46</i>&nbsp; @JoinColumn(name = &quot;grader_participant_id&quot;, referencedColumnName = &quot;participant_id&quot;)
+        <i>47</i>&nbsp; private Participant graderParticipant;
+        <i>48</i>&nbsp;
+        <b class="nc"><i>49</i>&nbsp; public GraderToParticipant() {</b>
+        <b class="nc"><i>50</i>&nbsp; }</b>
+        <i>51</i>&nbsp;
+        <b class="fc"><i>52</i>&nbsp; public GraderToParticipant(GraderToGradingTask graderToGradingTask, Participant
+            expeeParticipant) throws ExistException {</b>
+        <b class="fc"><i>53</i>&nbsp; this.graderToParticipantID = new
+            GraderToParticipantID(graderToGradingTask.getGradingTask().getGradingTaskId(),</b>
+        <b class="fc"><i>54</i>&nbsp; graderToGradingTask.getGrader().getGraderEmail(),
+            expeeParticipant.getParticipantId());</b>
+        <b class="fc"><i>55</i>&nbsp; this.graderToGradingTask = graderToGradingTask;</b>
+        <b class="fc"><i>56</i>&nbsp; this.expeeParticipant = expeeParticipant;</b>
+        <b class="fc"><i>57</i>&nbsp; this.graderParticipant = new
+            Participant(graderToGradingTask.getGradingTask().getGradingExperiment());</b>
+        <b class="fc"><i>58</i>&nbsp; this.graderToGradingTask.addGraderToParticipant(this);</b>
+        <i>59</i>&nbsp;
+        <b class="fc"><i>60</i>&nbsp; }</b>
+        <i>61</i>&nbsp;
+        <i>62</i>&nbsp; //setters
+        <i>63</i>&nbsp; public void setExpeeParticipant(Participant expeeParticipant) {
+        <b class="fc"><i>64</i>&nbsp; this.expeeParticipant = expeeParticipant;</b>
+        <b class="fc"><i>65</i>&nbsp; }</b>
+        <i>66</i>&nbsp;
+        <i>67</i>&nbsp; public void setGraderToGradingTask(GraderToGradingTask graderToGradingTask) {
+        <b class="fc"><i>68</i>&nbsp; this.graderToGradingTask = graderToGradingTask;</b>
+        <b class="fc"><i>69</i>&nbsp; }</b>
+        <i>70</i>&nbsp;
+        <i>71</i>&nbsp; public void setGradingState(boolean gradingState) {
+        <b class="fc"><i>72</i>&nbsp; this.gradingState = gradingState;</b>
+        <b class="fc"><i>73</i>&nbsp; }</b>
+        <i>74</i>&nbsp;
+        <i>75</i>&nbsp; //getters
+        <i>76</i>&nbsp; public boolean getGradingState() {
+        <b class="fc"><i>77</i>&nbsp; return this.gradingState;</b>
+        <i>78</i>&nbsp; }
+        <i>79</i>&nbsp;
+        <i>80</i>&nbsp; public GraderToGradingTask getGraderToGradingTask() {
+        <b class="fc"><i>81</i>&nbsp; return graderToGradingTask;</b>
+        <i>82</i>&nbsp; }
+        <i>83</i>&nbsp;
+        <i>84</i>&nbsp; public Participant getGraderParticipant() {
+        <b class="fc"><i>85</i>&nbsp; return graderParticipant;</b>
+        <i>86</i>&nbsp; }
+        <i>87</i>&nbsp;
+        <i>88</i>&nbsp; public Participant getExpeeParticipant() {
+        <b class="fc"><i>89</i>&nbsp; return expeeParticipant;</b>
+        <i>90</i>&nbsp; }
+        <i>91</i>&nbsp;
+        <i>92</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

@@ -1,197 +1,198 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: GradingTask</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: GradingTask</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.GradingTask</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.GradingTask</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: GradingTask (com.example.demo.BusinessLayer.Entities.GradingTask)</h1>
+    <h1>Coverage Summary for Class: GradingTask (com.example.demo.BusinessLayer.Entities.GradingTask)</h1>
 
-<table class="coverageStats">
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Class, %
-</th>
-<th class="coverageStat 
+                Class, %
+            </th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">GradingTask</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">GradingTask</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 1)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (12/ 12)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     93.5%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (29/ 31)
   </span>
-</td>
-</tr>
+            </td>
+        </tr>
 
-</table>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.GradingTask;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Experiment;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Grader;
-<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
-<i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-<i>8</i>&nbsp;import org.hibernate.annotations.LazyCollection;
-<i>9</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
-<i>10</i>&nbsp;
-<i>11</i>&nbsp;import javax.persistence.*;
-<i>12</i>&nbsp;import java.util.ArrayList;
-<i>13</i>&nbsp;import java.util.List;
-<i>14</i>&nbsp;
-<i>15</i>&nbsp;@Entity
-<i>16</i>&nbsp;@Table(name = &quot;grading_tasks&quot;)
-<i>17</i>&nbsp;public class GradingTask {
-<i>18</i>&nbsp;    @Id
-<i>19</i>&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
-<i>20</i>&nbsp;    @Column(name = &quot;grading_task_id&quot;)
-<i>21</i>&nbsp;    private int gradingTaskId;
-<i>22</i>&nbsp;    @Column(name = &quot;grading_task_name&quot;)
-<i>23</i>&nbsp;    private String gradingTaskName;
-<i>24</i>&nbsp;    @ManyToOne
-<i>25</i>&nbsp;    @JoinColumn(name = &quot;base_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
-<i>26</i>&nbsp;    private Experiment baseExperiment;
-<i>27</i>&nbsp;    @OneToOne
-<i>28</i>&nbsp;    @JoinColumn(name = &quot;general_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
-<i>29</i>&nbsp;    private Experiment generalExperiment;
-<i>30</i>&nbsp;    @OneToOne
-<i>31</i>&nbsp;    @JoinColumn(name = &quot;grading_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
-<i>32</i>&nbsp;    private Experiment gradingExperiment;
-<b class="fc"><i>33</i>&nbsp;    @OneToMany(mappedBy = &quot;gradingTask&quot;)</b>
-<i>34</i>&nbsp;    private List&lt;GraderToGradingTask&gt; assignedGradingTasks = new ArrayList&lt;&gt;();
-<i>35</i>&nbsp;    @ManyToMany
-<i>36</i>&nbsp;    @JoinTable(
-<i>37</i>&nbsp;            name = &quot;stages_of_grading_task&quot;,
-<i>38</i>&nbsp;            joinColumns = {
-<i>39</i>&nbsp;                    @JoinColumn(name = &quot;grading_task_id&quot;, referencedColumnName = &quot;grading_task_id&quot;)
-<i>40</i>&nbsp;            },
-<i>41</i>&nbsp;            inverseJoinColumns = {
-<i>42</i>&nbsp;                    @JoinColumn(name = &quot;stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
-<i>43</i>&nbsp;                    @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)}
-<i>44</i>&nbsp;    )
-<i>45</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
-<i>46</i>&nbsp;    private List&lt;Stage&gt; stages;
-<i>47</i>&nbsp;
-<b class="nc"><i>48</i>&nbsp;    public GradingTask() { }</b>
-<i>49</i>&nbsp;
-<b class="fc"><i>50</i>&nbsp;    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment) {</b>
-<b class="fc"><i>51</i>&nbsp;        this.gradingTaskName = gradingTaskName;</b>
-<b class="fc"><i>52</i>&nbsp;        this.baseExperiment = baseExperiment;</b>
-<b class="fc"><i>53</i>&nbsp;        this.generalExperiment = generalExperiment;</b>
-<b class="fc"><i>54</i>&nbsp;        this.gradingExperiment = gradingExperiment;</b>
-<b class="fc"><i>55</i>&nbsp;        this.stages =new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>56</i>&nbsp;    }</b>
-<i>57</i>&nbsp;
-<i>58</i>&nbsp;//    public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment generalExperiment, Experiment gradingExperiment, List&lt;Stage&gt; stages) {
-<i>59</i>&nbsp;//        this.gradingTaskName = gradingTaskName;
-<i>60</i>&nbsp;//        this.baseExperiment = baseExperiment;
-<i>61</i>&nbsp;//        this.generalExperiment = generalExperiment;
-<i>62</i>&nbsp;//        this.gradingExperiment = gradingExperiment;
-<i>63</i>&nbsp;//        this.stages = stages;
-<i>64</i>&nbsp;//    }
-<i>65</i>&nbsp;
-<i>66</i>&nbsp;    public int getGradingTaskId() {
-<b class="fc"><i>67</i>&nbsp;        return gradingTaskId;</b>
-<i>68</i>&nbsp;    }
-<i>69</i>&nbsp;
-<i>70</i>&nbsp;    public List&lt;Stage&gt; getStages() {
-<b class="fc"><i>71</i>&nbsp;        return stages;</b>
-<i>72</i>&nbsp;    }
-<i>73</i>&nbsp;
-<i>74</i>&nbsp;    public void setStagesByIdx(List&lt;Integer&gt; stages_idxs) throws NotExistException, FormatException {
-<b class="fc"><i>75</i>&nbsp;        List&lt;Stage&gt; baseStages = this.baseExperiment.getStages();</b>
-<b class="fc"><i>76</i>&nbsp;        List&lt;Stage&gt; newStages = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>77</i>&nbsp;        for(int i:stages_idxs){</b>
-<b class="fc"><i>78</i>&nbsp;            if(i&gt;=baseStages.size()||i&lt;0) throw new NotExistException(&quot;stage&quot;,&quot;&quot;+i);</b>
-<b class="fc"><i>79</i>&nbsp;            if(baseStages.get(i).getType().equals(&quot;info&quot;)) throw new FormatException(&quot;stage with result&quot;,&quot;info stage&quot;);</b>
-<b class="fc"><i>80</i>&nbsp;            newStages.add(baseStages.get(i));</b>
-<b class="fc"><i>81</i>&nbsp;        }</b>
-<b class="fc"><i>82</i>&nbsp;        this.stages = newStages;</b>
-<b class="fc"><i>83</i>&nbsp;    }</b>
-<i>84</i>&nbsp;
-<i>85</i>&nbsp;    public String getGradingTaskName() {
-<b class="fc"><i>86</i>&nbsp;        return gradingTaskName;</b>
-<i>87</i>&nbsp;    }
-<i>88</i>&nbsp;
-<i>89</i>&nbsp;    public List&lt;GraderToGradingTask&gt; getAssignedGradingTasks() {
-<b class="fc"><i>90</i>&nbsp;        return assignedGradingTasks;</b>
-<i>91</i>&nbsp;    }
-<i>92</i>&nbsp;
-<i>93</i>&nbsp;    public void addAssignedGradingTasks(GraderToGradingTask assignedGradingTask) {
-<b class="fc"><i>94</i>&nbsp;        this.assignedGradingTasks.add(assignedGradingTask);</b>
-<b class="fc"><i>95</i>&nbsp;    }</b>
-<i>96</i>&nbsp;
-<i>97</i>&nbsp;    public GraderToGradingTask getGraderToGradingTask(Grader g) throws NotExistException {
-<b class="fc"><i>98</i>&nbsp;        for(GraderToGradingTask gtgt:assignedGradingTasks){</b>
-<b class="fc"><i>99</i>&nbsp;            if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;</b>
-<b class="nc"><i>100</i>&nbsp;        }</b>
-<b class="fc"><i>101</i>&nbsp;        throw new NotExistException(&quot;grader&quot;,g.getGraderEmail());</b>
-<i>102</i>&nbsp;    }
-<i>103</i>&nbsp;
-<i>104</i>&nbsp;    public Experiment getBaseExperiment() {
-<b class="fc"><i>105</i>&nbsp;        return baseExperiment;</b>
-<i>106</i>&nbsp;    }
-<i>107</i>&nbsp;
-<i>108</i>&nbsp;    public Experiment getGeneralExperiment() {
-<b class="fc"><i>109</i>&nbsp;        return generalExperiment;</b>
-<i>110</i>&nbsp;    }
-<i>111</i>&nbsp;
-<i>112</i>&nbsp;    public Experiment getGradingExperiment() {
-<b class="fc"><i>113</i>&nbsp;        return gradingExperiment;</b>
-<i>114</i>&nbsp;    }
-<i>115</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.GradingTask;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Experiment;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Grader;
+        <i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+        <i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
+        <i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+        <i>8</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+        <i>9</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+        <i>10</i>&nbsp;
+        <i>11</i>&nbsp;import javax.persistence.*;
+        <i>12</i>&nbsp;import java.util.ArrayList;
+        <i>13</i>&nbsp;import java.util.List;
+        <i>14</i>&nbsp;
+        <i>15</i>&nbsp;@Entity
+        <i>16</i>&nbsp;@Table(name = &quot;grading_tasks&quot;)
+        <i>17</i>&nbsp;public class GradingTask {
+        <i>18</i>&nbsp; @Id
+        <i>19</i>&nbsp; @GeneratedValue(strategy = GenerationType.IDENTITY)
+        <i>20</i>&nbsp; @Column(name = &quot;grading_task_id&quot;)
+        <i>21</i>&nbsp; private int gradingTaskId;
+        <i>22</i>&nbsp; @Column(name = &quot;grading_task_name&quot;)
+        <i>23</i>&nbsp; private String gradingTaskName;
+        <i>24</i>&nbsp; @ManyToOne
+        <i>25</i>&nbsp; @JoinColumn(name = &quot;base_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
+        <i>26</i>&nbsp; private Experiment baseExperiment;
+        <i>27</i>&nbsp; @OneToOne
+        <i>28</i>&nbsp; @JoinColumn(name = &quot;general_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
+        <i>29</i>&nbsp; private Experiment generalExperiment;
+        <i>30</i>&nbsp; @OneToOne
+        <i>31</i>&nbsp; @JoinColumn(name = &quot;grading_experiment&quot;, referencedColumnName = &quot;experiment_id&quot;)
+        <i>32</i>&nbsp; private Experiment gradingExperiment;
+        <b class="fc"><i>33</i>&nbsp; @OneToMany(mappedBy = &quot;gradingTask&quot;)</b>
+        <i>34</i>&nbsp; private List&lt;GraderToGradingTask&gt; assignedGradingTasks = new ArrayList&lt;&gt;();
+        <i>35</i>&nbsp; @ManyToMany
+        <i>36</i>&nbsp; @JoinTable(
+        <i>37</i>&nbsp; name = &quot;stages_of_grading_task&quot;,
+        <i>38</i>&nbsp; joinColumns = {
+        <i>39</i>&nbsp; @JoinColumn(name = &quot;grading_task_id&quot;, referencedColumnName = &quot;grading_task_id&quot;)
+        <i>40</i>&nbsp; },
+        <i>41</i>&nbsp; inverseJoinColumns = {
+        <i>42</i>&nbsp; @JoinColumn(name = &quot;stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
+        <i>43</i>&nbsp; @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)}
+        <i>44</i>&nbsp; )
+        <i>45</i>&nbsp; @LazyCollection(LazyCollectionOption.FALSE)
+        <i>46</i>&nbsp; private List&lt;Stage&gt; stages;
+        <i>47</i>&nbsp;
+        <b class="nc"><i>48</i>&nbsp; public GradingTask() { }</b>
+        <i>49</i>&nbsp;
+        <b class="fc"><i>50</i>&nbsp; public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment
+            generalExperiment, Experiment gradingExperiment) {</b>
+        <b class="fc"><i>51</i>&nbsp; this.gradingTaskName = gradingTaskName;</b>
+        <b class="fc"><i>52</i>&nbsp; this.baseExperiment = baseExperiment;</b>
+        <b class="fc"><i>53</i>&nbsp; this.generalExperiment = generalExperiment;</b>
+        <b class="fc"><i>54</i>&nbsp; this.gradingExperiment = gradingExperiment;</b>
+        <b class="fc"><i>55</i>&nbsp; this.stages =new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>56</i>&nbsp; }</b>
+        <i>57</i>&nbsp;
+        <i>58</i>&nbsp;// public GradingTask(String gradingTaskName, Experiment baseExperiment, Experiment
+        generalExperiment, Experiment gradingExperiment, List&lt;Stage&gt; stages) {
+        <i>59</i>&nbsp;// this.gradingTaskName = gradingTaskName;
+        <i>60</i>&nbsp;// this.baseExperiment = baseExperiment;
+        <i>61</i>&nbsp;// this.generalExperiment = generalExperiment;
+        <i>62</i>&nbsp;// this.gradingExperiment = gradingExperiment;
+        <i>63</i>&nbsp;// this.stages = stages;
+        <i>64</i>&nbsp;// }
+        <i>65</i>&nbsp;
+        <i>66</i>&nbsp; public int getGradingTaskId() {
+        <b class="fc"><i>67</i>&nbsp; return gradingTaskId;</b>
+        <i>68</i>&nbsp; }
+        <i>69</i>&nbsp;
+        <i>70</i>&nbsp; public List&lt;Stage&gt; getStages() {
+        <b class="fc"><i>71</i>&nbsp; return stages;</b>
+        <i>72</i>&nbsp; }
+        <i>73</i>&nbsp;
+        <i>74</i>&nbsp; public void setStagesByIdx(List&lt;Integer&gt; stages_idxs) throws NotExistException,
+        FormatException {
+        <b class="fc"><i>75</i>&nbsp; List&lt;Stage&gt; baseStages = this.baseExperiment.getStages();</b>
+        <b class="fc"><i>76</i>&nbsp; List&lt;Stage&gt; newStages = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>77</i>&nbsp; for(int i:stages_idxs){</b>
+        <b class="fc"><i>78</i>&nbsp; if(i&gt;=baseStages.size()||i&lt;0) throw new NotExistException(&quot;stage&quot;,&quot;&quot;+i);</b>
+        <b class="fc"><i>79</i>&nbsp; if(baseStages.get(i).getType().equals(&quot;info&quot;)) throw new
+            FormatException(&quot;stage with result&quot;,&quot;info stage&quot;);</b>
+        <b class="fc"><i>80</i>&nbsp; newStages.add(baseStages.get(i));</b>
+        <b class="fc"><i>81</i>&nbsp; }</b>
+        <b class="fc"><i>82</i>&nbsp; this.stages = newStages;</b>
+        <b class="fc"><i>83</i>&nbsp; }</b>
+        <i>84</i>&nbsp;
+        <i>85</i>&nbsp; public String getGradingTaskName() {
+        <b class="fc"><i>86</i>&nbsp; return gradingTaskName;</b>
+        <i>87</i>&nbsp; }
+        <i>88</i>&nbsp;
+        <i>89</i>&nbsp; public List&lt;GraderToGradingTask&gt; getAssignedGradingTasks() {
+        <b class="fc"><i>90</i>&nbsp; return assignedGradingTasks;</b>
+        <i>91</i>&nbsp; }
+        <i>92</i>&nbsp;
+        <i>93</i>&nbsp; public void addAssignedGradingTasks(GraderToGradingTask assignedGradingTask) {
+        <b class="fc"><i>94</i>&nbsp; this.assignedGradingTasks.add(assignedGradingTask);</b>
+        <b class="fc"><i>95</i>&nbsp; }</b>
+        <i>96</i>&nbsp;
+        <i>97</i>&nbsp; public GraderToGradingTask getGraderToGradingTask(Grader g) throws NotExistException {
+        <b class="fc"><i>98</i>&nbsp; for(GraderToGradingTask gtgt:assignedGradingTasks){</b>
+        <b class="fc"><i>99</i>&nbsp; if(gtgt.getGrader().getGraderEmail().equals(g.getGraderEmail())) return gtgt;</b>
+        <b class="nc"><i>100</i>&nbsp; }</b>
+        <b class="fc"><i>101</i>&nbsp; throw new NotExistException(&quot;grader&quot;,g.getGraderEmail());</b>
+        <i>102</i>&nbsp; }
+        <i>103</i>&nbsp;
+        <i>104</i>&nbsp; public Experiment getBaseExperiment() {
+        <b class="fc"><i>105</i>&nbsp; return baseExperiment;</b>
+        <i>106</i>&nbsp; }
+        <i>107</i>&nbsp;
+        <i>108</i>&nbsp; public Experiment getGeneralExperiment() {
+        <b class="fc"><i>109</i>&nbsp; return generalExperiment;</b>
+        <i>110</i>&nbsp; }
+        <i>111</i>&nbsp;
+        <i>112</i>&nbsp; public Experiment getGradingExperiment() {
+        <b class="fc"><i>113</i>&nbsp; return gradingExperiment;</b>
+        <i>114</i>&nbsp; }
+        <i>115</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

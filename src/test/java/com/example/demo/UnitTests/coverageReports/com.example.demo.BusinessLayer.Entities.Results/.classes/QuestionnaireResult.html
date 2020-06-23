@@ -1,137 +1,134 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: QuestionnaireResult</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: QuestionnaireResult</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Results</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Results</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: QuestionnaireResult (com.example.demo.BusinessLayer.Entities.Results)</h1>
+    <h1>Coverage Summary for Class: QuestionnaireResult (com.example.demo.BusinessLayer.Entities.Results)</h1>
 
-<table class="coverageStats">
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Class, %
-</th>
-<th class="coverageStat 
+                Class, %
+            </th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">QuestionnaireResult</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">QuestionnaireResult</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 1)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (6/ 6)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (18/ 18)
   </span>
-</td>
-</tr>
+            </td>
+        </tr>
 
-</table>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Results;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
-<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-<i>6</i>&nbsp;import org.hibernate.annotations.LazyCollection;
-<i>7</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
-<i>8</i>&nbsp;
-<i>9</i>&nbsp;import javax.persistence.Entity;
-<i>10</i>&nbsp;import javax.persistence.OneToMany;
-<i>11</i>&nbsp;import javax.persistence.Table;
-<i>12</i>&nbsp;import java.util.ArrayList;
-<i>13</i>&nbsp;import java.util.List;
-<i>14</i>&nbsp;import java.util.Map;
-<i>15</i>&nbsp;
-<i>16</i>&nbsp;@Entity
-<i>17</i>&nbsp;@Table(name = &quot;questionnaire_results&quot;)
-<i>18</i>&nbsp;public class QuestionnaireResult extends Result {
-<i>19</i>&nbsp;    @OneToMany(mappedBy = &quot;questionnaireResult&quot;)
-<i>20</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
-<i>21</i>&nbsp;    private List&lt;Answer&gt; answers;
-<i>22</i>&nbsp;
-<b class="fc"><i>23</i>&nbsp;    public QuestionnaireResult() {</b>
-<b class="fc"><i>24</i>&nbsp;        this.answers = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>25</i>&nbsp;    }</b>
-<i>26</i>&nbsp;
-<i>27</i>&nbsp;    public void addAns(Answer ans){
-<b class="fc"><i>28</i>&nbsp;        if(!answers.contains(ans))</b>
-<b class="fc"><i>29</i>&nbsp;            answers.add(ans);</b>
-<b class="fc"><i>30</i>&nbsp;    }</b>
-<i>31</i>&nbsp;
-<i>32</i>&nbsp;    public List&lt;Answer&gt; getAnswers() {
-<b class="fc"><i>33</i>&nbsp;        return answers;</b>
-<i>34</i>&nbsp;    }
-<i>35</i>&nbsp;
-<i>36</i>&nbsp;    public void setAnswers(List&lt;Answer&gt; answers) {
-<b class="fc"><i>37</i>&nbsp;        this.answers = answers;</b>
-<b class="fc"><i>38</i>&nbsp;    }</b>
-<i>39</i>&nbsp;
-<i>40</i>&nbsp;    @Override
-<i>41</i>&nbsp;    public void setStageAndParticipant(Stage stage, Participant participant){
-<b class="fc"><i>42</i>&nbsp;        super.setStageAndParticipant(stage,participant);</b>
-<b class="fc"><i>43</i>&nbsp;        for(Answer ans : answers)</b>
-<b class="fc"><i>44</i>&nbsp;            ans.setQuestionnaireResult(this);</b>
-<b class="fc"><i>45</i>&nbsp;    }</b>
-<i>46</i>&nbsp;
-<i>47</i>&nbsp;    @Override
-<i>48</i>&nbsp;    public Map&lt;String, Object&gt; getAsMap() {
-<b class="fc"><i>49</i>&nbsp;        List&lt;String&gt; answers = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>50</i>&nbsp;        for(Answer ans : this.answers){</b>
-<b class="fc"><i>51</i>&nbsp;            answers.add(ans.getAnswer());</b>
-<b class="fc"><i>52</i>&nbsp;        }</b>
-<b class="fc"><i>53</i>&nbsp;        return Map.of(&quot;answers&quot;,answers);</b>
-<i>54</i>&nbsp;    }
-<i>55</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Results;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
+        <i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+        <i>6</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+        <i>7</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+        <i>8</i>&nbsp;
+        <i>9</i>&nbsp;import javax.persistence.Entity;
+        <i>10</i>&nbsp;import javax.persistence.OneToMany;
+        <i>11</i>&nbsp;import javax.persistence.Table;
+        <i>12</i>&nbsp;import java.util.ArrayList;
+        <i>13</i>&nbsp;import java.util.List;
+        <i>14</i>&nbsp;import java.util.Map;
+        <i>15</i>&nbsp;
+        <i>16</i>&nbsp;@Entity
+        <i>17</i>&nbsp;@Table(name = &quot;questionnaire_results&quot;)
+        <i>18</i>&nbsp;public class QuestionnaireResult extends Result {
+        <i>19</i>&nbsp; @OneToMany(mappedBy = &quot;questionnaireResult&quot;)
+        <i>20</i>&nbsp; @LazyCollection(LazyCollectionOption.FALSE)
+        <i>21</i>&nbsp; private List&lt;Answer&gt; answers;
+        <i>22</i>&nbsp;
+        <b class="fc"><i>23</i>&nbsp; public QuestionnaireResult() {</b>
+        <b class="fc"><i>24</i>&nbsp; this.answers = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>25</i>&nbsp; }</b>
+        <i>26</i>&nbsp;
+        <i>27</i>&nbsp; public void addAns(Answer ans){
+        <b class="fc"><i>28</i>&nbsp; if(!answers.contains(ans))</b>
+        <b class="fc"><i>29</i>&nbsp; answers.add(ans);</b>
+        <b class="fc"><i>30</i>&nbsp; }</b>
+        <i>31</i>&nbsp;
+        <i>32</i>&nbsp; public List&lt;Answer&gt; getAnswers() {
+        <b class="fc"><i>33</i>&nbsp; return answers;</b>
+        <i>34</i>&nbsp; }
+        <i>35</i>&nbsp;
+        <i>36</i>&nbsp; public void setAnswers(List&lt;Answer&gt; answers) {
+        <b class="fc"><i>37</i>&nbsp; this.answers = answers;</b>
+        <b class="fc"><i>38</i>&nbsp; }</b>
+        <i>39</i>&nbsp;
+        <i>40</i>&nbsp; @Override
+        <i>41</i>&nbsp; public void setStageAndParticipant(Stage stage, Participant participant){
+        <b class="fc"><i>42</i>&nbsp; super.setStageAndParticipant(stage,participant);</b>
+        <b class="fc"><i>43</i>&nbsp; for(Answer ans : answers)</b>
+        <b class="fc"><i>44</i>&nbsp; ans.setQuestionnaireResult(this);</b>
+        <b class="fc"><i>45</i>&nbsp; }</b>
+        <i>46</i>&nbsp;
+        <i>47</i>&nbsp; @Override
+        <i>48</i>&nbsp; public Map&lt;String, Object&gt; getAsMap() {
+        <b class="fc"><i>49</i>&nbsp; List&lt;String&gt; answers = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>50</i>&nbsp; for(Answer ans : this.answers){</b>
+        <b class="fc"><i>51</i>&nbsp; answers.add(ans.getAnswer());</b>
+        <b class="fc"><i>52</i>&nbsp; }</b>
+        <b class="fc"><i>53</i>&nbsp; return Map.of(&quot;answers&quot;,answers);</b>
+        <i>54</i>&nbsp; }
+        <i>55</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

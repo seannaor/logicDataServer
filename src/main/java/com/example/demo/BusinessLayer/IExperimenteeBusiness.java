@@ -1,12 +1,10 @@
 package com.example.demo.BusinessLayer;
+
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.data.util.Pair;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,7 +14,7 @@ public interface IExperimenteeBusiness {
     boolean beginParticipation(UUID accessCode) throws ExpEndException, CodeException, NotExistException;
 
     //UC 2.2.*
-    void fillInStage(UUID accessCode, Map<String,Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException, NotExistException;
+    void fillInStage(UUID accessCode, Map<String, Object> data) throws CodeException, ParseException, ExpEndException, FormatException, NotInReachException, NotExistException;
 
     Stage getNextStage(UUID accessCode) throws CodeException, ExpEndException, NotExistException;
 

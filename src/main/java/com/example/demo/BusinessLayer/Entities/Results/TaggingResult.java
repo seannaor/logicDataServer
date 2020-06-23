@@ -2,10 +2,8 @@ package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.json.simple.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -49,10 +47,10 @@ public class TaggingResult extends Result {
     @Override
     public Map<String, Object> getAsMap() {
         List<Map<String, Object>> JTags = new ArrayList<>();
-        for(RequirementTag tag : this.getTags()){
+        for (RequirementTag tag : this.getTags()) {
             JTags.add(tag.getAsMap());
         }
-        return Map.of("tags",JTags);
+        return Map.of("tags", JTags);
     }
 
 }

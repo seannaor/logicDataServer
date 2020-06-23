@@ -5,8 +5,6 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
-import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
-import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -46,7 +44,7 @@ public class ParticipantTest {
             Assert.assertEquals(stagesJson.get(i).get("type"), participant.getNextStage().getType());
         }
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             participant.getNextStage();
         });
     }
@@ -54,21 +52,23 @@ public class ParticipantTest {
     @Test
     public void getStageTest() throws NotInReachException, NotExistException, ExpEndException {
         int idx = 0;
-        Assert.assertEquals(stagesJson.get(idx).get("type"),participant.getStage(idx).getType());
+        Assert.assertEquals(stagesJson.get(idx).get("type"), participant.getStage(idx).getType());
         idx++;
 
         int finalIdx = idx;
-        assertThrows(NotInReachException.class,()->{
+        assertThrows(NotInReachException.class, () -> {
             participant.getStage(finalIdx);
         });
 
-        participant.getNextStage();participant.getNextStage();participant.getNextStage(); // after 3 stages
+        participant.getNextStage();
+        participant.getNextStage();
+        participant.getNextStage(); // after 3 stages
 
-        assertThrows(ExpEndException.class,()->{
+        assertThrows(ExpEndException.class, () -> {
             participant.getNextStage();
         });
 
-        assertThrows(NotExistException.class,()->{
+        assertThrows(NotExistException.class, () -> {
             participant.getStage(stagesJson.size());
         });
     }
@@ -83,7 +83,7 @@ public class ParticipantTest {
     @Test
     public void fillQuestionnaireFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException {
         participant.getNextStage();
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("answer231312312", List.of("a lot!", "22")));
         });
     }
@@ -91,7 +91,7 @@ public class ParticipantTest {
     @Test
     public void fillQuestionnaireFailNoQuestionnaire() throws NotInReachException, NotExistException, ExpEndException, ParseException {
         // not in questionnaire stage
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("answers", List.of("a lot!", "22")));
         });
     }
@@ -99,7 +99,7 @@ public class ParticipantTest {
     @Test
     public void fillCodeStageFailNoCode() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         // not in code stage
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("code", "return -1"));
         });
     }
@@ -108,14 +108,15 @@ public class ParticipantTest {
     public void fillCodeStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         participant.getNextStage();
         participant.getNextStage();
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("code!1232132", "return -1"));
         });
     }
 
     @Test
     public void fillInCodeStageTest() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        participant.getNextStage();participant.getNextStage();
+        participant.getNextStage();
+        participant.getNextStage();
         CodeResult result = (CodeResult) participant.fillInStage(Map.of("code", "return -1"));
         Assert.assertEquals(result.getUserCode(), "return -1");
     }
@@ -123,7 +124,7 @@ public class ParticipantTest {
     @Test
     public void fillTaggingStageFailNotTagging() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         JSONObject ans = buildParticipantTag();
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("tagging", ans));
         });
     }
@@ -131,8 +132,10 @@ public class ParticipantTest {
     @Test
     public void fillTaggingStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         JSONObject ans = buildParticipantTag();
-        participant.getNextStage();participant.getNextStage();participant.getNextStage();
-        assertThrows(FormatException.class,()->{
+        participant.getNextStage();
+        participant.getNextStage();
+        participant.getNextStage();
+        assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("tagging!1232132", ans));
         });
     }
@@ -140,7 +143,9 @@ public class ParticipantTest {
     @Test
     public void fillInTaggingStageTest() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         JSONObject ans = buildParticipantTag();
-        participant.getNextStage();participant.getNextStage();participant.getNextStage();
+        participant.getNextStage();
+        participant.getNextStage();
+        participant.getNextStage();
 
         TaggingResult result = (TaggingResult) participant.fillInStage(Map.of("tagging", ans));
         Assert.assertEquals(result.getTags().size(), 3);
@@ -166,7 +171,7 @@ public class ParticipantTest {
     @Test
     public void getResultTest() throws NotInReachException, NotExistException, ExpEndException, FormatException, ParseException {
         participant.getNextStage();
-        assertThrows(NotInReachException.class,()->{
+        assertThrows(NotInReachException.class, () -> {
             participant.getResult(2);
         });
 

@@ -33,7 +33,8 @@ public class ManagementUser {
         this.userEmail = userEmail;
     }
 
-    public ManagementUser() {}
+    public ManagementUser() {
+    }
 
     public String getBguUsername() {
         return bguUsername;
@@ -81,22 +82,22 @@ public class ManagementUser {
         this.permissions.add(p);
     }
 
-    public Experiment getExperiment(int expId) throws NotExistException{
+    public Experiment getExperiment(int expId) throws NotExistException {
         for (ManagementUserToExperiment m : this.managementUserToExperiments) {
-            if(m.getExperiment().getExperimentId() == expId) {
+            if (m.getExperiment().getExperimentId() == expId) {
                 return m.getExperiment();
             }
         }
-        throw new NotExistException("experiment",String.valueOf(expId));
+        throw new NotExistException("experiment", String.valueOf(expId));
     }
 
-    public Experiment getExperimentByName(String expName) throws NotExistException{
+    public Experiment getExperimentByName(String expName) throws NotExistException {
         for (ManagementUserToExperiment m : this.managementUserToExperiments) {
-            if(m.getExperiment().getExperimentName() == expName) {
+            if (m.getExperiment().getExperimentName() == expName) {
                 return m.getExperiment();
             }
         }
-        throw new NotExistException("experiment",String.valueOf(expName));
+        throw new NotExistException("experiment", String.valueOf(expName));
     }
 
     public ManagementUserToExperiment getManagementUserToExperiment(ManagementUserToExperiment managementUserToExperiment) throws NotExistException {
@@ -104,11 +105,11 @@ public class ManagementUser {
             if (m.equals(managementUserToExperiment))
                 return m;
         }
-        throw new NotExistException("managementUserToExperiment",String.valueOf(managementUserToExperiment));
+        throw new NotExistException("managementUserToExperiment", String.valueOf(managementUserToExperiment));
     }
 
     public void addManagementUserToExperiment(ManagementUserToExperiment m) {
-        try{
+        try {
             getManagementUserToExperiment(m);
             return;
         } catch (NotExistException ignore) {
@@ -135,7 +136,7 @@ public class ManagementUser {
 
     public List<Experiment> getExperimentes() {
         List<Experiment> all = new ArrayList<>();
-        for(ManagementUserToExperiment userToExp: managementUserToExperiments){
+        for (ManagementUserToExperiment userToExp : managementUserToExperiments) {
             all.add(userToExp.getExperiment());
         }
         return all;

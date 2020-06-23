@@ -56,7 +56,7 @@ public class ExperimenteeUnitTest {
     public void EMailTest() {
         String mail = "newMail@post";
         experimenteeOfNoExp.setExperimenteeEmail(mail);
-        Assert.assertEquals(mail,experimenteeOfNoExp.getExperimenteeEmail());
+        Assert.assertEquals(mail, experimenteeOfNoExp.getExperimenteeEmail());
     }
 
     @Test
@@ -68,31 +68,31 @@ public class ExperimenteeUnitTest {
     public void setParticipantTest() {
         Participant participant = new Participant();
         experimenteeOfNoExp.setParticipant(participant);
-        Assert.assertEquals(participant,experimenteeOfNoExp.getParticipant());
+        Assert.assertEquals(participant, experimenteeOfNoExp.getParticipant());
     }
 
     @Test
     public void getCurrNextStageTest() throws NotExistException, ExpEndException {
         Stage curr = experimenteeOfExp.getCurrStage();
-        Assert.assertEquals(0,experimenteeOfExp.getCurrStageIdx());
-        Assert.assertEquals(exp.getStages().get(0),curr);
+        Assert.assertEquals(0, experimenteeOfExp.getCurrStageIdx());
+        Assert.assertEquals(exp.getStages().get(0), curr);
         curr = experimenteeOfExp.getNextStage();
-        Assert.assertEquals(1,experimenteeOfExp.getCurrStageIdx());
-        Assert.assertEquals(exp.getStages().get(1),curr);
+        Assert.assertEquals(1, experimenteeOfExp.getCurrStageIdx());
+        Assert.assertEquals(exp.getStages().get(1), curr);
     }
 
     @Test
     public void getStageTest() throws NotInReachException, NotExistException, ExpEndException {
         experimenteeOfExp.getNextStage();
         for (int i = 0; i < exp.getStages().size(); i++) {
-            Assert.assertEquals(exp.getStages().get(i),experimenteeOfExp.getStage(i));
+            Assert.assertEquals(exp.getStages().get(i), experimenteeOfExp.getStage(i));
         }
     }
 
     @Test
     public void getResultTest() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
 
-        assertThrows(NotInReachException.class,()->{
+        assertThrows(NotInReachException.class, () -> {
             experimenteeOfExp.getResult(4);
         });
 
@@ -100,13 +100,13 @@ public class ExperimenteeUnitTest {
 
         Result res = answerExp(experimenteeOfExp);
         Assert.assertNotNull(res);
-        Assert.assertEquals(res,experimenteeOfExp.getResult(1));
+        Assert.assertEquals(res, experimenteeOfExp.getResult(1));
 
     }
 
     // just the info and the questions
     private Result answerExp(Experimentee expee) throws NotExistException, ExpEndException, ParseException, FormatException, NotInReachException {
         expee.getNextStage();
-        return expee.getParticipant().fillInStage(Map.of("answers",List.of("my name is S****r M***d")));
+        return expee.getParticipant().fillInStage(Map.of("answers", List.of("my name is S****r M***d")));
     }
 }

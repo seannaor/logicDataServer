@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Answer;
 import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -36,7 +35,7 @@ public class QuestionnaireStage extends Stage {
         questions = new ArrayList<>();
         int QIndx = 0;
         for (JSONObject JQuestion : JQuestions) {
-            questions.add(buildQuestion(JQuestion,QIndx++));
+            questions.add(buildQuestion(JQuestion, QIndx++));
         }
     }
 
@@ -102,7 +101,7 @@ public class QuestionnaireStage extends Stage {
         throw new NotExistException("question", i + "");
     }
 
-    private Question buildQuestion(JSONObject jQuestion,int idx) {
+    private Question buildQuestion(JSONObject jQuestion, int idx) {
         Question newQuestion = new Question(jQuestion.toString());
         newQuestion.setQuestionIndex(idx);
         newQuestion.setQuestionnaireStage(this);
@@ -116,7 +115,8 @@ public class QuestionnaireStage extends Stage {
             answers = (List<String>) data.get("answers");
             if (answers != null && answers.size() == this.questions.size())
                 return answers;
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         throw new FormatException("list of answers");
     }
 }

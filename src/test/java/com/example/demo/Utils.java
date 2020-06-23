@@ -3,8 +3,10 @@ package com.example.demo;
 
 import com.example.demo.BusinessLayer.CreatorBusiness;
 import com.example.demo.BusinessLayer.DataCache;
-import com.example.demo.BusinessLayer.Entities.*;
+import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
+import com.example.demo.BusinessLayer.Entities.ManagementUser;
+import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.GraderBusiness;
@@ -95,7 +97,7 @@ public class Utils {
         return manager.getExperimentByName("The Experiment");
     }
 
-    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, UUID code,boolean finish) throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
+    public static void fillInExp(ExperimenteeBusiness experimenteeBusiness, UUID code, boolean finish) throws NotExistException, CodeException, ExpEndException, ParseException, FormatException, NotInReachException {
         // pass info (first) stage
         experimenteeBusiness.getNextStage(code);
 
@@ -109,7 +111,7 @@ public class Utils {
 
         fillInTagging(experimenteeBusiness, code);
 
-        if(finish)
+        if (finish)
             try {
                 experimenteeBusiness.getNextStage(code);
             } catch (ExpEndException ignore) {
@@ -118,7 +120,7 @@ public class Utils {
 
     public static int fillInQuestionnaire(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         experimenteeBusiness.fillInStage(code,
-                Map.of("data",Map.of("answers",List.of("a lot!","22"))));
+                Map.of("data", Map.of("answers", List.of("a lot!", "22"))));
         return 2;
     }
 
@@ -126,7 +128,7 @@ public class Utils {
 //        JSONObject ans = new JSONObject();
 //        ans.put("stageType", "code");
 //        ans.put("userCode", "return -1");
-        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("code","return -1")));
+        experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("code", "return -1")));
     }
 
     public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
@@ -147,7 +149,7 @@ public class Utils {
         tag3.put("start_loc", 0);
         tag3.put("length", 10);
         ans.put(2, tag3);
-        experimenteeBusiness.fillInStage(code, Map.of("data",Map.of("tagging", ans)));
+        experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("tagging", ans)));
         //experimenteeBusiness.fillInStage(code, ans);
         return 3;
     }
@@ -226,10 +228,10 @@ public class Utils {
     }
 
     public static Map<String, Object> getPersonalAnswers() {
-        return Map.of("data",Map.of("answers",List.of("100")));
+        return Map.of("data", Map.of("answers", List.of("100")));
     }
 
     public static Map<String, Object> getGradingAnswers(List<String> answers) {
-        return Map.of("data",Map.of("answers", answers));
+        return Map.of("data", Map.of("answers", answers));
     }
 }

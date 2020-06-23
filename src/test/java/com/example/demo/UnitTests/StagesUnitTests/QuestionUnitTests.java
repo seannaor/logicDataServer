@@ -39,7 +39,7 @@ public class QuestionUnitTests {
         Question q = new Question();
         q.setQuestionJson("not a JSON");
 
-        assertThrows(ParseException.class,()->{
+        assertThrows(ParseException.class, () -> {
             q.answer("answer");
         });
     }
@@ -51,7 +51,7 @@ public class QuestionUnitTests {
         JQuestion.put("questionType", "not a type");
         q.setQuestionJson(JQuestion.toString());
 
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             q.answer("answer");
         });
     }

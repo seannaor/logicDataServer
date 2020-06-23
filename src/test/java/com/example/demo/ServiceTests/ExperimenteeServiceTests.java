@@ -17,7 +17,6 @@ import com.example.demo.ServiceLayer.ExperimenteeService;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,8 @@ public class ExperimenteeServiceTests {
     private final CreatorBusiness creatorBusiness;
     private final DataCache cache;
     private final DBAccess db;
-
+    private Experiment experiment;
+    private Experimentee expee;
     @Autowired
     public ExperimenteeServiceTests(ExperimenteeService experimenteeService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db, ExperimenteeBusiness experimenteeBusiness) {
         this.experimenteeService = experimenteeService;
@@ -47,9 +47,6 @@ public class ExperimenteeServiceTests {
         this.db = db;
         this.experimenteeBusiness = experimenteeBusiness;
     }
-
-    private Experiment experiment;
-    private Experimentee expee;
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException {
@@ -87,11 +84,11 @@ public class ExperimenteeServiceTests {
 
     @Test
     public void getStageWithResultsTest() throws ExpEndException, ParseException, NotExistException, FormatException, CodeException, NotInReachException {
-        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(),false);
+        Utils.fillInExp(experimenteeBusiness, expee.getAccessCode(), false);
         Map<String, Object> ansRight = experimenteeService.getCurrentStage(expee.getAccessCode().toString());
         assertNotNull(ansRight.get("result"));
 
-        ansRight = experimenteeService.getStageAt(expee.getAccessCode().toString(),1);
+        ansRight = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
         assertNotNull(ansRight.get("results"));
     }
 
@@ -168,9 +165,9 @@ public class ExperimenteeServiceTests {
     }
 
     @Test
-    public void fillInStageFailTest(){
+    public void fillInStageFailTest() {
         experimenteeService.getNextStage(expee.getAccessCode().toString());
-        Map<String, Object> ans =experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of()));
+        Map<String, Object> ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of()));
         assertTrue(ans.containsKey("Error"));
     }
 

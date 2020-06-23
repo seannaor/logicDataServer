@@ -23,26 +23,25 @@ public class RouterUtils {
         JSONParser parser = new JSONParser();
         try {
             return (JSONObject) parser.parse(req);
-        }
-        catch (Exception ignore){
+        } catch (Exception ignore) {
             return new JSONObject();
         }
     }
 
     static JSONObject arrToJSON(List<String> req) {
-        if(req.size()%2!=0) return new JSONObject();
+        if (req.size() % 2 != 0) return new JSONObject();
         JSONObject ret = new JSONObject();
-        for (int i = 0; i < req.size(); i+=2) {
+        for (int i = 0; i < req.size(); i += 2) {
             ret.put(req.get(i), req.get(i + 1));
         }
         return ret;
     }
 
-    public static String decode(String coded){
+    public static String decode(String coded) {
         return new String(Base64.getDecoder().decode(coded));
     }
 
-    public static String encode(String to_code){
+    public static String encode(String to_code) {
         return Base64.getEncoder().encodeToString(to_code.getBytes());
     }
 

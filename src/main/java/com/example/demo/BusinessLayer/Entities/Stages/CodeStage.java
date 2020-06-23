@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.hibernate.annotations.LazyCollection;
@@ -37,11 +36,11 @@ public class CodeStage extends Stage {
         this.requirements = new ArrayList<>();
         int reqIdx = 0;
         for (String req : requirements) {
-            this.requirements.add(buildRequirement(req,reqIdx++));
+            this.requirements.add(buildRequirement(req, reqIdx++));
         }
     }
 
-    private Requirement buildRequirement(String req,int idx) {
+    private Requirement buildRequirement(String req, int idx) {
         Requirement newRequirement = new Requirement(req);
         newRequirement.setRequirementIndex(idx);
         newRequirement.setCodeStage(this);
@@ -50,7 +49,7 @@ public class CodeStage extends Stage {
 
 
     @Override
-    public void setExperiment(Experiment experiment){
+    public void setExperiment(Experiment experiment) {
         super.setExperiment(experiment);
         for (Requirement req : this.requirements) {
             req.setStageIndex(this.getStageID().getStageIndex());
@@ -61,18 +60,19 @@ public class CodeStage extends Stage {
 
     // if old is null, new CodeResult will be created, else, old will be chanced
     @Override
-    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
+    public CodeResult fillCode(Map<String, Object> data, CodeResult old) throws FormatException {
         String code = validate(data);
-        if(old == null) old = new CodeResult(code);
+        if (old == null) old = new CodeResult(code);
         else old.setUserCode(code);
         return old; // old is actually new :)
     }
 
-    private String validate(Map<String,Object> data) throws FormatException {
-        try{
+    private String validate(Map<String, Object> data) throws FormatException {
+        try {
             String code = (String) data.get("code");
             if (code != null) return code;
-        }catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         throw new FormatException("user code");
     }
 
@@ -80,38 +80,38 @@ public class CodeStage extends Stage {
         this.requirements.add(requirement);
     }
 
-    // setters
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
-    }
-
     // getters
     public String getLanguage() {
         return language;
+    }
+
+    // setters
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getTemplate() {
         return template;
     }
 
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
     public String getDescription() {
         return this.description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Requirement> getRequirements() {
         return requirements;
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
     }
 
     @Override
@@ -132,5 +132,5 @@ public class CodeStage extends Stage {
     public String getType() {
         return "code";
     }
-    
+
 }

@@ -15,7 +15,8 @@ public class Grader {
     @OneToMany(mappedBy = "grader")
     private List<GraderToGradingTask> assignedGradingTasks = new ArrayList<>();
 
-    public Grader() { }
+    public Grader() {
+    }
 
     public Grader(String graderEmail) {
         this.graderEmail = graderEmail;

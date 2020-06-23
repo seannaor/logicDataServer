@@ -24,7 +24,7 @@ public class ManagementUserTest {
 
     @Test
     public void getExperimentTest() throws NotExistException {
-        assertThrows(NotExistException.class,()->{
+        assertThrows(NotExistException.class, () -> {
             man.getExperiment(666);
         });
 
@@ -33,7 +33,7 @@ public class ManagementUserTest {
 
     @Test
     public void getExperimentByNameTest() throws NotExistException {
-        assertThrows(NotExistException.class,()->{
+        assertThrows(NotExistException.class, () -> {
             man.getExperimentByName("666");
         });
 
@@ -42,58 +42,58 @@ public class ManagementUserTest {
 
     @Test
     public void removeManagementUserToExperimentByIdTest() {
-        Assert.assertEquals(1,man.getManagementUserToExperiments().size());
+        Assert.assertEquals(1, man.getManagementUserToExperiments().size());
         man.removeManagementUserToExperimentById(exp);
-        Assert.assertEquals(0,man.getManagementUserToExperiments().size());
+        Assert.assertEquals(0, man.getManagementUserToExperiments().size());
     }
 
     @Test
     public void getExperimentsTest() {
-        Assert.assertEquals(1,man.getExperimentes().size());
+        Assert.assertEquals(1, man.getExperimentes().size());
     }
 
     @Test
-    public void settersGettersTest(){
+    public void settersGettersTest() {
         String str = "manager";
         man.setBguUsername(str);
-        Assert.assertEquals(str,man.getBguUsername());
+        Assert.assertEquals(str, man.getBguUsername());
 
         str = "manager@mail";
         man.setUserEmail(str);
-        Assert.assertEquals(str,man.getUserEmail());
+        Assert.assertEquals(str, man.getUserEmail());
 
         str = "123456";
         man.setBguPassword(str);
-        Assert.assertEquals(str,man.getBguPassword());
+        Assert.assertEquals(str, man.getBguPassword());
     }
 
     @Test
-    public void permissionsTest(){
+    public void permissionsTest() {
         int permissionsCount = man.getPermissions().size();
 
         man.addPermission(new Permission("PERMISSION"));
 
-        Assert.assertEquals(permissionsCount+1,man.getPermissions().size());
+        Assert.assertEquals(permissionsCount + 1, man.getPermissions().size());
     }
 
     @Test
-    public void removeManager(){
+    public void removeManager() {
         int expsCount = man.getManagementUserToExperiments().size();
         ManagementUserToExperiment manager2Exp = man.getManagementUserToExperiments().get(0);
         man.removeManagementUserToExperiment(manager2Exp);
 
-        Assert.assertEquals(expsCount-1,man.getManagementUserToExperiments().size());
+        Assert.assertEquals(expsCount - 1, man.getManagementUserToExperiments().size());
 
         man.removeManagementUserToExperiment(manager2Exp);
-        Assert.assertEquals(expsCount-1,man.getManagementUserToExperiments().size());
+        Assert.assertEquals(expsCount - 1, man.getManagementUserToExperiments().size());
     }
 
     @Test
-    public void addManager(){
+    public void addManager() {
         int expsCount = man.getManagementUserToExperiments().size();
         ManagementUserToExperiment manager2Exp = man.getManagementUserToExperiments().get(0);
         man.addManagementUserToExperiment(manager2Exp);
 
-        Assert.assertEquals(expsCount,man.getManagementUserToExperiments().size());
+        Assert.assertEquals(expsCount, man.getManagementUserToExperiments().size());
     }
 }

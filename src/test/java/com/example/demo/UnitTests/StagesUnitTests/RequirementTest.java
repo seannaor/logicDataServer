@@ -1,17 +1,11 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Experimentee;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
-import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
-import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.List;
 
 public class RequirementTest {
 
@@ -32,9 +26,9 @@ public class RequirementTest {
     }
 
     @Test
-    public void setGetTextTest(){
-        String reqText= "different requirement";
+    public void setGetTextTest() {
+        String reqText = "different requirement";
         requirement.setText(reqText);
-        Assert.assertEquals(reqText,requirement.getText());
+        Assert.assertEquals(reqText, requirement.getText());
     }
 }

@@ -12,17 +12,17 @@ public class CodeResultUnitTests {
     private CodeResult codeResult = new CodeResult("return 'nice';");
 
     @Test
-    public void setGetTest(){
+    public void setGetTest() {
         String code = "//code here";
         codeResult.setUserCode(code);
-        Assert.assertEquals(code,codeResult.getUserCode());
+        Assert.assertEquals(code, codeResult.getUserCode());
     }
 
     @Test
-    public void getMapTest(){
+    public void getMapTest() {
         String code = "//code here";
         codeResult.setUserCode(code);
-        Map<String,Object> map = codeResult.getAsMap();
+        Map<String, Object> map = codeResult.getAsMap();
         Assert.assertTrue(map.containsKey("code"));
         Assert.assertEquals(map.get("code"), code);
     }

@@ -15,7 +15,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -65,7 +64,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void addGraderToExistParticipantFail(){
+    public void addGraderToExistParticipantFail() {
         assertThrows(ExistException.class, () -> {
             // trying to add GraderToParticipant that already there
             graderToGradingTask.addGraderToParticipant(graderToParticipant1);
@@ -73,7 +72,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void addExistParticipantFail(){
+    public void addExistParticipantFail() {
         assertThrows(ExistException.class, () -> {
             // trying to add Participant that already there
             graderToGradingTask.addParticipant(p2);
@@ -91,7 +90,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void submitResultNoParticipant()  {
+    public void submitResultNoParticipant() {
         assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.submitResults(-1);
@@ -99,7 +98,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void isSubmmitedNoParticipant()  {
+    public void isSubmmitedNoParticipant() {
         assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.isSubmitted(-1);
@@ -118,7 +117,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void getParticipantNotExist(){
+    public void getParticipantNotExist() {
         assertThrows(NotExistException.class, () -> {
             graderToGradingTask.getExperimenteeParticipant(-1);
         });
@@ -145,7 +144,7 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void getResultsNotParticipant()  {
+    public void getResultsNotParticipant() {
         assertThrows(NotExistException.class, () -> {
             //not exist user
             graderToGradingTask.getExpeeRes(-1);
@@ -170,9 +169,9 @@ public class GraderToGradingTaskUnitTests {
     }
 
     @Test
-    public void setGetCode(){
-        UUID id = new UUID(0,10);
+    public void setGetCode() {
+        UUID id = new UUID(0, 10);
         graderToGradingTask.setGraderAccessCode(id);
-        assertEquals(id,graderToGradingTask.getGraderAccessCode());
+        assertEquals(id, graderToGradingTask.getGraderAccessCode());
     }
 }

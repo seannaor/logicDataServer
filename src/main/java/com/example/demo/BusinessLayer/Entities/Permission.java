@@ -23,15 +23,15 @@ public class Permission {
         return permissionId;
     }
 
+    public void setPermissionId(int permissionId) {
+        this.permissionId = permissionId;
+    }
+
     public String getPermissionName() {
         return permissionName;
     }
 
     public void setPermissionName(String permission_name) {
         this.permissionName = permission_name;
-    }
-
-    public void setPermissionId(int permissionId) {
-        this.permissionId = permissionId;
     }
 }

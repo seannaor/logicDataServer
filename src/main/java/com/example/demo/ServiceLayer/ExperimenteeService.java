@@ -83,7 +83,7 @@ public class ExperimenteeService {
         try {
             Stage s = experimenteeBusiness.getCurrentStage(UUID.fromString(accessCode));
             Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), s.getStageID().getStageIndex());
-            if(res == null)
+            if (res == null)
                 return Map.of("response", "OK", "type", s.getType(), "stage", s.getAsMap());
             return Map.of("response", "OK", "type", s.getType(), "stage", s.getAsMap(), "result", res.getAsMap());
         } catch (Exception e) {

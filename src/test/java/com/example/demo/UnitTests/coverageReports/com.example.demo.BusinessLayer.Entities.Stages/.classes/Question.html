@@ -1,239 +1,237 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: Question</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: Question</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Stages</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities.Stages</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: Question (com.example.demo.BusinessLayer.Entities.Stages)</h1>
+    <h1>Coverage Summary for Class: Question (com.example.demo.BusinessLayer.Entities.Stages)</h1>
 
-<table class="coverageStats">
+    <table class="coverageStats">
 
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">Question</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">Question</td>
+            <td class="coverageStat">
   <span class="percent">
     83.3%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (10/ 12)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     86.7%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (26/ 30)
   </span>
-</td>
-</tr>
-  <tr>
-    <td class="name">Question$QuestionID</td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">Question$QuestionID</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (3/ 3)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (6/ 6)
   </span>
-</td>
-  </tr>
-<tr>
-  <td class="name"><strong>total</strong></td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name"><strong>total</strong></td>
+            <td class="coverageStat">
   <span class="percent">
     86.7%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (13/ 15)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     88.9%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (32/ 36)
   </span>
-</td>
-</tr>
-</table>
+            </td>
+        </tr>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Stages;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Answer;
-<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
-<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
-<i>7</i>&nbsp;import org.json.simple.JSONObject;
-<i>8</i>&nbsp;import org.json.simple.parser.JSONParser;
-<i>9</i>&nbsp;import org.json.simple.parser.ParseException;
-<i>10</i>&nbsp;
-<i>11</i>&nbsp;import javax.persistence.*;
-<i>12</i>&nbsp;import java.io.Serializable;
-<i>13</i>&nbsp;
-<i>14</i>&nbsp;@Entity
-<i>15</i>&nbsp;@Table(name = &quot;questions&quot;)
-<i>16</i>&nbsp;public class Question {
-<i>17</i>&nbsp;
-<i>18</i>&nbsp;    @Embeddable
-<i>19</i>&nbsp;    public static class QuestionID implements Serializable {
-<i>20</i>&nbsp;        @Column(name = &quot;question_index&quot;)
-<i>21</i>&nbsp;        int questionIndex;
-<i>22</i>&nbsp;        private Stage.StageID stageID;
-<i>23</i>&nbsp;
-<b class="fc"><i>24</i>&nbsp;        public QuestionID() {</b>
-<b class="fc"><i>25</i>&nbsp;        }</b>
-<i>26</i>&nbsp;
-<i>27</i>&nbsp;//        public QuestionID(int questionIndex, Stage.StageID stageID) {
-<i>28</i>&nbsp;//            this.questionIndex = questionIndex;
-<i>29</i>&nbsp;//            this.stageID = stageID;
-<i>30</i>&nbsp;//        }
-<i>31</i>&nbsp;
-<i>32</i>&nbsp;        public void setQuestionIndex(int questionIndex) {
-<b class="fc"><i>33</i>&nbsp;            this.questionIndex = questionIndex;</b>
-<b class="fc"><i>34</i>&nbsp;        }</b>
-<i>35</i>&nbsp;
-<i>36</i>&nbsp;        public void setStageID(Stage.StageID stageID) {
-<b class="fc"><i>37</i>&nbsp;            this.stageID = stageID;</b>
-<b class="fc"><i>38</i>&nbsp;        }</b>
-<i>39</i>&nbsp;    }
-<i>40</i>&nbsp;
-<i>41</i>&nbsp;    @EmbeddedId
-<i>42</i>&nbsp;    private QuestionID questionID;
-<i>43</i>&nbsp;
-<i>44</i>&nbsp;    @MapsId(&quot;stageID&quot;)
-<i>45</i>&nbsp;    @ManyToOne
-<i>46</i>&nbsp;    @JoinColumns({
-<i>47</i>&nbsp;            @JoinColumn(name = &quot;stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
-<i>48</i>&nbsp;            @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
-<i>49</i>&nbsp;    })
-<i>50</i>&nbsp;    private QuestionnaireStage questionnaireStage;
-<i>51</i>&nbsp;
-<i>52</i>&nbsp;    @Column(name = &quot;question_json&quot;, columnDefinition = &quot;json&quot;)
-<i>53</i>&nbsp;    private String questionJson;
-<i>54</i>&nbsp;
-<b class="fc"><i>55</i>&nbsp;    public Question() {</b>
-<b class="fc"><i>56</i>&nbsp;    }</b>
-<i>57</i>&nbsp;
-<b class="fc"><i>58</i>&nbsp;    public Question(String questionJson){</b>
-<b class="fc"><i>59</i>&nbsp;        this.questionJson = questionJson;</b>
-<b class="fc"><i>60</i>&nbsp;        this.questionID = new QuestionID();</b>
-<b class="fc"><i>61</i>&nbsp;    }</b>
-<i>62</i>&nbsp;
-<i>63</i>&nbsp;//    public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
-<i>64</i>&nbsp;//        this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
-<i>65</i>&nbsp;//        this.questionnaireStage = questionnaireStage;
-<i>66</i>&nbsp;//        this.questionJson = questionJson;
-<i>67</i>&nbsp;//    }
-<i>68</i>&nbsp;
-<i>69</i>&nbsp;    //Setters
-<i>70</i>&nbsp;    public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
-<b class="fc"><i>71</i>&nbsp;        this.questionnaireStage = questionnaireStage;</b>
-<b class="fc"><i>72</i>&nbsp;        if(questionnaireStage.getStageID() != null) {</b>
-<b class="nc"><i>73</i>&nbsp;            setStageId(questionnaireStage.getStageID());</b>
-<i>74</i>&nbsp;        }
-<b class="fc"><i>75</i>&nbsp;    }</b>
-<i>76</i>&nbsp;
-<i>77</i>&nbsp;    public void setQuestionID(QuestionID questionID) {
-<b class="nc"><i>78</i>&nbsp;        this.questionID = questionID;</b>
-<b class="nc"><i>79</i>&nbsp;    }</b>
-<i>80</i>&nbsp;
-<i>81</i>&nbsp;    public void setQuestionJson(String questionJson) {
-<b class="fc"><i>82</i>&nbsp;        this.questionJson = questionJson;</b>
-<b class="fc"><i>83</i>&nbsp;    }</b>
-<i>84</i>&nbsp;
-<i>85</i>&nbsp;    public Answer answer(Object data) throws ParseException, FormatException {
-<b class="fc"><i>86</i>&nbsp;        JSONObject jQuestion = (JSONObject)  new JSONParser().parse(questionJson);</b>
-<i>87</i>&nbsp;
-<b class="fc"><i>88</i>&nbsp;        switch ((String) jQuestion.get(&quot;questionType&quot;)){</b>
-<i>89</i>&nbsp;            case &quot;open&quot;:
-<i>90</i>&nbsp;            case &quot;american&quot;:
-<i>91</i>&nbsp;            case &quot;multiChoice&quot;:
-<b class="fc"><i>92</i>&nbsp;                return new Answer(data.toString(),this);</b>
-<i>93</i>&nbsp;            default:
-<b class="fc"><i>94</i>&nbsp;                throw new FormatException(&quot;american, open or multi-choice question&quot;);</b>
-<i>95</i>&nbsp;        }
-<i>96</i>&nbsp;    }
-<i>97</i>&nbsp;
-<i>98</i>&nbsp;    // Getters
-<i>99</i>&nbsp;    public Stage.StageID getStageID(){
-<b class="nc"><i>100</i>&nbsp;        return this.questionnaireStage.getStageID();</b>
-<i>101</i>&nbsp;    }
-<i>102</i>&nbsp;
-<i>103</i>&nbsp;    //TODO: maybe change to Map
-<i>104</i>&nbsp;    public JSONObject getQuestionJson() {
-<b class="fc"><i>105</i>&nbsp;        JSONParser parser = new JSONParser();</b>
-<i>106</i>&nbsp;        try {
-<b class="fc"><i>107</i>&nbsp;            return (JSONObject)parser.parse(questionJson);</b>
-<b class="fc"><i>108</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>109</i>&nbsp;            System.out.println(e.getMessage());</b>
-<b class="fc"><i>110</i>&nbsp;            return new JSONObject();</b>
-<i>111</i>&nbsp;        }
-<i>112</i>&nbsp;    }
-<i>113</i>&nbsp;
-<i>114</i>&nbsp;    public int getIndex() {
-<b class="fc"><i>115</i>&nbsp;        return questionID.questionIndex;</b>
-<i>116</i>&nbsp;    }
-<i>117</i>&nbsp;
-<i>118</i>&nbsp;    public QuestionID getQuestionID() {
-<b class="fc"><i>119</i>&nbsp;        return questionID;</b>
-<i>120</i>&nbsp;    }
-<i>121</i>&nbsp;
-<i>122</i>&nbsp;    // for ID propose
-<i>123</i>&nbsp;    public void setStageId(Stage.StageID stageID){
-<b class="fc"><i>124</i>&nbsp;        this.questionID.setStageID(stageID);</b>
-<b class="fc"><i>125</i>&nbsp;    }</b>
-<i>126</i>&nbsp;
-<i>127</i>&nbsp;    // for ID propose
-<i>128</i>&nbsp;    public void setQuestionIndex(int i){
-<b class="fc"><i>129</i>&nbsp;        this.questionID.setQuestionIndex(i);</b>
-<b class="fc"><i>130</i>&nbsp;    }</b>
-<i>131</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities.Stages;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Answer;
+        <i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+        <i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
+        <i>7</i>&nbsp;import org.json.simple.JSONObject;
+        <i>8</i>&nbsp;import org.json.simple.parser.JSONParser;
+        <i>9</i>&nbsp;import org.json.simple.parser.ParseException;
+        <i>10</i>&nbsp;
+        <i>11</i>&nbsp;import javax.persistence.*;
+        <i>12</i>&nbsp;import java.io.Serializable;
+        <i>13</i>&nbsp;
+        <i>14</i>&nbsp;@Entity
+        <i>15</i>&nbsp;@Table(name = &quot;questions&quot;)
+        <i>16</i>&nbsp;public class Question {
+        <i>17</i>&nbsp;
+        <i>18</i>&nbsp; @Embeddable
+        <i>19</i>&nbsp; public static class QuestionID implements Serializable {
+        <i>20</i>&nbsp; @Column(name = &quot;question_index&quot;)
+        <i>21</i>&nbsp; int questionIndex;
+        <i>22</i>&nbsp; private Stage.StageID stageID;
+        <i>23</i>&nbsp;
+        <b class="fc"><i>24</i>&nbsp; public QuestionID() {</b>
+        <b class="fc"><i>25</i>&nbsp; }</b>
+        <i>26</i>&nbsp;
+        <i>27</i>&nbsp;// public QuestionID(int questionIndex, Stage.StageID stageID) {
+        <i>28</i>&nbsp;// this.questionIndex = questionIndex;
+        <i>29</i>&nbsp;// this.stageID = stageID;
+        <i>30</i>&nbsp;// }
+        <i>31</i>&nbsp;
+        <i>32</i>&nbsp; public void setQuestionIndex(int questionIndex) {
+        <b class="fc"><i>33</i>&nbsp; this.questionIndex = questionIndex;</b>
+        <b class="fc"><i>34</i>&nbsp; }</b>
+        <i>35</i>&nbsp;
+        <i>36</i>&nbsp; public void setStageID(Stage.StageID stageID) {
+        <b class="fc"><i>37</i>&nbsp; this.stageID = stageID;</b>
+        <b class="fc"><i>38</i>&nbsp; }</b>
+        <i>39</i>&nbsp; }
+        <i>40</i>&nbsp;
+        <i>41</i>&nbsp; @EmbeddedId
+        <i>42</i>&nbsp; private QuestionID questionID;
+        <i>43</i>&nbsp;
+        <i>44</i>&nbsp; @MapsId(&quot;stageID&quot;)
+        <i>45</i>&nbsp; @ManyToOne
+        <i>46</i>&nbsp; @JoinColumns({
+        <i>47</i>&nbsp; @JoinColumn(name = &quot;stage_index&quot;, referencedColumnName = &quot;stage_index&quot;),
+        <i>48</i>&nbsp; @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
+        <i>49</i>&nbsp; })
+        <i>50</i>&nbsp; private QuestionnaireStage questionnaireStage;
+        <i>51</i>&nbsp;
+        <i>52</i>&nbsp; @Column(name = &quot;question_json&quot;, columnDefinition = &quot;json&quot;)
+        <i>53</i>&nbsp; private String questionJson;
+        <i>54</i>&nbsp;
+        <b class="fc"><i>55</i>&nbsp; public Question() {</b>
+        <b class="fc"><i>56</i>&nbsp; }</b>
+        <i>57</i>&nbsp;
+        <b class="fc"><i>58</i>&nbsp; public Question(String questionJson){</b>
+        <b class="fc"><i>59</i>&nbsp; this.questionJson = questionJson;</b>
+        <b class="fc"><i>60</i>&nbsp; this.questionID = new QuestionID();</b>
+        <b class="fc"><i>61</i>&nbsp; }</b>
+        <i>62</i>&nbsp;
+        <i>63</i>&nbsp;// public Question(int qIdx, QuestionnaireStage questionnaireStage, String questionJson) {
+        <i>64</i>&nbsp;// this.questionID = new QuestionID(qIdx, questionnaireStage.getStageID());
+        <i>65</i>&nbsp;// this.questionnaireStage = questionnaireStage;
+        <i>66</i>&nbsp;// this.questionJson = questionJson;
+        <i>67</i>&nbsp;// }
+        <i>68</i>&nbsp;
+        <i>69</i>&nbsp; //Setters
+        <i>70</i>&nbsp; public void setQuestionnaireStage(QuestionnaireStage questionnaireStage){
+        <b class="fc"><i>71</i>&nbsp; this.questionnaireStage = questionnaireStage;</b>
+        <b class="fc"><i>72</i>&nbsp; if(questionnaireStage.getStageID() != null) {</b>
+        <b class="nc"><i>73</i>&nbsp; setStageId(questionnaireStage.getStageID());</b>
+        <i>74</i>&nbsp; }
+        <b class="fc"><i>75</i>&nbsp; }</b>
+        <i>76</i>&nbsp;
+        <i>77</i>&nbsp; public void setQuestionID(QuestionID questionID) {
+        <b class="nc"><i>78</i>&nbsp; this.questionID = questionID;</b>
+        <b class="nc"><i>79</i>&nbsp; }</b>
+        <i>80</i>&nbsp;
+        <i>81</i>&nbsp; public void setQuestionJson(String questionJson) {
+        <b class="fc"><i>82</i>&nbsp; this.questionJson = questionJson;</b>
+        <b class="fc"><i>83</i>&nbsp; }</b>
+        <i>84</i>&nbsp;
+        <i>85</i>&nbsp; public Answer answer(Object data) throws ParseException, FormatException {
+        <b class="fc"><i>86</i>&nbsp; JSONObject jQuestion = (JSONObject) new JSONParser().parse(questionJson);</b>
+        <i>87</i>&nbsp;
+        <b class="fc"><i>88</i>&nbsp; switch ((String) jQuestion.get(&quot;questionType&quot;)){</b>
+        <i>89</i>&nbsp; case &quot;open&quot;:
+        <i>90</i>&nbsp; case &quot;american&quot;:
+        <i>91</i>&nbsp; case &quot;multiChoice&quot;:
+        <b class="fc"><i>92</i>&nbsp; return new Answer(data.toString(),this);</b>
+        <i>93</i>&nbsp; default:
+        <b class="fc"><i>94</i>&nbsp; throw new FormatException(&quot;american, open or multi-choice
+            question&quot;);</b>
+        <i>95</i>&nbsp; }
+        <i>96</i>&nbsp; }
+        <i>97</i>&nbsp;
+        <i>98</i>&nbsp; // Getters
+        <i>99</i>&nbsp; public Stage.StageID getStageID(){
+        <b class="nc"><i>100</i>&nbsp; return this.questionnaireStage.getStageID();</b>
+        <i>101</i>&nbsp; }
+        <i>102</i>&nbsp;
+        <i>103</i>&nbsp; //TODO: maybe change to Map
+        <i>104</i>&nbsp; public JSONObject getQuestionJson() {
+        <b class="fc"><i>105</i>&nbsp; JSONParser parser = new JSONParser();</b>
+        <i>106</i>&nbsp; try {
+        <b class="fc"><i>107</i>&nbsp; return (JSONObject)parser.parse(questionJson);</b>
+        <b class="fc"><i>108</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>109</i>&nbsp; System.out.println(e.getMessage());</b>
+        <b class="fc"><i>110</i>&nbsp; return new JSONObject();</b>
+        <i>111</i>&nbsp; }
+        <i>112</i>&nbsp; }
+        <i>113</i>&nbsp;
+        <i>114</i>&nbsp; public int getIndex() {
+        <b class="fc"><i>115</i>&nbsp; return questionID.questionIndex;</b>
+        <i>116</i>&nbsp; }
+        <i>117</i>&nbsp;
+        <i>118</i>&nbsp; public QuestionID getQuestionID() {
+        <b class="fc"><i>119</i>&nbsp; return questionID;</b>
+        <i>120</i>&nbsp; }
+        <i>121</i>&nbsp;
+        <i>122</i>&nbsp; // for ID propose
+        <i>123</i>&nbsp; public void setStageId(Stage.StageID stageID){
+        <b class="fc"><i>124</i>&nbsp; this.questionID.setStageID(stageID);</b>
+        <b class="fc"><i>125</i>&nbsp; }</b>
+        <i>126</i>&nbsp;
+        <i>127</i>&nbsp; // for ID propose
+        <i>128</i>&nbsp; public void setQuestionIndex(int i){
+        <b class="fc"><i>129</i>&nbsp; this.questionID.setQuestionIndex(i);</b>
+        <b class="fc"><i>130</i>&nbsp; }</b>
+        <i>131</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

@@ -1,219 +1,218 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: Experiment</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: Experiment</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: Experiment (com.example.demo.BusinessLayer.Entities)</h1>
+    <h1>Coverage Summary for Class: Experiment (com.example.demo.BusinessLayer.Entities)</h1>
 
-<table class="coverageStats">
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Class, %
-</th>
-<th class="coverageStat 
+                Class, %
+            </th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">Experiment</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">Experiment</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 1)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (22/ 22)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     96.5%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (55/ 57)
   </span>
-</td>
-</tr>
+            </td>
+        </tr>
 
-</table>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-<i>5</i>&nbsp;import org.hibernate.annotations.LazyCollection;
-<i>6</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
-<i>7</i>&nbsp;
-<i>8</i>&nbsp;import javax.persistence.*;
-<i>9</i>&nbsp;import java.util.ArrayList;
-<i>10</i>&nbsp;import java.util.List;
-<i>11</i>&nbsp;
-<i>12</i>&nbsp;@Entity
-<i>13</i>&nbsp;@Table(name = &quot;experiments&quot;)
-<i>14</i>&nbsp;public class Experiment {
-<i>15</i>&nbsp;    @Id
-<i>16</i>&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
-<i>17</i>&nbsp;    @Column(name = &quot;experiment_id&quot;)
-<i>18</i>&nbsp;    private int experimentId;
-<i>19</i>&nbsp;    @Column(name = &quot;experiment_name&quot;)
-<i>20</i>&nbsp;    private String experimentName;
-<b class="fc"><i>21</i>&nbsp;    @Column(name = &quot;published&quot;)</b>
-<i>22</i>&nbsp;    private boolean published = false;
-<b class="fc"><i>23</i>&nbsp;    @Column(name = &quot;is_grading_task_exp&quot;)</b>
-<i>24</i>&nbsp;    private boolean isGradingTaskExp = false;
-<b class="fc"><i>25</i>&nbsp;    @OneToMany(mappedBy = &quot;experiment&quot;)</b>
-<i>26</i>&nbsp;    private List&lt;ManagementUserToExperiment&gt; managementUserToExperiments = new ArrayList&lt;&gt;();
-<b class="fc"><i>27</i>&nbsp;    @OneToMany(mappedBy = &quot;experiment&quot;)</b>
-<i>28</i>&nbsp;    private List&lt;Participant&gt; participants = new ArrayList&lt;&gt;();
-<b class="fc"><i>29</i>&nbsp;    @OneToMany(mappedBy = &quot;experiment&quot;)//, fetch = FetchType.EAGER)</b>
-<i>30</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
-<i>31</i>&nbsp;    private List&lt;Stage&gt; stages= new ArrayList&lt;&gt;();
-<i>32</i>&nbsp;
-<b class="fc"><i>33</i>&nbsp;    public Experiment() { }</b>
-<i>34</i>&nbsp;
-<b class="fc"><i>35</i>&nbsp;    public Experiment(String experimentName) {</b>
-<b class="fc"><i>36</i>&nbsp;        this.experimentName = experimentName;</b>
-<b class="fc"><i>37</i>&nbsp;    }</b>
-<i>38</i>&nbsp;
-<b class="fc"><i>39</i>&nbsp;    public Experiment(String experimentName,ManagementUser creator) {</b>
-<b class="fc"><i>40</i>&nbsp;        this.experimentName = experimentName;</b>
-<b class="fc"><i>41</i>&nbsp;        ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, &quot;creator&quot;);</b>
-<b class="fc"><i>42</i>&nbsp;        creator.addManagementUserToExperiment(m);</b>
-<b class="fc"><i>43</i>&nbsp;        this.addManagementUserToExperiment(m);</b>
-<b class="fc"><i>44</i>&nbsp;        if(!managementUserToExperiments.contains(m))</b>
-<b class="nc"><i>45</i>&nbsp;            managementUserToExperiments.add(m);</b>
-<b class="fc"><i>46</i>&nbsp;    }</b>
-<i>47</i>&nbsp;
-<i>48</i>&nbsp;    public int getExperimentId() {
-<b class="fc"><i>49</i>&nbsp;        return experimentId;</b>
-<i>50</i>&nbsp;    }
-<i>51</i>&nbsp;
-<i>52</i>&nbsp;    public String getExperimentName() {
-<b class="fc"><i>53</i>&nbsp;        return experimentName;</b>
-<i>54</i>&nbsp;    }
-<i>55</i>&nbsp;
-<i>56</i>&nbsp;    public void setExperimentName(String experiment_name) {
-<b class="fc"><i>57</i>&nbsp;        this.experimentName = experiment_name;</b>
-<b class="fc"><i>58</i>&nbsp;    }</b>
-<i>59</i>&nbsp;
-<i>60</i>&nbsp;    public List&lt;ManagementUserToExperiment&gt; getManagementUserToExperiments() {
-<b class="fc"><i>61</i>&nbsp;        return managementUserToExperiments;</b>
-<i>62</i>&nbsp;    }
-<i>63</i>&nbsp;
-<i>64</i>&nbsp;    public void setManagementUserToExperiments(List&lt;ManagementUserToExperiment&gt; managementUserToExperiments) {
-<b class="fc"><i>65</i>&nbsp;        this.managementUserToExperiments = managementUserToExperiments;</b>
-<b class="fc"><i>66</i>&nbsp;    }</b>
-<i>67</i>&nbsp;
-<i>68</i>&nbsp;    public List&lt;Participant&gt; getParticipants() {
-<b class="fc"><i>69</i>&nbsp;        return participants;</b>
-<i>70</i>&nbsp;    }
-<i>71</i>&nbsp;
-<i>72</i>&nbsp;    public void setParticipants(List&lt;Participant&gt; participants) {
-<b class="fc"><i>73</i>&nbsp;        this.participants = participants;</b>
-<b class="fc"><i>74</i>&nbsp;    }</b>
-<i>75</i>&nbsp;
-<i>76</i>&nbsp;    public void addParticipant(Participant participant) {
-<b class="fc"><i>77</i>&nbsp;        this.participants.add(participant);</b>
-<b class="fc"><i>78</i>&nbsp;    }</b>
-<i>79</i>&nbsp;
-<i>80</i>&nbsp;    public List&lt;Stage&gt; getStages() {
-<b class="fc"><i>81</i>&nbsp;        return stages;</b>
-<i>82</i>&nbsp;    }
-<i>83</i>&nbsp;
-<i>84</i>&nbsp;    public Stage getStage(int idx) throws NotExistException {
-<b class="fc"><i>85</i>&nbsp;        for(Stage s:stages){</b>
-<b class="fc"><i>86</i>&nbsp;            if(s.getStageID().getStageIndex()==idx)return s;</b>
-<b class="fc"><i>87</i>&nbsp;        }</b>
-<b class="fc"><i>88</i>&nbsp;        throw new NotExistException(&quot;stage&quot;,idx+&quot;&quot;);</b>
-<i>89</i>&nbsp;    }
-<i>90</i>&nbsp;
-<i>91</i>&nbsp;    public void setStages(List&lt;Stage&gt; stages) {
-<b class="fc"><i>92</i>&nbsp;        this.stages = stages;</b>
-<b class="fc"><i>93</i>&nbsp;    }</b>
-<i>94</i>&nbsp;
-<i>95</i>&nbsp;    public boolean getPublished() {
-<b class="fc"><i>96</i>&nbsp;        return published;</b>
-<i>97</i>&nbsp;    }
-<i>98</i>&nbsp;
-<i>99</i>&nbsp;    public void setPublished(boolean published) {
-<b class="fc"><i>100</i>&nbsp;        this.published = published;</b>
-<b class="fc"><i>101</i>&nbsp;    }</b>
-<i>102</i>&nbsp;
-<i>103</i>&nbsp;    public void setExperimentId(int experimentId) {
-<b class="fc"><i>104</i>&nbsp;        this.experimentId = experimentId;</b>
-<b class="fc"><i>105</i>&nbsp;    }</b>
-<i>106</i>&nbsp;
-<i>107</i>&nbsp;    //=========================== end of setters getters ===============================
-<i>108</i>&nbsp;
-<i>109</i>&nbsp;    public void addStage(Stage stage) {
-<b class="fc"><i>110</i>&nbsp;        if(stage.getExperiment() == null)</b>
-<b class="fc"><i>111</i>&nbsp;            stage.setExperiment(this);</b>
-<b class="fc"><i>112</i>&nbsp;        if(!stages.contains(stage))</b>
-<b class="fc"><i>113</i>&nbsp;            stages.add(stage);</b>
-<b class="fc"><i>114</i>&nbsp;    }</b>
-<i>115</i>&nbsp;
-<i>116</i>&nbsp;    public void addManagementUserToExperiment(ManagementUserToExperiment m){
-<b class="fc"><i>117</i>&nbsp;        if(!this.managementUserToExperiments.contains(m))</b>
-<b class="fc"><i>118</i>&nbsp;            this.managementUserToExperiments.add(m);</b>
-<b class="fc"><i>119</i>&nbsp;    }</b>
-<i>120</i>&nbsp;
-<i>121</i>&nbsp;    public boolean containsManger(ManagementUser manger) {
-<b class="fc"><i>122</i>&nbsp;        for(ManagementUserToExperiment m : managementUserToExperiments) {</b>
-<b class="fc"><i>123</i>&nbsp;            if(m.getManagementUser().getBguUsername().equals(manger.getBguUsername())) {</b>
-<b class="fc"><i>124</i>&nbsp;                return true;</b>
-<i>125</i>&nbsp;            }
-<b class="nc"><i>126</i>&nbsp;        }</b>
-<b class="fc"><i>127</i>&nbsp;        return false;</b>
-<i>128</i>&nbsp;    }
-<i>129</i>&nbsp;
-<i>130</i>&nbsp;    public boolean isGradingTaskExp() {
-<b class="fc"><i>131</i>&nbsp;        return isGradingTaskExp;</b>
-<i>132</i>&nbsp;    }
-<i>133</i>&nbsp;
-<i>134</i>&nbsp;    public void setGradingTaskExp(boolean gradingTaskExp) {
-<b class="fc"><i>135</i>&nbsp;        isGradingTaskExp = gradingTaskExp;</b>
-<b class="fc"><i>136</i>&nbsp;    }</b>
-<i>137</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+        <i>5</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+        <i>6</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+        <i>7</i>&nbsp;
+        <i>8</i>&nbsp;import javax.persistence.*;
+        <i>9</i>&nbsp;import java.util.ArrayList;
+        <i>10</i>&nbsp;import java.util.List;
+        <i>11</i>&nbsp;
+        <i>12</i>&nbsp;@Entity
+        <i>13</i>&nbsp;@Table(name = &quot;experiments&quot;)
+        <i>14</i>&nbsp;public class Experiment {
+        <i>15</i>&nbsp; @Id
+        <i>16</i>&nbsp; @GeneratedValue(strategy = GenerationType.IDENTITY)
+        <i>17</i>&nbsp; @Column(name = &quot;experiment_id&quot;)
+        <i>18</i>&nbsp; private int experimentId;
+        <i>19</i>&nbsp; @Column(name = &quot;experiment_name&quot;)
+        <i>20</i>&nbsp; private String experimentName;
+        <b class="fc"><i>21</i>&nbsp; @Column(name = &quot;published&quot;)</b>
+        <i>22</i>&nbsp; private boolean published = false;
+        <b class="fc"><i>23</i>&nbsp; @Column(name = &quot;is_grading_task_exp&quot;)</b>
+        <i>24</i>&nbsp; private boolean isGradingTaskExp = false;
+        <b class="fc"><i>25</i>&nbsp; @OneToMany(mappedBy = &quot;experiment&quot;)</b>
+        <i>26</i>&nbsp; private List&lt;ManagementUserToExperiment&gt; managementUserToExperiments = new ArrayList&lt;&gt;();
+        <b class="fc"><i>27</i>&nbsp; @OneToMany(mappedBy = &quot;experiment&quot;)</b>
+        <i>28</i>&nbsp; private List&lt;Participant&gt; participants = new ArrayList&lt;&gt;();
+        <b class="fc"><i>29</i>&nbsp; @OneToMany(mappedBy = &quot;experiment&quot;)//, fetch = FetchType.EAGER)</b>
+        <i>30</i>&nbsp; @LazyCollection(LazyCollectionOption.FALSE)
+        <i>31</i>&nbsp; private List&lt;Stage&gt; stages= new ArrayList&lt;&gt;();
+        <i>32</i>&nbsp;
+        <b class="fc"><i>33</i>&nbsp; public Experiment() { }</b>
+        <i>34</i>&nbsp;
+        <b class="fc"><i>35</i>&nbsp; public Experiment(String experimentName) {</b>
+        <b class="fc"><i>36</i>&nbsp; this.experimentName = experimentName;</b>
+        <b class="fc"><i>37</i>&nbsp; }</b>
+        <i>38</i>&nbsp;
+        <b class="fc"><i>39</i>&nbsp; public Experiment(String experimentName,ManagementUser creator) {</b>
+        <b class="fc"><i>40</i>&nbsp; this.experimentName = experimentName;</b>
+        <b class="fc"><i>41</i>&nbsp; ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this,
+            &quot;creator&quot;);</b>
+        <b class="fc"><i>42</i>&nbsp; creator.addManagementUserToExperiment(m);</b>
+        <b class="fc"><i>43</i>&nbsp; this.addManagementUserToExperiment(m);</b>
+        <b class="fc"><i>44</i>&nbsp; if(!managementUserToExperiments.contains(m))</b>
+        <b class="nc"><i>45</i>&nbsp; managementUserToExperiments.add(m);</b>
+        <b class="fc"><i>46</i>&nbsp; }</b>
+        <i>47</i>&nbsp;
+        <i>48</i>&nbsp; public int getExperimentId() {
+        <b class="fc"><i>49</i>&nbsp; return experimentId;</b>
+        <i>50</i>&nbsp; }
+        <i>51</i>&nbsp;
+        <i>52</i>&nbsp; public String getExperimentName() {
+        <b class="fc"><i>53</i>&nbsp; return experimentName;</b>
+        <i>54</i>&nbsp; }
+        <i>55</i>&nbsp;
+        <i>56</i>&nbsp; public void setExperimentName(String experiment_name) {
+        <b class="fc"><i>57</i>&nbsp; this.experimentName = experiment_name;</b>
+        <b class="fc"><i>58</i>&nbsp; }</b>
+        <i>59</i>&nbsp;
+        <i>60</i>&nbsp; public List&lt;ManagementUserToExperiment&gt; getManagementUserToExperiments() {
+        <b class="fc"><i>61</i>&nbsp; return managementUserToExperiments;</b>
+        <i>62</i>&nbsp; }
+        <i>63</i>&nbsp;
+        <i>64</i>&nbsp; public void setManagementUserToExperiments(List&lt;ManagementUserToExperiment&gt;
+        managementUserToExperiments) {
+        <b class="fc"><i>65</i>&nbsp; this.managementUserToExperiments = managementUserToExperiments;</b>
+        <b class="fc"><i>66</i>&nbsp; }</b>
+        <i>67</i>&nbsp;
+        <i>68</i>&nbsp; public List&lt;Participant&gt; getParticipants() {
+        <b class="fc"><i>69</i>&nbsp; return participants;</b>
+        <i>70</i>&nbsp; }
+        <i>71</i>&nbsp;
+        <i>72</i>&nbsp; public void setParticipants(List&lt;Participant&gt; participants) {
+        <b class="fc"><i>73</i>&nbsp; this.participants = participants;</b>
+        <b class="fc"><i>74</i>&nbsp; }</b>
+        <i>75</i>&nbsp;
+        <i>76</i>&nbsp; public void addParticipant(Participant participant) {
+        <b class="fc"><i>77</i>&nbsp; this.participants.add(participant);</b>
+        <b class="fc"><i>78</i>&nbsp; }</b>
+        <i>79</i>&nbsp;
+        <i>80</i>&nbsp; public List&lt;Stage&gt; getStages() {
+        <b class="fc"><i>81</i>&nbsp; return stages;</b>
+        <i>82</i>&nbsp; }
+        <i>83</i>&nbsp;
+        <i>84</i>&nbsp; public Stage getStage(int idx) throws NotExistException {
+        <b class="fc"><i>85</i>&nbsp; for(Stage s:stages){</b>
+        <b class="fc"><i>86</i>&nbsp; if(s.getStageID().getStageIndex()==idx)return s;</b>
+        <b class="fc"><i>87</i>&nbsp; }</b>
+        <b class="fc"><i>88</i>&nbsp; throw new NotExistException(&quot;stage&quot;,idx+&quot;&quot;);</b>
+        <i>89</i>&nbsp; }
+        <i>90</i>&nbsp;
+        <i>91</i>&nbsp; public void setStages(List&lt;Stage&gt; stages) {
+        <b class="fc"><i>92</i>&nbsp; this.stages = stages;</b>
+        <b class="fc"><i>93</i>&nbsp; }</b>
+        <i>94</i>&nbsp;
+        <i>95</i>&nbsp; public boolean getPublished() {
+        <b class="fc"><i>96</i>&nbsp; return published;</b>
+        <i>97</i>&nbsp; }
+        <i>98</i>&nbsp;
+        <i>99</i>&nbsp; public void setPublished(boolean published) {
+        <b class="fc"><i>100</i>&nbsp; this.published = published;</b>
+        <b class="fc"><i>101</i>&nbsp; }</b>
+        <i>102</i>&nbsp;
+        <i>103</i>&nbsp; public void setExperimentId(int experimentId) {
+        <b class="fc"><i>104</i>&nbsp; this.experimentId = experimentId;</b>
+        <b class="fc"><i>105</i>&nbsp; }</b>
+        <i>106</i>&nbsp;
+        <i>107</i>&nbsp; //=========================== end of setters getters ===============================
+        <i>108</i>&nbsp;
+        <i>109</i>&nbsp; public void addStage(Stage stage) {
+        <b class="fc"><i>110</i>&nbsp; if(stage.getExperiment() == null)</b>
+        <b class="fc"><i>111</i>&nbsp; stage.setExperiment(this);</b>
+        <b class="fc"><i>112</i>&nbsp; if(!stages.contains(stage))</b>
+        <b class="fc"><i>113</i>&nbsp; stages.add(stage);</b>
+        <b class="fc"><i>114</i>&nbsp; }</b>
+        <i>115</i>&nbsp;
+        <i>116</i>&nbsp; public void addManagementUserToExperiment(ManagementUserToExperiment m){
+        <b class="fc"><i>117</i>&nbsp; if(!this.managementUserToExperiments.contains(m))</b>
+        <b class="fc"><i>118</i>&nbsp; this.managementUserToExperiments.add(m);</b>
+        <b class="fc"><i>119</i>&nbsp; }</b>
+        <i>120</i>&nbsp;
+        <i>121</i>&nbsp; public boolean containsManger(ManagementUser manger) {
+        <b class="fc"><i>122</i>&nbsp; for(ManagementUserToExperiment m : managementUserToExperiments) {</b>
+        <b class="fc"><i>123</i>&nbsp; if(m.getManagementUser().getBguUsername().equals(manger.getBguUsername())) {</b>
+        <b class="fc"><i>124</i>&nbsp; return true;</b>
+        <i>125</i>&nbsp; }
+        <b class="nc"><i>126</i>&nbsp; }</b>
+        <b class="fc"><i>127</i>&nbsp; return false;</b>
+        <i>128</i>&nbsp; }
+        <i>129</i>&nbsp;
+        <i>130</i>&nbsp; public boolean isGradingTaskExp() {
+        <b class="fc"><i>131</i>&nbsp; return isGradingTaskExp;</b>
+        <i>132</i>&nbsp; }
+        <i>133</i>&nbsp;
+        <i>134</i>&nbsp; public void setGradingTaskExp(boolean gradingTaskExp) {
+        <b class="fc"><i>135</i>&nbsp; isGradingTaskExp = gradingTaskExp;</b>
+        <b class="fc"><i>136</i>&nbsp; }</b>
+        <i>137</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

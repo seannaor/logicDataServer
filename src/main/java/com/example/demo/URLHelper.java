@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class URLHelper {
     public static void main(String[] args) {
-        createExperimenteeURL("/manager/add_stage",Map.of("username","shahar","exp_id",5,"stage",Map.of("type","info","info","fuck shit shit shit!!!")));
+        createExperimenteeURL("/manager/add_stage", Map.of("username", "shahar", "exp_id", 5, "stage", Map.of("type", "info", "info", "fuck shit shit shit!!!")));
     }
 
     private static void putOnClipboard(String s) {
@@ -24,7 +24,7 @@ public class URLHelper {
             for (String key : map.keySet()) {
                 sb.append(key).append('=').append(map.get(key)).append('&');
             }
-            sb.deleteCharAt(sb.length()-1);
+            sb.deleteCharAt(sb.length() - 1);
         }
         String res = sb.toString();
         System.out.println(res);

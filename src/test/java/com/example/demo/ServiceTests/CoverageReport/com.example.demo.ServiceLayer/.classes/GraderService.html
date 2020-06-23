@@ -1,173 +1,179 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: GraderService</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: GraderService</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.ServiceLayer</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.ServiceLayer</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: GraderService (com.example.demo.ServiceLayer)</h1>
+    <h1>Coverage Summary for Class: GraderService (com.example.demo.ServiceLayer)</h1>
 
-<table class="coverageStats">
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Class, %
-</th>
-<th class="coverageStat 
+                Class, %
+            </th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">GraderService</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">GraderService</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 1)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (8/ 8)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (37/ 37)
   </span>
-</td>
-</tr>
+            </td>
+        </tr>
 
-</table>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.ServiceLayer;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Result;
-<i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.*;
-<i>7</i>&nbsp;import com.example.demo.BusinessLayer.GraderBusiness;
-<i>8</i>&nbsp;import org.json.simple.JSONObject;
-<i>9</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-<i>10</i>&nbsp;import org.springframework.stereotype.Service;
-<i>11</i>&nbsp;
-<i>12</i>&nbsp;import java.util.ArrayList;
-<i>13</i>&nbsp;import java.util.List;
-<i>14</i>&nbsp;import java.util.Map;
-<i>15</i>&nbsp;import java.util.UUID;
-<i>16</i>&nbsp;
-<i>17</i>&nbsp;@Service
-<b class="fc"><i>18</i>&nbsp;public class GraderService {</b>
-<i>19</i>&nbsp;    @Autowired
-<i>20</i>&nbsp;    private GraderBusiness graderBusiness;
-<i>21</i>&nbsp;
-<i>22</i>&nbsp;    public Map&lt;String, Object&gt; beginGrading(String code) {
-<b class="fc"><i>23</i>&nbsp;        String res = &quot;OK&quot;;</b>
-<b class="fc"><i>24</i>&nbsp;        if(graderBusiness.beginGrading(UUID.fromString(code)))</b>
-<b class="fc"><i>25</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;);</b>
-<b class="fc"><i>26</i>&nbsp;        return Map.of(&quot;response&quot;, new CodeException(code));</b>
-<i>27</i>&nbsp;    }
-<i>28</i>&nbsp;
-<i>29</i>&nbsp;    public Map&lt;String, Object&gt; fillInStage(String accessCode, int pid, Map&lt;String, Object&gt; data) {
-<b class="fc"><i>30</i>&nbsp;        String res = &quot;OK&quot;;</b>
-<i>31</i>&nbsp;        try {
-<b class="fc"><i>32</i>&nbsp;            graderBusiness.fillInStage(UUID.fromString(accessCode), pid, data);</b>
-<b class="fc"><i>33</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>34</i>&nbsp;            res = e.getMessage();</b>
-<b class="fc"><i>35</i>&nbsp;        }</b>
-<b class="fc"><i>36</i>&nbsp;        return Map.of(&quot;response&quot;, res);</b>
-<i>37</i>&nbsp;    }
-<i>38</i>&nbsp;
-<i>39</i>&nbsp;    public Map&lt;String, Object&gt; getNextStage(String accessCode, int pid) {
-<i>40</i>&nbsp;        try {
-<b class="fc"><i>41</i>&nbsp;            Stage s = graderBusiness.getNextStage(UUID.fromString(accessCode), pid);</b>
-<b class="fc"><i>42</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap());</b>
-<b class="fc"><i>43</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>44</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
-<i>45</i>&nbsp;        }
-<i>46</i>&nbsp;    }
-<i>47</i>&nbsp;
-<i>48</i>&nbsp;    public Map&lt;String, Object&gt; getCurrentStage(String accessCode, int pid) {
-<i>49</i>&nbsp;        try {
-<b class="fc"><i>50</i>&nbsp;            Stage s = graderBusiness.getCurrentStage(UUID.fromString(accessCode), pid);</b>
-<b class="fc"><i>51</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap());</b>
-<b class="fc"><i>52</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>53</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
-<i>54</i>&nbsp;        }
-<i>55</i>&nbsp;    }
-<i>56</i>&nbsp;
-<i>57</i>&nbsp;    public Map&lt;String, Object&gt; getStage(String accessCode, int pid, int idx) {
-<i>58</i>&nbsp;        try {
-<b class="fc"><i>59</i>&nbsp;            Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);</b>
-<b class="fc"><i>60</i>&nbsp;            Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);</b>
-<b class="fc"><i>61</i>&nbsp;            if (res == null) return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, &quot;None&quot;);</b>
-<b class="fc"><i>62</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;, s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
-<b class="fc"><i>63</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>64</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
-<i>65</i>&nbsp;        }
-<i>66</i>&nbsp;    }
-<i>67</i>&nbsp;
-<i>68</i>&nbsp;    // meaningful getters
-<i>69</i>&nbsp;
-<i>70</i>&nbsp;    public Map&lt;String, Object&gt; getExperimentees(String code) {
-<i>71</i>&nbsp;        try {
-<b class="fc"><i>72</i>&nbsp;            List&lt;Participant&gt; experimentees = graderBusiness.getParticipantsByTask(UUID.fromString(code));</b>
-<b class="fc"><i>73</i>&nbsp;            List&lt;Integer&gt; ids = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>74</i>&nbsp;            experimentees.forEach((p) -&gt; ids.add(p.getParticipantId()));</b>
-<b class="fc"><i>75</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;experimentees&quot;, ids);</b>
-<b class="fc"><i>76</i>&nbsp;        } catch (CodeException e) {</b>
-<b class="fc"><i>77</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
-<i>78</i>&nbsp;        }
-<i>79</i>&nbsp;    }
-<i>80</i>&nbsp;
-<i>81</i>&nbsp;    public Map&lt;String, Object&gt; getExperimenteeResults(String code, int participantId) {
-<i>82</i>&nbsp;        try {
-<b class="fc"><i>83</i>&nbsp;            List&lt;Result&gt; results = graderBusiness.getExpeeRes(UUID.fromString(code), participantId);</b>
-<b class="fc"><i>84</i>&nbsp;            List&lt;Map&lt;String, Object&gt;&gt; JResults = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>85</i>&nbsp;            results.forEach((resultWrapper -&gt; JResults.add(resultWrapper.getAsMap())));</b>
-<b class="fc"><i>86</i>&nbsp;            return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;results&quot;, JResults);</b>
-<b class="fc"><i>87</i>&nbsp;        } catch (Exception e) {</b>
-<b class="fc"><i>88</i>&nbsp;            return Map.of(&quot;response&quot;, e.getMessage());</b>
-<i>89</i>&nbsp;        }
-<i>90</i>&nbsp;    }
-<i>91</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.ServiceLayer;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Participant;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.Result;
+        <i>5</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+        <i>6</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.*;
+        <i>7</i>&nbsp;import com.example.demo.BusinessLayer.GraderBusiness;
+        <i>8</i>&nbsp;import org.json.simple.JSONObject;
+        <i>9</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+        <i>10</i>&nbsp;import org.springframework.stereotype.Service;
+        <i>11</i>&nbsp;
+        <i>12</i>&nbsp;import java.util.ArrayList;
+        <i>13</i>&nbsp;import java.util.List;
+        <i>14</i>&nbsp;import java.util.Map;
+        <i>15</i>&nbsp;import java.util.UUID;
+        <i>16</i>&nbsp;
+        <i>17</i>&nbsp;@Service
+        <b class="fc"><i>18</i>&nbsp;public class GraderService {</b>
+        <i>19</i>&nbsp; @Autowired
+        <i>20</i>&nbsp; private GraderBusiness graderBusiness;
+        <i>21</i>&nbsp;
+        <i>22</i>&nbsp; public Map&lt;String, Object&gt; beginGrading(String code) {
+        <b class="fc"><i>23</i>&nbsp; String res = &quot;OK&quot;;</b>
+        <b class="fc"><i>24</i>&nbsp; if(graderBusiness.beginGrading(UUID.fromString(code)))</b>
+        <b class="fc"><i>25</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;);</b>
+        <b class="fc"><i>26</i>&nbsp; return Map.of(&quot;response&quot;, new CodeException(code));</b>
+        <i>27</i>&nbsp; }
+        <i>28</i>&nbsp;
+        <i>29</i>&nbsp; public Map&lt;String, Object&gt; fillInStage(String accessCode, int pid, Map&lt;String, Object&gt;
+        data) {
+        <b class="fc"><i>30</i>&nbsp; String res = &quot;OK&quot;;</b>
+        <i>31</i>&nbsp; try {
+        <b class="fc"><i>32</i>&nbsp; graderBusiness.fillInStage(UUID.fromString(accessCode), pid, data);</b>
+        <b class="fc"><i>33</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>34</i>&nbsp; res = e.getMessage();</b>
+        <b class="fc"><i>35</i>&nbsp; }</b>
+        <b class="fc"><i>36</i>&nbsp; return Map.of(&quot;response&quot;, res);</b>
+        <i>37</i>&nbsp; }
+        <i>38</i>&nbsp;
+        <i>39</i>&nbsp; public Map&lt;String, Object&gt; getNextStage(String accessCode, int pid) {
+        <i>40</i>&nbsp; try {
+        <b class="fc"><i>41</i>&nbsp; Stage s = graderBusiness.getNextStage(UUID.fromString(accessCode), pid);</b>
+        <b class="fc"><i>42</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;,
+            s.getAsMap());</b>
+        <b class="fc"><i>43</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>44</i>&nbsp; return Map.of(&quot;response&quot;, e.getMessage());</b>
+        <i>45</i>&nbsp; }
+        <i>46</i>&nbsp; }
+        <i>47</i>&nbsp;
+        <i>48</i>&nbsp; public Map&lt;String, Object&gt; getCurrentStage(String accessCode, int pid) {
+        <i>49</i>&nbsp; try {
+        <b class="fc"><i>50</i>&nbsp; Stage s = graderBusiness.getCurrentStage(UUID.fromString(accessCode), pid);</b>
+        <b class="fc"><i>51</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;,
+            s.getAsMap());</b>
+        <b class="fc"><i>52</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>53</i>&nbsp; return Map.of(&quot;response&quot;, e.getMessage());</b>
+        <i>54</i>&nbsp; }
+        <i>55</i>&nbsp; }
+        <i>56</i>&nbsp;
+        <i>57</i>&nbsp; public Map&lt;String, Object&gt; getStage(String accessCode, int pid, int idx) {
+        <i>58</i>&nbsp; try {
+        <b class="fc"><i>59</i>&nbsp; Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);</b>
+        <b class="fc"><i>60</i>&nbsp; Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);</b>
+        <b class="fc"><i>61</i>&nbsp; if (res == null) return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;,
+            s.getAsMap(), &quot;results&quot;, &quot;None&quot;);</b>
+        <b class="fc"><i>62</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;stage&quot;,
+            s.getAsMap(), &quot;results&quot;, res.getAsMap());</b>
+        <b class="fc"><i>63</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>64</i>&nbsp; return Map.of(&quot;response&quot;, e.getMessage());</b>
+        <i>65</i>&nbsp; }
+        <i>66</i>&nbsp; }
+        <i>67</i>&nbsp;
+        <i>68</i>&nbsp; // meaningful getters
+        <i>69</i>&nbsp;
+        <i>70</i>&nbsp; public Map&lt;String, Object&gt; getExperimentees(String code) {
+        <i>71</i>&nbsp; try {
+        <b class="fc"><i>72</i>&nbsp; List&lt;Participant&gt; experimentees =
+            graderBusiness.getParticipantsByTask(UUID.fromString(code));</b>
+        <b class="fc"><i>73</i>&nbsp; List&lt;Integer&gt; ids = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>74</i>&nbsp; experimentees.forEach((p) -&gt; ids.add(p.getParticipantId()));</b>
+        <b class="fc"><i>75</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;experimentees&quot;,
+            ids);</b>
+        <b class="fc"><i>76</i>&nbsp; } catch (CodeException e) {</b>
+        <b class="fc"><i>77</i>&nbsp; return Map.of(&quot;response&quot;, e.getMessage());</b>
+        <i>78</i>&nbsp; }
+        <i>79</i>&nbsp; }
+        <i>80</i>&nbsp;
+        <i>81</i>&nbsp; public Map&lt;String, Object&gt; getExperimenteeResults(String code, int participantId) {
+        <i>82</i>&nbsp; try {
+        <b class="fc"><i>83</i>&nbsp; List&lt;Result&gt; results = graderBusiness.getExpeeRes(UUID.fromString(code),
+            participantId);</b>
+        <b class="fc"><i>84</i>&nbsp; List&lt;Map&lt;String, Object&gt;&gt; JResults = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>85</i>&nbsp; results.forEach((resultWrapper -&gt; JResults.add(resultWrapper.getAsMap())));</b>
+        <b class="fc"><i>86</i>&nbsp; return Map.of(&quot;response&quot;, &quot;OK&quot;, &quot;results&quot;,
+            JResults);</b>
+        <b class="fc"><i>87</i>&nbsp; } catch (Exception e) {</b>
+        <b class="fc"><i>88</i>&nbsp; return Map.of(&quot;response&quot;, e.getMessage());</b>
+        <i>89</i>&nbsp; }
+        <i>90</i>&nbsp; }
+        <i>91</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-23 02:42</div>
 </div>
 </body>

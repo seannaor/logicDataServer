@@ -2,7 +2,9 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Results.*;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
+import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
@@ -18,6 +20,79 @@ import java.util.Map;
 @Table(name = "stages")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Stage {
+
+    @EmbeddedId
+    private StageID stageID;
+    @MapsId("experimentId")
+    @ManyToOne
+    @JoinColumn(name = "experiment_id")
+    private Experiment experiment;
+
+    public Stage() {
+    }
+
+    public static Stage parseStage(JSONObject stage, Experiment exp) throws FormatException {
+        try {
+            switch ((String) stage.get("type")) {
+                case "info":
+                    return new InfoStage((String) stage.get("info"));
+
+                case "code":
+                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
+                            (List<String>) stage.get("requirements"), (String) stage.get("language"));
+
+                case "questionnaire":
+                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
+
+                case "tagging":
+                    int codeIdx = (int) stage.get("codeIndex");
+                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
+                    return new TaggingStage(codeStage);
+            }
+        } catch (Exception ignore) {
+            throw new FormatException("legal stage");
+        }
+        throw new FormatException("stage type");
+    }
+
+    public StageID getStageID() {
+        return stageID;
+    }
+
+    public void setStageID(StageID stageID) {
+        this.stageID = stageID;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
+        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
+        experiment.addStage(this);
+    }
+
+    public abstract Map<String, Object> getAsMap();
+
+    public abstract String getType();
+
+
+    public CodeResult fillCode(Map<String, Object> data, CodeResult old) throws FormatException {
+        throw new FormatException("code stage answers");
+    }
+
+    public QuestionnaireResult fillQuestionnaire(Map<String, Object> data, QuestionnaireResult old) throws FormatException, ParseException, NotInReachException, NotExistException {
+        throw new FormatException("questionnaire stage answers");
+    }
+
+    public TaggingResult fillTagging(Map<String, Object> data, TaggingResult old) throws FormatException, NotInReachException {
+        throw new FormatException("tagging stage answers");
+    }
+
+    public void fillInfo(Object data, Participant participant) throws FormatException {
+        throw new FormatException("info stage");
+    }
 
     @Embeddable
     public static class StageID implements Serializable {
@@ -37,79 +112,5 @@ public abstract class Stage {
         public int getStageIndex() {
             return stageIndex;
         }
-    }
-
-    @EmbeddedId
-    private StageID stageID;
-
-    @MapsId("experimentId")
-    @ManyToOne
-    @JoinColumn(name = "experiment_id")
-    private Experiment experiment;
-
-    public Stage() {
-    }
-
-    public void setExperiment(Experiment experiment){
-        this.experiment = experiment;
-        this.stageID = new StageID(experiment.getExperimentId(), experiment.getStages().size());
-        experiment.addStage(this);
-    }
-
-    public StageID getStageID() {
-        return stageID;
-    }
-
-    public void setStageID(StageID stageID) {
-        this.stageID = stageID;
-    }
-
-    public Experiment getExperiment() {
-        return experiment;
-    }
-
-    public abstract Map<String,Object> getAsMap();
-
-    public abstract String getType();
-
-
-    public CodeResult fillCode(Map<String,Object> data, CodeResult old) throws FormatException {
-        throw new FormatException("code stage answers");
-    }
-
-    public QuestionnaireResult fillQuestionnaire(Map<String,Object> data, QuestionnaireResult old) throws FormatException, ParseException, NotInReachException, NotExistException {
-        throw new FormatException("questionnaire stage answers");
-    }
-
-    public TaggingResult fillTagging(Map<String,Object> data, TaggingResult old) throws FormatException, NotInReachException {
-        throw new FormatException("tagging stage answers");
-    }
-
-    public void fillInfo(Object data, Participant participant)throws FormatException {
-        throw new FormatException("info stage");
-    }
-
-    public static Stage parseStage(JSONObject stage, Experiment exp) throws FormatException {
-        try {
-            switch ((String) stage.get("type")) {
-                case "info":
-                    return new InfoStage((String) stage.get("info"));
-
-                case "code":
-                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"),(String) stage.get("language"));
-
-                case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
-
-                case "tagging":
-                    int codeIdx = (int)stage.get("codeIndex");
-                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
-                    return new TaggingStage(codeStage);
-            }
-        } catch (Exception ignore) {
-            throw new FormatException("legal stage");
-        }
-        throw new FormatException("stage type");
     }
 }

@@ -16,20 +16,20 @@ public class TaggingResultUnitTests {
     private RequirementTag tag;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         taggingResult = new TaggingResult();
         Requirement req = new Requirement("r1");
-        tag = new RequirementTag(0,10,req);
+        tag = new RequirementTag(0, 10, req);
         taggingResult.addTag(tag);
     }
 
     @Test
-    public void getMapTest(){
+    public void getMapTest() {
         Map<String, Object> map = taggingResult.getAsMap();
         Assert.assertTrue(map.containsKey("tags"));
         Assert.assertTrue(map.get("tags") instanceof List);
         Assert.assertEquals(1, ((List) map.get("tags")).size());
-        Assert.assertEquals(tag.getAsMap(),((List) map.get("tags")).get(0));
+        Assert.assertEquals(tag.getAsMap(), ((List) map.get("tags")).get(0));
 
     }
 }

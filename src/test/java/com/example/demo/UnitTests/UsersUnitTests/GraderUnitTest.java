@@ -20,25 +20,25 @@ public class GraderUnitTest {
         evaluate.setGradingTaskExp(true);
         gradingTask = new GradingTask("Grading Task", exp, general, evaluate);
         grader = new Grader("grader@mail");
-        new GraderToGradingTask(gradingTask,grader);
+        new GraderToGradingTask(gradingTask, grader);
     }
 
     @Test
-    public void mailTest(){
+    public void mailTest() {
         String mail = "mail";
         grader = new Grader(mail);
 
-        Assert.assertEquals(mail,grader.getGraderEmail());
+        Assert.assertEquals(mail, grader.getGraderEmail());
 
         mail = "different mail";
         grader.setGraderEmail(mail);
-        Assert.assertEquals(mail,grader.getGraderEmail());
+        Assert.assertEquals(mail, grader.getGraderEmail());
 
-        Assert.assertEquals(0,grader.getAssignedGradingTasks().size());
+        Assert.assertEquals(0, grader.getAssignedGradingTasks().size());
     }
 
     @Test
-    public void addTask(){
-        Assert.assertEquals(gradingTask,grader.getAssignedGradingTasks().get(0).getGradingTask());
+    public void addTask() {
+        Assert.assertEquals(gradingTask, grader.getAssignedGradingTasks().get(0).getGradingTask());
     }
 }

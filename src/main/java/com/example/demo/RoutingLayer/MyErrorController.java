@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class MyErrorController implements ErrorController { // stolen from  https://github.com/eugenp/tutorials/blob/master/spring-boot-modules/spring-boot-basic-customization/src/main/java/com/baeldung/errorhandling/controllers/MyErrorController.java
-//Stupid shit do nothing
+    //Stupid shit do nothing
     @GetMapping(value = "/error")
     public String handleError(HttpServletRequest request) {
 
@@ -20,10 +20,9 @@ public class MyErrorController implements ErrorController { // stolen from  http
 
             Integer statusCode = Integer.valueOf(status.toString());
 
-            if(statusCode == HttpStatus.NOT_FOUND.value()) {
+            if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 return "error-404";
-            }
-            else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 return "error-500";
             }
         }

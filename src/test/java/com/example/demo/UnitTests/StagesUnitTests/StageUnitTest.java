@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class StageUnitTest {
 
     @Test
-    public void FailParseStage(){
-        assertThrows(FormatException.class,()->{
+    public void FailParseStage() {
+        assertThrows(FormatException.class, () -> {
             JSONObject json = new JSONObject();
-            json.put("info","some information!");
-            Stage.parseStage(json,null);
+            json.put("info", "some information!");
+            Stage.parseStage(json, null);
         });
     }
 }

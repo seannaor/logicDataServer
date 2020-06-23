@@ -29,14 +29,6 @@ public class ManagerTests {
     private CreatorBusiness creatorBusiness;
     private DataCache cache;
     private DBAccess db;
-
-    @Autowired
-    public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
-        this.creatorBusiness = creatorBusiness;
-        this.cache = cache;
-        this.db = db;
-    }
-
     private ManagementUser manager;
     private ManagementUser ally;
     private Experiment experiment;
@@ -44,6 +36,12 @@ public class ManagerTests {
     private GradingTask task;
     private Grader grader;
     private String graderCode;
+    @Autowired
+    public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+        this.creatorBusiness = creatorBusiness;
+        this.cache = cache;
+        this.db = db;
+    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {

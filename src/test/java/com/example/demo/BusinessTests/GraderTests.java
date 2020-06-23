@@ -34,7 +34,13 @@ public class GraderTests {
     private ExperimenteeBusiness experimenteeBusiness;
     private DataCache cache;
     private DBAccess db;
-
+    private Grader grader;
+    private ManagementUser manager;
+    private Experimentee expee;
+    private Experiment experiment;
+    private GradingTask task;
+    private Participant graderExpeeParticipant;
+    private UUID graderCode;
     @Autowired
     public GraderTests(GraderBusiness graderBusiness, CreatorBusiness creatorBusiness, ExperimenteeBusiness experimenteeBusiness, DataCache cache, DBAccess db) {
         this.graderBusiness = graderBusiness;
@@ -43,15 +49,6 @@ public class GraderTests {
         this.cache = cache;
         this.db = db;
     }
-
-    private Grader grader;
-    private ManagementUser manager;
-    private Experimentee expee;
-    private Experiment experiment;
-    private GradingTask task;
-    private Participant graderExpeeParticipant;
-    private UUID graderCode;
-
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException, CodeException, ExpEndException, NotInReachException, ParseException {
@@ -166,12 +163,12 @@ public class GraderTests {
         graderBusiness.getNextStage(graderCode, -1);//pass info
         graderBusiness.fillInStage(graderCode, -1, Utils.getPersonalAnswers());
 
-        Stage s = graderBusiness.getStage(graderCode, -1,0);
-        assertEquals("info",s.getType());
-        Result r = graderBusiness.getResult(graderCode, -1,1);
+        Stage s = graderBusiness.getStage(graderCode, -1, 0);
+        assertEquals("info", s.getType());
+        Result r = graderBusiness.getResult(graderCode, -1, 1);
         assertNotNull(r);
         System.out.println(r.getAsMap().toString());
-        assertEquals(1,((List)r.getAsMap().get("answers")).size());
+        assertEquals(1, ((List) r.getAsMap().get("answers")).size());
     }
 
     @Test

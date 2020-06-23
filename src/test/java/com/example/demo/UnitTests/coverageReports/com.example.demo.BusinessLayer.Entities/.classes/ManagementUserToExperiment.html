@@ -1,188 +1,188 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: ManagementUserToExperiment</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: ManagementUserToExperiment</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: ManagementUserToExperiment (com.example.demo.BusinessLayer.Entities)</h1>
+    <h1>Coverage Summary for Class: ManagementUserToExperiment (com.example.demo.BusinessLayer.Entities)</h1>
 
-<table class="coverageStats">
+    <table class="coverageStats">
 
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">ManagementUserToExperiment</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">ManagementUserToExperiment</td>
+            <td class="coverageStat">
   <span class="percent">
     87.5%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (7/ 8)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     94.7%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (18/ 19)
   </span>
-</td>
-</tr>
-  <tr>
-    <td class="name">ManagementUserToExperiment$ManagementUserToExperimentID</td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">ManagementUserToExperiment$ManagementUserToExperimentID</td>
+            <td class="coverageStat">
   <span class="percent">
     75%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (3/ 4)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     88.9%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (8/ 9)
   </span>
-</td>
-  </tr>
-<tr>
-  <td class="name"><strong>total</strong></td>
-<td class="coverageStat">
+            </td>
+        </tr>
+        <tr>
+            <td class="name"><strong>total</strong></td>
+            <td class="coverageStat">
   <span class="percent">
     83.3%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (10/ 12)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     92.9%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (26/ 28)
   </span>
-</td>
-</tr>
-</table>
+            </td>
+        </tr>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import javax.persistence.*;
-<i>4</i>&nbsp;import java.io.Serializable;
-<i>5</i>&nbsp;
-<i>6</i>&nbsp;@Entity
-<i>7</i>&nbsp;@Table(name = &quot;management_users_to_experiments&quot;)
-<i>8</i>&nbsp;public class ManagementUserToExperiment {
-<i>9</i>&nbsp;    @Embeddable
-<i>10</i>&nbsp;    public static class ManagementUserToExperimentID implements Serializable {
-<i>11</i>&nbsp;        @Column(name = &quot;bgu_username&quot;)
-<i>12</i>&nbsp;        private String bguUsername;
-<i>13</i>&nbsp;        @Column(name = &quot;experiment_id&quot;)
-<i>14</i>&nbsp;        private int experimentId;
-<i>15</i>&nbsp;
-<b class="nc"><i>16</i>&nbsp;        public ManagementUserToExperimentID() { }</b>
-<i>17</i>&nbsp;
-<b class="fc"><i>18</i>&nbsp;        public ManagementUserToExperimentID(String bguUsername, int experimentId) {</b>
-<b class="fc"><i>19</i>&nbsp;            this.bguUsername = bguUsername;</b>
-<b class="fc"><i>20</i>&nbsp;            this.experimentId = experimentId;</b>
-<b class="fc"><i>21</i>&nbsp;        }</b>
-<i>22</i>&nbsp;
-<i>23</i>&nbsp;        public void setBguUsername(String bguUsername) {
-<b class="fc"><i>24</i>&nbsp;            this.bguUsername = bguUsername;</b>
-<b class="fc"><i>25</i>&nbsp;        }</b>
-<i>26</i>&nbsp;
-<i>27</i>&nbsp;        public void setExperimentId(int experimentId) {
-<b class="fc"><i>28</i>&nbsp;            this.experimentId = experimentId;</b>
-<b class="fc"><i>29</i>&nbsp;        }</b>
-<i>30</i>&nbsp;    }
-<i>31</i>&nbsp;    @EmbeddedId
-<i>32</i>&nbsp;    private ManagementUserToExperimentID managementUserToExperimentID;
-<i>33</i>&nbsp;    @Column(name = &quot;role&quot;)
-<i>34</i>&nbsp;    private String role;
-<i>35</i>&nbsp;    @ManyToOne
-<i>36</i>&nbsp;    @MapsId(&quot;bguUsername&quot;)
-<i>37</i>&nbsp;    @JoinColumn(name = &quot;bgu_username&quot;, referencedColumnName = &quot;bgu_username&quot;)
-<i>38</i>&nbsp;    private ManagementUser managementUser;
-<i>39</i>&nbsp;    @ManyToOne
-<i>40</i>&nbsp;    @MapsId(&quot;experimentId&quot;)
-<i>41</i>&nbsp;    @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
-<i>42</i>&nbsp;    private Experiment experiment;
-<i>43</i>&nbsp;
-<b class="nc"><i>44</i>&nbsp;    public ManagementUserToExperiment() { }</b>
-<i>45</i>&nbsp;
-<b class="fc"><i>46</i>&nbsp;    public ManagementUserToExperiment(ManagementUser managementUser, Experiment experiment, String role) {</b>
-<b class="fc"><i>47</i>&nbsp;        this.managementUserToExperimentID = new ManagementUserToExperimentID(managementUser.getBguUsername(), experiment.getExperimentId());</b>
-<b class="fc"><i>48</i>&nbsp;        this.managementUser = managementUser;</b>
-<b class="fc"><i>49</i>&nbsp;        this.experiment = experiment;</b>
-<b class="fc"><i>50</i>&nbsp;        this.role = role;</b>
-<b class="fc"><i>51</i>&nbsp;        this.experiment.addManagementUserToExperiment(this);</b>
-<b class="fc"><i>52</i>&nbsp;    }</b>
-<i>53</i>&nbsp;
-<i>54</i>&nbsp;    public Experiment getExperiment() {
-<b class="fc"><i>55</i>&nbsp;        return experiment;</b>
-<i>56</i>&nbsp;    }
-<i>57</i>&nbsp;
-<i>58</i>&nbsp;    public void setExperiment(Experiment experiment) {
-<b class="fc"><i>59</i>&nbsp;        this.experiment = experiment;</b>
-<b class="fc"><i>60</i>&nbsp;        this.managementUserToExperimentID.setExperimentId(experiment.getExperimentId());</b>
-<i>61</i>&nbsp;
-<b class="fc"><i>62</i>&nbsp;    }</b>
-<i>63</i>&nbsp;
-<i>64</i>&nbsp;    public ManagementUser getManagementUser() {
-<b class="fc"><i>65</i>&nbsp;        return managementUser;</b>
-<i>66</i>&nbsp;    }
-<i>67</i>&nbsp;
-<i>68</i>&nbsp;    public void setManagementUser(ManagementUser managementUser) {
-<b class="fc"><i>69</i>&nbsp;        this.managementUser = managementUser;</b>
-<b class="fc"><i>70</i>&nbsp;        this.managementUserToExperimentID.setBguUsername(managementUser.getBguUsername());</b>
-<b class="fc"><i>71</i>&nbsp;    }</b>
-<i>72</i>&nbsp;
-<i>73</i>&nbsp;    public String getRole() {
-<b class="fc"><i>74</i>&nbsp;        return role;</b>
-<i>75</i>&nbsp;    }
-<i>76</i>&nbsp;
-<i>77</i>&nbsp;    public void setRole(String role) {
-<b class="fc"><i>78</i>&nbsp;        this.role = role;</b>
-<b class="fc"><i>79</i>&nbsp;    }</b>
-<i>80</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import javax.persistence.*;
+        <i>4</i>&nbsp;import java.io.Serializable;
+        <i>5</i>&nbsp;
+        <i>6</i>&nbsp;@Entity
+        <i>7</i>&nbsp;@Table(name = &quot;management_users_to_experiments&quot;)
+        <i>8</i>&nbsp;public class ManagementUserToExperiment {
+        <i>9</i>&nbsp; @Embeddable
+        <i>10</i>&nbsp; public static class ManagementUserToExperimentID implements Serializable {
+        <i>11</i>&nbsp; @Column(name = &quot;bgu_username&quot;)
+        <i>12</i>&nbsp; private String bguUsername;
+        <i>13</i>&nbsp; @Column(name = &quot;experiment_id&quot;)
+        <i>14</i>&nbsp; private int experimentId;
+        <i>15</i>&nbsp;
+        <b class="nc"><i>16</i>&nbsp; public ManagementUserToExperimentID() { }</b>
+        <i>17</i>&nbsp;
+        <b class="fc"><i>18</i>&nbsp; public ManagementUserToExperimentID(String bguUsername, int experimentId) {</b>
+        <b class="fc"><i>19</i>&nbsp; this.bguUsername = bguUsername;</b>
+        <b class="fc"><i>20</i>&nbsp; this.experimentId = experimentId;</b>
+        <b class="fc"><i>21</i>&nbsp; }</b>
+        <i>22</i>&nbsp;
+        <i>23</i>&nbsp; public void setBguUsername(String bguUsername) {
+        <b class="fc"><i>24</i>&nbsp; this.bguUsername = bguUsername;</b>
+        <b class="fc"><i>25</i>&nbsp; }</b>
+        <i>26</i>&nbsp;
+        <i>27</i>&nbsp; public void setExperimentId(int experimentId) {
+        <b class="fc"><i>28</i>&nbsp; this.experimentId = experimentId;</b>
+        <b class="fc"><i>29</i>&nbsp; }</b>
+        <i>30</i>&nbsp; }
+        <i>31</i>&nbsp; @EmbeddedId
+        <i>32</i>&nbsp; private ManagementUserToExperimentID managementUserToExperimentID;
+        <i>33</i>&nbsp; @Column(name = &quot;role&quot;)
+        <i>34</i>&nbsp; private String role;
+        <i>35</i>&nbsp; @ManyToOne
+        <i>36</i>&nbsp; @MapsId(&quot;bguUsername&quot;)
+        <i>37</i>&nbsp; @JoinColumn(name = &quot;bgu_username&quot;, referencedColumnName = &quot;bgu_username&quot;)
+        <i>38</i>&nbsp; private ManagementUser managementUser;
+        <i>39</i>&nbsp; @ManyToOne
+        <i>40</i>&nbsp; @MapsId(&quot;experimentId&quot;)
+        <i>41</i>&nbsp; @JoinColumn(name = &quot;experiment_id&quot;, referencedColumnName = &quot;experiment_id&quot;)
+        <i>42</i>&nbsp; private Experiment experiment;
+        <i>43</i>&nbsp;
+        <b class="nc"><i>44</i>&nbsp; public ManagementUserToExperiment() { }</b>
+        <i>45</i>&nbsp;
+        <b class="fc"><i>46</i>&nbsp; public ManagementUserToExperiment(ManagementUser managementUser, Experiment
+            experiment, String role) {</b>
+        <b class="fc"><i>47</i>&nbsp; this.managementUserToExperimentID = new
+            ManagementUserToExperimentID(managementUser.getBguUsername(), experiment.getExperimentId());</b>
+        <b class="fc"><i>48</i>&nbsp; this.managementUser = managementUser;</b>
+        <b class="fc"><i>49</i>&nbsp; this.experiment = experiment;</b>
+        <b class="fc"><i>50</i>&nbsp; this.role = role;</b>
+        <b class="fc"><i>51</i>&nbsp; this.experiment.addManagementUserToExperiment(this);</b>
+        <b class="fc"><i>52</i>&nbsp; }</b>
+        <i>53</i>&nbsp;
+        <i>54</i>&nbsp; public Experiment getExperiment() {
+        <b class="fc"><i>55</i>&nbsp; return experiment;</b>
+        <i>56</i>&nbsp; }
+        <i>57</i>&nbsp;
+        <i>58</i>&nbsp; public void setExperiment(Experiment experiment) {
+        <b class="fc"><i>59</i>&nbsp; this.experiment = experiment;</b>
+        <b class="fc"><i>60</i>&nbsp;
+            this.managementUserToExperimentID.setExperimentId(experiment.getExperimentId());</b>
+        <i>61</i>&nbsp;
+        <b class="fc"><i>62</i>&nbsp; }</b>
+        <i>63</i>&nbsp;
+        <i>64</i>&nbsp; public ManagementUser getManagementUser() {
+        <b class="fc"><i>65</i>&nbsp; return managementUser;</b>
+        <i>66</i>&nbsp; }
+        <i>67</i>&nbsp;
+        <i>68</i>&nbsp; public void setManagementUser(ManagementUser managementUser) {
+        <b class="fc"><i>69</i>&nbsp; this.managementUser = managementUser;</b>
+        <b class="fc"><i>70</i>&nbsp; this.managementUserToExperimentID.setBguUsername(managementUser.getBguUsername());</b>
+        <b class="fc"><i>71</i>&nbsp; }</b>
+        <i>72</i>&nbsp;
+        <i>73</i>&nbsp; public String getRole() {
+        <b class="fc"><i>74</i>&nbsp; return role;</b>
+        <i>75</i>&nbsp; }
+        <i>76</i>&nbsp;
+        <i>77</i>&nbsp; public void setRole(String role) {
+        <b class="fc"><i>78</i>&nbsp; this.role = role;</b>
+        <b class="fc"><i>79</i>&nbsp; }</b>
+        <i>80</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

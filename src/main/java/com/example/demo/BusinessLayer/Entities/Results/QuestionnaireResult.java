@@ -1,7 +1,6 @@
 package com.example.demo.BusinessLayer.Entities.Results;
 
 import com.example.demo.BusinessLayer.Entities.Participant;
-import com.example.demo.BusinessLayer.Entities.Stages.QuestionnaireStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -24,8 +23,8 @@ public class QuestionnaireResult extends Result {
         this.answers = new ArrayList<>();
     }
 
-    public void addAns(Answer ans){
-        if(!answers.contains(ans))
+    public void addAns(Answer ans) {
+        if (!answers.contains(ans))
             answers.add(ans);
     }
 
@@ -38,18 +37,18 @@ public class QuestionnaireResult extends Result {
     }
 
     @Override
-    public void setStageAndParticipant(Stage stage, Participant participant){
-        super.setStageAndParticipant(stage,participant);
-        for(Answer ans : answers)
+    public void setStageAndParticipant(Stage stage, Participant participant) {
+        super.setStageAndParticipant(stage, participant);
+        for (Answer ans : answers)
             ans.setQuestionnaireResult(this);
     }
 
     @Override
     public Map<String, Object> getAsMap() {
         List<String> answers = new ArrayList<>();
-        for(Answer ans : this.answers){
+        for (Answer ans : this.answers) {
             answers.add(ans.getAnswer());
         }
-        return Map.of("answers",answers);
+        return Map.of("answers", answers);
     }
 }

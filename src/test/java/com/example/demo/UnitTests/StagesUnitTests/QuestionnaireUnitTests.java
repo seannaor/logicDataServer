@@ -57,15 +57,15 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void fillInNoAnsFail() {
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             //no answers
             questionnaireStage.fillQuestionnaire(Map.of(), null);
         });
     }
 
     @Test
-    public void fillInNoAnsListFail()  {
-        assertThrows(FormatException.class,()->{
+    public void fillInNoAnsListFail() {
+        assertThrows(FormatException.class, () -> {
             //answers is not a list of strings
             questionnaireStage.fillQuestionnaire(Map.of("answers", -1), null);
         });
@@ -73,7 +73,7 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void fillInNotAllAnsFail() {
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             //missing answers
             questionnaireStage.fillQuestionnaire(Map.of("answers", List.of()), null);
         });
@@ -123,7 +123,7 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void questionIndexFail() {
-        assertThrows(NotExistException.class,()->{
+        assertThrows(NotExistException.class, () -> {
             questionnaireStage.getQuestion(-1);
         });
     }

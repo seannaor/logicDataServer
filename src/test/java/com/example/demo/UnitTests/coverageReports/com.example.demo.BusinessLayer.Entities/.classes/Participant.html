@@ -1,214 +1,218 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="htmlId">
 <head>
-  <title>Coverage Report :: Participant</title>
-  <style type="text/css">
-    @import "../../.css/coverage.css";
-  </style>
+    <title>Coverage Report :: Participant</title>
+    <style type="text/css">
+        @import "../../.css/coverage.css";
+    </style>
 </head>
 
 <body>
 <div class="header"></div>
 
 <div class="content">
-<div class="breadCrumbs">
-    [ <a href="../../index.html">all classes</a> ]
-    [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
-</div>
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.example.demo.BusinessLayer.Entities</a> ]
+    </div>
 
-<h1>Coverage Summary for Class: Participant (com.example.demo.BusinessLayer.Entities)</h1>
+    <h1>Coverage Summary for Class: Participant (com.example.demo.BusinessLayer.Entities)</h1>
 
-<table class="coverageStats">
-<tr>
-  <th class="name">Class</th>
-<th class="coverageStat 
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
 ">
-  Class, %
-</th>
-<th class="coverageStat 
+                Class, %
+            </th>
+            <th class="coverageStat
 ">
-  Method, %
-</th>
-<th class="coverageStat 
+                Method, %
+            </th>
+            <th class="coverageStat
 ">
-  Line, %
-</th>
-</tr>
-<tr>
-  <td class="name">Participant</td>
-<td class="coverageStat">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">Participant</td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (1/ 1)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     100%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (14/ 14)
   </span>
-</td>
-<td class="coverageStat">
+            </td>
+            <td class="coverageStat">
   <span class="percent">
     94%
   </span>
-  <span class="absValue">
+                <span class="absValue">
     (47/ 50)
   </span>
-</td>
-</tr>
+            </td>
+        </tr>
 
-</table>
+    </table>
 
-<br/>
-<br/>
+    <br/>
+    <br/>
 
 
-<div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
-<i>2</i>&nbsp;
-<i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
-<i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.*;
-<i>5</i>&nbsp;
-<i>6</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-<i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
-<i>8</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
-<i>9</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-<i>10</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-<i>11</i>&nbsp;import org.hibernate.annotations.LazyCollection;
-<i>12</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
-<i>13</i>&nbsp;import org.json.simple.JSONObject;
-<i>14</i>&nbsp;import org.json.simple.parser.ParseException;
-<i>15</i>&nbsp;
-<i>16</i>&nbsp;import javax.persistence.*;
-<i>17</i>&nbsp;import java.util.ArrayList;
-<i>18</i>&nbsp;import java.util.List;
-<i>19</i>&nbsp;import java.util.Map;
-<i>20</i>&nbsp;
-<i>21</i>&nbsp;@Entity
-<i>22</i>&nbsp;@Table(name = &quot;participants&quot;)
-<i>23</i>&nbsp;public class Participant {
-<i>24</i>&nbsp;    @Id
-<i>25</i>&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
-<i>26</i>&nbsp;    @Column(name = &quot;participant_id&quot;)
-<i>27</i>&nbsp;    private int participantId;
-<i>28</i>&nbsp;    @Column(name = &quot;curr_stage&quot;)
-<i>29</i>&nbsp;    private int currStage;
-<i>30</i>&nbsp;    @Column(name = &quot;is_done&quot;)
-<i>31</i>&nbsp;    private boolean isDone;
-<i>32</i>&nbsp;    @ManyToOne
-<i>33</i>&nbsp;    @JoinColumn(name = &quot;experiment_id&quot;)
-<i>34</i>&nbsp;    private Experiment experiment;
-<i>35</i>&nbsp;    @OneToMany(mappedBy = &quot;participant&quot;)
-<i>36</i>&nbsp;    @LazyCollection(LazyCollectionOption.FALSE)
-<i>37</i>&nbsp;    private List&lt;Result&gt; results;
-<i>38</i>&nbsp;
-<b class="fc"><i>39</i>&nbsp;    public Participant() {</b>
-<b class="fc"><i>40</i>&nbsp;    }</b>
-<i>41</i>&nbsp;
-<b class="fc"><i>42</i>&nbsp;    public Participant(Experiment experiment) {</b>
-<b class="fc"><i>43</i>&nbsp;        this.experiment = experiment;</b>
-<b class="fc"><i>44</i>&nbsp;        experiment.addParticipant(this);</b>
-<b class="fc"><i>45</i>&nbsp;        isDone = false;</b>
-<b class="fc"><i>46</i>&nbsp;        currStage = 0;</b>
-<b class="fc"><i>47</i>&nbsp;        this.results = new ArrayList&lt;&gt;();</b>
-<b class="fc"><i>48</i>&nbsp;    }</b>
-<i>49</i>&nbsp;
-<i>50</i>&nbsp;    public Experiment getExperiment() {
-<b class="fc"><i>51</i>&nbsp;        return experiment;</b>
-<i>52</i>&nbsp;    }
-<i>53</i>&nbsp;
-<i>54</i>&nbsp;    public int getParticipantId() {
-<b class="fc"><i>55</i>&nbsp;        return participantId;</b>
-<i>56</i>&nbsp;    }
-<i>57</i>&nbsp;
-<i>58</i>&nbsp;    public void setParticipantId(int participantId) {
-<b class="fc"><i>59</i>&nbsp;        this.participantId = participantId;</b>
-<b class="fc"><i>60</i>&nbsp;    }</b>
-<i>61</i>&nbsp;
-<i>62</i>&nbsp;    public Stage getCurrStage() throws ExpEndException, NotExistException {
-<b class="fc"><i>63</i>&nbsp;        if (isDone) throw new ExpEndException();</b>
-<b class="fc"><i>64</i>&nbsp;        return experiment.getStage(currStage);</b>
-<i>65</i>&nbsp;    }
-<i>66</i>&nbsp;
-<i>67</i>&nbsp;    public Stage getNextStage() throws ExpEndException, NotExistException {
-<b class="fc"><i>68</i>&nbsp;        advanceStage();</b>
-<b class="fc"><i>69</i>&nbsp;        if (isDone) throw new ExpEndException();</b>
-<b class="fc"><i>70</i>&nbsp;        return getCurrStage();</b>
-<i>71</i>&nbsp;    }
-<i>72</i>&nbsp;
-<i>73</i>&nbsp;    public Stage getStage(int idx) throws NotInReachException, NotExistException {
-<b class="fc"><i>74</i>&nbsp;        if (currStage &lt; idx) throw new NotInReachException(&quot;stage &quot; + idx);</b>
-<b class="fc"><i>75</i>&nbsp;        return this.experiment.getStage(idx);</b>
-<i>76</i>&nbsp;    }
-<i>77</i>&nbsp;
-<i>78</i>&nbsp;    public Result getResult(int idx) throws NotInReachException {
-<b class="fc"><i>79</i>&nbsp;        if (currStage &lt; idx) throw new NotInReachException(&quot;result of stage &quot; + idx);</b>
-<b class="fc"><i>80</i>&nbsp;        for (Result result : this.results) {</b>
-<b class="fc"><i>81</i>&nbsp;            if(result.getStage().getStageID().getStageIndex() == idx) {</b>
-<b class="fc"><i>82</i>&nbsp;                return result;</b>
-<i>83</i>&nbsp;            }
-<b class="nc"><i>84</i>&nbsp;        }</b>
-<b class="fc"><i>85</i>&nbsp;        return null;</b>
-<i>86</i>&nbsp;    }
-<i>87</i>&nbsp;
-<i>88</i>&nbsp;    private void advanceStage() {
-<b class="fc"><i>89</i>&nbsp;        currStage++;</b>
-<b class="fc"><i>90</i>&nbsp;        if (currStage &gt;= experiment.getStages().size())</b>
-<b class="fc"><i>91</i>&nbsp;            isDone = true;</b>
-<b class="fc"><i>92</i>&nbsp;    }</b>
-<i>93</i>&nbsp;
-<i>94</i>&nbsp;    public int getCurrStageIdx(){
-<b class="fc"><i>95</i>&nbsp;        return this.currStage;</b>
-<i>96</i>&nbsp;    }
-<i>97</i>&nbsp;
-<i>98</i>&nbsp;    public boolean isDone() {
-<b class="fc"><i>99</i>&nbsp;        return isDone;</b>
-<i>100</i>&nbsp;    }
-<i>101</i>&nbsp;
-<i>102</i>&nbsp;    public Result fillInStage(Map&lt;String,Object&gt; data) throws ExpEndException, FormatException, ParseException, NotInReachException, NotExistException {
-<b class="fc"><i>103</i>&nbsp;        Stage currStage = getCurrStage();</b>
-<i>104</i>&nbsp;        Result currResult;
-<b class="fc"><i>105</i>&nbsp;        switch (currStage.getType()) {</b>
-<i>106</i>&nbsp;            case &quot;code&quot;:
-<b class="fc"><i>107</i>&nbsp;                currResult = currStage.fillCode(data,(CodeResult) getResult(currStage.getStageID().getStageIndex()));</b>
-<b class="fc"><i>108</i>&nbsp;                break;</b>
-<i>109</i>&nbsp;            case &quot;tagging&quot;:
-<b class="fc"><i>110</i>&nbsp;                currResult = currStage.fillTagging(data,(TaggingResult) getResult(currStage.getStageID().getStageIndex()));</b>
-<i>111</i>&nbsp;
-<b class="fc"><i>112</i>&nbsp;                break;</b>
-<i>113</i>&nbsp;            case &quot;questionnaire&quot;:
-<b class="fc"><i>114</i>&nbsp;                currResult = currStage.fillQuestionnaire(data,(QuestionnaireResult) getResult(currStage.getStageID().getStageIndex()));</b>
-<b class="fc"><i>115</i>&nbsp;                break;</b>
-<i>116</i>&nbsp;            default:
-<b class="fc"><i>117</i>&nbsp;                throw new FormatException(currStage.getType());</b>
-<i>118</i>&nbsp;        }
-<b class="fc"><i>119</i>&nbsp;        currResult.setStageAndParticipant(currStage,this);</b>
-<b class="fc"><i>120</i>&nbsp;        if(!this.results.contains(currResult))</b>
-<b class="fc"><i>121</i>&nbsp;            this.results.add(currResult);</b>
-<b class="fc"><i>122</i>&nbsp;        return currResult;</b>
-<i>123</i>&nbsp;    }
-<i>124</i>&nbsp;
-<i>125</i>&nbsp;    public Result getResultsOf(Stage visible) throws FormatException {
-<b class="fc"><i>126</i>&nbsp;        for (Result result : results) {</b>
-<b class="fc"><i>127</i>&nbsp;            if (result.getStage().getStageID().equals(visible.getStageID()))</b>
-<b class="fc"><i>128</i>&nbsp;                return result;</b>
-<b class="nc"><i>129</i>&nbsp;        }</b>
-<b class="nc"><i>130</i>&nbsp;        throw new FormatException(&quot;code|questionnaire|tagging&quot;, visible.getType());</b>
-<i>131</i>&nbsp;    }
-<i>132</i>&nbsp;}
-</div>
+    <div class="sourceCode"><i>1</i>&nbsp;package com.example.demo.BusinessLayer.Entities;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
+        <i>4</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Results.*;
+        <i>5</i>&nbsp;
+        <i>6</i>&nbsp;import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+        <i>7</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
+        <i>8</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.FormatException;
+        <i>9</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+        <i>10</i>&nbsp;import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
+        <i>11</i>&nbsp;import org.hibernate.annotations.LazyCollection;
+        <i>12</i>&nbsp;import org.hibernate.annotations.LazyCollectionOption;
+        <i>13</i>&nbsp;import org.json.simple.JSONObject;
+        <i>14</i>&nbsp;import org.json.simple.parser.ParseException;
+        <i>15</i>&nbsp;
+        <i>16</i>&nbsp;import javax.persistence.*;
+        <i>17</i>&nbsp;import java.util.ArrayList;
+        <i>18</i>&nbsp;import java.util.List;
+        <i>19</i>&nbsp;import java.util.Map;
+        <i>20</i>&nbsp;
+        <i>21</i>&nbsp;@Entity
+        <i>22</i>&nbsp;@Table(name = &quot;participants&quot;)
+        <i>23</i>&nbsp;public class Participant {
+        <i>24</i>&nbsp; @Id
+        <i>25</i>&nbsp; @GeneratedValue(strategy = GenerationType.IDENTITY)
+        <i>26</i>&nbsp; @Column(name = &quot;participant_id&quot;)
+        <i>27</i>&nbsp; private int participantId;
+        <i>28</i>&nbsp; @Column(name = &quot;curr_stage&quot;)
+        <i>29</i>&nbsp; private int currStage;
+        <i>30</i>&nbsp; @Column(name = &quot;is_done&quot;)
+        <i>31</i>&nbsp; private boolean isDone;
+        <i>32</i>&nbsp; @ManyToOne
+        <i>33</i>&nbsp; @JoinColumn(name = &quot;experiment_id&quot;)
+        <i>34</i>&nbsp; private Experiment experiment;
+        <i>35</i>&nbsp; @OneToMany(mappedBy = &quot;participant&quot;)
+        <i>36</i>&nbsp; @LazyCollection(LazyCollectionOption.FALSE)
+        <i>37</i>&nbsp; private List&lt;Result&gt; results;
+        <i>38</i>&nbsp;
+        <b class="fc"><i>39</i>&nbsp; public Participant() {</b>
+        <b class="fc"><i>40</i>&nbsp; }</b>
+        <i>41</i>&nbsp;
+        <b class="fc"><i>42</i>&nbsp; public Participant(Experiment experiment) {</b>
+        <b class="fc"><i>43</i>&nbsp; this.experiment = experiment;</b>
+        <b class="fc"><i>44</i>&nbsp; experiment.addParticipant(this);</b>
+        <b class="fc"><i>45</i>&nbsp; isDone = false;</b>
+        <b class="fc"><i>46</i>&nbsp; currStage = 0;</b>
+        <b class="fc"><i>47</i>&nbsp; this.results = new ArrayList&lt;&gt;();</b>
+        <b class="fc"><i>48</i>&nbsp; }</b>
+        <i>49</i>&nbsp;
+        <i>50</i>&nbsp; public Experiment getExperiment() {
+        <b class="fc"><i>51</i>&nbsp; return experiment;</b>
+        <i>52</i>&nbsp; }
+        <i>53</i>&nbsp;
+        <i>54</i>&nbsp; public int getParticipantId() {
+        <b class="fc"><i>55</i>&nbsp; return participantId;</b>
+        <i>56</i>&nbsp; }
+        <i>57</i>&nbsp;
+        <i>58</i>&nbsp; public void setParticipantId(int participantId) {
+        <b class="fc"><i>59</i>&nbsp; this.participantId = participantId;</b>
+        <b class="fc"><i>60</i>&nbsp; }</b>
+        <i>61</i>&nbsp;
+        <i>62</i>&nbsp; public Stage getCurrStage() throws ExpEndException, NotExistException {
+        <b class="fc"><i>63</i>&nbsp; if (isDone) throw new ExpEndException();</b>
+        <b class="fc"><i>64</i>&nbsp; return experiment.getStage(currStage);</b>
+        <i>65</i>&nbsp; }
+        <i>66</i>&nbsp;
+        <i>67</i>&nbsp; public Stage getNextStage() throws ExpEndException, NotExistException {
+        <b class="fc"><i>68</i>&nbsp; advanceStage();</b>
+        <b class="fc"><i>69</i>&nbsp; if (isDone) throw new ExpEndException();</b>
+        <b class="fc"><i>70</i>&nbsp; return getCurrStage();</b>
+        <i>71</i>&nbsp; }
+        <i>72</i>&nbsp;
+        <i>73</i>&nbsp; public Stage getStage(int idx) throws NotInReachException, NotExistException {
+        <b class="fc"><i>74</i>&nbsp; if (currStage &lt; idx) throw new NotInReachException(&quot;stage &quot; +
+            idx);</b>
+        <b class="fc"><i>75</i>&nbsp; return this.experiment.getStage(idx);</b>
+        <i>76</i>&nbsp; }
+        <i>77</i>&nbsp;
+        <i>78</i>&nbsp; public Result getResult(int idx) throws NotInReachException {
+        <b class="fc"><i>79</i>&nbsp; if (currStage &lt; idx) throw new NotInReachException(&quot;result of stage &quot;
+            + idx);</b>
+        <b class="fc"><i>80</i>&nbsp; for (Result result : this.results) {</b>
+        <b class="fc"><i>81</i>&nbsp; if(result.getStage().getStageID().getStageIndex() == idx) {</b>
+        <b class="fc"><i>82</i>&nbsp; return result;</b>
+        <i>83</i>&nbsp; }
+        <b class="nc"><i>84</i>&nbsp; }</b>
+        <b class="fc"><i>85</i>&nbsp; return null;</b>
+        <i>86</i>&nbsp; }
+        <i>87</i>&nbsp;
+        <i>88</i>&nbsp; private void advanceStage() {
+        <b class="fc"><i>89</i>&nbsp; currStage++;</b>
+        <b class="fc"><i>90</i>&nbsp; if (currStage &gt;= experiment.getStages().size())</b>
+        <b class="fc"><i>91</i>&nbsp; isDone = true;</b>
+        <b class="fc"><i>92</i>&nbsp; }</b>
+        <i>93</i>&nbsp;
+        <i>94</i>&nbsp; public int getCurrStageIdx(){
+        <b class="fc"><i>95</i>&nbsp; return this.currStage;</b>
+        <i>96</i>&nbsp; }
+        <i>97</i>&nbsp;
+        <i>98</i>&nbsp; public boolean isDone() {
+        <b class="fc"><i>99</i>&nbsp; return isDone;</b>
+        <i>100</i>&nbsp; }
+        <i>101</i>&nbsp;
+        <i>102</i>&nbsp; public Result fillInStage(Map&lt;String,Object&gt; data) throws ExpEndException,
+        FormatException, ParseException, NotInReachException, NotExistException {
+        <b class="fc"><i>103</i>&nbsp; Stage currStage = getCurrStage();</b>
+        <i>104</i>&nbsp; Result currResult;
+        <b class="fc"><i>105</i>&nbsp; switch (currStage.getType()) {</b>
+        <i>106</i>&nbsp; case &quot;code&quot;:
+        <b class="fc"><i>107</i>&nbsp; currResult = currStage.fillCode(data,(CodeResult)
+            getResult(currStage.getStageID().getStageIndex()));</b>
+        <b class="fc"><i>108</i>&nbsp; break;</b>
+        <i>109</i>&nbsp; case &quot;tagging&quot;:
+        <b class="fc"><i>110</i>&nbsp; currResult = currStage.fillTagging(data,(TaggingResult)
+            getResult(currStage.getStageID().getStageIndex()));</b>
+        <i>111</i>&nbsp;
+        <b class="fc"><i>112</i>&nbsp; break;</b>
+        <i>113</i>&nbsp; case &quot;questionnaire&quot;:
+        <b class="fc"><i>114</i>&nbsp; currResult = currStage.fillQuestionnaire(data,(QuestionnaireResult)
+            getResult(currStage.getStageID().getStageIndex()));</b>
+        <b class="fc"><i>115</i>&nbsp; break;</b>
+        <i>116</i>&nbsp; default:
+        <b class="fc"><i>117</i>&nbsp; throw new FormatException(currStage.getType());</b>
+        <i>118</i>&nbsp; }
+        <b class="fc"><i>119</i>&nbsp; currResult.setStageAndParticipant(currStage,this);</b>
+        <b class="fc"><i>120</i>&nbsp; if(!this.results.contains(currResult))</b>
+        <b class="fc"><i>121</i>&nbsp; this.results.add(currResult);</b>
+        <b class="fc"><i>122</i>&nbsp; return currResult;</b>
+        <i>123</i>&nbsp; }
+        <i>124</i>&nbsp;
+        <i>125</i>&nbsp; public Result getResultsOf(Stage visible) throws FormatException {
+        <b class="fc"><i>126</i>&nbsp; for (Result result : results) {</b>
+        <b class="fc"><i>127</i>&nbsp; if (result.getStage().getStageID().equals(visible.getStageID()))</b>
+        <b class="fc"><i>128</i>&nbsp; return result;</b>
+        <b class="nc"><i>129</i>&nbsp; }</b>
+        <b class="nc"><i>130</i>&nbsp; throw new FormatException(&quot;code|questionnaire|tagging&quot;,
+            visible.getType());</b>
+        <i>131</i>&nbsp; }
+        <i>132</i>&nbsp;}
+    </div>
 </div>
 
 <div class="footer">
-    
+
     <div style="float:right;">generated on 2020-06-22 21:38</div>
 </div>
 </body>

@@ -28,25 +28,30 @@ public class Experiment {
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Stage> stages= new ArrayList<>();
+    private List<Stage> stages = new ArrayList<>();
 
-    public Experiment() { }
+    public Experiment() {
+    }
 
     public Experiment(String experimentName) {
         this.experimentName = experimentName;
     }
 
-    public Experiment(String experimentName,ManagementUser creator) {
+    public Experiment(String experimentName, ManagementUser creator) {
         this.experimentName = experimentName;
         ManagementUserToExperiment m = new ManagementUserToExperiment(creator, this, "creator");
         creator.addManagementUserToExperiment(m);
         this.addManagementUserToExperiment(m);
-        if(!managementUserToExperiments.contains(m))
+        if (!managementUserToExperiments.contains(m))
             managementUserToExperiments.add(m);
     }
 
     public int getExperimentId() {
         return experimentId;
+    }
+
+    public void setExperimentId(int experimentId) {
+        this.experimentId = experimentId;
     }
 
     public String getExperimentName() {
@@ -81,15 +86,15 @@ public class Experiment {
         return stages;
     }
 
-    public Stage getStage(int idx) throws NotExistException {
-        for(Stage s:stages){
-            if(s.getStageID().getStageIndex()==idx)return s;
-        }
-        throw new NotExistException("stage",idx+"");
-    }
-
     public void setStages(List<Stage> stages) {
         this.stages = stages;
+    }
+
+    public Stage getStage(int idx) throws NotExistException {
+        for (Stage s : stages) {
+            if (s.getStageID().getStageIndex() == idx) return s;
+        }
+        throw new NotExistException("stage", idx + "");
     }
 
     public boolean getPublished() {
@@ -100,27 +105,23 @@ public class Experiment {
         this.published = published;
     }
 
-    public void setExperimentId(int experimentId) {
-        this.experimentId = experimentId;
-    }
-
     //=========================== end of setters getters ===============================
 
     public void addStage(Stage stage) {
-        if(stage.getExperiment() == null)
+        if (stage.getExperiment() == null)
             stage.setExperiment(this);
-        if(!stages.contains(stage))
+        if (!stages.contains(stage))
             stages.add(stage);
     }
 
-    public void addManagementUserToExperiment(ManagementUserToExperiment m){
-        if(!this.managementUserToExperiments.contains(m))
+    public void addManagementUserToExperiment(ManagementUserToExperiment m) {
+        if (!this.managementUserToExperiments.contains(m))
             this.managementUserToExperiments.add(m);
     }
 
     public boolean containsManger(ManagementUser manger) {
-        for(ManagementUserToExperiment m : managementUserToExperiments) {
-            if(m.getManagementUser().getBguUsername().equals(manger.getBguUsername())) {
+        for (ManagementUserToExperiment m : managementUserToExperiments) {
+            if (m.getManagementUser().getBguUsername().equals(manger.getBguUsername())) {
                 return true;
             }
         }

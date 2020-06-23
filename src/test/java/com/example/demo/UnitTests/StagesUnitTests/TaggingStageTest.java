@@ -5,12 +5,9 @@ import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
-import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,23 +48,23 @@ public class TaggingStageTest {
     @Test
     public void fillCodeInsteadTagging() {
         // fails because taggingStage can not be filled as a code stage
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             taggingStage.fillCode(new HashMap<>(), null);
         });
     }
 
     @Test
-    public void fillQuestionnaireInsteadTagging()  {
+    public void fillQuestionnaireInsteadTagging() {
         // fails because taggingStage can not be filled as a questionnaire stage
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             taggingStage.fillQuestionnaire(new HashMap<>(), null);
         });
     }
 
     @Test
-    public void fillInfoInsteadTagging()  {
+    public void fillInfoInsteadTagging() {
         // fails because taggingStage can not be filled as a info stage
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             taggingStage.fillInfo(new Object(), null);
         });
     }
@@ -87,12 +84,12 @@ public class TaggingStageTest {
         JSONObject tag = getTag();
         ans.put(1, tag);
 
-        assertThrows(FormatException.class,()->{
+        assertThrows(FormatException.class, () -> {
             taggingStage.fillTagging(Map.of("tagging", ans), null);
         });
     }
 
-    private JSONObject getTag(){
+    private JSONObject getTag() {
         JSONObject tag = new JSONObject();
         tag.put("start_loc", 0);
         tag.put("length", 10);

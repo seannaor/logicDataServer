@@ -35,15 +35,6 @@ public class CreatorServiceTests {
     private final CreatorBusiness creatorBusiness;
     private final DataCache cache;
     private final DBAccess db;
-
-    @Autowired
-    public CreatorServiceTests(CreatorService creatorService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
-        this.creatorService = creatorService;
-        this.creatorBusiness = creatorBusiness;
-        this.cache = cache;
-        this.db = db;
-    }
-
     private ManagementUser manager;
     private ManagementUser ally;
     private Experiment experiment;
@@ -51,6 +42,13 @@ public class CreatorServiceTests {
     private GradingTask task;
     private Grader grader;
     private String graderCode;
+    @Autowired
+    public CreatorServiceTests(CreatorService creatorService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
+        this.creatorService = creatorService;
+        this.creatorBusiness = creatorBusiness;
+        this.cache = cache;
+        this.db = db;
+    }
 
     @BeforeEach
     private void init() throws NotExistException, FormatException, ExistException {
@@ -147,11 +145,11 @@ public class CreatorServiceTests {
         assertEquals("OK", ansRight.get("response"));
         int expId = (Integer) ansRight.get("id");
         int toValidateId = -1;
-            for (Experiment exp : creatorBusiness.getExperiments(manager.getBguUsername()))
-                if (exp.getExperimentName().equals("something")) {
-                    toValidateId = exp.getExperimentId();
-                    break;
-                }
+        for (Experiment exp : creatorBusiness.getExperiments(manager.getBguUsername()))
+            if (exp.getExperimentName().equals("something")) {
+                toValidateId = exp.getExperimentId();
+                break;
+            }
         assertEquals(expId, toValidateId);
     }
 
@@ -181,14 +179,14 @@ public class CreatorServiceTests {
         assertEquals("OK", ansRight.get("response"));
         int gradingTaskId = (Integer) ansRight.get("id");
         boolean found = false;
-            for (GradingTask gt : creatorBusiness.getGradingTasks(manager.getBguUsername(), experiment.getExperimentId())) {
-                if (gt.getGradingTaskId() == gradingTaskId) {
-                    found = true;
-                    assertEquals(gt.getStages().size(), 3);
-                    assertEquals(gt.getGeneralExperiment().getStages().size(), personalExp.size());
-                    assertEquals(gt.getGradingExperiment().getStages().size(), gradingExp.size());
-                }
+        for (GradingTask gt : creatorBusiness.getGradingTasks(manager.getBguUsername(), experiment.getExperimentId())) {
+            if (gt.getGradingTaskId() == gradingTaskId) {
+                found = true;
+                assertEquals(gt.getStages().size(), 3);
+                assertEquals(gt.getGeneralExperiment().getStages().size(), personalExp.size());
+                assertEquals(gt.getGradingExperiment().getStages().size(), gradingExp.size());
             }
+        }
         if (!found)
             fail();
     }
@@ -217,7 +215,7 @@ public class CreatorServiceTests {
         Map<String, Object> ansRight = creatorService.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), stage);
         assertEquals("OK", ansRight.get("response"));
         assertEquals(task.getGeneralExperiment().getStages().size(), personalStages + 1);
-            assertEquals(task.getGeneralExperiment().getStage(personalStages).getType(), "info");
+        assertEquals(task.getGeneralExperiment().getStage(personalStages).getType(), "info");
     }
 
     @Test

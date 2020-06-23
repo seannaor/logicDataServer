@@ -24,11 +24,11 @@ public class GraderBusiness implements IGraderBusiness {
     @Autowired
     public GraderBusiness(DataCache cache, DBAccess db) {
         this.cache = cache;
-        this.db=db;
+        this.db = db;
     }
 
     @Override
-    public boolean beginGrading(UUID accessCode)  {
+    public boolean beginGrading(UUID accessCode) {
         try {
             cache.getGraderByCode(accessCode);
             return true;
@@ -54,7 +54,7 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     public void fillInStage(UUID accessCode, int pid, Map<String, Object> data) throws CodeException, NotInReachException, ExpEndException, ParseException, FormatException, NotExistException {
-        fillInStage(getParticipant(accessCode,pid), data);
+        fillInStage(getParticipant(accessCode, pid), data);
     }
 
     public void submitGradingResults(UUID accessCode, int pid) throws NotExistException, CodeException {
@@ -68,24 +68,24 @@ public class GraderBusiness implements IGraderBusiness {
     }
 
     public Stage getNextStage(UUID accessCode, int pid) throws CodeException, ExpEndException, NotExistException {
-        Participant participant = getParticipant(accessCode,pid);
+        Participant participant = getParticipant(accessCode, pid);
         Stage s = participant.getNextStage();
         db.saveParticipant(participant);
         return s;
     }
 
     public Stage getCurrentStage(UUID accessCode, int pid) throws CodeException, NotExistException, ExpEndException {
-        Participant participant = getParticipant(accessCode,pid);
+        Participant participant = getParticipant(accessCode, pid);
         return participant.getCurrStage();
     }
 
     public Stage getStage(UUID accessCode, int pid, int idx) throws CodeException, NotExistException, NotInReachException {
-        Participant participant = getParticipant(accessCode,pid);
+        Participant participant = getParticipant(accessCode, pid);
         return participant.getStage(idx);
     }
 
-    public Result getResult(UUID accessCode,int pid, int idx) throws CodeException, NotExistException, NotInReachException {
-        Participant participant = getParticipant(accessCode,pid);
+    public Result getResult(UUID accessCode, int pid, int idx) throws CodeException, NotExistException, NotInReachException {
+        Participant participant = getParticipant(accessCode, pid);
         return participant.getResult(idx);
     }
 
@@ -93,7 +93,7 @@ public class GraderBusiness implements IGraderBusiness {
     //Utils
     private Participant getParticipant(UUID accessCode, int pid) throws CodeException, NotExistException {
         GraderToGradingTask task = cache.getTaskByCode(accessCode);
-        if(pid==-1)return task.getGeneralExpParticipant();
+        if (pid == -1) return task.getGeneralExpParticipant();
         return task.getGraderParticipant(pid);
     }
 

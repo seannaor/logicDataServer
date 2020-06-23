@@ -4,7 +4,10 @@ import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import com.example.demo.BusinessLayer.Exceptions.*;
+import com.example.demo.BusinessLayer.Exceptions.ExistException;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
+import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,30 +19,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "graders_to_grading_tasks")
 public class GraderToGradingTask {
-    @Embeddable
-    public static class GraderToGradingTaskID implements Serializable {
-        @Column(name = "grading_task_id")
-        private int gradingTaskId;
-        @Column(name = "grader_email")
-        private String graderEmail;
-
-        public GraderToGradingTaskID() {
-        }
-
-        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
-            this.gradingTaskId = gradingTaskId;
-            this.graderEmail = graderEmail;
-        }
-
-        public int getGradingTaskId() {
-            return gradingTaskId;
-        }
-
-        public String getGraderEmail() {
-            return graderEmail;
-        }
-    }
-
     @EmbeddedId
     private GraderToGradingTaskID graderToGradingTaskID;
     @MapsId("gradingTaskId")
@@ -59,7 +38,6 @@ public class GraderToGradingTask {
     private Participant generalExpParticipant;
     @OneToMany(mappedBy = "graderToGradingTask")
     private List<GraderToParticipant> graderToParticipants = new ArrayList<>();
-
     public GraderToGradingTask() {
     }
 
@@ -71,7 +49,6 @@ public class GraderToGradingTask {
         this.gradingTask.addAssignedGradingTasks(this);
         this.grader.assignGradingTasks(this);
     }
-
 
     public void addGraderToParticipant(GraderToParticipant g) throws ExistException {
         for (GraderToParticipant graderToParticipant : this.graderToParticipants) {
@@ -106,12 +83,6 @@ public class GraderToGradingTask {
         throw new NotExistException("participant", "" + pid);
     }
 
-    //setters
-
-    public void setGraderAccessCode(UUID graderAccessCode) {
-        this.graderAccessCode = graderAccessCode;
-    }
-
     //getters
     public List<Result> getExpeeRes(int pid) throws NotExistException, FormatException, NotInReachException {
         Participant p = getExperimenteeParticipant(pid);
@@ -122,6 +93,8 @@ public class GraderToGradingTask {
         }
         return ret;
     }
+
+    //setters
 
     public List<Participant> getParticipants() {
         List<Participant> participants = new ArrayList<>();
@@ -162,6 +135,10 @@ public class GraderToGradingTask {
         return graderAccessCode;
     }
 
+    public void setGraderAccessCode(UUID graderAccessCode) {
+        this.graderAccessCode = graderAccessCode;
+    }
+
     public Participant getGeneralExpParticipant() {
         return generalExpParticipant;
     }
@@ -172,5 +149,29 @@ public class GraderToGradingTask {
 
     public List<GraderToParticipant> getGraderToParticipants() {
         return this.graderToParticipants;
+    }
+
+    @Embeddable
+    public static class GraderToGradingTaskID implements Serializable {
+        @Column(name = "grading_task_id")
+        private int gradingTaskId;
+        @Column(name = "grader_email")
+        private String graderEmail;
+
+        public GraderToGradingTaskID() {
+        }
+
+        public GraderToGradingTaskID(int gradingTaskId, String graderEmail) {
+            this.gradingTaskId = gradingTaskId;
+            this.graderEmail = graderEmail;
+        }
+
+        public int getGradingTaskId() {
+            return gradingTaskId;
+        }
+
+        public String getGraderEmail() {
+            return graderEmail;
+        }
     }
 }

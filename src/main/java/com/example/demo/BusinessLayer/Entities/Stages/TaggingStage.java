@@ -1,7 +1,5 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
@@ -30,7 +28,7 @@ public class TaggingStage extends Stage {
     public TaggingStage() {
     }
 
-    public TaggingStage(CodeStage codeStage){
+    public TaggingStage(CodeStage codeStage) {
         setCodeStage(codeStage);
     }
 
@@ -43,7 +41,7 @@ public class TaggingStage extends Stage {
     }
 
     @Override
-    public Map<String,Object> getAsMap() {
+    public Map<String, Object> getAsMap() {
         return Map.of();
     }
 
@@ -55,8 +53,8 @@ public class TaggingStage extends Stage {
     // if old is null, new TaggingResult will be created, else, old will be chanced
     //TODO: validate old actually change
     @Override
-    public TaggingResult fillTagging(Map<String,Object> data, TaggingResult old) throws FormatException, NotInReachException {
-        if(old == null) {
+    public TaggingResult fillTagging(Map<String, Object> data, TaggingResult old) throws FormatException, NotInReachException {
+        if (old == null) {
             old = new TaggingResult();
         }
         JSONObject JTags = validate(data);
@@ -67,7 +65,7 @@ public class TaggingStage extends Stage {
             if (!JTags.containsKey(i))
                 throw new FormatException("tag for requirement #" + i);
 
-            RequirementTag tag =  r.tag((JSONObject) JTags.get(i));
+            RequirementTag tag = r.tag((JSONObject) JTags.get(i));
             tag.setCodeStageIdx(this.codeStage.getStageID().getStageIndex());
             tags.add(tag);
         }
@@ -75,12 +73,13 @@ public class TaggingStage extends Stage {
         return old; // old is actually new now :)
     }
 
-    private JSONObject validate(Map<String,Object> data) throws FormatException {
+    private JSONObject validate(Map<String, Object> data) throws FormatException {
         JSONObject tags;
-        try{
+        try {
             tags = (JSONObject) data.get("tagging");
-            if(tags != null) return tags;
-        }catch (Exception ignored) {}
+            if (tags != null) return tags;
+        } catch (Exception ignored) {
+        }
         throw new FormatException("tags list");
     }
 }

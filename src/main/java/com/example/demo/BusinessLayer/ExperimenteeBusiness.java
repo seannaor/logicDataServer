@@ -3,21 +3,13 @@ package com.example.demo.BusinessLayer;
 import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
-import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
-import com.example.demo.SpringBooter;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.data.util.Pair;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,7 +29,9 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     public boolean beginParticipation(UUID accessCode) {
         try {
             cache.getExpeeByCode(accessCode);
-        }catch (CodeException ignore) {return false;}
+        } catch (CodeException ignore) {
+            return false;
+        }
         return true;
     }
 

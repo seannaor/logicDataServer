@@ -8,17 +8,17 @@ public class PermissionUnitTest {
     private Permission permission;
 
     @Test
-    public void settersGettersTest(){
+    public void settersGettersTest() {
         String text = "SYS_ADMIN";
         permission = new Permission(text);
-        Assert.assertEquals(text,permission.getPermissionName());
+        Assert.assertEquals(text, permission.getPermissionName());
 
         text = "GUEST";
         permission.setPermissionName(text);
         int id = 1;
         permission.setPermissionId(id);
 
-        Assert.assertEquals(text,permission.getPermissionName());
-        Assert.assertEquals(id,permission.getPermissionId());
+        Assert.assertEquals(text, permission.getPermissionName());
+        Assert.assertEquals(id, permission.getPermissionId());
     }
 }
