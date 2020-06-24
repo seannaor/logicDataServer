@@ -127,12 +127,12 @@ public class CreatorServiceTests {
 
     @Test
     public void addExperimentNegativeTest() {
-        List<JSONObject> stages1 = Utils.buildStages();
+        List<Map<String,Object>> stages1 = Utils.buildStages();
         // username not exist - should fail
         Map<String, Object> ansWrong = creatorService.addExperiment("something", "something", stages1);
         assertNotEquals("OK", ansWrong.get("response"));
         //bad stages representation
-        List<JSONObject> stages2 = new ArrayList<>();
+        List<Map<String,Object>> stages2 = new ArrayList<>();
         stages2.add(new JSONObject());
         ansWrong = creatorService.addExperiment(manager.getBguUsername(), "something", stages2);
         assertNotEquals("OK", ansWrong.get("response"));
@@ -140,7 +140,7 @@ public class CreatorServiceTests {
 
     @Test
     public void addExperimentPositiveTest() throws NotExistException {
-        List<JSONObject> stages = Utils.buildStages();
+        List<Map<String,Object>> stages = Utils.buildStages();
         Map<String, Object> ansRight = creatorService.addExperiment(manager.getBguUsername(), "something", stages);
         assertEquals("OK", ansRight.get("response"));
         int toValidateId = -1;
@@ -160,7 +160,7 @@ public class CreatorServiceTests {
         ansWrong = creatorService.addGradingTask(manager.getBguUsername(), 9090, "some grading task", List.of(), List.of(), List.of());
         assertNotEquals("OK", ansWrong.get("response"));
         // bad grading experiment
-        List<JSONObject> gradingStages = new ArrayList<>();
+        List<Map<String,Object>> gradingStages = new ArrayList<>();
         gradingStages.add(new JSONObject());
         ansWrong = creatorService.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "some grading task", gradingStages, List.of(), List.of());
         assertNotEquals("OK", ansWrong.get("response"));
@@ -171,8 +171,8 @@ public class CreatorServiceTests {
 
     @Test
     public void addGradingTaskPositiveTest() throws NotExistException {
-        List<JSONObject> gradingExp = List.of(Utils.getStumpInfoStage());
-        List<JSONObject> personalExp = List.of(Utils.getStumpQuestionsStage());
+        List<Map<String,Object>> gradingExp = List.of(Utils.getStumpInfoMap());
+        List<Map<String,Object>> personalExp = List.of(Utils.getStumpQuestionsMap());
         Map<String, Object> ansRight = creatorService.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "some grading task", gradingExp, List.of(1, 2, 3), personalExp);
         assertEquals("OK", ansRight.get("response"));
         int gradingTaskId = (Integer) ansRight.get("id");

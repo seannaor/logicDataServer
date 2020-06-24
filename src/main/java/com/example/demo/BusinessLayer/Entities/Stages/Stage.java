@@ -31,7 +31,7 @@ public abstract class Stage {
     public Stage() {
     }
 
-    public static Stage parseStage(JSONObject stage, Experiment exp) throws FormatException {
+    public static Stage parseStage(Map<String,Object> stage, Experiment exp) throws FormatException {
         try {
             switch ((String) stage.get("type")) {
                 case "info":

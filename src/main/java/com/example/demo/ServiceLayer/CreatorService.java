@@ -50,7 +50,7 @@ public class CreatorService {
     }
 
     //UC 1.1 - second choice (ALL)
-    public Map<String, Object> addExperiment(String researcherName, String expName, List<JSONObject> stages) {
+    public Map<String, Object> addExperiment(String researcherName, String expName, List<Map<String,Object>> stages) {
         String res = "OK";
         try {
             creatorBusiness.addExperiment(researcherName, expName, stages);
@@ -61,8 +61,8 @@ public class CreatorService {
     }
 
     //UC 1.2 - one choice (ALL)
-    public Map<String, Object> addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp,
-                                              List<Integer> stagesToCheck, List<JSONObject> personalExp) {
+    public Map<String, Object> addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String,Object>> ExpeeExp,
+                                              List<Integer> stagesToCheck, List<Map<String,Object>> personalExp) {
         try {
             return Map.of("response", "OK", "id",
                     creatorBusiness.addGradingTask(researcherName, expId, gradTaskName, ExpeeExp, stagesToCheck, personalExp));

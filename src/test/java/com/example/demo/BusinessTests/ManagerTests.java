@@ -19,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -172,7 +173,7 @@ public class ManagerTests {
     @Transactional
     public void addAllExperiment() throws NotExistException, FormatException, ExistException {
         String expName = "testExp";
-        List<JSONObject> stages = Utils.buildStages();
+        List<Map<String,Object>> stages = Utils.buildStages();
 
         //new experiment should pass
         int expNum = manager.getManagementUserToExperiments().size();
@@ -254,7 +255,7 @@ public class ManagerTests {
     public void addStage() throws FormatException, NotExistException {
         // adding legal stages should pass
         int initstagesNum = experiment.getStages().size();
-        for (JSONObject jStage : Utils.buildStages()) {
+        for (Map<String,Object> jStage : Utils.buildStages()) {
             creatorBusiness.addStageToExperiment(manager.getBguUsername(), experiment.getExperimentId(), jStage);
             assertEquals(++initstagesNum, db.getExperimentById(experiment.getExperimentId()).getStages().size());
             assertEquals(initstagesNum, experiment.getStages().size());
@@ -266,7 +267,7 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(FormatException.class, () -> {
             //not a valid stage
-            creatorBusiness.addStageToExperiment(manager.getBguUsername(), experiment.getExperimentId(), new JSONObject());
+            creatorBusiness.addStageToExperiment(manager.getBguUsername(), experiment.getExperimentId(), Map.of());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -319,7 +320,7 @@ public class ManagerTests {
         long currentGT = db.getNumberOfGradingTasks();
         assertThrows(FormatException.class, () -> {
             //Illegal personal & result experiments
-            List<JSONObject> stagesIllegal = List.of(new JSONObject());
+            List<Map<String,Object>> stagesIllegal = List.of(Map.of());
             creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", stagesIllegal, new ArrayList<>(), stagesIllegal);
         });
         assertEquals(currentGT, db.getNumberOfGradingTasks());

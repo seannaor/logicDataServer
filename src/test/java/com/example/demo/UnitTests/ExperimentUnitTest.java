@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.example.demo.Utils.buildSimpleExp;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +23,7 @@ public class ExperimentUnitTest {
     @BeforeEach
     public void init() throws FormatException {
         experiment = new Experiment("experiment");
-        for (JSONObject stageJ : buildSimpleExp(List.of("what is your name?"))) {
+        for (Map<String,Object> stageJ : buildSimpleExp(List.of("what is your name?"))) {
             Stage s = Stage.parseStage(stageJ, experiment);
             experiment.addStage(s);
         }

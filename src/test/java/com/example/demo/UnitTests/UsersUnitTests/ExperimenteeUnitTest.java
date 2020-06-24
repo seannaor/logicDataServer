@@ -30,7 +30,7 @@ public class ExperimenteeUnitTest {
     @BeforeEach
     public void init() throws FormatException {
         exp = new Experiment("experiment");
-        for (JSONObject stageJ : buildSimpleExp(List.of("what is youer name?"))) {
+        for (Map<String,Object> stageJ : buildSimpleExp(List.of("what is youer name?"))) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }

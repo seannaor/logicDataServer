@@ -20,16 +20,47 @@ import java.util.UUID;
 
 public class Utils {
 
-    public static List<JSONObject> buildStages() {
-        List<JSONObject> stages = new ArrayList<>();
+    public static List<Map<String,Object>> buildStages() {
+        List<Map<String,Object>> stages = new ArrayList<>();
 
-        stages.add(getStumpInfoStage());
-        stages.add(getStumpQuestionsStage());
-        stages.add(getStumpCodeStage());
-        stages.add(getStumpTaggingStage());
+        stages.add(getStumpInfoMap());
+        stages.add(getStumpQuestionsMap());
+//        stages.add(getStumpCodeStage());
+//        stages.add(getStumpTaggingStage());
 
         return stages;
     }
+
+    public static Map<String,Object> getStumpInfoMap(){
+        return Map.of("type","info","info", "some information and stuff");
+    }
+    public static Map<String,Object> getStumpQuestionsMap(){
+        JSONObject questionnaire = new JSONObject();
+        questionnaire.put("type", "questionnaire");
+        List<JSONObject> questions = new ArrayList<>();
+        Map<String,Object> q1 = Map.of("questionType", "open","question", "how much");
+
+
+//        JSONObject q2 = new JSONObject();
+//        q2.put("questionType", "multiChoice");
+//        q2.put("question", "who?");
+//        List<String> answers = new ArrayList<>();
+//        answers.add("me");
+//        answers.add("you");
+//        answers.add("no one");
+//        answers.add("we both");
+//        q2.put("possibleAnswers", answers);
+//        questions.add(q2);
+//        questionnaire.put("questions", questions);
+
+        return Map.of("type","questionnaire","questions", List.of(q1));
+    }
+//    public static Map<String,Object> getStumpInfoMap(){
+//        return Map.of("type","info","info", "some information and stuff");
+//    }
+//    public static Map<String,Object> getStumpInfoMap(){
+//        return Map.of("type","info","info", "some information and stuff");
+//    }
 
     public static JSONObject buildResearcher() {
         JSONObject researcher = new JSONObject();
@@ -92,7 +123,7 @@ public class Utils {
     }
 
     public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException {
-        List<JSONObject> stages = buildStages();
+        List<Map<String,Object>> stages = buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         return manager.getExperimentByName("The Experiment");
     }
@@ -159,7 +190,7 @@ public class Utils {
         graderBusiness.fillInStage(p, buildParticipantTag());
     }
 
-    public static List<JSONObject> buildSimpleExp(List<String> questions) {
+    public static List<Map<String,Object>> buildSimpleExp(List<String> questions) {
         List<JSONObject> stages = new ArrayList<>();
 
         JSONObject info = new JSONObject();
@@ -182,7 +213,7 @@ public class Utils {
         }
         questionnaire.put("questions", JQuestions);
         stages.add(questionnaire);
-        return stages;
+        return List.of();
     }
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {

@@ -57,7 +57,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addStageToExperiment(String researcherName, int id, JSONObject stage) throws FormatException, NotExistException {
+    public void addStageToExperiment(String researcherName, int id, Map<String,Object> stage) throws FormatException, NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(id);
         Stage toAdd = Stage.parseStage(stage, exp);
@@ -66,7 +66,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
+    public int addExperiment(String researcherName, String expName, List<Map<String,Object>> stages) throws NotExistException, FormatException, ExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         try {
             c.getExperimentByName(expName);
@@ -78,7 +78,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public int addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp, List<Integer> stagesToCheck, List<JSONObject> personalExp) throws NotExistException, FormatException {
+    public int addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String,Object>> ExpeeExp, List<Integer> stagesToCheck, List<Map<String,Object>> personalExp) throws NotExistException, FormatException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
         Experiment personal = buildExperiment(personalExp, gradTaskName + "/personal", c);
@@ -92,7 +92,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+    public void addToPersonal(String researcherName, int expId, int taskId, Map<String,Object> stage) throws NotExistException, FormatException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment personal = gt.getGeneralExperiment();
         Stage toAdd = Stage.parseStage(stage, personal);
@@ -101,7 +101,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+    public void addToResultsExp(String researcherName, int expId, int taskId, Map<String,Object> stage) throws NotExistException, FormatException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment resExp = gt.getGradingExperiment();
         Stage toAdd = Stage.parseStage(stage, resExp);
@@ -306,10 +306,10 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     // utils
-    private Experiment buildExperiment(List<JSONObject> stages, String expName, ManagementUser creator) throws FormatException {
+    private Experiment buildExperiment(List<Map<String,Object>> stages, String expName, ManagementUser creator) throws FormatException {
         Experiment exp = new Experiment(expName, creator);
         db.saveExperiment(exp, creator);
-        for (JSONObject jStage : stages) {
+        for (Map<String,Object> jStage : stages) {
             try {
                 Stage toAdd = Stage.parseStage(jStage, exp);
                 exp.addStage(toAdd);

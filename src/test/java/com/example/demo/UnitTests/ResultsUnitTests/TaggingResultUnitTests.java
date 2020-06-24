@@ -30,8 +30,8 @@ public class TaggingResultUnitTests {
     @BeforeEach
     public void init() throws FormatException, NotExistException, ExpEndException, NotInReachException, ParseException {
         Experiment exp = new Experiment("Experiment Name");
-        List<JSONObject> stagesJson = Utils.buildStages();
-        for (JSONObject stageJ : stagesJson) {
+        List<Map<String,Object>> stagesJson = Utils.buildStages();
+        for (Map<String,Object> stageJ : stagesJson) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }

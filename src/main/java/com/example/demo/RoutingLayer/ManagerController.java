@@ -36,9 +36,9 @@ public class ManagerController {
     @PostMapping("/addExperiment/{username}")
     public Map<String, Object> addExperiment(@PathVariable String username,
                                              @RequestBody Map<String, Object> experiment){
-        System.out.println("/add_experiment " + username);
+        System.out.println("/addExperiment " + username);
         String experimnetnName = (String)experiment.get("expName");
-        List<JSONObject> stages  = (List<JSONObject>) experiment.get("stages");
+        List<Map<String,Object>> stages  = (List<Map<String,Object>>) experiment.get("stages");
         return creator.addExperiment(username,experimnetnName,stages);
     }
 
@@ -54,6 +54,16 @@ public class ManagerController {
     public Map<String, Object> getExperiments(@PathVariable String username) {
         return creator.getExperiments(username);
     }
+
+//    @GetMapping("/addAlly/{username}/{expName}/{mail}")
+//    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail){
+//
+//    }
+
+//    @GetMapping("/addAlly/{username}/{expName}")
+//    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail, @RequestParam String role, @RequestParam List<String> permissions) {
+//        return creator.setAlliePermissions(username, exp_id, mail, role, permissions);
+//    }
 
     // old version V
 
@@ -73,12 +83,12 @@ public class ManagerController {
     @RequestMapping("/add_grading_task")
     public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam
             List<String> expee_stages, @RequestParam List<Integer> exp_indexes, @RequestParam List<String> personal_stages) {
-        List<JSONObject> jStages_personal = new ArrayList<>();
+        List<Map<String,Object>> jStages_personal = new ArrayList<>();
         for (String stage : personal_stages) {
             stage = decode(stage);
             jStages_personal.add(strToJSON(stage));
         }
-        List<JSONObject> jStages_expee = new ArrayList<>();
+        List<Map<String,Object>> jStages_expee = new ArrayList<>();
         for (String stage : expee_stages) {
             stage = decode(stage);
             jStages_expee.add(strToJSON(stage));
@@ -101,11 +111,6 @@ public class ManagerController {
     @RequestMapping("/setStagesToCheck")
     public Map<String, Object> setStagesToCheck(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam List<Integer> indexes) {
         return creator.setStagesToCheck(username, exp_id, task_id, indexes);
-    }
-
-    @RequestMapping("/add_allie")
-    public Map<String, Object> addAllie(@RequestParam String username, @RequestParam int exp_id, @RequestParam String mail, @RequestParam String role, @RequestParam List<String> permissions) {
-        return creator.setAlliePermissions(username, exp_id, mail, role, permissions);
     }
 
     @RequestMapping("/addGraderToTask")

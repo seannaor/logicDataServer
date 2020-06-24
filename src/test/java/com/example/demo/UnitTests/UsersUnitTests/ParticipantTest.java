@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParticipantTest {
     private Participant participant;
-    private List<JSONObject> stagesJson;
+    private List<Map<String,Object>> stagesJson;
 
     @BeforeEach
     private void init() throws FormatException {
         Experiment exp = new Experiment("Experiment Name");
         stagesJson = Utils.buildStages();
-        for (JSONObject stageJ : stagesJson) {
+        for (Map<String,Object> stageJ : stagesJson) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }
