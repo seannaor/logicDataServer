@@ -193,6 +193,19 @@ public class CreatorBusiness implements ICreatorBusiness {
         return codes;
     }
 
+    public List<String> addExperimentees(String researcherName, String expName, List<String> expeeMails) throws NotExistException, ExistException {
+        ManagementUser c = cache.getManagerByName(researcherName);
+        Experiment exp = c.getExperimentByName(expName);
+
+        validateMails(exp, expeeMails);
+
+        List<String> codes = new ArrayList<>();
+        for (String mail : expeeMails) {
+            codes.add(addExperimentee(exp, mail));
+        }
+        return codes;
+    }
+
     private void validateMails(Experiment experiment, List<String> mails) throws ExistException {
         Map<String,Boolean> mailsMap =new HashMap<>();
         for (String mail : mails) {

@@ -17,8 +17,13 @@ import java.util.Map;
 
 @Service
 public class CreatorService {
-    @Autowired
+
     private CreatorBusiness creatorBusiness;
+
+    @Autowired
+    public CreatorService(CreatorBusiness creatorBusiness) {
+        this.creatorBusiness = creatorBusiness;
+    }
 
     //Login
     public boolean researcherLogin(String username, String password) {
@@ -46,11 +51,13 @@ public class CreatorService {
 
     //UC 1.1 - second choice (ALL)
     public Map<String, Object> addExperiment(String researcherName, String expName, List<JSONObject> stages) {
+        String res = "OK";
         try {
-            return Map.of("response", "OK", "id", creatorBusiness.addExperiment(researcherName, expName, stages));
+            creatorBusiness.addExperiment(researcherName, expName, stages);
         } catch (Exception e) {
-            return Map.of("response", e.getMessage());
+            res = e.getMessage();
         }
+        return Map.of("response", res);
     }
 
     //UC 1.2 - one choice (ALL)
@@ -124,6 +131,15 @@ public class CreatorService {
         }
     }
     //addExperimentees
+
+    public Map<String, Object> addExperimentees(String researcherName, String expName, List<String> expeeMails) {
+        try {
+            List<String> codes = creatorBusiness.addExperimentees(researcherName, expName, expeeMails);
+            return Map.of("response", "OK", "accessCodes", codes);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
 
     public Map<String, Object> addExperimentees(String researcherName, int expId, List<String> expeeMails) {
         try {
