@@ -1,7 +1,6 @@
 package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.CreatorService;
-import com.example.demo.ServiceLayer.ExperimenteeService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +42,11 @@ public class ManagerController {
     }
 
     @PostMapping("/addExperimentees/{username}/{expName}")
-    public Map<String, Object> addExperimentees(@PathVariable String username,@PathVariable String expName,
-                                             @RequestBody Map<String, List<String>> eMails){
+    public Map<String, Object> addExperimentees(@PathVariable String username, @PathVariable String expName,
+                                                @RequestBody Map<String, List<String>> eMails) {
         System.out.println("/add_experimentees " + username);
-        List<String> emails  = (List<String>) eMails.get("emails");
-        return creator.addExperimentees(username,expName,emails);
+        List<String> emails = (List<String>) eMails.get("emails");
+        return creator.addExperimentees(username, expName, emails);
     }
 
     @GetMapping("/getExperiments/{username}")
