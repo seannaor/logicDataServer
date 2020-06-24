@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Sql({"/create_database.sql"})
@@ -159,7 +160,7 @@ public class ExperimenteeServiceTests {
         assertEquals(((CodeResult) expee.getParticipant().getResult(2)).getUserCode(), "return -1");
         assertEquals("tagging", ans.get("type"));
         //filling tagging
-        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("tagging", getTags())));
+        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", buildParticipantTag()));
         assertEquals(((TaggingResult) expee.getParticipant().getResult(3)).getTags().size(), 3);
         assertEquals("complete", ans.get("type"));
     }
@@ -169,23 +170,6 @@ public class ExperimenteeServiceTests {
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of()));
         assertTrue(ans.containsKey("Error"));
-    }
-
-    private JSONObject getTags() {
-        JSONObject ans = new JSONObject();
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        return ans;
     }
 
 }

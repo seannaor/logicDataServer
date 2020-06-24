@@ -132,25 +132,7 @@ public class Utils {
     }
 
     public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        //ans.put("stageType", "tagging");
-
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("tagging", ans)));
-        //experimenteeBusiness.fillInStage(code, ans);
+        experimenteeBusiness.fillInStage(code, Map.of("data", buildParticipantTag()));
         return 3;
     }
 
@@ -174,24 +156,7 @@ public class Utils {
     }
 
     public static void fillInTagging(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "tagging");
-
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        graderBusiness.fillInStage(p, ans);
+        graderBusiness.fillInStage(p, buildParticipantTag());
     }
 
     public static List<JSONObject> buildSimpleExp(List<String> questions) {
