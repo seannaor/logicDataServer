@@ -40,7 +40,7 @@ public class TaggingStage extends Stage {
 
     @Override
     public Map<String, Object> getAsMap() {
-        return Map.of();
+        return Map.of("type",getType(),"stage",(Map.of("codeStageIndex",this.codeStage.getStageID().getStageIndex()+1)));
     }
 
     @Override

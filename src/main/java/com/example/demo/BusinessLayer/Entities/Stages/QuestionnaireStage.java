@@ -77,7 +77,7 @@ public class QuestionnaireStage extends Stage {
         for (Question q : this.questions) {
             questions.add(q.getQuestionJson());
         }
-        return Map.of("questions", questions);
+        return Map.of("type",getType(),"stage",(Map.of("questions", questions)));
     }
 
     @Override

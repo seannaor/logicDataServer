@@ -8,7 +8,6 @@ import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
@@ -43,11 +42,10 @@ public abstract class Stage {
                             (List<String>) data.get("requirements"), (String) data.get("language"));
 
                 case "questionnaire":
-
                     return new QuestionnaireStage((List<Map<String,Object>>) data.get("questions"));
 
-                case "tagging":
-                    int codeIdx = (int) data.get("codeIndex");
+                case "tag":
+                    int codeIdx = (int) data.get("codeStageIndex");
                     CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
                     return new TaggingStage(codeStage);
             }
