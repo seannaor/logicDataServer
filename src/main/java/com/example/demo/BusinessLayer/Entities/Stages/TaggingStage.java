@@ -40,12 +40,16 @@ public class TaggingStage extends Stage {
 
     @Override
     public Map<String, Object> getAsMap() {
-        return Map.of("type",getType(),"stage",(Map.of("codeStageIndex",this.codeStage.getStageID().getStageIndex()+1)));
+        return Map.of(
+                "type", getType(),
+                "stage", Map.of(
+                        "codeStageIndex", this.codeStage.getStageID().getStageIndex() + 1)
+        );
     }
 
     @Override
     public String getType() {
-        return "tagging";
+        return "tag";
     }
 
     // if old is null, new TaggingResult will be created, else, old will be chanced
@@ -55,7 +59,7 @@ public class TaggingStage extends Stage {
         if (old == null) {
             old = new TaggingResult();
         }
-        List<List<Map<String ,Object>>> JTags = validate(data);
+        List<List<Map<String, Object>>> JTags = validate(data);
         List<RequirementTag> tags = new LinkedList<>();
         List<Requirement> requirements = codeStage.getRequirements();
         String[] userCodeRows = userCode.split("\n");
@@ -63,9 +67,9 @@ public class TaggingStage extends Stage {
         for (int i = 0; i < requirements.size(); i++) {
             Requirement r = requirements.get(i);
 
-            for (Map<String ,Object> SubTag : JTags.get(i)) {
-                int startCharLoc = getCharLoc((Map)SubTag.get("from"), userCodeRows);
-                int endCharLoc = getCharLoc((Map)SubTag.get("to"), userCodeRows) - 1;
+            for (Map<String, Object> SubTag : JTags.get(i)) {
+                int startCharLoc = getCharLoc((Map) SubTag.get("from"), userCodeRows);
+                int endCharLoc = getCharLoc((Map) SubTag.get("to"), userCodeRows) - 1;
 
                 RequirementTag tag = r.tag(startCharLoc, endCharLoc - startCharLoc);
                 tag.setCodeStageIdx(this.codeStage.getStageID().getStageIndex());
@@ -76,7 +80,7 @@ public class TaggingStage extends Stage {
         return old; // old is actually new now :)
     }
 
-    private int getCharLoc(Map<String,Object> jTag, String[] userCodeRows) throws FormatException {
+    private int getCharLoc(Map<String, Object> jTag, String[] userCodeRows) throws FormatException {
         int rowI = (int) jTag.get("row") - 1, colI = (int) jTag.get("col");
         int loc = colI;
         if (userCodeRows.length < rowI)
@@ -91,10 +95,10 @@ public class TaggingStage extends Stage {
         return loc;
     }
 
-    private List<List<Map<String ,Object>>> validate(Map<String, Object> data) throws FormatException {
-        List<List<Map<String ,Object>>> tags;
+    private List<List<Map<String, Object>>> validate(Map<String, Object> data) throws FormatException {
+        List<List<Map<String, Object>>> tags;
         try {
-            tags = (List<List<Map<String ,Object>>>) data.get("tags");
+            tags = (List<List<Map<String, Object>>>) data.get("tags");
             if (tags != null) return tags;
         } catch (Exception ignored) {
         }
