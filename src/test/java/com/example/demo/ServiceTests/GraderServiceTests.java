@@ -149,7 +149,7 @@ public class GraderServiceTests {
     }
 
     @Test
-    public void getStageWithResultTest() throws NotExistException {
+    public void getStageWithResultTest() {
         graderService.getNextStage(graderCode.toString(), expee.getParticipant().getParticipantId());
         graderService.fillInStage(graderCode.toString(), expee.getParticipant().getParticipantId(), Map.of("data", Map.of("answers", List.of("hi", "bye"))));
 

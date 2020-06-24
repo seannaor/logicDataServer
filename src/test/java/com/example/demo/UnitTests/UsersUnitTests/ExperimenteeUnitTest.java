@@ -51,7 +51,6 @@ public class ExperimenteeUnitTest {
         Assert.assertNull(experimenteeOfNoExp.getParticipant());
     }
 
-
     @Test
     public void EMailTest() {
         String mail = "newMail@post";

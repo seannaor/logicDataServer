@@ -151,6 +151,19 @@ public class ParticipantTest {
         Assert.assertEquals(result.getTags().size(), 3);
     }
 
+    @Test
+    public void getResultTest() throws NotInReachException, NotExistException, ExpEndException, FormatException, ParseException {
+        participant.getNextStage();
+        assertThrows(NotInReachException.class, () -> {
+            participant.getResult(2);
+        });
+
+        Assert.assertNull(participant.getResult(1));
+        participant.fillInStage(Map.of("answers", List.of("a lot!", "22")));
+        QuestionnaireResult result = (QuestionnaireResult) participant.getResult(1);
+        Assert.assertEquals(result.getAnswers().size(), 2);
+    }
+
     private JSONObject buildParticipantTag() {
         JSONObject ans = new JSONObject();
         JSONObject tag1 = new JSONObject();
@@ -166,18 +179,5 @@ public class ParticipantTest {
         tag3.put("length", 10);
         ans.put(2, tag3);
         return ans;
-    }
-
-    @Test
-    public void getResultTest() throws NotInReachException, NotExistException, ExpEndException, FormatException, ParseException {
-        participant.getNextStage();
-        assertThrows(NotInReachException.class, () -> {
-            participant.getResult(2);
-        });
-
-        Assert.assertNull(participant.getResult(1));
-        participant.fillInStage(Map.of("answers", List.of("a lot!", "22")));
-        QuestionnaireResult result = (QuestionnaireResult) participant.getResult(1);
-        Assert.assertEquals(result.getAnswers().size(), 2);
     }
 }

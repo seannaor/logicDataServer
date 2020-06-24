@@ -173,7 +173,7 @@ public class GraderTests {
 
     @Test
     @Transactional
-    public void grade2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
+    public void grader2Expee() throws ExpEndException, ParseException, FormatException, NotExistException, CodeException, NotInReachException, ExistException {
         String expee_mail = "different@post.bgu.ac.il";
         creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), expee_mail);
         creatorBusiness.addExpeeToGrader(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), grader.getGraderEmail(), expee_mail);
@@ -182,7 +182,7 @@ public class GraderTests {
 
         int pid = participants.get(0).getParticipantId();
         graderBusiness.getNextStage(graderCode, pid);//pass info
-        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is stupid", "fuck shit")));
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("first ans", "second ans")));
 
         int finalPid = pid;
         assertThrows(ExpEndException.class, () -> {
@@ -196,7 +196,7 @@ public class GraderTests {
         assertFalse(graderBusiness.isSubmitted(graderCode, pid));
 
         graderBusiness.getNextStage(graderCode, pid);// pass info
-        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("this student is smart", "List.of(\"this student is stupid\",\"fuck shit\")")));
+        graderBusiness.fillInStage(graderCode, pid, Utils.getGradingAnswers(List.of("and1", "ans2")));
 
         int finalPid1 = pid;
         assertThrows(ExpEndException.class, () -> {

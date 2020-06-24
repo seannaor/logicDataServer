@@ -99,7 +99,7 @@ public class CodeUnitTest {
     }
 
     @Test
-    public void fillDifferentTypesTest() throws ParseException, NotExistException, NotInReachException, FormatException {
+    public void fillDifferentTypesTest() throws FormatException {
         codeStage.fillCode(Map.of("code", "hello world"), null);
 
         assertThrows(FormatException.class, () -> {

@@ -79,7 +79,7 @@ public class TaggingStageTest {
     }
 
     @Test
-    public void fillInFailNoRequirementTag() throws NotInReachException {
+    public void fillInFailNoRequirementTag() {
         JSONObject ans = new JSONObject();
         JSONObject tag = getTag();
         ans.put(1, tag);
@@ -89,13 +89,6 @@ public class TaggingStageTest {
         });
     }
 
-    private JSONObject getTag() {
-        JSONObject tag = new JSONObject();
-        tag.put("start_loc", 0);
-        tag.put("length", 10);
-        return tag;
-    }
-
     @Test
     public void parseStageTest() throws FormatException {
         JSONObject JTagging = new JSONObject();
@@ -103,5 +96,12 @@ public class TaggingStageTest {
         JTagging.put("codeIndex", taggingStage.getCodeStage().getStageID().getStageIndex());
         Stage stage = Stage.parseStage(JTagging, exp);
         Assert.assertEquals("tagging", stage.getType());
+    }
+
+    private JSONObject getTag() {
+        JSONObject tag = new JSONObject();
+        tag.put("start_loc", 0);
+        tag.put("length", 10);
+        return tag;
     }
 }
