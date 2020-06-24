@@ -54,7 +54,7 @@ public class ManagerTests {
 
         creatorBusiness.addExperimentee(manager.getBguUsername(), experiment.getExperimentId(), "gili@post.bgu.ac.il");
         expee = cache.getExpeeByMailAndExp("gili@post.bgu.ac.il", experiment.getExperimentId());
-        System.out.println(expee.getAccessCode());
+        //System.out.println(expee.getAccessCode());
 
         int gradingTaskId = creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(),
                 "The Grading Task", new ArrayList<>(), List.of(), new ArrayList<>());
