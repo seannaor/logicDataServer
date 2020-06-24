@@ -109,7 +109,7 @@ public class CodeUnitTest {
 
         assertThrows(FormatException.class, () -> {
             // fails because infoStage can not be filled as a tag stage
-            codeStage.fillTagging(new HashMap<>(), null);
+            codeStage.fillTagging(new HashMap<>(),"", null);
         });
 
         assertThrows(FormatException.class, () -> {

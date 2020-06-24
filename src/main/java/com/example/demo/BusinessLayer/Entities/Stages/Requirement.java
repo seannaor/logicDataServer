@@ -1,6 +1,7 @@
 package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -32,9 +33,14 @@ public class Requirement {
     }
 
     public RequirementTag tag(JSONObject data) {
-        //todo: new imp of tag, build according
         RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
                 this);
+        return tag;
+    }
+
+    public RequirementTag tag(int startLoc, int length) throws FormatException {
+        if(length<0) throw new FormatException("legal tag","end of tag before start");
+        RequirementTag tag = new RequirementTag(startLoc, length, this);
         return tag;
     }
 

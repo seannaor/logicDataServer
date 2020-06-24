@@ -56,7 +56,7 @@ public class InfoStageTest {
 
         assertThrows(FormatException.class, () -> {
             // fails because infoStage can not be filled as a tag stage
-            infoStage.fillTagging(new HashMap<>(), null);
+            infoStage.fillTagging(new HashMap<>(),"", null);
         });
 
 

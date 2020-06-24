@@ -74,7 +74,7 @@ public class TaggingStageTest {
         JSONObject ans = new JSONObject();
         JSONObject tag = getTag();
         ans.put(0, tag);
-        TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans), null);
+        TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans),"", null);
         Assert.assertEquals(1, tr.getTags().size());
     }
 
@@ -85,7 +85,7 @@ public class TaggingStageTest {
         ans.put(1, tag);
 
         assertThrows(FormatException.class, () -> {
-            taggingStage.fillTagging(Map.of("tagging", ans), null);
+            taggingStage.fillTagging(Map.of("tagging", ans),"", null);
         });
     }
 

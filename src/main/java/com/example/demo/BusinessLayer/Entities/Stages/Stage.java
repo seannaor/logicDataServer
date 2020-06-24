@@ -86,7 +86,7 @@ public abstract class Stage {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(Map<String, Object> data, TaggingResult old) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String, Object> data,String userCode, TaggingResult old) throws FormatException {
         throw new FormatException("tagging stage answers");
     }
 
