@@ -33,7 +33,7 @@ public class ManagerController {
         return creator.researcherLogin(username, password);
     }
 
-    @PostMapping("/add_experiment/{username}")
+    @PostMapping("/addExperiment/{username}")
     public Map<String, Object> addExperiment(@PathVariable String username,
                                              @RequestBody Map<String, Object> experiment){
         System.out.println("/add_experiment " + username);
@@ -42,12 +42,17 @@ public class ManagerController {
         return creator.addExperiment(username,experimnetnName,stages);
     }
 
-    @PostMapping("/add_experimentees/{username}/{expName}")
-    public Map<String, Object> addExperiment(@PathVariable String username,@PathVariable String expName,
+    @PostMapping("/addExperimentees/{username}/{expName}")
+    public Map<String, Object> addExperimentees(@PathVariable String username,@PathVariable String expName,
                                              @RequestBody Map<String, List<String>> eMails){
         System.out.println("/add_experimentees " + username);
         List<String> emails  = (List<String>) eMails.get("emails");
         return creator.addExperimentees(username,expName,emails);
+    }
+
+    @PostMapping("/getExperiments/{username}")
+    public Map<String, Object> getExperiments(@PathVariable String username) {
+        return creator.getExperiments(username);
     }
 
     // old version V
@@ -63,17 +68,6 @@ public class ManagerController {
         stage = decode(stage);
         System.out.println(stage);
         return creator.addStageToExperiment(username, exp_id, strToJSON(stage));
-    }
-
-
-    @RequestMapping("/add_exp")
-    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
-        List<JSONObject> jStages = new ArrayList<>();
-        for (String stage : stages) {
-            stage = decode(stage);
-            jStages.add(strToJSON(stage));
-        }
-        return creator.addExperiment(username, exp_name, jStages);
     }
 
     @RequestMapping("/add_grading_task")
@@ -126,11 +120,6 @@ public class ManagerController {
 
     // meaningful getters
 
-    @RequestMapping("/get_experiments")
-    public Map<String, Object> getExperiments(@RequestParam String username) {
-        return creator.getExperiments(username);
-    }
-
     @RequestMapping("/get_allies")
     public Map<String, Object> getAllies(@RequestParam String username, @RequestParam int exp_id) {
         return creator.getAllies(username, exp_id);
@@ -170,4 +159,15 @@ public class ManagerController {
     public Map<String, Object> getTaskExperimentees(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
         return creator.getTaskExperimentees(username, exp_id, task_id);
     }
+
+
+//    @RequestMapping("/add_exp")
+//    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
+//        List<JSONObject> jStages = new ArrayList<>();
+//        for (String stage : stages) {
+//            stage = decode(stage);
+//            jStages.add(strToJSON(stage));
+//        }
+//        return creator.addExperiment(username, exp_name, jStages);
+//    }
 }
