@@ -65,9 +65,9 @@ public class TaggingResult extends Result {
                 JTags.add(JTagsByIdx);
                 JTagsByIdx = new LinkedList<>();
             }
-            else JTagsByIdx.add(tagMapTrans);
-
+            JTagsByIdx.add(tagMapTrans);
         }
+        JTags.add(JTagsByIdx);
         return Map.of("tags", JTags);
     }
 
@@ -75,10 +75,10 @@ public class TaggingResult extends Result {
         int startLoc = (int) tagMap.get("start Char"), endLoc = (int) tagMap.get("length") + startLoc;
 
         Pair<Integer, Integer> start = getRowCol(startLoc, userCodeRows);
-        Pair<Integer, Integer> end = getRowCol(startLoc, userCodeRows);
+        Pair<Integer, Integer> end = getRowCol(endLoc, userCodeRows);
 
         return Map.of("from", Map.of("row", start.getFirst(), "col", start.getSecond()),
-                "to", Map.of("row", start.getFirst(), "col", 1 + start.getSecond()));
+                "to", Map.of("row", end.getFirst(), "col", 1 + end.getSecond()));
 
     }
 
@@ -87,7 +87,7 @@ public class TaggingResult extends Result {
         String currRow;
         for (; row < userCodeRows.length; row++) {
             currRow = userCodeRows[row];
-            if (currRow.length() < loc) break;
+            if (currRow.length() > loc) break;
             loc -= currRow.length();
         }
         int col = loc;

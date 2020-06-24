@@ -234,4 +234,10 @@ public class Utils {
     public static Map<String, Object> getGradingAnswers(List<String> answers) {
         return Map.of("data", Map.of("answers", answers));
     }
+
+    public static Map<String, Object> buildParticipantTag() {
+        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
+                "to",Map.of("row",1,"col",7));
+        return Map.of("tags", List.of(List.of(fromTo), List.of(fromTo), List.of(fromTo)));
+    }
 }

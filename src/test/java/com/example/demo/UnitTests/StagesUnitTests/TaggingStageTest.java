@@ -1,6 +1,7 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
+import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
@@ -17,11 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TaggingStageTest {
     private TaggingStage taggingStage;
     private Experiment exp;
+
 
     @BeforeEach
     private void init() {
@@ -70,12 +73,12 @@ public class TaggingStageTest {
     }
 
     @Test
-    public void fillIn() throws NotInReachException, FormatException {
-        JSONObject ans = new JSONObject();
-        JSONObject tag = getTag();
-        ans.put(0, tag);
-        TaggingResult tr = taggingStage.fillTagging(Map.of("tagging", ans),"", null);
-        Assert.assertEquals(1, tr.getTags().size());
+    public void fillIn() throws FormatException {
+        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
+                "to",Map.of("row",1,"col",7));
+
+        TaggingResult tr = taggingStage.fillTagging(Map.of("tags", List.of(List.of(fromTo,fromTo))),"return 0;", null);
+        Assert.assertEquals(2, tr.getTags().size());
     }
 
     @Test
