@@ -168,11 +168,11 @@ public class CreatorService {
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
-        List<Integer> ids = new ArrayList<>();
+        List<Map<String, Object>> ExperimentsAsMap = new ArrayList<>();
         for (Experiment exp : exps) {
-            ids.add(exp.getExperimentId());
+            ExperimentsAsMap.add(exp.getAsMap());
         }
-        return Map.of("response", "OK", "experiments", ids);
+        return Map.of("response", "OK", "experiments", ExperimentsAsMap);
     }
 
     public Map<String, Object> getStages(String username, int exp_id) {
