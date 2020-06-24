@@ -1,6 +1,6 @@
 package com.example.demo.BusinessLayer.Exceptions;
 
-public class NotInReachException extends Exception {
+public class NotInReachException extends ProjectException {
     public NotInReachException(String something) {
         super(something + " is not in your reach");
     }

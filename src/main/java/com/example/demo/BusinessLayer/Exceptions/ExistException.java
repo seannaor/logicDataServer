@@ -1,6 +1,6 @@
 package com.example.demo.BusinessLayer.Exceptions;
 
-public class ExistException extends Exception {
+public class ExistException extends ProjectException {
     public ExistException(String name) {
         super(name + " already exist");
     }

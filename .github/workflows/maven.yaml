@@ -19,26 +19,5 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Run tests with Maven
-        run: |
-          mvn -Dtest="com.example.demo.UnitTests.GradingTasksUnitTets.GraderToGradingTaskUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.GradingTasksUnitTets.GraderToParticipantUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.GradingTasksUnitTets.GradingTaskUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.ResultsUnitTests.AnswerUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.ResultsUnitTests.CodeResultUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.ResultsUnitTests.QuestionnaireResultUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.ResultsUnitTests.TaggingResultUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.ResultsUnitTests.TagUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.CodeUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.InfoStageTest" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.QuestionnaireUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.QuestionUnitTests" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.RequirementTest" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.StageUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.StagesUnitTests.TaggingStageTest" test
-          mvn -Dtest="com.example.demo.UnitTests.UsersUnitTests.ExperimenteeUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.UsersUnitTests.GraderUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.UsersUnitTests.ManagementUserTest" test
-          mvn -Dtest="com.example.demo.UnitTests.UsersUnitTests.ParticipantTest" test
-          mvn -Dtest="com.example.demo.UnitTests.ExperimentUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.ManagementUserToExperimentUnitTest" test
-          mvn -Dtest="com.example.demo.UnitTests.PermissionUnitTest" test
+        run:
+          mvn -Dtest="com.example.demo.UnitTests.GradingTasksUnitTets.GraderToGradingTaskUnitTests","com.example.demo.UnitTests.GradingTasksUnitTets.GraderToParticipantUnitTests","com.example.demo.UnitTests.GradingTasksUnitTets.GradingTaskUnitTests","com.example.demo.UnitTests.ResultsUnitTests.AnswerUnitTests","com.example.demo.UnitTests.ResultsUnitTests.CodeResultUnitTests","com.example.demo.UnitTests.ResultsUnitTests.QuestionnaireResultUnitTests","com.example.demo.UnitTests.ResultsUnitTests.TaggingResultUnitTests","com.example.demo.UnitTests.ResultsUnitTests.TagUnitTests","com.example.demo.UnitTests.StagesUnitTests.CodeUnitTest","com.example.demo.UnitTests.StagesUnitTests.InfoStageTest","com.example.demo.UnitTests.StagesUnitTests.QuestionnaireUnitTest","com.example.demo.UnitTests.StagesUnitTests.QuestionUnitTests","com.example.demo.UnitTests.StagesUnitTests.RequirementTest","com.example.demo.UnitTests.StagesUnitTests.StageUnitTest","com.example.demo.UnitTests.StagesUnitTests.TaggingStageTest","com.example.demo.UnitTests.UsersUnitTests.ExperimenteeUnitTest","com.example.demo.UnitTests.UsersUnitTests.GraderUnitTest","com.example.demo.UnitTests.UsersUnitTests.ManagementUserTest","com.example.demo.UnitTests.UsersUnitTests.ParticipantTest","com.example.demo.UnitTests.ExperimentUnitTest","com.example.demo.UnitTests.ManagementUserToExperimentUnitTest","com.example.demo.UnitTests.PermissionUnitTest" test
