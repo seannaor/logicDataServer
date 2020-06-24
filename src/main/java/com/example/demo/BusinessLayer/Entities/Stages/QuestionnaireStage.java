@@ -9,6 +9,7 @@ import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.Entity;
@@ -31,10 +32,20 @@ public class QuestionnaireStage extends Stage {
         super();
     }
 
-    public QuestionnaireStage(List<JSONObject> JQuestions) {
+//    public QuestionnaireStage(List<JSONObject> JQuestions) {
+//        questions = new ArrayList<>();
+//        int QIndx = 0;
+//        for (JSONObject JQuestion : JQuestions) {
+//            questions.add(buildQuestion(JQuestion, QIndx++));
+//        }
+//    }
+
+    public QuestionnaireStage(List<Map<String,Object>> JQuestions) throws ParseException {
         questions = new ArrayList<>();
         int QIndx = 0;
-        for (JSONObject JQuestion : JQuestions) {
+        for (Map<String,Object> mapQuestion : JQuestions) {
+            String strQuestion = JSONObject.toJSONString(mapQuestion);
+            JSONObject JQuestion = (JSONObject)(new JSONParser()).parse(strQuestion);
             questions.add(buildQuestion(JQuestion, QIndx++));
         }
     }

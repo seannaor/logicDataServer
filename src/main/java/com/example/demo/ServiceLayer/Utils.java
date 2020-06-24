@@ -6,7 +6,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import java.util.List;
 import java.util.Map;
 
-public class JSONUtil {
+public class Utils {
     public static Map<String, Object> makeInfoStage(String info) {
         return Map.of(
                 "text", info

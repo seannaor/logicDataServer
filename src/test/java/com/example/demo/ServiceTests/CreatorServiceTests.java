@@ -132,9 +132,7 @@ public class CreatorServiceTests {
         Map<String, Object> ansWrong = creatorService.addExperiment("something", "something", stages1);
         assertNotEquals("OK", ansWrong.get("response"));
         //bad stages representation
-        List<Map<String,Object>> stages2 = new ArrayList<>();
-        stages2.add(new JSONObject());
-        ansWrong = creatorService.addExperiment(manager.getBguUsername(), "something", stages2);
+        ansWrong = creatorService.addExperiment(manager.getBguUsername(), "something", List.of(Map.of()));
         assertNotEquals("OK", ansWrong.get("response"));
     }
 

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.demo.Utils.getStumpQuestionsMap;
 import static com.example.demo.Utils.getStumpQuestionsStage;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -80,9 +81,9 @@ public class QuestionnaireUnitTests {
     }
 
     @Test
-    public void buildQuestionnaire() {
+    public void buildQuestionnaire() throws ParseException {
 
-        List<JSONObject> JQuestions = (List<JSONObject>) getStumpQuestionsStage().get("questions");
+        List<Map<String,Object>> JQuestions = (List<Map<String, Object>>) getStumpQuestionsMap().get("questions");
         QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions);
 
         Assert.assertEquals(JQuestions.size(), questionnaire.getQuestions().size());
