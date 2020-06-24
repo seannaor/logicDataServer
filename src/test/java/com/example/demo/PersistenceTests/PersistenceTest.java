@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.PersistenceTests;
 
 import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GraderToGradingTask;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 
 @Sql({"/create_database.sql"})
 @SpringBootTest
-class PersistenceTests {
+class PersistenceTest {
     @Autowired
     ExperimenteeRep experimenteeRep;
     @Autowired
