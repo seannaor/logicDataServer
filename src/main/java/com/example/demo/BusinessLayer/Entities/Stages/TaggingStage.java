@@ -3,7 +3,6 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.util.LinkedList;

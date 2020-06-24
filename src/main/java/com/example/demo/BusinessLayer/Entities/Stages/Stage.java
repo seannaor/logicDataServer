@@ -33,19 +33,21 @@ public abstract class Stage {
 
     public static Stage parseStage(Map<String,Object> stage, Experiment exp) throws FormatException {
         try {
+            Map<String,Object> data = (Map<String,Object>)stage.get("stage");
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"));
+                    return new InfoStage((String) data.get("text"));
 
                 case "code":
-                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"), (String) stage.get("language"));
+                    return new CodeStage((String) data.get("description"), (String) data.get("template"),
+                            (List<String>) data.get("requirements"), (String) data.get("language"));
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
+
+                    return new QuestionnaireStage((List<Map<String,Object>>) data.get("questions"));
 
                 case "tagging":
-                    int codeIdx = (int) stage.get("codeIndex");
+                    int codeIdx = (int) data.get("codeIndex");
                     CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
                     return new TaggingStage(codeStage);
             }

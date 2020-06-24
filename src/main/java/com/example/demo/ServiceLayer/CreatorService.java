@@ -7,7 +7,6 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.ManagementUserToExperiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class CreatorService {
     }
 
     //UC 1.1 - one choice (PARTS)
-    public Map<String, Object> addStageToExperiment(String researcherName, int id, JSONObject stage) {
+    public Map<String, Object> addStageToExperiment(String researcherName, int id, Map<String,Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addStageToExperiment(researcherName, id, stage);
@@ -72,8 +71,8 @@ public class CreatorService {
     }
 
     //UC 1.2 - second choice (PARTS)
-    // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/gradTaskName, JSONObject stage)
-    public Map<String, Object> addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) {
+    // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/gradTaskName, Map<String,Object> stage)
+    public Map<String, Object> addToPersonal(String researcherName, int expId, int taskId, Map<String,Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addToPersonal(researcherName, expId, taskId, stage);
@@ -83,7 +82,7 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) {
+    public Map<String, Object> addToResultsExp(String researcherName, int expId, int taskId, Map<String,Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addToResultsExp(researcherName, expId, taskId, stage);
@@ -206,11 +205,11 @@ public class CreatorService {
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
-        List<Map<String, String>> jsons = new ArrayList<>();
+        List<Map<String, String>> alliesMap = new ArrayList<>();
         for (ManagementUserToExperiment ally : allies) {
-            jsons.add(Map.of("username", ally.getManagementUser().getBguUsername(), "role", ally.getRole()));
+            alliesMap.add(Map.of("username", ally.getManagementUser().getBguUsername(), "role", ally.getRole()));
         }
-        return Map.of("response", "OK", "allies", jsons);
+        return Map.of("response", "OK", "allies", alliesMap);
     }
 
     public Map<String, Object> getGradingTasks(String username, int exp_id) {
@@ -274,10 +273,10 @@ public class CreatorService {
     // Utils
 
     private Map<String, Object> stagesResponse(List<Stage> stages) {
-        List<Map<String, Object>> jsons = new ArrayList<>();
+        List<Map<String, Object>> stagesMap = new ArrayList<>();
         for (Stage stage : stages) {
-            jsons.add(stage.getAsMap());
+            stagesMap.add(stage.getAsMap());
         }
-        return Map.of("response", "OK", "stages", jsons);
+        return Map.of("response", "OK", "stages", stagesMap);
     }
 }
