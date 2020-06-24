@@ -57,15 +57,15 @@ public class TaggingStage extends Stage {
         if (old == null) {
             old = new TaggingResult();
         }
-        JSONObject JTags = validate(data);
+        List<JSONObject> JTags = validate(data);
         List<RequirementTag> tags = new LinkedList<>();
+        List<Requirement> requirements = codeStage.getRequirements();
 
-        for (Requirement r : codeStage.getRequirements()) {
-            int i = r.getIndex();
-            if (!JTags.containsKey(i))
-                throw new FormatException("tag for requirement #" + i);
+        for (int i = 0; i < requirements.size(); i++) {
+            Requirement r = requirements.get(i);
+            JSONObject jTag = JTags.get(i);
 
-            RequirementTag tag = r.tag((JSONObject) JTags.get(i));
+            RequirementTag tag = r.tag(jTag);
             tag.setCodeStageIdx(this.codeStage.getStageID().getStageIndex());
             tags.add(tag);
         }
@@ -73,13 +73,15 @@ public class TaggingStage extends Stage {
         return old; // old is actually new now :)
     }
 
-    private JSONObject validate(Map<String, Object> data) throws FormatException {
-        JSONObject tags;
+    private List<JSONObject> validate(Map<String, Object> data) throws FormatException {
+        List<JSONObject> tags;
         try {
-            tags = (JSONObject) data.get("tagging");
+            tags = (List<JSONObject>) data.get("tags");
             if (tags != null) return tags;
         } catch (Exception ignored) {
         }
         throw new FormatException("tags list");
     }
 }
+
+

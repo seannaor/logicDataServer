@@ -32,6 +32,7 @@ public class Requirement {
     }
 
     public RequirementTag tag(JSONObject data) {
+        //todo: new imp of tag, build according
         RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
                 this);
         return tag;
