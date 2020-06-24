@@ -50,7 +50,7 @@ public class ManagerController {
         return creator.addExperimentees(username,expName,emails);
     }
 
-    @PostMapping("/getExperiments/{username}")
+    @GetMapping("/getExperiments/{username}")
     public Map<String, Object> getExperiments(@PathVariable String username) {
         return creator.getExperiments(username);
     }

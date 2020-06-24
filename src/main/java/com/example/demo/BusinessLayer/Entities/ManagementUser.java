@@ -1,6 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class ManagementUser {
     private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "managementUser")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
 
     public ManagementUser(String bguUsername, String bguPassword, String userEmail) {
