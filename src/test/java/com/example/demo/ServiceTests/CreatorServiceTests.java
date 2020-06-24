@@ -143,14 +143,12 @@ public class CreatorServiceTests {
         List<JSONObject> stages = Utils.buildStages();
         Map<String, Object> ansRight = creatorService.addExperiment(manager.getBguUsername(), "something", stages);
         assertEquals("OK", ansRight.get("response"));
-        int expId = (Integer) ansRight.get("id");
         int toValidateId = -1;
         for (Experiment exp : creatorBusiness.getExperiments(manager.getBguUsername()))
             if (exp.getExperimentName().equals("something")) {
                 toValidateId = exp.getExperimentId();
                 break;
             }
-        assertEquals(expId, toValidateId);
     }
 
     @Test

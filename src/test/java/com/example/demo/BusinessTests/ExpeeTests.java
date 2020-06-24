@@ -22,6 +22,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -178,12 +180,14 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
-        nextStageFor(3, expee.getAccessCode());
+    public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
         // fill in tagging (last) stage, fucked format should fail
         long numOfTagRes = db.getNumberOfTagResults();
         assertThrows(FormatException.class, () -> {
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), new HashMap<>());
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",(Map.of("not-tags", List.of()))));
         });
         assertEquals(numOfTagRes, db.getNumberOfTagResults());
         assertNull(expee.getResult(3));
@@ -192,7 +196,9 @@ public class ExpeeTests {
     @Test
     @Transactional
     public void fillInTagging() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
-        nextStageFor(3, expee.getAccessCode());
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
         long numOfTagRes = db.getNumberOfTagResults();
 
         //fill tagging dont really answer this stage, sill got weird problem there
@@ -228,7 +234,10 @@ public class ExpeeTests {
 
     @Test
     public void getStageTest() throws ParseException, CodeException, NotExistException, FormatException, ExpEndException, NotInReachException {
-        nextStageFor(3, expee.getAccessCode());
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
+
         Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
         Stage s = experimenteeBusiness.getStage(expee.getAccessCode(), 3);
