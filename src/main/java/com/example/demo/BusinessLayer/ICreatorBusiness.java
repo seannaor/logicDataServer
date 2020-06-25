@@ -9,6 +9,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface ICreatorBusiness {
     //String saveExperiment(String researcherName, int id) throws NotExistException;
 
     //UC 1.1 - second choice (ALL)
-    int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException;
+    int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException;
 
     //UC 1.2 - one choice (ALL)
     int addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String,Object>> ExpeeExp,

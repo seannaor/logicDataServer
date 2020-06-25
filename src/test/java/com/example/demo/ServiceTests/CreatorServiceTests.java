@@ -7,10 +7,7 @@ import com.example.demo.BusinessLayer.Entities.Experimentee;
 import com.example.demo.BusinessLayer.Entities.Grader;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Entities.ManagementUser;
-import com.example.demo.BusinessLayer.Exceptions.CodeException;
-import com.example.demo.BusinessLayer.Exceptions.ExistException;
-import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
 import com.example.demo.ServiceLayer.CreatorService;
 import com.example.demo.Utils;
@@ -52,7 +49,7 @@ public class CreatorServiceTests {
     }
 
     @BeforeEach
-    private void init() throws NotExistException, FormatException, ExistException {
+    private void init() throws NotExistException, FormatException, ExistException, NotInReachException {
         db.deleteData();
         cache.setCache();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");

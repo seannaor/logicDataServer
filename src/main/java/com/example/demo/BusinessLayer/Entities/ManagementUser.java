@@ -81,6 +81,13 @@ public class ManagementUser {
 
     //======================= end of setters and getters =======================
 
+    public boolean canAddExp() {
+        for (Permission p : permissions) {
+            if(p.getPermissionName().equals("CantAddExp")) return false;
+        }
+        return true;
+    }
+
     public void addPermission(Permission p) {
         this.permissions.add(p);
     }

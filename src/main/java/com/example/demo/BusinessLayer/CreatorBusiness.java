@@ -8,6 +8,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.DBAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,9 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException {
+    public int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException {
         ManagementUser c = cache.getManagerByName(researcherName);
+        if(!c.canAddExp()) throw new NotInReachException("creating new experiment","you don't have the permissions");
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
@@ -127,6 +129,36 @@ public class CreatorBusiness implements ICreatorBusiness {
             ally.addPermission(toAdd);
             db.savePermissionForManagementUser(toAdd, ally);
         }
+    }
+
+    public void addAlly(String researcherName, String allyMail, String password) throws NotExistException, ExistException {
+        // When adding a new ally, his password is TEMP and username is his mail
+        cache.getManagerByName(researcherName);
+        try {
+            cache.getManagerByEMail(allyMail);
+            throw new ExistException(allyMail);
+        } catch (NotExistException ignore) {
+        }
+        ManagementUser ally = createManager(allyMail,password);
+        cache.addManager(ally);
+    }
+
+    public void addAllyToExperiment(String researcherName,String expName, String allyMail, String password) throws NotExistException, ExistException {
+        cache.getManagerByName(researcherName);
+        try {
+            cache.getManagerByEMail(allyMail);
+            throw new ExistException(allyMail);
+        } catch (NotExistException ignore) {
+        }
+        ManagementUser ally = createManager(allyMail,password);
+        cache.addManager(ally);
+        ally.setPermissions(List.of(new Permission("CantAddExp")));
+    }
+
+    private ManagementUser createManager(String allyMail, String password){
+        String username = allyMail;
+        if(username.contains("@")) username.substring(0,username.indexOf('@'));
+        return new ManagementUser(username, password, allyMail);
     }
 
     @Override

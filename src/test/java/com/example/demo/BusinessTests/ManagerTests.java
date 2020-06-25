@@ -7,6 +7,7 @@ import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.DBAccess;
 import com.example.demo.Utils;
 import org.json.simple.JSONObject;
@@ -46,7 +47,7 @@ public class ManagerTests {
     }
 
     @BeforeEach
-    private void init() throws NotExistException, FormatException, ExistException {
+    private void init() throws NotExistException, FormatException, ExistException, NotInReachException {
         db.deleteData();
         cache.setCache();
         manager = new ManagementUser("smorad", "sm_pass", "smorad@post.bgu.ac.il");
@@ -172,7 +173,7 @@ public class ManagerTests {
 
     @Test
     @Transactional
-    public void addAllExperiment() throws NotExistException, FormatException, ExistException {
+    public void addAllExperiment() throws NotExistException, FormatException, ExistException, NotInReachException {
         String expName = "testExp";
         List<Map<String, Object>> stages = Utils.buildStages();
 

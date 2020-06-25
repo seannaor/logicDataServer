@@ -59,7 +59,7 @@ public class Utils {
                 Map.of("codeStageIndex", 3));
     }
 
-    public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException {
+    public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException, NotInReachException {
         List<Map<String, Object>> stages = buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         return manager.getExperimentByName("The Experiment");

@@ -190,7 +190,8 @@ public class CreatorService {
         List<Map<String, Object>> ids = new ArrayList<>();
         for (Experimentee expee : expees) {
             ids.add(Map.of("email", expee.getExperimenteeEmail()
-                    , "accessCode", expee.getAccessCode().toString()));
+                    , "accessCode", expee.getAccessCode().toString(),
+                    "isComplete",expee.getParticipant().isDone()));
         }
         return Map.of("experimentees", ids);
     }

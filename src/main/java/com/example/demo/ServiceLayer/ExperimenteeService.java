@@ -58,20 +58,19 @@ public class ExperimenteeService {
     public Map<String, Object> reachableStages(String accessCode) {
         try {
             UUID code = UUID.fromString(accessCode);
-            Stage currentStage = experimenteeBusiness.getCurrentStage(code);
-            int idx = currentStage.getStageID().getStageIndex();
-            Result currentRes = experimenteeBusiness.getResult(UUID.fromString(accessCode), idx);
-            Map<String, Object> expMap = new HashMap<>();
-            expMap.put("expName", currentStage.getExperiment().getExperimentName());
-            List<Map<String, Object>> stagesMapList = new ArrayList<>();
-            for (int i = 0; i < idx; i++) {
-                Stage s = experimenteeBusiness.getStage(code, i);
-                Result r = experimenteeBusiness.getResult(code, i);
+            List<Stage> stages = experimenteeBusiness.getReachableStages(code);
 
+            Map<String, Object> expMap = new HashMap<>();
+            expMap.put("expName", stages.get(0).getExperiment().getExperimentName());
+            List<Map<String, Object>> stagesMapList = new ArrayList<>();
+            boolean isDone = false;
+            for (Stage s:stages) {
+                Result r = experimenteeBusiness.getResult(code, s.getStageID().getStageIndex());
+                isDone = r.getParticipant().isDone();
                 stagesMapList.add(makeStageAndResult(s, r));
             }
-            stagesMapList.add(makeStageAndResult(currentStage, currentRes));
             expMap.put("stages", stagesMapList);
+            expMap.put("isComplete",isDone);
             return expMap;
         } catch (Exception e) {
             System.out.println(e.getMessage());

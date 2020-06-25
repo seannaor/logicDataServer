@@ -50,7 +50,7 @@ public class ExperimenteeServiceTests {
     }
 
     @BeforeEach
-    private void init() throws NotExistException, FormatException, ExistException, CodeException {
+    private void init() throws NotExistException, FormatException, ExistException, CodeException, NotInReachException {
         cache.setCache();
         db.deleteData();
 
