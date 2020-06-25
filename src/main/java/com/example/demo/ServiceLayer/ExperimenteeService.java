@@ -66,7 +66,8 @@ public class ExperimenteeService {
             boolean isDone = false;
             for (Stage s:stages) {
                 Result r = experimenteeBusiness.getResult(code, s.getStageID().getStageIndex());
-                isDone = r.getParticipant().isDone();
+                if (!isDone && r != null)
+                    isDone = r.getParticipant().isDone();
                 stagesMapList.add(makeStageAndResult(s, r));
             }
             expMap.put("stages", stagesMapList);
