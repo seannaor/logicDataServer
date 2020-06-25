@@ -34,7 +34,7 @@ public class InfoStageTest {
     public void getAsMapTest() {
         Map<String, Object> map = new HashMap<>();
         map.put("text", infoStage.getInfo());
-        Assert.assertEquals(map, infoStage.getAsMap());
+        Assert.assertEquals(Map.of("type","info","stage",map), infoStage.getAsMap());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class InfoStageTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(Utils.getStumpInfoStage(), null);
+        Stage stage = Stage.parseStage(Utils.getStumpInfoMap(), null);
         Assert.assertEquals("info", stage.getType());
     }
 }

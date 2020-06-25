@@ -32,12 +32,6 @@ public class Requirement {
         this.requirementID = new RequirementID();
     }
 
-    public RequirementTag tag(JSONObject data) {
-        RequirementTag tag = new RequirementTag((int) data.get("start_loc"), (int) data.get("length"),
-                this);
-        return tag;
-    }
-
     public RequirementTag tag(int startLoc, int length) throws FormatException {
         if(length<0) throw new FormatException("legal tag","end of tag before start");
         RequirementTag tag = new RequirementTag(startLoc, length, this);

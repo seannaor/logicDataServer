@@ -39,13 +39,15 @@ public class TaggingStageTest {
 
     @Test
     public void getAsMapTest() {
-        Map<String, Object> map = new HashMap<>();
-        Assert.assertEquals(map, taggingStage.getAsMap());
+        Map<String, Object> map = taggingStage.getAsMap();
+        Assert.assertTrue(map.containsValue("tag"));
+        map = (Map<String, Object>) map.get("stage");
+        Assert.assertTrue(map.containsKey("codeStageIndex"));
     }
 
     @Test
     public void getTypeTest() {
-        Assert.assertEquals("tagging", taggingStage.getType());
+        Assert.assertEquals("tag", taggingStage.getType());
     }
 
     @Test
@@ -83,22 +85,19 @@ public class TaggingStageTest {
 
     @Test
     public void fillInFailNoRequirementTag() {
-        JSONObject ans = new JSONObject();
-        JSONObject tag = getTag();
-        ans.put(1, tag);
+        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
+                "to",Map.of("row",1,"col",10));
 
         assertThrows(FormatException.class, () -> {
-            taggingStage.fillTagging(Map.of("tagging", ans),"", null);
+            taggingStage.fillTagging(Map.of("tag", List.of(List.of(fromTo))),"", null);
         });
     }
 
     @Test
     public void parseStageTest() throws FormatException {
-        JSONObject JTagging = new JSONObject();
-        JTagging.put("type", "tagging");
-        JTagging.put("codeIndex", taggingStage.getCodeStage().getStageID().getStageIndex());
-        Stage stage = Stage.parseStage(JTagging, exp);
-        Assert.assertEquals("tagging", stage.getType());
+        Map<String,Object> stageMap = Map.of("codeStageIndex", taggingStage.getCodeStage().getStageID().getStageIndex()+1);
+        Stage stage = Stage.parseStage(Map.of("type","tag","stage",stageMap), exp);
+        Assert.assertEquals("tag", stage.getType());
     }
 
     private JSONObject getTag() {

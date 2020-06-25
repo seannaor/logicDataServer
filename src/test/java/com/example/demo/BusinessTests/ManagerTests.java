@@ -37,6 +37,7 @@ public class ManagerTests {
     private GradingTask task;
     private Grader grader;
     private String graderCode;
+
     @Autowired
     public ManagerTests(CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.creatorBusiness = creatorBusiness;
@@ -173,7 +174,7 @@ public class ManagerTests {
     @Transactional
     public void addAllExperiment() throws NotExistException, FormatException, ExistException {
         String expName = "testExp";
-        List<Map<String,Object>> stages = Utils.buildStages();
+        List<Map<String, Object>> stages = Utils.buildStages();
 
         //new experiment should pass
         int expNum = manager.getManagementUserToExperiments().size();
@@ -255,7 +256,7 @@ public class ManagerTests {
     public void addStage() throws FormatException, NotExistException {
         // adding legal stages should pass
         int initstagesNum = experiment.getStages().size();
-        for (Map<String,Object> jStage : Utils.buildStages()) {
+        for (Map<String, Object> jStage : Utils.buildStages()) {
             creatorBusiness.addStageToExperiment(manager.getBguUsername(), experiment.getExperimentId(), jStage);
             assertEquals(++initstagesNum, db.getExperimentById(experiment.getExperimentId()).getStages().size());
             assertEquals(initstagesNum, experiment.getStages().size());
@@ -277,7 +278,7 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(NotExistException.class, () -> {
             //experiment id not exist
-            creatorBusiness.addStageToExperiment(manager.getBguUsername(), -1, Utils.getStumpInfoStage());
+            creatorBusiness.addStageToExperiment(manager.getBguUsername(), -1, Utils.getStumpInfoMap());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -287,7 +288,7 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(NotExistException.class, () -> {
             //creator name not exist
-            creatorBusiness.addStageToExperiment("not exist name", experiment.getExperimentId(), Utils.getStumpInfoStage());
+            creatorBusiness.addStageToExperiment("not exist name", experiment.getExperimentId(), Utils.getStumpInfoMap());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -320,7 +321,7 @@ public class ManagerTests {
         long currentGT = db.getNumberOfGradingTasks();
         assertThrows(FormatException.class, () -> {
             //Illegal personal & result experiments
-            List<Map<String,Object>> stagesIllegal = List.of(Map.of());
+            List<Map<String, Object>> stagesIllegal = List.of(Map.of());
             creatorBusiness.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "grading task", stagesIllegal, new ArrayList<>(), stagesIllegal);
         });
         assertEquals(currentGT, db.getNumberOfGradingTasks());
@@ -353,7 +354,7 @@ public class ManagerTests {
 
         int before = task.getGeneralExperiment().getStages().size();
         assertEquals(before, creatorBusiness.getPersonalStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId()).size());
-        creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoStage());
+        creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoMap());
         int after = task.getGeneralExperiment().getStages().size();
         assertEquals(before + 1, after);
         assertEquals(after, creatorBusiness.getPersonalStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId()).size());
@@ -368,7 +369,7 @@ public class ManagerTests {
 
         int before = task.getGradingExperiment().getStages().size();
         assertEquals(before, creatorBusiness.getEvaluationStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId()).size());
-        creatorBusiness.addToResultsExp(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoStage());
+        creatorBusiness.addToResultsExp(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoMap());
         int after = task.getGradingExperiment().getStages().size();
         assertEquals(before + 1, after);
         assertEquals(after, creatorBusiness.getEvaluationStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId()).size());
@@ -390,7 +391,9 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(NotExistException.class, () -> {
             //not exist grading task
-            creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), -1, Utils.getStumpInfoStage());
+            creatorBusiness.addToPersonal(manager.getBguUsername(),
+                    experiment.getExperimentId(),
+                    -1, Utils.getStumpInfoMap());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -400,7 +403,8 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(NotExistException.class, () -> {
             //not exist experiment
-            creatorBusiness.addToPersonal(manager.getBguUsername(), -1, task.getGradingTaskId(), Utils.getStumpInfoStage());
+            creatorBusiness.addToPersonal(manager.getBguUsername(),
+                    -1, task.getGradingTaskId(), Utils.getStumpInfoMap());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -410,7 +414,9 @@ public class ManagerTests {
         long currentStages = db.getNumberOfStages();
         assertThrows(NotExistException.class, () -> {
             //not exist manager
-            creatorBusiness.addToPersonal("not exist", experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoStage());
+            creatorBusiness.addToPersonal("not exist",
+                    experiment.getExperimentId(), task.getGradingTaskId(),
+                    Utils.getStumpInfoMap());
         });
         assertEquals(currentStages, db.getNumberOfStages());
     }
@@ -490,7 +496,7 @@ public class ManagerTests {
     @Test
     @Transactional
     public void addExperimentees() throws NotExistException, ExistException {
-        List<String> mails = List.of("m1@post","m2@post");
+        List<String> mails = List.of("m1@post", "m2@post");
 
         int experimenteesCount = creatorBusiness.getExperimentees(manager.getBguUsername(), experiment.getExperimentId()).size();
 
@@ -522,7 +528,7 @@ public class ManagerTests {
         assertThrows(ExistException.class, () -> {
             //list contains two identical mails
             creatorBusiness.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(),
-                    List.of("mail1","mail1"));
+                    List.of("mail1", "mail1"));
         });
         assertEquals(experimenteesCount, creatorBusiness.getExperimentees(manager.getBguUsername(),
                 experiment.getExperimentId()).size());

@@ -30,8 +30,8 @@ public class TaggingResultUnitTests {
     @BeforeEach
     public void init() throws FormatException, NotExistException, ExpEndException, NotInReachException, ParseException {
         Experiment exp = new Experiment("Experiment Name");
-        List<Map<String,Object>> stagesJson = Utils.buildStages();
-        for (Map<String,Object> stageJ : stagesJson) {
+        List<Map<String,Object>> stages = Utils.buildStages();
+        for (Map<String,Object> stageJ : stages) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }
@@ -52,7 +52,6 @@ public class TaggingResultUnitTests {
     public void getMapTest() {
         Map<String, Object> map = taggingResult.getAsMap();
         Assert.assertTrue(map.containsKey("tags"));
-        Assert.assertTrue(map.get("tags") instanceof List);
         Assert.assertEquals(3, ((List) map.get("tags")).size());
 
     }

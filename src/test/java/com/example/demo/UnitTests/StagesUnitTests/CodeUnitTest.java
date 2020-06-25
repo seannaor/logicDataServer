@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.Utils.getStumpCodeStage;
+import static com.example.demo.Utils.getStumpCodeMap;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeUnitTest {
@@ -80,7 +80,7 @@ public class CodeUnitTest {
 
     @Test
     public void getMap() {
-        Map<String, Object> codeMap = codeStage.getAsMap();
+        Map<String, Object> codeMap = (Map<String, Object>)codeStage.getAsMap().get("stage");
         Assert.assertTrue(codeMap.containsKey("description"));
         Assert.assertTrue(codeMap.containsKey("template"));
         Assert.assertTrue(codeMap.containsKey("language"));
@@ -94,7 +94,7 @@ public class CodeUnitTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(getStumpCodeStage(), null);
+        Stage stage = Stage.parseStage(getStumpCodeMap(), null);
         Assert.assertEquals("code", stage.getType());
     }
 

@@ -2,6 +2,7 @@ package com.example.demo.UnitTests.ResultsUnitTests;
 
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
+import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,14 +15,9 @@ public class TagUnitTests {
     private RequirementTag tag;
 
     @BeforeEach
-    public void init() {
+    public void init() throws FormatException {
         requirement = new Requirement("a requirement");
-
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-
-        tag = requirement.tag(tag1);
+        tag = requirement.tag(0,10);
     }
 
     @Test

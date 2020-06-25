@@ -107,7 +107,7 @@ public class Participant {
             case "code":
                 currResult = currStage.fillCode(data, (CodeResult) getResult(currStage.getStageID().getStageIndex()));
                 break;
-            case "tagging":
+            case "tag":
                 CodeResult codeResult = (CodeResult)getResult(((TaggingStage)currStage).getCodeStage().getStageID().getStageIndex());
                 currResult = currStage.fillTagging(data,codeResult.getUserCode(), (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
 

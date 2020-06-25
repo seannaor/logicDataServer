@@ -25,101 +25,39 @@ public class Utils {
 
         stages.add(getStumpInfoMap());
         stages.add(getStumpQuestionsMap());
-//        stages.add(getStumpCodeStage());
-//        stages.add(getStumpTaggingStage());
+        stages.add(getStumpCodeMap());
+        stages.add(getStumpTagMap());
 
         return stages;
     }
 
     public static Map<String,Object> getStumpInfoMap(){
-        return Map.of("type","info","info", "some information and stuff");
+        return getInfoStage("some information and stuff");
     }
+
     public static Map<String,Object> getStumpQuestionsMap(){
-        JSONObject questionnaire = new JSONObject();
-        questionnaire.put("type", "questionnaire");
-        List<JSONObject> questions = new ArrayList<>();
-        Map<String,Object> q1 = Map.of("questionType", "open","question", "how much");
+        Map<String,Object> q = Map.of("questionType", "multiChoice",
+                "question", "who",
+                "possibleAnswers",List.of("me","you","no one","we both"));
 
 
-//        JSONObject q2 = new JSONObject();
-//        q2.put("questionType", "multiChoice");
-//        q2.put("question", "who?");
-//        List<String> answers = new ArrayList<>();
-//        answers.add("me");
-//        answers.add("you");
-//        answers.add("no one");
-//        answers.add("we both");
-//        q2.put("possibleAnswers", answers);
-//        questions.add(q2);
-//        questionnaire.put("questions", questions);
-
-        return Map.of("type","questionnaire","questions", List.of(q1));
-    }
-//    public static Map<String,Object> getStumpInfoMap(){
-//        return Map.of("type","info","info", "some information and stuff");
-//    }
-//    public static Map<String,Object> getStumpInfoMap(){
-//        return Map.of("type","info","info", "some information and stuff");
-//    }
-
-    public static JSONObject buildResearcher() {
-        JSONObject researcher = new JSONObject();
-        researcher.put("email", "manager@post.ac.il");
-        researcher.put("username", "manager");
-        researcher.put("password", "password");
-        return researcher;
+        return Map.of("type","questionnaire",
+                "stage",Map.of("questions", List.of(getOpenQuestion("how much"),q)));
     }
 
-    public static JSONObject getStumpInfoStage() {
-        JSONObject info = new JSONObject();
-        info.put("type", "info");
-        info.put("info", "some information and stuff");
-        return info;
+    public static Map<String,Object> getStumpCodeMap(){
+        return Map.of("type","code",
+                "stage",
+                Map.of("description", "design me a system that can create & manage & run experiments",
+                        "template", "",
+                        "language", "C++",
+                        "requirements",List.of("do that","do this","do stuff")));
     }
 
-    public static JSONObject getStumpCodeStage() {
-        JSONObject code = new JSONObject();
-        code.put("type", "code");
-        code.put("description", "design me a system that can create & manage & run experiments");
-        code.put("template", "");
-        code.put("language", "C++");
-        List<String> requirements = new ArrayList<>();
-        requirements.add("do that");
-        requirements.add("do this");
-        requirements.add("do stuff");
-        code.put("requirements", requirements);
-        return code;
-    }
-
-    public static JSONObject getStumpQuestionsStage() {
-        JSONObject questionnaire = new JSONObject();
-        questionnaire.put("type", "questionnaire");
-        List<JSONObject> questions = new ArrayList<>();
-        JSONObject q1 = new JSONObject();
-
-        q1.put("questionType", "open");
-        q1.put("question", "how much");
-        questions.add(q1);
-
-        JSONObject q2 = new JSONObject();
-        q2.put("questionType", "multiChoice");
-        q2.put("question", "who?");
-        List<String> answers = new ArrayList<>();
-        answers.add("me");
-        answers.add("you");
-        answers.add("no one");
-        answers.add("we both");
-        q2.put("possibleAnswers", answers);
-        questions.add(q2);
-        questionnaire.put("questions", questions);
-        return questionnaire;
-    }
-
-    public static JSONObject getStumpTaggingStage() {
-        JSONObject JTagging = new JSONObject();
-        JTagging.put("type", "tagging");
-        JTagging.put("codeIndex", 2);
-        return JTagging;
+    public static Map<String,Object> getStumpTagMap(){
+        return Map.of("type","tag",
+                "stage",
+                Map.of("codeStageIndex", 3));
     }
 
     public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException {
@@ -156,9 +94,6 @@ public class Utils {
     }
 
     public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-//        JSONObject ans = new JSONObject();
-//        ans.put("stageType", "code");
-//        ans.put("userCode", "return -1");
         experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("code", "return -1")));
     }
 
@@ -167,53 +102,33 @@ public class Utils {
         return 3;
     }
 
-    public static void fillInQuestionnaire(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "questionnaire");
-        JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "a lot!");
-        ans.put("1", ans1);
-        JSONObject ans2 = new JSONObject();
-        ans2.put("answer", 3);
-        ans.put("2", ans2);
-        graderBusiness.fillInStage(p, ans);
-    }
-
-    public static void fillInCode(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "code");
-        ans.put("userCode", "return -1");
-        graderBusiness.fillInStage(p, ans);
-    }
-
     public static void fillInTagging(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
         graderBusiness.fillInStage(p, buildParticipantTag());
     }
 
+    private static Map<String,Object> getInfoStage(String info){
+        return  Map.of("type","info","stage",Map.of("text",info));
+    }
+
+    private static Map<String,Object> getQuestionnaireStage(List<Map<String,Object>> Questions){
+        return  Map.of("type","questionnaire","stage",Map.of("questions",Questions));
+    }
+
+    private static Map<String,Object> getOpenQuestion(String q){
+        return Map.of("questionType", "open","question",q);
+    }
+
+
     public static List<Map<String,Object>> buildSimpleExp(List<String> questions) {
-        List<JSONObject> stages = new ArrayList<>();
 
-        JSONObject info = new JSONObject();
-        info.put("type", "info");
-        info.put("info", "some information and stuff");
-
-        stages.add(info);
-
-        JSONObject questionnaire = new JSONObject();
-        questionnaire.put("type", "questionnaire");
-        List<JSONObject> JQuestions = new ArrayList<>();
+        List<Map<String,Object>> mapQuestions = new ArrayList<>();
 
         for (String question : questions) {
-            JSONObject q1 = new JSONObject();
-
-            q1.put("questionType", "open");
-            q1.put("question", question);
-            JQuestions.add(q1);
-
+            Map<String,Object> q1 = getOpenQuestion(question);
+            mapQuestions.add(q1);
         }
-        questionnaire.put("questions", JQuestions);
-        stages.add(questionnaire);
-        return List.of();
+
+        return List.of(getInfoStage("some information and stuff"),getQuestionnaireStage(mapQuestions));
     }
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {

@@ -42,6 +42,7 @@ public class CreatorServiceTests {
     private GradingTask task;
     private Grader grader;
     private String graderCode;
+
     @Autowired
     public CreatorServiceTests(CreatorService creatorService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.creatorService = creatorService;
@@ -127,7 +128,7 @@ public class CreatorServiceTests {
 
     @Test
     public void addExperimentNegativeTest() {
-        List<Map<String,Object>> stages1 = Utils.buildStages();
+        List<Map<String, Object>> stages1 = Utils.buildStages();
         // username not exist - should fail
         Map<String, Object> ansWrong = creatorService.addExperiment("something", "something", stages1);
         assertNotEquals("OK", ansWrong.get("response"));
@@ -138,7 +139,7 @@ public class CreatorServiceTests {
 
     @Test
     public void addExperimentPositiveTest() throws NotExistException {
-        List<Map<String,Object>> stages = Utils.buildStages();
+        List<Map<String, Object>> stages = Utils.buildStages();
         Map<String, Object> ansRight = creatorService.addExperiment(manager.getBguUsername(), "something", stages);
         assertEquals("OK", ansRight.get("response"));
         int toValidateId = -1;
@@ -158,7 +159,7 @@ public class CreatorServiceTests {
         ansWrong = creatorService.addGradingTask(manager.getBguUsername(), 9090, "some grading task", List.of(), List.of(), List.of());
         assertNotEquals("OK", ansWrong.get("response"));
         // bad grading experiment
-        List<Map<String,Object>> gradingStages = new ArrayList<>();
+        List<Map<String, Object>> gradingStages = new ArrayList<>();
         gradingStages.add(new JSONObject());
         ansWrong = creatorService.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "some grading task", gradingStages, List.of(), List.of());
         assertNotEquals("OK", ansWrong.get("response"));
@@ -169,8 +170,8 @@ public class CreatorServiceTests {
 
     @Test
     public void addGradingTaskPositiveTest() throws NotExistException {
-        List<Map<String,Object>> gradingExp = List.of(Utils.getStumpInfoMap());
-        List<Map<String,Object>> personalExp = List.of(Utils.getStumpQuestionsMap());
+        List<Map<String, Object>> gradingExp = List.of(Utils.getStumpInfoMap());
+        List<Map<String, Object>> personalExp = List.of(Utils.getStumpQuestionsMap());
         Map<String, Object> ansRight = creatorService.addGradingTask(manager.getBguUsername(), experiment.getExperimentId(), "some grading task", gradingExp, List.of(1, 2, 3), personalExp);
         assertEquals("OK", ansRight.get("response"));
         int gradingTaskId = (Integer) ansRight.get("id");
@@ -190,23 +191,27 @@ public class CreatorServiceTests {
     @Test
     public void addToPersonalNegativeTest() {
         // username not exist - should fail
-        JSONObject stage = Utils.getStumpInfoStage();
-        Map<String, Object> ansWrong = creatorService.addToPersonal("something", experiment.getExperimentId(), task.getGradingTaskId(), stage);
+        Map<String, Object> stage = Utils.getStumpInfoMap();
+        Map<String, Object> ansWrong = creatorService.addToPersonal("something",
+                experiment.getExperimentId(), task.getGradingTaskId(), stage);
         assertNotEquals("OK", ansWrong.get("response"));
         // experiment id does not exists
-        ansWrong = creatorService.addToPersonal(manager.getBguUsername(), 9090, task.getGradingTaskId(), stage);
+        ansWrong = creatorService.addToPersonal(manager.getBguUsername(), 9090,
+                task.getGradingTaskId(), stage);
         assertNotEquals("OK", ansWrong.get("response"));
         // grading task does not exists
-        ansWrong = creatorService.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), 9090, stage);
+        ansWrong = creatorService.addToPersonal(manager.getBguUsername(),
+                experiment.getExperimentId(), 9090, stage);
         assertNotEquals("OK", ansWrong.get("response"));
         // bad stage representation
-        ansWrong = creatorService.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), new JSONObject());
+        ansWrong = creatorService.addToPersonal(manager.getBguUsername(),
+                experiment.getExperimentId(), task.getGradingTaskId(), Map.of());
         assertNotEquals("OK", ansWrong.get("response"));
     }
 
     @Test
     public void addToPersonalPositiveTest() throws NotExistException {
-        JSONObject stage = Utils.getStumpInfoStage();
+        Map<String, Object> stage = Utils.getStumpInfoMap();
         int personalStages = task.getGeneralExperiment().getStages().size();
         Map<String, Object> ansRight = creatorService.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), stage);
         assertEquals("OK", ansRight.get("response"));
@@ -217,7 +222,7 @@ public class CreatorServiceTests {
     @Test
     public void addToResultsExpNegativeTest() {
         // username not exist - should fail
-        JSONObject stage = Utils.getStumpInfoStage();
+        Map<String, Object> stage = Utils.getStumpInfoMap();
         Map<String, Object> ansWrong = creatorService.addToResultsExp("something", experiment.getExperimentId(), task.getGradingTaskId(), stage);
         assertNotEquals("OK", ansWrong.get("response"));
         // experiment id does not exists
@@ -233,7 +238,7 @@ public class CreatorServiceTests {
 
     @Test
     public void addToResultsExpPositiveTest() throws NotExistException {
-        JSONObject stage = Utils.getStumpInfoStage();
+        Map<String, Object> stage = Utils.getStumpInfoMap();
         int resultsStages = task.getGradingExperiment().getStages().size();
         Map<String, Object> ansRight = creatorService.addToResultsExp(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), stage);
         assertEquals("OK", ansRight.get("response"));
@@ -331,10 +336,10 @@ public class CreatorServiceTests {
     @Test
     public void addExperimenteesTest() throws CodeException {
         // list has 2 identical mails
-        Map<String, Object>  ansWrong = creatorService.addExperimentees(manager.getBguUsername(), 9090, List.of("newexpee@gmail.com","newexpee@gmail.com"));
+        Map<String, Object> ansWrong = creatorService.addExperimentees(manager.getBguUsername(), 9090, List.of("newexpee@gmail.com", "newexpee@gmail.com"));
         assertNotEquals("OK", ansWrong.get("response"));
 
-        Map<String, Object> ansRight = creatorService.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(), List.of("newexpee@gmail.com","newexpee1@gmail.com"));
+        Map<String, Object> ansRight = creatorService.addExperimentees(manager.getBguUsername(), experiment.getExperimentId(), List.of("newexpee@gmail.com", "newexpee1@gmail.com"));
         assertEquals("OK", ansRight.get("response"));
         String newExpeeCode = ((List<String>) ansRight.get("codes")).get(0);
         assertEquals(cache.getExpeeByCode(UUID.fromString(newExpeeCode)).getExperimenteeEmail(), "newexpee@gmail.com");
@@ -468,11 +473,11 @@ public class CreatorServiceTests {
 
     @Test
     public void getPersonalStagesPositiveTest() throws NotExistException, FormatException {
-        creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoStage());
+        creatorBusiness.addToPersonal(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoMap());
         Map<String, Object> ansRight = creatorService.getPersonalStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId());
         assertEquals("OK", ansRight.get("response"));
         List<Map<String, Object>> personalStages = (List<Map<String, Object>>) ansRight.get("stages");
-        assertEquals(personalStages.get(0).get("text"), Utils.getStumpInfoStage().get("info"));
+        assertEquals(personalStages.get(0).get("text"), Utils.getStumpInfoMap().get("info"));
     }
 
     @Test
@@ -490,11 +495,11 @@ public class CreatorServiceTests {
 
     @Test
     public void getEvaluationStagesPositiveTest() throws NotExistException, FormatException {
-        creatorBusiness.addToResultsExp(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoStage());
+        creatorBusiness.addToResultsExp(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId(), Utils.getStumpInfoMap());
         Map<String, Object> ansRight = creatorService.getEvaluationStages(manager.getBguUsername(), experiment.getExperimentId(), task.getGradingTaskId());
         assertEquals("OK", ansRight.get("response"));
         List<Map<String, Object>> personalStages = (List<Map<String, Object>>) ansRight.get("stages");
-        assertEquals(personalStages.get(0).get("text"), Utils.getStumpInfoStage().get("info"));
+        assertEquals(personalStages.get(0).get("text"), Utils.getStumpInfoMap().get("info"));
     }
 
     @Test
