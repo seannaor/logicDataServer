@@ -107,6 +107,10 @@ public class DBAccess {
         return experimenteeRep.findByEmailAndExp(email, expId);
     }
 
+    public Experimentee getExperimenteeByParticipantId(int partidipantId) {
+        return experimenteeRep.findExperimenteeByParticipantId(partidipantId);
+    }
+
     public void saveExperiment(Experiment e, ManagementUser creator) {
         experimentRep.save(e);
         for (ManagementUserToExperiment m : creator.getManagementUserToExperiments()) {

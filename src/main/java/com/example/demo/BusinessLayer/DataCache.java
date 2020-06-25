@@ -112,6 +112,11 @@ public class DataCache {
         for (Experimentee experimentee : this.experimentees) {
             if(experimentee.getParticipant().getParticipantId()==id) return experimentee;
         }
+        Experimentee expee = db.getExperimenteeByParticipantId(id);
+        if (expee != null) {
+            experimentees.add(expee);
+            return expee;
+        }
         throw new NotExistException("participant", id+"");
     }
 

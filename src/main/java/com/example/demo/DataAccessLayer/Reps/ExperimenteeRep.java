@@ -12,4 +12,7 @@ public interface ExperimenteeRep extends JpaRepository<Experimentee, UUID> {
 
     @Query("select e from Experimentee e where e.experimenteeEmail = ?1 and e.participant.experiment.experimentId = ?2")
     Experimentee findByEmailAndExp(String email, int expId);
+
+    @Query("select e from Experimentee e where e.participant.participantId = ?1")
+    Experimentee findExperimenteeByParticipantId(int participant_id);
 }
