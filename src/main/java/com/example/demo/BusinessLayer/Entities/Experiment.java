@@ -25,10 +25,12 @@ public class Experiment {
     @Column(name = "is_grading_task_exp")
     private boolean isGradingTaskExp = false;
     @OneToMany(mappedBy = "experiment")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "experiment")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages = new ArrayList<>();
 
