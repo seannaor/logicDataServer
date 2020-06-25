@@ -54,7 +54,14 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     public List<Stage> getReachableStages(UUID accessCode) throws NotInReachException, CodeException, NotExistException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         List<Stage> stages = new LinkedList<>();
-        for (int i = 0; i < expee.getParticipant().getCurrStageIdx()+1; i++) {
+        int currentStage;
+        if (expee.getParticipant().isDone()) {
+            currentStage = expee.getExperiment().getStages().size() - 1;
+        }
+        else {
+            currentStage = expee.getParticipant().getCurrStageIdx();
+        }
+        for (int i = 0; i <= currentStage ; i++) {
             stages.add(expee.getStage(i));
         }
         return stages;
@@ -63,7 +70,7 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     public List<Result> getReachableResults(UUID accessCode) throws NotInReachException, CodeException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         List<Result> results = new LinkedList<>();
-        for (int i = 0; i < expee.getParticipant().getCurrStageIdx()+1; i++) {
+        for (int i = 0; i < expee.getParticipant().getCurrStageIdx() + 1; i++) {
             results.add(expee.getResult(i));
         }
         return results;

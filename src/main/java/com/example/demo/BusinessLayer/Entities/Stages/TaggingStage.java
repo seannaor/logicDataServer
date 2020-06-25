@@ -84,7 +84,7 @@ public class TaggingStage extends Stage {
         if (userCodeRows.length < rowI)
             throw new FormatException("row index smaller than the user code");
         String row = userCodeRows[0];
-        for (int i = 0; i < userCodeRows.length && i < rowI; i++) {
+        for (int i = 0; i < userCodeRows.length && i <= rowI; i++) {
             row = userCodeRows[i];
             loc += row.length();
         }
