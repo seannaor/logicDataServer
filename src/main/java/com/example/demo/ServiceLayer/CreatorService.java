@@ -99,6 +99,26 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
+    public Map<String, Object> addAlly(String researcherName,String email,String password){
+        String res = "OK";
+        try {
+            creatorBusiness.addAlly(researcherName, email, password);
+        } catch (Exception e) {
+            res = e.getMessage();
+        }
+        return Map.of("response", res);
+    }
+
+    public Map<String, Object> addAllyToExp(String researcherName,String expName,String email,String password){
+        String res = "OK";
+        try {
+            creatorBusiness.addAllyToExperiment(researcherName,expName, email, password);
+        } catch (Exception e) {
+            res = e.getMessage();
+        }
+        return Map.of("response", res);
+    }
+
     //UC 1.3
     public Map<String, Object> setAlliePermissions(String researcherName, int expId, String allieMail, String role, List<String> permissions) {
         String res = "OK";

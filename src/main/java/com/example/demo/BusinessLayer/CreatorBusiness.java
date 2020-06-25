@@ -65,7 +65,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     @Override
     public int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException {
         ManagementUser c = cache.getManagerByName(researcherName);
-        if(!c.canAddExp()) throw new NotInReachException("creating new experiment","you don't have the permissions");
+        if(!c.isAdmin()) throw new NotInReachException("creating new experiment","you don't have the permissions");
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
@@ -144,15 +144,21 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     public void addAllyToExperiment(String researcherName,String expName, String allyMail, String password) throws NotExistException, ExistException {
-        cache.getManagerByName(researcherName);
+        ManagementUser manager = cache.getManagerByName(researcherName);
+        Experiment experiment = manager.getExperimentByName(expName);
         try {
             cache.getManagerByEMail(allyMail);
             throw new ExistException(allyMail);
         } catch (NotExistException ignore) {
         }
         ManagementUser ally = createManager(allyMail,password);
+        ManagementUserToExperiment m = new ManagementUserToExperiment(ally, experiment, "");
+        ally.addManagementUserToExperiment(m);
+        experiment.addManagementUserToExperiment(m);
+        db.saveManagementUserToExperiment(m);
+        db.deletePermissionsOfManagementUser(ally);
         cache.addManager(ally);
-        ally.setPermissions(List.of(new Permission("CantAddExp")));
+        ally.setPermissions(List.of(new Permission("noAdmin")));
     }
 
     private ManagementUser createManager(String allyMail, String password){

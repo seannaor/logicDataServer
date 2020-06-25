@@ -24,6 +24,7 @@ public class ManagementUser {
             joinColumns = {@JoinColumn(name = "bgu_username")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")}
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "managementUser")
@@ -81,9 +82,9 @@ public class ManagementUser {
 
     //======================= end of setters and getters =======================
 
-    public boolean canAddExp() {
+    public boolean isAdmin() {
         for (Permission p : permissions) {
-            if(p.getPermissionName().equals("CantAddExp")) return false;
+            if(p.getPermissionName().equals("noAdmin")) return false;
         }
         return true;
     }

@@ -61,16 +61,15 @@ public class ManagerController {
     }
 
 
+    @GetMapping("/addAlly/{username}/{mail}/{password}")
+    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String mail, @PathVariable String password) {
+        return creator.addAlly(username, mail, password);
+    }
 
-//    @GetMapping("/addAlly/{username}/{expName}/{mail}")
-//    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail){
-//
-//    }
-
-//    @GetMapping("/addAlly/{username}/{expName}")
-//    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail, @RequestParam String role, @RequestParam List<String> permissions) {
-//        return creator.setAlliePermissions(username, exp_id, mail, role, permissions);
-//    }
+    @GetMapping("/addAlly/{username}/{expName}/{mail}/{password}")
+    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail, @PathVariable String password) {
+        return creator.addAllyToExp(username, expName, mail, password);
+    }
 
     // old version V
 
