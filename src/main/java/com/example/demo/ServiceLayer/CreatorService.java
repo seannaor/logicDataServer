@@ -29,6 +29,7 @@ public class CreatorService {
         try {
             return Map.of("response", "OK", "id", creatorBusiness.createExperiment(researcherName, expName));
         } catch (Exception e) {
+            MyLogger.log(e);
             return Map.of("response", e.getMessage());
         }
     }

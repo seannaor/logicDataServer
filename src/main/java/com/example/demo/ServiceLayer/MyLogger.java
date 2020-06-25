@@ -26,13 +26,13 @@ class MyFormatter extends Formatter {
 
 }
 
-@Service
-public class LoggerUtils {
+public class MyLogger {
 
     private static final Logger LOGGER = Logger.getLogger("Experiential system logger");
+    private static MyLogger logger=null;
 
-    @Autowired
-    public LoggerUtils() {
+
+    private MyLogger() {
         LOGGER.setLevel(Level.ALL);
         // Creating FileHandler
         Formatter simpleFormatter = new MyFormatter();
@@ -53,7 +53,12 @@ public class LoggerUtils {
         LOGGER.info("Logger action has started!");
     }
 
-    public void log(Exception e){
+    public static void init(){
+        if(logger==null) logger = new MyLogger();
+    }
+
+    public static void log(Exception e){
+        init();
         if(e instanceof ProjectException)
             LOGGER.log(Level.WARNING,e +"\n"+Arrays.toString(e.getStackTrace()));
         else LOGGER.log(Level.SEVERE,e +"\n"+Arrays.toString(e.getStackTrace()));
