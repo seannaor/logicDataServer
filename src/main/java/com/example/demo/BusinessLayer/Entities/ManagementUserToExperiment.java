@@ -18,6 +18,7 @@ public class ManagementUserToExperiment {
     @MapsId("experimentId")
     @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
     private Experiment experiment;
+
     public ManagementUserToExperiment() {
     }
 

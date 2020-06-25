@@ -32,7 +32,7 @@ public class InfoStage extends Stage {
 
     @Override
     public Map<String, Object> getAsMap() {
-        return Map.of("type",getType(),"stage",(Map.of("text", info)));
+        return Map.of("type", getType(), "stage", (Map.of("text", info)));
     }
 
     @Override

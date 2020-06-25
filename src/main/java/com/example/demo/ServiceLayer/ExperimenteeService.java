@@ -64,14 +64,14 @@ public class ExperimenteeService {
             expMap.put("expName", stages.get(0).getExperiment().getExperimentName());
             List<Map<String, Object>> stagesMapList = new ArrayList<>();
             boolean isDone = false;
-            for (Stage s:stages) {
+            for (Stage s : stages) {
                 Result r = experimenteeBusiness.getResult(code, s.getStageID().getStageIndex());
                 if (!isDone && r != null)
                     isDone = r.getParticipant().isDone();
                 stagesMapList.add(makeStageAndResult(s, r));
             }
             expMap.put("stages", stagesMapList);
-            expMap.put("isComplete",isDone);
+            expMap.put("isComplete", isDone);
             return expMap;
         } catch (Exception e) {
             System.out.println(e.getMessage());

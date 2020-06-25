@@ -57,11 +57,10 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
         int currentStage;
         if (expee.getParticipant().isDone()) {
             currentStage = expee.getExperiment().getStages().size() - 1;
-        }
-        else {
+        } else {
             currentStage = expee.getParticipant().getCurrStageIdx();
         }
-        for (int i = 0; i <= currentStage ; i++) {
+        for (int i = 0; i <= currentStage; i++) {
             stages.add(expee.getStage(i));
         }
         return stages;

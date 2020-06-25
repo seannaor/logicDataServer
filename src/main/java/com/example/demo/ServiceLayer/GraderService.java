@@ -59,8 +59,9 @@ public class GraderService {
             Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);
 
             Map<String, Object> stageMap = s.getAsMap();
-            if (res == null) return Map.of("type",stageMap.get("type"),"stage",stageMap.get("stage"), "results", "None");
-            return Map.of("type",stageMap.get("type"),"stage",stageMap.get("stage"), "results", res.getAsMap());
+            if (res == null)
+                return Map.of("type", stageMap.get("type"), "stage", stageMap.get("stage"), "results", "None");
+            return Map.of("type", stageMap.get("type"), "stage", stageMap.get("stage"), "results", res.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }

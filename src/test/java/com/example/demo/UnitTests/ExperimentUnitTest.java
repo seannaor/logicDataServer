@@ -7,7 +7,6 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.InfoStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.json.simple.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +22,7 @@ public class ExperimentUnitTest {
     @BeforeEach
     public void init() throws FormatException {
         experiment = new Experiment("experiment");
-        for (Map<String,Object> stageJ : buildSimpleExp(List.of("what is your name?"))) {
+        for (Map<String, Object> stageJ : buildSimpleExp(List.of("what is your name?"))) {
             Stage s = Stage.parseStage(stageJ, experiment);
             experiment.addStage(s);
         }

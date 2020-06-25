@@ -56,10 +56,10 @@ public class Utils {
     public static Map<String, Object> makeStageAndResult(Stage stage, Result result) {
         return result == null ? stage.getAsMap() :
                 Map.of(
-                "type", stage.getType(),
-                "stage", stage.getAsMap().get("stage"),
-                "result", result.getAsMap()
-        );
+                        "type", stage.getType(),
+                        "stage", stage.getAsMap().get("stage"),
+                        "result", result.getAsMap()
+                );
     }
 
     public static Map<String, Object> makeGetStagesResponse(String expName, List<Map<String, Object>> stages) {

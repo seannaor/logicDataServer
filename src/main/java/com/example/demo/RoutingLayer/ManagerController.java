@@ -1,7 +1,6 @@
 package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.CreatorService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +33,11 @@ public class ManagerController {
 
     @PostMapping("/addExperiment/{username}")
     public Map<String, Object> addExperiment(@PathVariable String username,
-                                             @RequestBody Map<String, Object> experiment){
+                                             @RequestBody Map<String, Object> experiment) {
         System.out.println("/addExperiment " + username);
-        String experimnetnName = (String)experiment.get("expName");
-        List<Map<String,Object>> stages  = (List<Map<String,Object>>) experiment.get("stages");
-        return creator.addExperiment(username,experimnetnName,stages);
+        String experimnetnName = (String) experiment.get("expName");
+        List<Map<String, Object>> stages = (List<Map<String, Object>>) experiment.get("stages");
+        return creator.addExperiment(username, experimnetnName, stages);
     }
 
     @PostMapping("/addExperimentees/{username}/{expName}")
@@ -51,7 +50,7 @@ public class ManagerController {
 
     @GetMapping("/getExperimentees/{username}/{expName}")
     public Map<String, Object> getExperimentees(@PathVariable String username, @PathVariable String expName) {
-        System.out.println("/getExperimentees " + username+" exp "+expName);
+        System.out.println("/getExperimentees " + username + " exp " + expName);
         return creator.getExperimentees(username, expName);
     }
 
@@ -61,12 +60,15 @@ public class ManagerController {
     }
 
 
-    @GetMapping("/addAlly/{username}/{mail}/{password}")
-    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String mail, @PathVariable String password) {
-        return creator.addAlly(username, mail, password);
+    @PostMapping("/addAlly/{adminUsername}")
+    public Map<String, Object> addAlly(@PathVariable String adminUsername,
+                                       @RequestBody Map<String, Object> allyDetails) {
+        String password = (String) allyDetails.get("password");
+        String email = (String) allyDetails.get("email");
+        return creator.addAlly(adminUsername, email, password);
     }
 
-    @GetMapping("/addAlly/{username}/{expName}/{mail}/{password}")
+    @PostMapping("/addAlly/{username}/{expName}/{mail}/{password}")
     public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail, @PathVariable String password) {
         return creator.addAllyToExp(username, expName, mail, password);
     }
@@ -89,12 +91,12 @@ public class ManagerController {
     @RequestMapping("/add_grading_task")
     public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam
             List<String> expee_stages, @RequestParam List<Integer> exp_indexes, @RequestParam List<String> personal_stages) {
-        List<Map<String,Object>> jStages_personal = new ArrayList<>();
+        List<Map<String, Object>> jStages_personal = new ArrayList<>();
         for (String stage : personal_stages) {
             stage = decode(stage);
             jStages_personal.add(strToJSON(stage));
         }
-        List<Map<String,Object>> jStages_expee = new ArrayList<>();
+        List<Map<String, Object>> jStages_expee = new ArrayList<>();
         for (String stage : expee_stages) {
             stage = decode(stage);
             jStages_expee.add(strToJSON(stage));

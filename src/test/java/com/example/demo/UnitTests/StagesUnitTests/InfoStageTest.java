@@ -34,7 +34,7 @@ public class InfoStageTest {
     public void getAsMapTest() {
         Map<String, Object> map = new HashMap<>();
         map.put("text", infoStage.getInfo());
-        Assert.assertEquals(Map.of("type","info","stage",map), infoStage.getAsMap());
+        Assert.assertEquals(Map.of("type", "info", "stage", map), infoStage.getAsMap());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class InfoStageTest {
 
         assertThrows(FormatException.class, () -> {
             // fails because infoStage can not be filled as a tag stage
-            infoStage.fillTagging(new HashMap<>(),"", null);
+            infoStage.fillTagging(new HashMap<>(), "", null);
         });
 
 

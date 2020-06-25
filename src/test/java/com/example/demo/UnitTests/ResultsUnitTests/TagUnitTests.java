@@ -3,7 +3,6 @@ package com.example.demo.UnitTests.ResultsUnitTests;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ public class TagUnitTests {
     @BeforeEach
     public void init() throws FormatException {
         requirement = new Requirement("a requirement");
-        tag = requirement.tag(0,10);
+        tag = requirement.tag(0, 10);
     }
 
     @Test

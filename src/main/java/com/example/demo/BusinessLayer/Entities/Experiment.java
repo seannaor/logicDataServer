@@ -145,6 +145,6 @@ public class Experiment {
         for (Stage s : this.stages) {
             stagesAsMap.add(s.getAsMap());
         }
-        return Map.of("expName",this.experimentName,"stages",stagesAsMap);
+        return Map.of("expName", this.experimentName, "stages", stagesAsMap);
     }
 }

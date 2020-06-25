@@ -2,7 +2,6 @@ package com.example.demo.BusinessLayer.Entities.Stages;
 
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,7 +32,7 @@ public class Requirement {
     }
 
     public RequirementTag tag(int startLoc, int length) throws FormatException {
-        if(length<0) throw new FormatException("legal tag","end of tag before start");
+        if (length < 0) throw new FormatException("legal tag", "end of tag before start");
         RequirementTag tag = new RequirementTag(startLoc, length, this);
         return tag;
     }

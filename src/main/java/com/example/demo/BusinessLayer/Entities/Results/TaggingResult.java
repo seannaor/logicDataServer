@@ -56,12 +56,12 @@ public class TaggingResult extends Result {
         int currReqIdx = this.getTags().get(0).getRequirement().getIndex();
 
         for (RequirementTag tag : this.getTags()) {
-            Map<String, Object> tagMapOrg =  tag.getAsMap();
+            Map<String, Object> tagMapOrg = tag.getAsMap();
             Map<String, Object> tagMapTrans = translate(tagMapOrg, userCodeRows);
 
-            int newReqIdx = (int)tagMapOrg.get("requirement index");
-            if (newReqIdx!=currReqIdx){
-                currReqIdx=newReqIdx;
+            int newReqIdx = (int) tagMapOrg.get("requirement index");
+            if (newReqIdx != currReqIdx) {
+                currReqIdx = newReqIdx;
                 JTags.add(JTagsByIdx);
                 JTagsByIdx = new LinkedList<>();
             }
@@ -95,7 +95,7 @@ public class TaggingResult extends Result {
         return Pair.of(fRow, col);
     }
 
-    private String[] getUserCodeByRows()  {
+    private String[] getUserCodeByRows() {
         TaggingStage t = (TaggingStage) this.getStage();
         try {
             CodeResult cr = (CodeResult) (this.getParticipant()).getResult(t.getCodeStage().getStageID().getStageIndex());

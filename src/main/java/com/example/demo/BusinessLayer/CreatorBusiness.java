@@ -65,7 +65,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     @Override
     public int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException {
         ManagementUser c = cache.getManagerByName(researcherName);
-        if(!c.isAdmin()) throw new NotInReachException("creating new experiment","you don't have the permissions");
+        if (!c.isAdmin()) throw new NotInReachException("creating new experiment", "you don't have the permissions");
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
@@ -139,11 +139,11 @@ public class CreatorBusiness implements ICreatorBusiness {
             throw new ExistException(allyMail);
         } catch (NotExistException ignore) {
         }
-        ManagementUser ally = createManager(allyMail,password);
+        ManagementUser ally = createManager(allyMail, password);
         cache.addManager(ally);
     }
 
-    public void addAllyToExperiment(String researcherName,String expName, String allyMail, String password) throws NotExistException, ExistException {
+    public void addAllyToExperiment(String researcherName, String expName, String allyMail, String password) throws NotExistException, ExistException {
         ManagementUser manager = cache.getManagerByName(researcherName);
         Experiment experiment = manager.getExperimentByName(expName);
         try {
@@ -151,7 +151,7 @@ public class CreatorBusiness implements ICreatorBusiness {
             throw new ExistException(allyMail);
         } catch (NotExistException ignore) {
         }
-        ManagementUser ally = createManager(allyMail,password);
+        ManagementUser ally = createManager(allyMail, password);
         ManagementUserToExperiment m = new ManagementUserToExperiment(ally, experiment, "");
         ally.addManagementUserToExperiment(m);
         experiment.addManagementUserToExperiment(m);
@@ -161,9 +161,10 @@ public class CreatorBusiness implements ICreatorBusiness {
         ally.setPermissions(List.of(new Permission("noAdmin")));
     }
 
-    private ManagementUser createManager(String allyMail, String password){
+    private ManagementUser createManager(String allyMail, String password) {
         String username = allyMail;
-        if(username.contains("@")) username.substring(0,username.indexOf('@'));
+        if (username.contains("@"))
+            username = username.substring(0, username.indexOf('@'));
         return new ManagementUser(username, password, allyMail);
     }
 

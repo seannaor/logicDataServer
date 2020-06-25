@@ -4,14 +4,12 @@ import com.example.demo.BusinessLayer.Entities.Experiment;
 import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Results.RequirementTag;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
-import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.Utils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +28,8 @@ public class TaggingResultUnitTests {
     @BeforeEach
     public void init() throws FormatException, NotExistException, ExpEndException, NotInReachException, ParseException {
         Experiment exp = new Experiment("Experiment Name");
-        List<Map<String,Object>> stages = Utils.buildStages();
-        for (Map<String,Object> stageJ : stages) {
+        List<Map<String, Object>> stages = Utils.buildStages();
+        for (Map<String, Object> stageJ : stages) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }

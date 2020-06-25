@@ -108,8 +108,8 @@ public class Participant {
                 currResult = currStage.fillCode(data, (CodeResult) getResult(currStage.getStageID().getStageIndex()));
                 break;
             case "tag":
-                CodeResult codeResult = (CodeResult)getResult(((TaggingStage)currStage).getCodeStage().getStageID().getStageIndex());
-                currResult = currStage.fillTagging(data,codeResult.getUserCode(), (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
+                CodeResult codeResult = (CodeResult) getResult(((TaggingStage) currStage).getCodeStage().getStageID().getStageIndex());
+                currResult = currStage.fillTagging(data, codeResult.getUserCode(), (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
 
                 break;
             case "questionnaire":

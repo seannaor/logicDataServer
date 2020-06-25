@@ -11,7 +11,6 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.Utils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParticipantTest {
     private Participant participant;
-    private List<Map<String,Object>> stagesJson;
+    private List<Map<String, Object>> stagesJson;
 
     @BeforeEach
     private void init() throws FormatException {
         Experiment exp = new Experiment("Experiment Name");
         stagesJson = Utils.buildStages();
-        for (Map<String,Object> stageJ : stagesJson) {
+        for (Map<String, Object> stageJ : stagesJson) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }
@@ -124,7 +123,7 @@ public class ParticipantTest {
 
     @Test
     public void fillTaggingStageFailNotTagging() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        Map<String,Object> ans = buildParticipantTag();
+        Map<String, Object> ans = buildParticipantTag();
         assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("tag", ans));
         });
@@ -132,7 +131,7 @@ public class ParticipantTest {
 
     @Test
     public void fillTaggingStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        Map<String,Object>  ans = buildParticipantTag();
+        Map<String, Object> ans = buildParticipantTag();
         participant.getNextStage();
         participant.getNextStage();
         participant.fillInStage(Map.of("code", "return 0;"));

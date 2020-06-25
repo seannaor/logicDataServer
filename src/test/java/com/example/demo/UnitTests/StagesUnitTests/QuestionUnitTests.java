@@ -35,7 +35,7 @@ public class QuestionUnitTests {
     }
 
     @Test
-    public void answerFailParse()  {
+    public void answerFailParse() {
         Question q = new Question();
         q.setQuestionJson("not a JSON");
 
@@ -45,7 +45,7 @@ public class QuestionUnitTests {
     }
 
     @Test
-    public void answerFailFormat()  {
+    public void answerFailFormat() {
         Question q = new Question();
         JSONObject JQuestion = new JSONObject();
         JQuestion.put("questionType", "not a type");

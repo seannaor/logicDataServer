@@ -84,7 +84,7 @@ public class ManagementUser {
 
     public boolean isAdmin() {
         for (Permission p : permissions) {
-            if(p.getPermissionName().equals("noAdmin")) return false;
+            if (p.getPermissionName().equals("noAdmin")) return false;
         }
         return true;
     }

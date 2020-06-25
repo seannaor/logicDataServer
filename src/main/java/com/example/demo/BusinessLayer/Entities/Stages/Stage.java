@@ -30,9 +30,9 @@ public abstract class Stage {
     public Stage() {
     }
 
-    public static Stage parseStage(Map<String,Object> stage, Experiment exp) throws FormatException {
+    public static Stage parseStage(Map<String, Object> stage, Experiment exp) throws FormatException {
         try {
-            Map<String,Object> data = (Map<String,Object>)stage.get("stage");
+            Map<String, Object> data = (Map<String, Object>) stage.get("stage");
             switch ((String) stage.get("type")) {
                 case "info":
                     return new InfoStage((String) data.get("text"));
@@ -42,11 +42,11 @@ public abstract class Stage {
                             (List<String>) data.get("requirements"), (String) data.get("language"));
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<Map<String,Object>>) data.get("questions"));
+                    return new QuestionnaireStage((List<Map<String, Object>>) data.get("questions"));
 
                 case "tag":
                     int codeIdx = (int) data.get("codeStageIndex");
-                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx-1);
+                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx - 1);
                     return new TaggingStage(codeStage);
             }
         } catch (Exception ignore) {
@@ -86,7 +86,7 @@ public abstract class Stage {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(Map<String, Object> data,String userCode, TaggingResult old) throws FormatException {
+    public TaggingResult fillTagging(Map<String, Object> data, String userCode, TaggingResult old) throws FormatException {
         throw new FormatException("tagging stage answers");
     }
 

@@ -5,9 +5,6 @@ import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,7 +77,7 @@ public class CodeUnitTest {
 
     @Test
     public void getMap() {
-        Map<String, Object> codeMap = (Map<String, Object>)codeStage.getAsMap().get("stage");
+        Map<String, Object> codeMap = (Map<String, Object>) codeStage.getAsMap().get("stage");
         Assert.assertTrue(codeMap.containsKey("description"));
         Assert.assertTrue(codeMap.containsKey("template"));
         Assert.assertTrue(codeMap.containsKey("language"));
@@ -109,7 +106,7 @@ public class CodeUnitTest {
 
         assertThrows(FormatException.class, () -> {
             // fails because infoStage can not be filled as a tag stage
-            codeStage.fillTagging(new HashMap<>(),"", null);
+            codeStage.fillTagging(new HashMap<>(), "", null);
         });
 
         assertThrows(FormatException.class, () -> {

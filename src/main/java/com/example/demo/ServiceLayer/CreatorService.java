@@ -99,7 +99,7 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addAlly(String researcherName,String email,String password){
+    public Map<String, Object> addAlly(String researcherName, String email, String password) {
         String res = "OK";
         try {
             creatorBusiness.addAlly(researcherName, email, password);
@@ -109,10 +109,10 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addAllyToExp(String researcherName,String expName,String email,String password){
+    public Map<String, Object> addAllyToExp(String researcherName, String expName, String email, String password) {
         String res = "OK";
         try {
-            creatorBusiness.addAllyToExperiment(researcherName,expName, email, password);
+            creatorBusiness.addAllyToExperiment(researcherName, expName, email, password);
         } catch (Exception e) {
             res = e.getMessage();
         }
@@ -211,7 +211,7 @@ public class CreatorService {
         for (Experimentee expee : expees) {
             ids.add(Map.of("email", expee.getExperimenteeEmail()
                     , "accessCode", expee.getAccessCode().toString(),
-                    "isComplete",expee.getParticipant().isDone()));
+                    "isComplete", expee.getParticipant().isDone()));
         }
         return Map.of("experimentees", ids);
     }

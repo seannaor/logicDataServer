@@ -1,13 +1,11 @@
 package com.example.demo.UnitTests.StagesUnitTests;
 
 import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Results.CodeResult;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TaggingStageTest {
@@ -76,27 +73,27 @@ public class TaggingStageTest {
 
     @Test
     public void fillIn() throws FormatException {
-        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"column",0),
-                "to",Map.of("row",1,"column",7));
+        Map<String, Object> fromTo = Map.of("from", Map.of("row", 1, "column", 0),
+                "to", Map.of("row", 1, "column", 7));
 
-        TaggingResult tr = taggingStage.fillTagging(Map.of("tags", List.of(List.of(fromTo,fromTo))),"return 0;", null);
+        TaggingResult tr = taggingStage.fillTagging(Map.of("tags", List.of(List.of(fromTo, fromTo))), "return 0;", null);
         Assert.assertEquals(2, tr.getTags().size());
     }
 
     @Test
     public void fillInFailNoRequirementTag() {
-        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"column",0),
-                "to",Map.of("row",1,"column",10));
+        Map<String, Object> fromTo = Map.of("from", Map.of("row", 1, "column", 0),
+                "to", Map.of("row", 1, "column", 10));
 
         assertThrows(FormatException.class, () -> {
-            taggingStage.fillTagging(Map.of("tag", List.of(List.of(fromTo))),"", null);
+            taggingStage.fillTagging(Map.of("tag", List.of(List.of(fromTo))), "", null);
         });
     }
 
     @Test
     public void parseStageTest() throws FormatException {
-        Map<String,Object> stageMap = Map.of("codeStageIndex", taggingStage.getCodeStage().getStageID().getStageIndex()+1);
-        Stage stage = Stage.parseStage(Map.of("type","tag","stage",stageMap), exp);
+        Map<String, Object> stageMap = Map.of("codeStageIndex", taggingStage.getCodeStage().getStageID().getStageIndex() + 1);
+        Stage stage = Stage.parseStage(Map.of("type", "tag", "stage", stageMap), exp);
         Assert.assertEquals("tag", stage.getType());
     }
 

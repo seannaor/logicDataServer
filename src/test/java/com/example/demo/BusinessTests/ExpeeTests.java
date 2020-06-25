@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,6 +38,7 @@ public class ExpeeTests {
     private ManagementUser manager;
     private Experiment experiment;
     private Experimentee expee;
+
     @Autowired
     public ExpeeTests(ExperimenteeBusiness experimenteeBusiness, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.experimenteeBusiness = experimenteeBusiness;
@@ -182,12 +182,12 @@ public class ExpeeTests {
     @Test
     public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
         nextStageFor(2, expee.getAccessCode());
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
         experimenteeBusiness.getNextStage(expee.getAccessCode());
         // fill in tagging (last) stage, fucked format should fail
         long numOfTagRes = db.getNumberOfTagResults();
         assertThrows(FormatException.class, () -> {
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",(Map.of("not-tags", List.of()))));
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", (Map.of("not-tags", List.of()))));
         });
         assertEquals(numOfTagRes, db.getNumberOfTagResults());
         assertNull(expee.getResult(3));
@@ -197,7 +197,7 @@ public class ExpeeTests {
     @Transactional
     public void fillInTagging() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
         nextStageFor(2, expee.getAccessCode());
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
         experimenteeBusiness.getNextStage(expee.getAccessCode());
         long numOfTagRes = db.getNumberOfTagResults();
 
@@ -235,7 +235,7 @@ public class ExpeeTests {
     @Test
     public void getStageTest() throws ParseException, CodeException, NotExistException, FormatException, ExpEndException, NotInReachException {
         nextStageFor(2, expee.getAccessCode());
-        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data",Map.of("code","//I dont know to program :(;")));
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
         experimenteeBusiness.getNextStage(expee.getAccessCode());
 
         Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
