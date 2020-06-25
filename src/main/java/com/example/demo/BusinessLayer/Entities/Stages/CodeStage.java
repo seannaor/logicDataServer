@@ -125,7 +125,7 @@ public class CodeStage extends Stage {
             requirements.add(r.getText());
         }
         stageMap.put("requirements", requirements);
-        return stageMap;
+        return Map.of("type", getType(), "stage", stageMap);
     }
 
     @Override

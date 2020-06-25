@@ -9,9 +9,10 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import org.json.simple.JSONObject;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ICreatorBusiness {
 
@@ -21,22 +22,22 @@ public interface ICreatorBusiness {
     int createExperiment(String researcherName, String expName) throws ExistException, NotExistException;
 
     //UC 1.1 - one choice (PARTS)
-    void addStageToExperiment(String researcherName, int id, JSONObject stage) throws ExistException, FormatException, NotExistException;
+    void addStageToExperiment(String researcherName, int id, Map<String, Object> stage) throws ExistException, FormatException, NotExistException;
 
     //String saveExperiment(String researcherName, int id) throws NotExistException;
 
     //UC 1.1 - second choice (ALL)
-    int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException;
+    int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException;
 
     //UC 1.2 - one choice (ALL)
-    int addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp,
-                       List<Integer> stagesToCheck, List<JSONObject> personalExp) throws NotExistException, FormatException;
+    int addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String, Object>> ExpeeExp,
+                       List<Integer> stagesToCheck, List<Map<String, Object>> personalExp) throws NotExistException, FormatException;
 
     //UC 1.2 - second choice (PARTS)
     // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/taskId, JSONObject stage)
-    void addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException;
+    void addToPersonal(String researcherName, int expId, int taskId, Map<String, Object> stage) throws NotExistException, FormatException;
 
-    void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException;
+    void addToResultsExp(String researcherName, int expId, int taskId, Map<String, Object> stage) throws NotExistException, FormatException;
 
     void setStagesToCheck(String researcherName, int expId, int taskId, List<Integer> stagesToCheck) throws NotExistException, FormatException;
 

@@ -41,6 +41,7 @@ public class GraderTests {
     private GradingTask task;
     private Participant graderExpeeParticipant;
     private UUID graderCode;
+
     @Autowired
     public GraderTests(GraderBusiness graderBusiness, CreatorBusiness creatorBusiness, ExperimenteeBusiness experimenteeBusiness, DataCache cache, DBAccess db) {
         this.graderBusiness = graderBusiness;

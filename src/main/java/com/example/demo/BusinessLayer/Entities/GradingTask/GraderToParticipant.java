@@ -27,6 +27,7 @@ public class GraderToParticipant {
     @OneToOne
     @JoinColumn(name = "grader_participant_id", referencedColumnName = "participant_id")
     private Participant graderParticipant;
+
     public GraderToParticipant() {
     }
 

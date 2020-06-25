@@ -11,7 +11,6 @@ import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.Utils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,17 +19,18 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParticipantTest {
     private Participant participant;
-    private List<JSONObject> stagesJson;
+    private List<Map<String, Object>> stagesJson;
 
     @BeforeEach
     private void init() throws FormatException {
         Experiment exp = new Experiment("Experiment Name");
         stagesJson = Utils.buildStages();
-        for (JSONObject stageJ : stagesJson) {
+        for (Map<String, Object> stageJ : stagesJson) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }
@@ -123,17 +123,18 @@ public class ParticipantTest {
 
     @Test
     public void fillTaggingStageFailNotTagging() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        JSONObject ans = buildParticipantTag();
+        Map<String, Object> ans = buildParticipantTag();
         assertThrows(FormatException.class, () -> {
-            participant.fillInStage(Map.of("tagging", ans));
+            participant.fillInStage(Map.of("tag", ans));
         });
     }
 
     @Test
     public void fillTaggingStageFailFormat() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        JSONObject ans = buildParticipantTag();
+        Map<String, Object> ans = buildParticipantTag();
         participant.getNextStage();
         participant.getNextStage();
+        participant.fillInStage(Map.of("code", "return 0;"));
         participant.getNextStage();
         assertThrows(FormatException.class, () -> {
             participant.fillInStage(Map.of("tagging!1232132", ans));
@@ -142,12 +143,13 @@ public class ParticipantTest {
 
     @Test
     public void fillInTaggingStageTest() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
-        JSONObject ans = buildParticipantTag();
+        Map<String, Object> ans = buildParticipantTag();
         participant.getNextStage();
         participant.getNextStage();
+        participant.fillInStage(Map.of("code", "return 0;"));
         participant.getNextStage();
 
-        TaggingResult result = (TaggingResult) participant.fillInStage(Map.of("tagging", ans));
+        TaggingResult result = (TaggingResult) participant.fillInStage(ans);
         Assert.assertEquals(result.getTags().size(), 3);
     }
 
@@ -164,20 +166,4 @@ public class ParticipantTest {
         Assert.assertEquals(result.getAnswers().size(), 2);
     }
 
-    private JSONObject buildParticipantTag() {
-        JSONObject ans = new JSONObject();
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        return ans;
-    }
 }

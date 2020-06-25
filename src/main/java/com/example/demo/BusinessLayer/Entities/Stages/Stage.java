@@ -8,7 +8,6 @@ import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.persistence.*;
@@ -31,22 +30,23 @@ public abstract class Stage {
     public Stage() {
     }
 
-    public static Stage parseStage(JSONObject stage, Experiment exp) throws FormatException {
+    public static Stage parseStage(Map<String, Object> stage, Experiment exp) throws FormatException {
         try {
+            Map<String, Object> data = (Map<String, Object>) stage.get("stage");
             switch ((String) stage.get("type")) {
                 case "info":
-                    return new InfoStage((String) stage.get("info"));
+                    return new InfoStage((String) data.get("text"));
 
                 case "code":
-                    return new CodeStage((String) stage.get("description"), (String) stage.get("template"),
-                            (List<String>) stage.get("requirements"), (String) stage.get("language"));
+                    return new CodeStage((String) data.get("description"), (String) data.get("template"),
+                            (List<String>) data.get("requirements"), (String) data.get("language"));
 
                 case "questionnaire":
-                    return new QuestionnaireStage((List<JSONObject>) stage.get("questions"));
+                    return new QuestionnaireStage((List<Map<String, Object>>) data.get("questions"));
 
-                case "tagging":
-                    int codeIdx = (int) stage.get("codeIndex");
-                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx);
+                case "tag":
+                    int codeIdx = (int) data.get("codeStageIndex");
+                    CodeStage codeStage = (CodeStage) exp.getStage(codeIdx - 1);
                     return new TaggingStage(codeStage);
             }
         } catch (Exception ignore) {
@@ -86,7 +86,7 @@ public abstract class Stage {
         throw new FormatException("questionnaire stage answers");
     }
 
-    public TaggingResult fillTagging(Map<String, Object> data, TaggingResult old) throws FormatException, NotInReachException {
+    public TaggingResult fillTagging(Map<String, Object> data, String userCode, TaggingResult old) throws FormatException {
         throw new FormatException("tagging stage answers");
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.example.demo.ServiceLayer.JSONUtil.makeStageAndResult;
+import static com.example.demo.ServiceLayer.Utils.makeStageAndResult;
 
 @Service
 public class ExperimenteeService {
@@ -58,20 +58,20 @@ public class ExperimenteeService {
     public Map<String, Object> reachableStages(String accessCode) {
         try {
             UUID code = UUID.fromString(accessCode);
-            Stage currentStage = experimenteeBusiness.getCurrentStage(code);
-            int idx = currentStage.getStageID().getStageIndex();
-            Result currentRes = experimenteeBusiness.getResult(UUID.fromString(accessCode), idx);
-            Map<String, Object> expMap = new HashMap<>();
-            expMap.put("expName", currentStage.getExperiment().getExperimentName());
-            List<Map<String, Object>> stagesMapList = new ArrayList<>();
-            for (int i = 0; i < idx; i++) {
-                Stage s = experimenteeBusiness.getStage(code, i);
-                Result r = experimenteeBusiness.getResult(code, i);
+            List<Stage> stages = experimenteeBusiness.getReachableStages(code);
 
+            Map<String, Object> expMap = new HashMap<>();
+            expMap.put("expName", stages.get(0).getExperiment().getExperimentName());
+            List<Map<String, Object>> stagesMapList = new ArrayList<>();
+            boolean isDone = false;
+            for (Stage s : stages) {
+                Result r = experimenteeBusiness.getResult(code, s.getStageID().getStageIndex());
+                if (!isDone && r != null)
+                    isDone = r.getParticipant().isDone();
                 stagesMapList.add(makeStageAndResult(s, r));
             }
-            stagesMapList.add(makeStageAndResult(currentStage, currentRes));
             expMap.put("stages", stagesMapList);
+            expMap.put("isComplete", isDone);
             return expMap;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -84,8 +84,8 @@ public class ExperimenteeService {
             Stage s = experimenteeBusiness.getCurrentStage(UUID.fromString(accessCode));
             Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), s.getStageID().getStageIndex());
             if (res == null)
-                return Map.of("response", "OK", "type", s.getType(), "stage", s.getAsMap());
-            return Map.of("response", "OK", "type", s.getType(), "stage", s.getAsMap(), "result", res.getAsMap());
+                return Map.of("type", s.getType(), "stage", s.getAsMap().get("stage"));
+            return Map.of("type", s.getType(), "stage", s.getAsMap().get("stage"), "result", res.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -95,8 +95,9 @@ public class ExperimenteeService {
         try {
             Stage s = experimenteeBusiness.getStage(UUID.fromString(accessCode), id);
             Result res = experimenteeBusiness.getResult(UUID.fromString(accessCode), id);
-            if (res == null) return Map.of("response", "OK", "stage", s.getAsMap(), "results", "None");
-            return Map.of("response", "OK", "stage", s.getAsMap(), "results", res.getAsMap());
+            if (res == null)
+                return Map.of("type", s.getAsMap().get("type"), "stage", s.getAsMap().get("stage"), "results", "None");
+            return Map.of("type", s.getAsMap().get("type"), "stage", s.getAsMap().get("stage"), "results", res.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }

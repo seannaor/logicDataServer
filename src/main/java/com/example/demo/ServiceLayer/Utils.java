@@ -6,7 +6,7 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import java.util.List;
 import java.util.Map;
 
-public class JSONUtil {
+public class Utils {
     public static Map<String, Object> makeInfoStage(String info) {
         return Map.of(
                 "text", info
@@ -54,14 +54,12 @@ public class JSONUtil {
     }
 
     public static Map<String, Object> makeStageAndResult(Stage stage, Result result) {
-        return result == null ? Map.of(
-                "type", stage.getType(),
-                "stage", stage.getAsMap()
-        ) : Map.of(
-                "type", stage.getType(),
-                "stage", stage.getAsMap(),
-                "result", result.getAsMap()
-        );
+        return result == null ? stage.getAsMap() :
+                Map.of(
+                        "type", stage.getType(),
+                        "stage", stage.getAsMap().get("stage"),
+                        "result", result.getAsMap()
+                );
     }
 
     public static Map<String, Object> makeGetStagesResponse(String expName, List<Map<String, Object>> stages) {

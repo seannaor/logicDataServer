@@ -39,6 +39,7 @@ public class GraderServiceTests {
     private Experiment experiment;
     private GradingTask task;
     private UUID graderCode;
+
     @Autowired
     public GraderServiceTests(GraderService graderService, CreatorBusiness creatorBusiness, ExperimenteeBusiness experimenteeBusiness, DataCache cache, DBAccess db) {
         this.graderService = graderService;
@@ -84,7 +85,6 @@ public class GraderServiceTests {
         //filling questionnaire stage
         graderService.getNextStage(graderCode.toString(), expee.getParticipant().getParticipantId());
         ansRight = graderService.fillInStage(graderCode.toString(), expee.getParticipant().getParticipantId(), Map.of("data", Map.of("answers", List.of("hi", "bye"))));
-        assertEquals("OK", ansRight.get("response"));
         Participant graderParticipant = cache.getGraderToGradingTask(grader, task).getGraderToParticipants().get(0).getGraderParticipant();
         assertEquals(((QuestionnaireResult) graderParticipant.getResult(1)).getAnswers().size(), 2);
         assertEquals(((QuestionnaireResult) graderParticipant.getResult(1)).getAnswers().get(0).getAnswer(), "hi");
@@ -99,7 +99,6 @@ public class GraderServiceTests {
         ansWrong = graderService.getNextStage(graderCode.toString(), 9090);
         assertNotEquals("OK", ansWrong.get("response"));
         Map<String, Object> ansRight = graderService.getNextStage(graderCode.toString(), expee.getParticipant().getParticipantId());
-        assertEquals("OK", ansRight.get("response"));
         List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight.get("stage")).get("questions"));
         assertEquals(questionsOfStage.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
     }
@@ -113,8 +112,8 @@ public class GraderServiceTests {
         ansWrong = graderService.getCurrentStage(graderCode.toString(), 9090);
         assertNotEquals("OK", ansWrong.get("response"));
         Map<String, Object> ansRight = graderService.getCurrentStage(graderCode.toString(), expee.getParticipant().getParticipantId());
-        assertEquals("OK", ansRight.get("response"));
-        assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
+        Map<String, Object> stageMap = (Map<String, Object>) ansRight.get("stage");
+        assertEquals(stageMap.get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         graderService.getNextStage(graderCode.toString(), expee.getParticipant().getParticipantId());
         ansRight = graderService.getCurrentStage(graderCode.toString(), expee.getParticipant().getParticipantId());
         List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight.get("stage")).get("questions"));
@@ -137,7 +136,6 @@ public class GraderServiceTests {
     @Test
     public void getStageTest() throws NotExistException {
         Map<String, Object> ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 0);
-        assertEquals("OK", ansRight.get("response"));
         assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         //did not reach stage 1 yet
         ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 1);
@@ -165,7 +163,6 @@ public class GraderServiceTests {
         Map<String, Object> ansWrong = graderService.getExperimentees(UUID.randomUUID().toString());
         assertNotEquals("OK", ansWrong.get("response"));
         Map<String, Object> ansRight = graderService.getExperimentees(graderCode.toString());
-        assertEquals("OK", ansRight.get("response"));
         List<Integer> experimentees = (List<Integer>) (ansRight.get("experimentees"));
         assertEquals(experimentees.size(), cache.getGraderToGradingTask(grader, task).getGraderToParticipants().size());
         assertEquals(experimentees.get(0).intValue(), cache.getGraderToGradingTask(grader, task).getGraderToParticipants().get(0).getExpeeParticipant().getParticipantId());
@@ -180,7 +177,6 @@ public class GraderServiceTests {
         ansWrong = graderService.getExperimenteeResults(graderCode.toString(), 9090);
         assertNotEquals("OK", ansWrong.get("response"));
         Map<String, Object> ansRight = graderService.getExperimenteeResults(graderCode.toString(), expee.getParticipant().getParticipantId());
-        assertEquals("OK", ansRight.get("response"));
         List<Map<String, Object>> results = (List<Map<String, Object>>) (ansRight.get("results"));
         // expee has already finished the experiment (since we got results), grader can only see results that are visible to him (which are in the gradingTask)
         assertEquals(results.size(), task.getStages().size());

@@ -5,9 +5,6 @@ import com.example.demo.BusinessLayer.Entities.Stages.CodeStage;
 import com.example.demo.BusinessLayer.Entities.Stages.Requirement;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
-import com.example.demo.BusinessLayer.Exceptions.NotExistException;
-import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.Utils.getStumpCodeStage;
+import static com.example.demo.Utils.getStumpCodeMap;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeUnitTest {
@@ -80,7 +77,7 @@ public class CodeUnitTest {
 
     @Test
     public void getMap() {
-        Map<String, Object> codeMap = codeStage.getAsMap();
+        Map<String, Object> codeMap = (Map<String, Object>) codeStage.getAsMap().get("stage");
         Assert.assertTrue(codeMap.containsKey("description"));
         Assert.assertTrue(codeMap.containsKey("template"));
         Assert.assertTrue(codeMap.containsKey("language"));
@@ -94,7 +91,7 @@ public class CodeUnitTest {
 
     @Test
     public void buildFromJson() throws FormatException {
-        Stage stage = Stage.parseStage(getStumpCodeStage(), null);
+        Stage stage = Stage.parseStage(getStumpCodeMap(), null);
         Assert.assertEquals("code", stage.getType());
     }
 
@@ -109,7 +106,7 @@ public class CodeUnitTest {
 
         assertThrows(FormatException.class, () -> {
             // fails because infoStage can not be filled as a tag stage
-            codeStage.fillTagging(new HashMap<>(), null);
+            codeStage.fillTagging(new HashMap<>(), "", null);
         });
 
         assertThrows(FormatException.class, () -> {

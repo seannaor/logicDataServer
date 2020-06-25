@@ -8,15 +8,12 @@ import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
 import com.example.demo.DBAccess;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CreatorBusiness implements ICreatorBusiness {
@@ -57,7 +54,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addStageToExperiment(String researcherName, int id, JSONObject stage) throws FormatException, NotExistException {
+    public void addStageToExperiment(String researcherName, int id, Map<String, Object> stage) throws FormatException, NotExistException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(id);
         Stage toAdd = Stage.parseStage(stage, exp);
@@ -66,8 +63,9 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public int addExperiment(String researcherName, String expName, List<JSONObject> stages) throws NotExistException, FormatException, ExistException {
+    public int addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) throws NotExistException, FormatException, ExistException, NotInReachException {
         ManagementUser c = cache.getManagerByName(researcherName);
+        if (!c.isAdmin()) throw new NotInReachException("creating new experiment", "you don't have the permissions");
         try {
             c.getExperimentByName(expName);
             throw new ExistException(expName);
@@ -78,7 +76,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public int addGradingTask(String researcherName, int expId, String gradTaskName, List<JSONObject> ExpeeExp, List<Integer> stagesToCheck, List<JSONObject> personalExp) throws NotExistException, FormatException {
+    public int addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String, Object>> ExpeeExp, List<Integer> stagesToCheck, List<Map<String, Object>> personalExp) throws NotExistException, FormatException {
         ManagementUser c = cache.getManagerByName(researcherName);
         Experiment exp = c.getExperiment(expId);
         Experiment personal = buildExperiment(personalExp, gradTaskName + "/personal", c);
@@ -92,7 +90,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addToPersonal(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+    public void addToPersonal(String researcherName, int expId, int taskId, Map<String, Object> stage) throws NotExistException, FormatException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment personal = gt.getGeneralExperiment();
         Stage toAdd = Stage.parseStage(stage, personal);
@@ -101,7 +99,7 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     @Override
-    public void addToResultsExp(String researcherName, int expId, int taskId, JSONObject stage) throws NotExistException, FormatException {
+    public void addToResultsExp(String researcherName, int expId, int taskId, Map<String, Object> stage) throws NotExistException, FormatException {
         GradingTask gt = cache.getGradingTaskById(researcherName, expId, taskId);
         Experiment resExp = gt.getGradingExperiment();
         Stage toAdd = Stage.parseStage(stage, resExp);
@@ -131,6 +129,43 @@ public class CreatorBusiness implements ICreatorBusiness {
             ally.addPermission(toAdd);
             db.savePermissionForManagementUser(toAdd, ally);
         }
+    }
+
+    public void addAlly(String researcherName, String allyMail, String password) throws NotExistException, ExistException {
+        // When adding a new ally, his password is TEMP and username is his mail
+        cache.getManagerByName(researcherName);
+        try {
+            cache.getManagerByEMail(allyMail);
+            throw new ExistException(allyMail);
+        } catch (NotExistException ignore) {
+        }
+        ManagementUser ally = createManager(allyMail, password);
+        cache.addManager(ally);
+    }
+
+    public void addAllyToExperiment(String researcherName, String expName, String allyMail, String password) throws NotExistException, ExistException {
+        ManagementUser manager = cache.getManagerByName(researcherName);
+        Experiment experiment = manager.getExperimentByName(expName);
+        try {
+            cache.getManagerByEMail(allyMail);
+            throw new ExistException(allyMail);
+        } catch (NotExistException ignore) {
+        }
+        ManagementUser ally = createManager(allyMail, password);
+        ManagementUserToExperiment m = new ManagementUserToExperiment(ally, experiment, "");
+        ally.addManagementUserToExperiment(m);
+        experiment.addManagementUserToExperiment(m);
+        db.saveManagementUserToExperiment(m);
+        db.deletePermissionsOfManagementUser(ally);
+        cache.addManager(ally);
+        ally.setPermissions(List.of(new Permission("noAdmin")));
+    }
+
+    private ManagementUser createManager(String allyMail, String password) {
+        String username = allyMail;
+        if (username.contains("@"))
+            username = username.substring(0, username.indexOf('@'));
+        return new ManagementUser(username, password, allyMail);
     }
 
     @Override
@@ -193,11 +228,24 @@ public class CreatorBusiness implements ICreatorBusiness {
         return codes;
     }
 
+    public List<String> addExperimentees(String researcherName, String expName, List<String> expeeMails) throws NotExistException, ExistException {
+        ManagementUser c = cache.getManagerByName(researcherName);
+        Experiment exp = c.getExperimentByName(expName);
+
+        validateMails(exp, expeeMails);
+
+        List<String> codes = new ArrayList<>();
+        for (String mail : expeeMails) {
+            codes.add(addExperimentee(exp, mail));
+        }
+        return codes;
+    }
+
     private void validateMails(Experiment experiment, List<String> mails) throws ExistException {
-        Map<String,Boolean> mailsMap =new HashMap<>();
+        Map<String, Boolean> mailsMap = new HashMap<>();
         for (String mail : mails) {
-            if(mailsMap.get(mail)!=null) throw new ExistException(mail, "mail list");
-            else mailsMap.put(mail,true);
+            if (mailsMap.get(mail) != null) throw new ExistException(mail, "mail list");
+            else mailsMap.put(mail, true);
             if (cache.isExpeeInExperiment(mail, experiment.getExperimentId()))
                 throw new ExistException(mail, "experiment " + experiment.getExperimentId());
         }
@@ -248,6 +296,17 @@ public class CreatorBusiness implements ICreatorBusiness {
         return exp.getParticipants();
     }
 
+    public List<Experimentee> getExperimentees(String username, String expName) throws NotExistException {
+        ManagementUser c = cache.getManagerByName(username);
+        Experiment exp = c.getExperimentByName(expName);
+        List<Participant> participants = exp.getParticipants();
+        List<Experimentee> experimentees = new LinkedList<>();
+        for (Participant participant : participants) {
+            experimentees.add(cache.getExperimenteeById(participant.getParticipantId()));
+        }
+        return experimentees;
+    }
+
     public List<ManagementUserToExperiment> getAllies(String username, int expId) throws NotExistException {
         ManagementUser c = cache.getManagerByName(username);
         Experiment exp = c.getExperiment(expId);
@@ -293,10 +352,10 @@ public class CreatorBusiness implements ICreatorBusiness {
     }
 
     // utils
-    private Experiment buildExperiment(List<JSONObject> stages, String expName, ManagementUser creator) throws FormatException {
+    private Experiment buildExperiment(List<Map<String, Object>> stages, String expName, ManagementUser creator) throws FormatException {
         Experiment exp = new Experiment(expName, creator);
         db.saveExperiment(exp, creator);
-        for (JSONObject jStage : stages) {
+        for (Map<String, Object> jStage : stages) {
             try {
                 Stage toAdd = Stage.parseStage(jStage, exp);
                 exp.addStage(toAdd);

@@ -5,6 +5,7 @@ import com.example.demo.BusinessLayer.Entities.Results.QuestionnaireResult;
 import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Results.TaggingResult;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
+import com.example.demo.BusinessLayer.Entities.Stages.TaggingStage;
 import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
@@ -106,8 +107,9 @@ public class Participant {
             case "code":
                 currResult = currStage.fillCode(data, (CodeResult) getResult(currStage.getStageID().getStageIndex()));
                 break;
-            case "tagging":
-                currResult = currStage.fillTagging(data, (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
+            case "tag":
+                CodeResult codeResult = (CodeResult) getResult(((TaggingStage) currStage).getCodeStage().getStageID().getStageIndex());
+                currResult = currStage.fillTagging(data, codeResult.getUserCode(), (TaggingResult) getResult(currStage.getStageID().getStageIndex()));
 
                 break;
             case "questionnaire":

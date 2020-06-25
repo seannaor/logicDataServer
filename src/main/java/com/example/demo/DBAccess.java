@@ -31,6 +31,8 @@ public class DBAccess {
     @Autowired
     PermissionRep permissionRep;
     @Autowired
+    TaggingStageRep taggingStageRep;
+    @Autowired
     StageRep stageRep;
     @Autowired
     QuestionRep questionRep;
@@ -66,6 +68,7 @@ public class DBAccess {
                 graderToGradingTaskRep,
                 gradingTaskRep,
                 managementUserToExperimentRep,
+                taggingStageRep,
                 stageRep,
                 experimentRep,
                 permissionRep,
@@ -102,6 +105,10 @@ public class DBAccess {
 
     public Experimentee getExperimenteeByEmailAndExp(String email, int expId) {
         return experimenteeRep.findByEmailAndExp(email, expId);
+    }
+
+    public Experimentee getExperimenteeByParticipantId(int partidipantId) {
+        return experimenteeRep.findExperimenteeByParticipantId(partidipantId);
     }
 
     public void saveExperiment(Experiment e, ManagementUser creator) {

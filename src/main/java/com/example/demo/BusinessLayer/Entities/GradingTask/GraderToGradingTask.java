@@ -38,6 +38,7 @@ public class GraderToGradingTask {
     private Participant generalExpParticipant;
     @OneToMany(mappedBy = "graderToGradingTask")
     private List<GraderToParticipant> graderToParticipants = new ArrayList<>();
+
     public GraderToGradingTask() {
     }
 

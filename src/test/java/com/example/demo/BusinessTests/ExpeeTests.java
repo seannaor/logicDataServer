@@ -21,7 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +38,7 @@ public class ExpeeTests {
     private ManagementUser manager;
     private Experiment experiment;
     private Experimentee expee;
+
     @Autowired
     public ExpeeTests(ExperimenteeBusiness experimenteeBusiness, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db) {
         this.experimenteeBusiness = experimenteeBusiness;
@@ -46,7 +48,7 @@ public class ExpeeTests {
     }
 
     @BeforeEach
-    private void init() throws NotExistException, FormatException, ExistException, CodeException {
+    private void init() throws NotExistException, FormatException, ExistException, CodeException, NotInReachException {
         cache.setCache();
         db.deleteData();
 
@@ -109,8 +111,8 @@ public class ExpeeTests {
         assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
 
         s = experimenteeBusiness.getNextStage(expee.getAccessCode());
-        assertEquals(s.getType(), "tagging");
-        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
+        assertEquals(s.getType(), "tag");
+        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tag");
     }
 
     @Test
@@ -178,12 +180,14 @@ public class ExpeeTests {
     }
 
     @Test
-    public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException {
-        nextStageFor(3, expee.getAccessCode());
+    public void fillTaggingFail() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
         // fill in tagging (last) stage, fucked format should fail
         long numOfTagRes = db.getNumberOfTagResults();
         assertThrows(FormatException.class, () -> {
-            experimenteeBusiness.fillInStage(expee.getAccessCode(), new HashMap<>());
+            experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", (Map.of("not-tags", List.of()))));
         });
         assertEquals(numOfTagRes, db.getNumberOfTagResults());
         assertNull(expee.getResult(3));
@@ -192,13 +196,15 @@ public class ExpeeTests {
     @Test
     @Transactional
     public void fillInTagging() throws NotExistException, CodeException, ExpEndException, NotInReachException, ParseException, FormatException {
-        nextStageFor(3, expee.getAccessCode());
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
         long numOfTagRes = db.getNumberOfTagResults();
 
         //fill tagging dont really answer this stage, sill got weird problem there
         int numofTags = Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
-        assertEquals("tagging", expee.getResult(3).getStage().getType());
+        assertEquals("tag", expee.getResult(3).getStage().getType());
         assertEquals(numOfTagRes + numofTags, db.getNumberOfTagResults());
     }
 
@@ -228,7 +234,10 @@ public class ExpeeTests {
 
     @Test
     public void getStageTest() throws ParseException, CodeException, NotExistException, FormatException, ExpEndException, NotInReachException {
-        nextStageFor(3, expee.getAccessCode());
+        nextStageFor(2, expee.getAccessCode());
+        experimenteeBusiness.fillInStage(expee.getAccessCode(), Map.of("data", Map.of("code", "//I dont know to program :(;")));
+        experimenteeBusiness.getNextStage(expee.getAccessCode());
+
         Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
         Stage s = experimenteeBusiness.getStage(expee.getAccessCode(), 3);

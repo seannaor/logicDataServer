@@ -174,10 +174,10 @@ CREATE TABLE `requirements`
 
 CREATE TABLE `tagging_stages`
 (
-    `stage_index`                    int NOT NULL REFERENCES stages (`stage_index`) ON DELETE CASCADE,
-    `experiment_id`                  int NOT NULL REFERENCES stages (`experiment_id`) ON DELETE CASCADE,
-    `appropriate_coding_stage_index` int,
-    FOREIGN KEY (`appropriate_coding_stage_index`, `experiment_id`) REFERENCES code_stages (`stage_index`, `experiment_id`) ON DELETE CASCADE,
+    `stage_index`                      int NOT NULL REFERENCES stages (`stage_index`) ON DELETE CASCADE,
+    `experiment_id`                    int NOT NULL REFERENCES stages (`experiment_id`) ON DELETE CASCADE,
+    `appropriate_coding_stage_index`   int NOT NULL REFERENCES code_stages (`stage_index`) ON DELETE CASCADE,
+    `appropriate_coding_experiment_id` int NOT NULL REFERENCES code_stages (`experiment_id`) ON DELETE CASCADE,
     PRIMARY KEY (`stage_index`, `experiment_id`)
 );
 

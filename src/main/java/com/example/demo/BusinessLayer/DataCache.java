@@ -108,6 +108,18 @@ public class DataCache {
         throw new NotExistException("experimentee", email);
     }
 
+    public Experimentee getExperimenteeById(int id) throws NotExistException {
+        for (Experimentee experimentee : this.experimentees) {
+            if (experimentee.getParticipant().getParticipantId() == id) return experimentee;
+        }
+        Experimentee expee = db.getExperimenteeByParticipantId(id);
+        if (expee != null) {
+            experimentees.add(expee);
+            return expee;
+        }
+        throw new NotExistException("participant", id + "");
+    }
+
     public Experimentee getExpeeByCode(UUID code) throws CodeException {
         for (Experimentee expee : experimentees)
             if (expee.getAccessCode().equals(code)) return expee;

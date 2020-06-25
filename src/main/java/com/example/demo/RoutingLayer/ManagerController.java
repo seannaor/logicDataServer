@@ -1,7 +1,6 @@
 package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.CreatorService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +11,18 @@ import java.util.Map;
 import static com.example.demo.RoutingLayer.RouterUtils.decode;
 import static com.example.demo.RoutingLayer.RouterUtils.strToJSON;
 
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/admin")
-public class ManagerRouter {
-    @Autowired
+public class ManagerController {
+
     private CreatorService creator;
+
+    @Autowired
+    public ManagerController(CreatorService creator) {
+        this.creator = creator;
+    }
 
     @PostMapping("/login")
     public boolean managerLogin(@RequestBody Map<String, String> credentials) {
@@ -25,6 +30,50 @@ public class ManagerRouter {
                 password = credentials.get("password");
         return creator.researcherLogin(username, password);
     }
+
+    @PostMapping("/addExperiment/{username}")
+    public Map<String, Object> addExperiment(@PathVariable String username,
+                                             @RequestBody Map<String, Object> experiment) {
+        System.out.println("/addExperiment " + username);
+        String experimnetnName = (String) experiment.get("expName");
+        List<Map<String, Object>> stages = (List<Map<String, Object>>) experiment.get("stages");
+        return creator.addExperiment(username, experimnetnName, stages);
+    }
+
+    @PostMapping("/addExperimentees/{username}/{expName}")
+    public Map<String, Object> addExperimentees(@PathVariable String username, @PathVariable String expName,
+                                                @RequestBody Map<String, List<String>> eMails) {
+        System.out.println("/add_experimentees " + username);
+        List<String> emails = (List<String>) eMails.get("emails");
+        return creator.addExperimentees(username, expName, emails);
+    }
+
+    @GetMapping("/getExperimentees/{username}/{expName}")
+    public Map<String, Object> getExperimentees(@PathVariable String username, @PathVariable String expName) {
+        System.out.println("/getExperimentees " + username + " exp " + expName);
+        return creator.getExperimentees(username, expName);
+    }
+
+    @GetMapping("/getExperiments/{username}")
+    public Map<String, Object> getExperiments(@PathVariable String username) {
+        return creator.getExperiments(username);
+    }
+
+
+    @PostMapping("/addAlly/{adminUsername}")
+    public Map<String, Object> addAlly(@PathVariable String adminUsername,
+                                       @RequestBody Map<String, Object> allyDetails) {
+        String password = (String) allyDetails.get("password");
+        String email = (String) allyDetails.get("email");
+        return creator.addAlly(adminUsername, email, password);
+    }
+
+    @PostMapping("/addAlly/{username}/{expName}/{mail}/{password}")
+    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail, @PathVariable String password) {
+        return creator.addAllyToExp(username, expName, mail, password);
+    }
+
+    // old version V
 
     @RequestMapping("/create_exp")
     public Map<String, Object> createExperiment(@RequestParam String username, @RequestParam String exp_name) {
@@ -39,26 +88,15 @@ public class ManagerRouter {
         return creator.addStageToExperiment(username, exp_id, strToJSON(stage));
     }
 
-
-    @RequestMapping("/add_exp")
-    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
-        List<JSONObject> jStages = new ArrayList<>();
-        for (String stage : stages) {
-            stage = decode(stage);
-            jStages.add(strToJSON(stage));
-        }
-        return creator.addExperiment(username, exp_name, jStages);
-    }
-
     @RequestMapping("/add_grading_task")
     public Map<String, Object> addGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam String task_name, @RequestParam
             List<String> expee_stages, @RequestParam List<Integer> exp_indexes, @RequestParam List<String> personal_stages) {
-        List<JSONObject> jStages_personal = new ArrayList<>();
+        List<Map<String, Object>> jStages_personal = new ArrayList<>();
         for (String stage : personal_stages) {
             stage = decode(stage);
             jStages_personal.add(strToJSON(stage));
         }
-        List<JSONObject> jStages_expee = new ArrayList<>();
+        List<Map<String, Object>> jStages_expee = new ArrayList<>();
         for (String stage : expee_stages) {
             stage = decode(stage);
             jStages_expee.add(strToJSON(stage));
@@ -83,19 +121,9 @@ public class ManagerRouter {
         return creator.setStagesToCheck(username, exp_id, task_id, indexes);
     }
 
-    @RequestMapping("/add_allie")
-    public Map<String, Object> addAllie(@RequestParam String username, @RequestParam int exp_id, @RequestParam String mail, @RequestParam String role, @RequestParam List<String> permissions) {
-        return creator.setAlliePermissions(username, exp_id, mail, role, permissions);
-    }
-
     @RequestMapping("/addGraderToTask")
     public Map<String, Object> addGraderToGradingTask(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id, @RequestParam String mail) {
         return creator.addGraderToGradingTask(username, exp_id, task_id, mail);
-    }
-
-    @RequestMapping("/add_expee")
-    public Map<String, Object> addExperimentee(@RequestParam String username, @RequestParam int exp_id, @RequestParam String mail) {
-        return creator.addExperimentee(username, exp_id, mail);
     }
 
     @RequestMapping("/addExpeeToGrader")
@@ -104,11 +132,6 @@ public class ManagerRouter {
     }
 
     // meaningful getters
-
-    @RequestMapping("/get_experiments")
-    public Map<String, Object> getExperiments(@RequestParam String username) {
-        return creator.getExperiments(username);
-    }
 
     @RequestMapping("/get_allies")
     public Map<String, Object> getAllies(@RequestParam String username, @RequestParam int exp_id) {
@@ -149,4 +172,15 @@ public class ManagerRouter {
     public Map<String, Object> getTaskExperimentees(@RequestParam String username, @RequestParam int exp_id, @RequestParam int task_id) {
         return creator.getTaskExperimentees(username, exp_id, task_id);
     }
+
+
+//    @RequestMapping("/add_exp")
+//    public Map<String, Object> addExperiment(@RequestParam String username, @RequestParam String exp_name, @RequestParam List<String> stages) {
+//        List<JSONObject> jStages = new ArrayList<>();
+//        for (String stage : stages) {
+//            stage = decode(stage);
+//            jStages.add(strToJSON(stage));
+//        }
+//        return creator.addExperiment(username, exp_name, jStages);
+//    }
 }

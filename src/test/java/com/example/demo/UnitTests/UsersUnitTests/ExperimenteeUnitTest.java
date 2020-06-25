@@ -9,7 +9,6 @@ import com.example.demo.BusinessLayer.Exceptions.ExpEndException;
 import com.example.demo.BusinessLayer.Exceptions.FormatException;
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
 import com.example.demo.BusinessLayer.Exceptions.NotInReachException;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,7 @@ public class ExperimenteeUnitTest {
     @BeforeEach
     public void init() throws FormatException {
         exp = new Experiment("experiment");
-        for (JSONObject stageJ : buildSimpleExp(List.of("what is youer name?"))) {
+        for (Map<String, Object> stageJ : buildSimpleExp(List.of("what is youer name?"))) {
             Stage s = Stage.parseStage(stageJ, exp);
             exp.addStage(s);
         }

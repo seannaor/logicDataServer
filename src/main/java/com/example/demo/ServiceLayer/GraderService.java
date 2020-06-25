@@ -38,7 +38,7 @@ public class GraderService {
     public Map<String, Object> getNextStage(String accessCode, int pid) {
         try {
             Stage s = graderBusiness.getNextStage(UUID.fromString(accessCode), pid);
-            return Map.of("response", "OK", "stage", s.getAsMap());
+            return s.getAsMap();
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -47,7 +47,7 @@ public class GraderService {
     public Map<String, Object> getCurrentStage(String accessCode, int pid) {
         try {
             Stage s = graderBusiness.getCurrentStage(UUID.fromString(accessCode), pid);
-            return Map.of("response", "OK", "stage", s.getAsMap());
+            return s.getAsMap();
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -57,8 +57,11 @@ public class GraderService {
         try {
             Stage s = graderBusiness.getStage(UUID.fromString(accessCode), pid, idx);
             Result res = graderBusiness.getResult(UUID.fromString(accessCode), pid, idx);
-            if (res == null) return Map.of("response", "OK", "stage", s.getAsMap(), "results", "None");
-            return Map.of("response", "OK", "stage", s.getAsMap(), "results", res.getAsMap());
+
+            Map<String, Object> stageMap = s.getAsMap();
+            if (res == null)
+                return Map.of("type", stageMap.get("type"), "stage", stageMap.get("stage"), "results", "None");
+            return Map.of("type", stageMap.get("type"), "stage", stageMap.get("stage"), "results", res.getAsMap());
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -71,7 +74,7 @@ public class GraderService {
             List<Participant> experimentees = graderBusiness.getParticipantsByTask(UUID.fromString(code));
             List<Integer> ids = new ArrayList<>();
             experimentees.forEach((p) -> ids.add(p.getParticipantId()));
-            return Map.of("response", "OK", "experimentees", ids);
+            return Map.of("experimentees", ids);
         } catch (CodeException e) {
             return Map.of("response", e.getMessage());
         }
@@ -82,7 +85,7 @@ public class GraderService {
             List<Result> results = graderBusiness.getExpeeRes(UUID.fromString(code), participantId);
             List<Map<String, Object>> JResults = new ArrayList<>();
             results.forEach((resultWrapper -> JResults.add(resultWrapper.getAsMap())));
-            return Map.of("response", "OK", "results", JResults);
+            return Map.of("results", JResults);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }

@@ -7,7 +7,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "experiments")
@@ -23,10 +25,12 @@ public class Experiment {
     @Column(name = "is_grading_task_exp")
     private boolean isGradingTaskExp = false;
     @OneToMany(mappedBy = "experiment")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
     @OneToMany(mappedBy = "experiment")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "experiment")//, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "experiment")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stage> stages = new ArrayList<>();
 
@@ -134,5 +138,13 @@ public class Experiment {
 
     public void setGradingTaskExp(boolean gradingTaskExp) {
         isGradingTaskExp = gradingTaskExp;
+    }
+
+    public Map<String, Object> getAsMap() {
+        List<Map<String, Object>> stagesAsMap = new LinkedList<>();
+        for (Stage s : this.stages) {
+            stagesAsMap.add(s.getAsMap());
+        }
+        return Map.of("expName", this.experimentName, "stages", stagesAsMap);
     }
 }

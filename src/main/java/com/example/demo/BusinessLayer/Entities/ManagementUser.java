@@ -1,6 +1,8 @@
 package com.example.demo.BusinessLayer.Entities;
 
 import com.example.demo.BusinessLayer.Exceptions.NotExistException;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,9 +24,11 @@ public class ManagementUser {
             joinColumns = {@JoinColumn(name = "bgu_username")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")}
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "managementUser")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ManagementUserToExperiment> managementUserToExperiments = new ArrayList<>();
 
     public ManagementUser(String bguUsername, String bguPassword, String userEmail) {
@@ -78,6 +82,13 @@ public class ManagementUser {
 
     //======================= end of setters and getters =======================
 
+    public boolean isAdmin() {
+        for (Permission p : permissions) {
+            if (p.getPermissionName().equals("noAdmin")) return false;
+        }
+        return true;
+    }
+
     public void addPermission(Permission p) {
         this.permissions.add(p);
     }
@@ -93,7 +104,7 @@ public class ManagementUser {
 
     public Experiment getExperimentByName(String expName) throws NotExistException {
         for (ManagementUserToExperiment m : this.managementUserToExperiments) {
-            if (m.getExperiment().getExperimentName() == expName) {
+            if (m.getExperiment().getExperimentName().equals(expName)) {
                 return m.getExperiment();
             }
         }

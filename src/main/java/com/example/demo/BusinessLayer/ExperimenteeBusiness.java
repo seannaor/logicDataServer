@@ -10,6 +10,8 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,6 +49,30 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
     public Stage getCurrentStage(UUID accessCode) throws CodeException, ExpEndException, NotExistException {
         Experimentee expee = cache.getExpeeByCode(accessCode);
         return expee.getCurrStage();
+    }
+
+    public List<Stage> getReachableStages(UUID accessCode) throws NotInReachException, CodeException, NotExistException {
+        Experimentee expee = cache.getExpeeByCode(accessCode);
+        List<Stage> stages = new LinkedList<>();
+        int currentStage;
+        if (expee.getParticipant().isDone()) {
+            currentStage = expee.getExperiment().getStages().size() - 1;
+        } else {
+            currentStage = expee.getParticipant().getCurrStageIdx();
+        }
+        for (int i = 0; i <= currentStage; i++) {
+            stages.add(expee.getStage(i));
+        }
+        return stages;
+    }
+
+    public List<Result> getReachableResults(UUID accessCode) throws NotInReachException, CodeException {
+        Experimentee expee = cache.getExpeeByCode(accessCode);
+        List<Result> results = new LinkedList<>();
+        for (int i = 0; i < expee.getParticipant().getCurrStageIdx() + 1; i++) {
+            results.add(expee.getResult(i));
+        }
+        return results;
     }
 
     @Override

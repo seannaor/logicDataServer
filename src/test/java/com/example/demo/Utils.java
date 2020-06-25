@@ -10,7 +10,6 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.GraderBusiness;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
@@ -20,79 +19,48 @@ import java.util.UUID;
 
 public class Utils {
 
-    public static List<JSONObject> buildStages() {
-        List<JSONObject> stages = new ArrayList<>();
+    public static List<Map<String, Object>> buildStages() {
+        List<Map<String, Object>> stages = new ArrayList<>();
 
-        stages.add(getStumpInfoStage());
-        stages.add(getStumpQuestionsStage());
-        stages.add(getStumpCodeStage());
-        stages.add(getStumpTaggingStage());
+        stages.add(getStumpInfoMap());
+        stages.add(getStumpQuestionsMap());
+        stages.add(getStumpCodeMap());
+        stages.add(getStumpTagMap());
 
         return stages;
     }
 
-    public static JSONObject buildResearcher() {
-        JSONObject researcher = new JSONObject();
-        researcher.put("email", "manager@post.ac.il");
-        researcher.put("username", "manager");
-        researcher.put("password", "password");
-        return researcher;
+    public static Map<String, Object> getStumpInfoMap() {
+        return getInfoStage("some information and stuff");
     }
 
-    public static JSONObject getStumpInfoStage() {
-        JSONObject info = new JSONObject();
-        info.put("type", "info");
-        info.put("info", "some information and stuff");
-        return info;
+    public static Map<String, Object> getStumpQuestionsMap() {
+        Map<String, Object> q = Map.of("questionType", "multiChoice",
+                "question", "who",
+                "possibleAnswers", List.of("me", "you", "no one", "we both"));
+
+
+        return Map.of("type", "questionnaire",
+                "stage", Map.of("questions", List.of(getOpenQuestion("how much"), q)));
     }
 
-    public static JSONObject getStumpCodeStage() {
-        JSONObject code = new JSONObject();
-        code.put("type", "code");
-        code.put("description", "design me a system that can create & manage & run experiments");
-        code.put("template", "");
-        code.put("language", "C++");
-        List<String> requirements = new ArrayList<>();
-        requirements.add("do that");
-        requirements.add("do this");
-        requirements.add("do stuff");
-        code.put("requirements", requirements);
-        return code;
+    public static Map<String, Object> getStumpCodeMap() {
+        return Map.of("type", "code",
+                "stage",
+                Map.of("description", "design me a system that can create & manage & run experiments",
+                        "template", "",
+                        "language", "C++",
+                        "requirements", List.of("do that", "do this", "do stuff")));
     }
 
-    public static JSONObject getStumpQuestionsStage() {
-        JSONObject questionnaire = new JSONObject();
-        questionnaire.put("type", "questionnaire");
-        List<JSONObject> questions = new ArrayList<>();
-        JSONObject q1 = new JSONObject();
-
-        q1.put("questionType", "open");
-        q1.put("question", "how much");
-        questions.add(q1);
-
-        JSONObject q2 = new JSONObject();
-        q2.put("questionType", "multiChoice");
-        q2.put("question", "who?");
-        List<String> answers = new ArrayList<>();
-        answers.add("me");
-        answers.add("you");
-        answers.add("no one");
-        answers.add("we both");
-        q2.put("possibleAnswers", answers);
-        questions.add(q2);
-        questionnaire.put("questions", questions);
-        return questionnaire;
+    public static Map<String, Object> getStumpTagMap() {
+        return Map.of("type", "tag",
+                "stage",
+                Map.of("codeStageIndex", 3));
     }
 
-    public static JSONObject getStumpTaggingStage() {
-        JSONObject JTagging = new JSONObject();
-        JTagging.put("type", "tagging");
-        JTagging.put("codeIndex", 2);
-        return JTagging;
-    }
-
-    public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException {
-        List<JSONObject> stages = buildStages();
+    public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException, NotInReachException {
+        List<Map<String, Object>> stages = buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         return manager.getExperimentByName("The Experiment");
     }
@@ -125,99 +93,41 @@ public class Utils {
     }
 
     public static void fillInCode(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-//        JSONObject ans = new JSONObject();
-//        ans.put("stageType", "code");
-//        ans.put("userCode", "return -1");
         experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("code", "return -1")));
     }
 
     public static int fillInTagging(ExperimenteeBusiness experimenteeBusiness, UUID code) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        //ans.put("stageType", "tagging");
-
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        experimenteeBusiness.fillInStage(code, Map.of("data", Map.of("tagging", ans)));
-        //experimenteeBusiness.fillInStage(code, ans);
+        experimenteeBusiness.fillInStage(code, Map.of("data", buildParticipantTag()));
         return 3;
     }
 
-    public static void fillInQuestionnaire(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "questionnaire");
-        JSONObject ans1 = new JSONObject();
-        ans1.put("answer", "a lot!");
-        ans.put("1", ans1);
-        JSONObject ans2 = new JSONObject();
-        ans2.put("answer", 3);
-        ans.put("2", ans2);
-        graderBusiness.fillInStage(p, ans);
-    }
-
-    public static void fillInCode(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "code");
-        ans.put("userCode", "return -1");
-        graderBusiness.fillInStage(p, ans);
-    }
-
     public static void fillInTagging(GraderBusiness graderBusiness, Participant p) throws NotExistException, NotInReachException, ExpEndException, CodeException, ParseException, FormatException {
-        JSONObject ans = new JSONObject();
-        ans.put("stageType", "tagging");
-
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        graderBusiness.fillInStage(p, ans);
+        graderBusiness.fillInStage(p, buildParticipantTag());
     }
 
-    public static List<JSONObject> buildSimpleExp(List<String> questions) {
-        List<JSONObject> stages = new ArrayList<>();
+    private static Map<String, Object> getInfoStage(String info) {
+        return Map.of("type", "info", "stage", Map.of("text", info));
+    }
 
-        JSONObject info = new JSONObject();
-        info.put("type", "info");
-        info.put("info", "some information and stuff");
+    private static Map<String, Object> getQuestionnaireStage(List<Map<String, Object>> Questions) {
+        return Map.of("type", "questionnaire", "stage", Map.of("questions", Questions));
+    }
 
-        stages.add(info);
+    private static Map<String, Object> getOpenQuestion(String q) {
+        return Map.of("questionType", "open", "question", q);
+    }
 
-        JSONObject questionnaire = new JSONObject();
-        questionnaire.put("type", "questionnaire");
-        List<JSONObject> JQuestions = new ArrayList<>();
+
+    public static List<Map<String, Object>> buildSimpleExp(List<String> questions) {
+
+        List<Map<String, Object>> mapQuestions = new ArrayList<>();
 
         for (String question : questions) {
-            JSONObject q1 = new JSONObject();
-
-            q1.put("questionType", "open");
-            q1.put("question", question);
-            JQuestions.add(q1);
-
+            Map<String, Object> q1 = getOpenQuestion(question);
+            mapQuestions.add(q1);
         }
-        questionnaire.put("questions", JQuestions);
-        stages.add(questionnaire);
-        return stages;
+
+        return List.of(getInfoStage("some information and stuff"), getQuestionnaireStage(mapQuestions));
     }
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
@@ -233,5 +143,11 @@ public class Utils {
 
     public static Map<String, Object> getGradingAnswers(List<String> answers) {
         return Map.of("data", Map.of("answers", answers));
+    }
+
+    public static Map<String, Object> buildParticipantTag() {
+        Map<String, Object> fromTo = Map.of("from", Map.of("row", 1, "column", 0),
+                "to", Map.of("row", 1, "column", 7));
+        return Map.of("tags", List.of(List.of(fromTo), List.of(fromTo), List.of(fromTo)));
     }
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Sql({"/create_database.sql"})
@@ -39,6 +40,7 @@ public class ExperimenteeServiceTests {
     private final DBAccess db;
     private Experiment experiment;
     private Experimentee expee;
+
     @Autowired
     public ExperimenteeServiceTests(ExperimenteeService experimenteeService, CreatorBusiness creatorBusiness, DataCache cache, DBAccess db, ExperimenteeBusiness experimenteeBusiness) {
         this.experimenteeService = experimenteeService;
@@ -49,7 +51,7 @@ public class ExperimenteeServiceTests {
     }
 
     @BeforeEach
-    private void init() throws NotExistException, FormatException, ExistException, CodeException {
+    private void init() throws NotExistException, FormatException, ExistException, CodeException, NotInReachException {
         cache.setCache();
         db.deleteData();
 
@@ -98,7 +100,7 @@ public class ExperimenteeServiceTests {
         Map<String, Object> ansWrong = experimenteeService.getCurrentStage(UUID.randomUUID().toString());
         assertNotEquals("OK", ansWrong.get("response"));
         Map<String, Object> ansRight = experimenteeService.getCurrentStage(expee.getAccessCode().toString());
-        assertEquals("OK", ansRight.get("response"));
+
         assertEquals(ansRight.get("type"), "info");
         assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         experimenteeService.getNextStage(expee.getAccessCode().toString());
@@ -114,14 +116,13 @@ public class ExperimenteeServiceTests {
         Map<String, Object> ansWrong1 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 7);
         assertNotEquals("OK", ansWrong1.get("response"));
         Map<String, Object> ansRight = experimenteeService.getStageAt(expee.getAccessCode().toString(), 0);
-        assertEquals("OK", ansRight.get("response"));
+
         assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         // expee 1 did not reach stage 1
         Map<String, Object> ansWrong2 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
         assertNotEquals("OK", ansWrong2.get("response"));
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ansRight1 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
-        assertEquals("OK", ansRight1.get("response"));
         List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight1.get("stage")).get("questions"));
         assertEquals(questionsOfStage.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
     }
@@ -157,9 +158,9 @@ public class ExperimenteeServiceTests {
         //filling code stage
         ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("code", "return -1")));
         assertEquals(((CodeResult) expee.getParticipant().getResult(2)).getUserCode(), "return -1");
-        assertEquals("tagging", ans.get("type"));
+        assertEquals("tag", ans.get("type"));
         //filling tagging
-        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("tagging", getTags())));
+        ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", buildParticipantTag()));
         assertEquals(((TaggingResult) expee.getParticipant().getResult(3)).getTags().size(), 3);
         assertEquals("complete", ans.get("type"));
     }
@@ -169,23 +170,6 @@ public class ExperimenteeServiceTests {
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of()));
         assertTrue(ans.containsKey("Error"));
-    }
-
-    private JSONObject getTags() {
-        JSONObject ans = new JSONObject();
-        JSONObject tag1 = new JSONObject();
-        tag1.put("start_loc", 0);
-        tag1.put("length", 10);
-        ans.put(0, tag1);
-        JSONObject tag2 = new JSONObject();
-        tag2.put("start_loc", 0);
-        tag2.put("length", 10);
-        ans.put(1, tag2);
-        JSONObject tag3 = new JSONObject();
-        tag3.put("start_loc", 0);
-        tag3.put("length", 10);
-        ans.put(2, tag3);
-        return ans;
     }
 
 }

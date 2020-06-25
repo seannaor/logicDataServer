@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.Utils.getStumpQuestionsStage;
+import static com.example.demo.Utils.getStumpQuestionsMap;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class QuestionnaireUnitTests {
@@ -80,9 +80,9 @@ public class QuestionnaireUnitTests {
     }
 
     @Test
-    public void buildQuestionnaire() {
+    public void buildQuestionnaire() throws ParseException {
 
-        List<JSONObject> JQuestions = (List<JSONObject>) getStumpQuestionsStage().get("questions");
+        List<Map<String, Object>> JQuestions = (List<Map<String, Object>>) ((Map<String, Object>) getStumpQuestionsMap().get("stage")).get("questions");
         QuestionnaireStage questionnaire = new QuestionnaireStage(JQuestions);
 
         Assert.assertEquals(JQuestions.size(), questionnaire.getQuestions().size());
@@ -92,7 +92,7 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void getMap() {
-        Map<String, Object> qestionnaireMap = questionnaireStage.getAsMap();
+        Map<String, Object> qestionnaireMap = (Map<String, Object>) questionnaireStage.getAsMap().get("stage");
         Assert.assertTrue(qestionnaireMap.containsKey("questions"));
 
         Assert.assertEquals(questionnaireStage.getQuestions().size(), ((List) qestionnaireMap.get("questions")).size());
@@ -130,8 +130,7 @@ public class QuestionnaireUnitTests {
 
     @Test
     public void buildFromJson() throws FormatException {
-        JSONObject JQuestionnaireStage = getStumpQuestionsStage();
-        Stage stage = Stage.parseStage(JQuestionnaireStage, null);
+        Stage stage = Stage.parseStage(getStumpQuestionsMap(), null);
         Assert.assertEquals("questionnaire", stage.getType());
     }
 
