@@ -14,12 +14,10 @@ import java.util.Map;
 public class TaggingStage extends Stage {
 
     //TODO: i dropped NOT NULL on "appropriate_coding_stage_index" field to make it work, check if it can be bad
-
-    @MapsId("stageID")
     @OneToOne
     @JoinColumns({
             @JoinColumn(name = "appropriate_coding_stage_index", referencedColumnName = "stage_index"),
-            @JoinColumn(name = "experiment_id", referencedColumnName = "experiment_id")
+            @JoinColumn(name = "appropriate_coding_experiment_id", referencedColumnName = "experiment_id")
     })
     private CodeStage codeStage;
 

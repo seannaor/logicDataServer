@@ -79,6 +79,7 @@ class PersistenceTest {
                 experimenteeRep,
                 graderRep,
                 participantRep,
+                taggingStageRep,
                 stageRep,
                 experimentRep,
                 permissionRep,
@@ -386,6 +387,7 @@ class PersistenceTest {
         infoStageRep.delete(stage);
         assertEquals(stageRep.count(), 9);
         assertEquals(infoStageRep.count(), 3);
+        taggingStageRep.deleteAll();
         stageRep.deleteAll();
         assertEquals(stageRep.count(), 0);
         assertEquals(infoStageRep.count(), 0);
