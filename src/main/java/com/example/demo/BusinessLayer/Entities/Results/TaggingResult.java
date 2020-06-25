@@ -77,8 +77,8 @@ public class TaggingResult extends Result {
         Pair<Integer, Integer> start = getRowCol(startLoc, userCodeRows);
         Pair<Integer, Integer> end = getRowCol(endLoc, userCodeRows);
 
-        return Map.of("from", Map.of("row", start.getFirst(), "col", start.getSecond()),
-                "to", Map.of("row", end.getFirst(), "col", 1 + end.getSecond()));
+        return Map.of("from", Map.of("row", start.getFirst(), "column", start.getSecond()),
+                "to", Map.of("row", end.getFirst(), "column", 1 + end.getSecond()));
 
     }
 

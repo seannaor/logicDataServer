@@ -10,7 +10,6 @@ import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.BusinessLayer.ExperimenteeBusiness;
 import com.example.demo.BusinessLayer.GraderBusiness;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
@@ -20,8 +19,8 @@ import java.util.UUID;
 
 public class Utils {
 
-    public static List<Map<String,Object>> buildStages() {
-        List<Map<String,Object>> stages = new ArrayList<>();
+    public static List<Map<String, Object>> buildStages() {
+        List<Map<String, Object>> stages = new ArrayList<>();
 
         stages.add(getStumpInfoMap());
         stages.add(getStumpQuestionsMap());
@@ -31,37 +30,37 @@ public class Utils {
         return stages;
     }
 
-    public static Map<String,Object> getStumpInfoMap(){
+    public static Map<String, Object> getStumpInfoMap() {
         return getInfoStage("some information and stuff");
     }
 
-    public static Map<String,Object> getStumpQuestionsMap(){
-        Map<String,Object> q = Map.of("questionType", "multiChoice",
+    public static Map<String, Object> getStumpQuestionsMap() {
+        Map<String, Object> q = Map.of("questionType", "multiChoice",
                 "question", "who",
-                "possibleAnswers",List.of("me","you","no one","we both"));
+                "possibleAnswers", List.of("me", "you", "no one", "we both"));
 
 
-        return Map.of("type","questionnaire",
-                "stage",Map.of("questions", List.of(getOpenQuestion("how much"),q)));
+        return Map.of("type", "questionnaire",
+                "stage", Map.of("questions", List.of(getOpenQuestion("how much"), q)));
     }
 
-    public static Map<String,Object> getStumpCodeMap(){
-        return Map.of("type","code",
+    public static Map<String, Object> getStumpCodeMap() {
+        return Map.of("type", "code",
                 "stage",
                 Map.of("description", "design me a system that can create & manage & run experiments",
                         "template", "",
                         "language", "C++",
-                        "requirements",List.of("do that","do this","do stuff")));
+                        "requirements", List.of("do that", "do this", "do stuff")));
     }
 
-    public static Map<String,Object> getStumpTagMap(){
-        return Map.of("type","tag",
+    public static Map<String, Object> getStumpTagMap() {
+        return Map.of("type", "tag",
                 "stage",
                 Map.of("codeStageIndex", 3));
     }
 
     public static Experiment buildExp(CreatorBusiness creatorBusiness, ManagementUser manager) throws NotExistException, FormatException, ExistException {
-        List<Map<String,Object>> stages = buildStages();
+        List<Map<String, Object>> stages = buildStages();
         creatorBusiness.addExperiment(manager.getBguUsername(), "The Experiment", stages);
         return manager.getExperimentByName("The Experiment");
     }
@@ -106,29 +105,29 @@ public class Utils {
         graderBusiness.fillInStage(p, buildParticipantTag());
     }
 
-    private static Map<String,Object> getInfoStage(String info){
-        return  Map.of("type","info","stage",Map.of("text",info));
+    private static Map<String, Object> getInfoStage(String info) {
+        return Map.of("type", "info", "stage", Map.of("text", info));
     }
 
-    private static Map<String,Object> getQuestionnaireStage(List<Map<String,Object>> Questions){
-        return  Map.of("type","questionnaire","stage",Map.of("questions",Questions));
+    private static Map<String, Object> getQuestionnaireStage(List<Map<String, Object>> Questions) {
+        return Map.of("type", "questionnaire", "stage", Map.of("questions", Questions));
     }
 
-    private static Map<String,Object> getOpenQuestion(String q){
-        return Map.of("questionType", "open","question",q);
+    private static Map<String, Object> getOpenQuestion(String q) {
+        return Map.of("questionType", "open", "question", q);
     }
 
 
-    public static List<Map<String,Object>> buildSimpleExp(List<String> questions) {
+    public static List<Map<String, Object>> buildSimpleExp(List<String> questions) {
 
-        List<Map<String,Object>> mapQuestions = new ArrayList<>();
+        List<Map<String, Object>> mapQuestions = new ArrayList<>();
 
         for (String question : questions) {
-            Map<String,Object> q1 = getOpenQuestion(question);
+            Map<String, Object> q1 = getOpenQuestion(question);
             mapQuestions.add(q1);
         }
 
-        return List.of(getInfoStage("some information and stuff"),getQuestionnaireStage(mapQuestions));
+        return List.of(getInfoStage("some information and stuff"), getQuestionnaireStage(mapQuestions));
     }
 
     public static GradingTask buildSimpleGradingTask(CreatorBusiness creatorBusiness, DataCache cache, ManagementUser manager, Experiment exp) throws NotExistException, FormatException {
@@ -147,8 +146,8 @@ public class Utils {
     }
 
     public static Map<String, Object> buildParticipantTag() {
-        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
-                "to",Map.of("row",1,"col",7));
+        Map<String, Object> fromTo = Map.of("from", Map.of("row", 1, "column", 0),
+                "to", Map.of("row", 1, "column", 7));
         return Map.of("tags", List.of(List.of(fromTo), List.of(fromTo), List.of(fromTo)));
     }
 }

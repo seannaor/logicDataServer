@@ -79,7 +79,7 @@ public class TaggingStage extends Stage {
     }
 
     private int getCharLoc(Map<String, Object> jTag, String[] userCodeRows) throws FormatException {
-        int rowI = (int) jTag.get("row") - 1, colI = (int) jTag.get("col");
+        int rowI = (int) jTag.get("row") - 1, colI = (int) jTag.get("column");
         int loc = colI;
         if (userCodeRows.length < rowI)
             throw new FormatException("row index smaller than the user code");

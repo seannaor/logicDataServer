@@ -76,8 +76,8 @@ public class TaggingStageTest {
 
     @Test
     public void fillIn() throws FormatException {
-        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
-                "to",Map.of("row",1,"col",7));
+        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"column",0),
+                "to",Map.of("row",1,"column",7));
 
         TaggingResult tr = taggingStage.fillTagging(Map.of("tags", List.of(List.of(fromTo,fromTo))),"return 0;", null);
         Assert.assertEquals(2, tr.getTags().size());
@@ -85,8 +85,8 @@ public class TaggingStageTest {
 
     @Test
     public void fillInFailNoRequirementTag() {
-        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"col",0),
-                "to",Map.of("row",1,"col",10));
+        Map<String,Object> fromTo = Map.of("from",Map.of("row",1,"column",0),
+                "to",Map.of("row",1,"column",10));
 
         assertThrows(FormatException.class, () -> {
             taggingStage.fillTagging(Map.of("tag", List.of(List.of(fromTo))),"", null);

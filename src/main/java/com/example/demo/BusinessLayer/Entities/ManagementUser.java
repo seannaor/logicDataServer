@@ -96,7 +96,7 @@ public class ManagementUser {
 
     public Experiment getExperimentByName(String expName) throws NotExistException {
         for (ManagementUserToExperiment m : this.managementUserToExperiments) {
-            if (m.getExperiment().getExperimentName() == expName) {
+            if (m.getExperiment().getExperimentName().equals(expName)) {
                 return m.getExperiment();
             }
         }
