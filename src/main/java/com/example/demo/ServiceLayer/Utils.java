@@ -54,12 +54,10 @@ public class Utils {
     }
 
     public static Map<String, Object> makeStageAndResult(Stage stage, Result result) {
-        return result == null ? Map.of(
+        return result == null ? stage.getAsMap() :
+                Map.of(
                 "type", stage.getType(),
-                "stage", stage.getAsMap()
-        ) : Map.of(
-                "type", stage.getType(),
-                "stage", stage.getAsMap(),
+                "stage", stage.getAsMap().get("stage"),
                 "result", result.getAsMap()
         );
     }

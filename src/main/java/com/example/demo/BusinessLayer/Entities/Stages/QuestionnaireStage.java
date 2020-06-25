@@ -32,13 +32,6 @@ public class QuestionnaireStage extends Stage {
         super();
     }
 
-//    public QuestionnaireStage(List<JSONObject> JQuestions) {
-//        questions = new ArrayList<>();
-//        int QIndx = 0;
-//        for (JSONObject JQuestion : JQuestions) {
-//            questions.add(buildQuestion(JQuestion, QIndx++));
-//        }
-//    }
 
     public QuestionnaireStage(List<Map<String,Object>> JQuestions) throws ParseException {
         questions = new ArrayList<>();
