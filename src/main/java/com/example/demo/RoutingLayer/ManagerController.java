@@ -49,10 +49,18 @@ public class ManagerController {
         return creator.addExperimentees(username, expName, emails);
     }
 
+    @GetMapping("/getExperimentees/{username}/{expName}")
+    public Map<String, Object> getExperimentees(@PathVariable String username, @PathVariable String expName) {
+        System.out.println("/getExperimentees " + username+" exp "+expName);
+        return creator.getExperimentees(username, expName);
+    }
+
     @GetMapping("/getExperiments/{username}")
     public Map<String, Object> getExperiments(@PathVariable String username) {
         return creator.getExperiments(username);
     }
+
+
 
 //    @GetMapping("/addAlly/{username}/{expName}/{mail}")
 //    public Map<String, Object> addAlly(@PathVariable String username, @PathVariable String expName, @PathVariable String mail){

@@ -1,11 +1,8 @@
 package com.example.demo.ServiceLayer;
 
 import com.example.demo.BusinessLayer.CreatorBusiness;
-import com.example.demo.BusinessLayer.Entities.Experiment;
-import com.example.demo.BusinessLayer.Entities.Grader;
+import com.example.demo.BusinessLayer.Entities.*;
 import com.example.demo.BusinessLayer.Entities.GradingTask.GradingTask;
-import com.example.demo.BusinessLayer.Entities.ManagementUserToExperiment;
-import com.example.demo.BusinessLayer.Entities.Participant;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +35,7 @@ public class CreatorService {
     }
 
     //UC 1.1 - one choice (PARTS)
-    public Map<String, Object> addStageToExperiment(String researcherName, int id, Map<String,Object> stage) {
+    public Map<String, Object> addStageToExperiment(String researcherName, int id, Map<String, Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addStageToExperiment(researcherName, id, stage);
@@ -49,7 +46,7 @@ public class CreatorService {
     }
 
     //UC 1.1 - second choice (ALL)
-    public Map<String, Object> addExperiment(String researcherName, String expName, List<Map<String,Object>> stages) {
+    public Map<String, Object> addExperiment(String researcherName, String expName, List<Map<String, Object>> stages) {
         String res = "OK";
         try {
             creatorBusiness.addExperiment(researcherName, expName, stages);
@@ -60,10 +57,10 @@ public class CreatorService {
     }
 
     //UC 1.2 - one choice (ALL)
-    public Map<String, Object> addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String,Object>> ExpeeExp,
-                                              List<Integer> stagesToCheck, List<Map<String,Object>> personalExp) {
+    public Map<String, Object> addGradingTask(String researcherName, int expId, String gradTaskName, List<Map<String, Object>> ExpeeExp,
+                                              List<Integer> stagesToCheck, List<Map<String, Object>> personalExp) {
         try {
-            return Map.of( "id",
+            return Map.of("id",
                     creatorBusiness.addGradingTask(researcherName, expId, gradTaskName, ExpeeExp, stagesToCheck, personalExp));
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
@@ -72,7 +69,7 @@ public class CreatorService {
 
     //UC 1.2 - second choice (PARTS)
     // the two funcs below can maybe use addStageToExperiment(String researcherName, String expName/gradTaskName, Map<String,Object> stage)
-    public Map<String, Object> addToPersonal(String researcherName, int expId, int taskId, Map<String,Object> stage) {
+    public Map<String, Object> addToPersonal(String researcherName, int expId, int taskId, Map<String, Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addToPersonal(researcherName, expId, taskId, stage);
@@ -82,7 +79,7 @@ public class CreatorService {
         return Map.of("response", res);
     }
 
-    public Map<String, Object> addToResultsExp(String researcherName, int expId, int taskId, Map<String,Object> stage) {
+    public Map<String, Object> addToResultsExp(String researcherName, int expId, int taskId, Map<String, Object> stage) {
         String res = "OK";
         try {
             creatorBusiness.addToResultsExp(researcherName, expId, taskId, stage);
@@ -124,17 +121,16 @@ public class CreatorService {
     public Map<String, Object> addExperimentee(String researcherName, int expId, String ExpeeMail) {
         try {
             String code = creatorBusiness.addExperimentee(researcherName, expId, ExpeeMail);
-            return Map.of( "code", code);
+            return Map.of("code", code);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
     }
-    //addExperimentees
 
     public Map<String, Object> addExperimentees(String researcherName, String expName, List<String> expeeMails) {
         try {
             List<String> codes = creatorBusiness.addExperimentees(researcherName, expName, expeeMails);
-            return Map.of( "accessCodes", codes);
+            return Map.of("accessCodes", codes);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -143,7 +139,7 @@ public class CreatorService {
     public Map<String, Object> addExperimentees(String researcherName, int expId, List<String> expeeMails) {
         try {
             List<String> codes = creatorBusiness.addExperimentees(researcherName, expId, expeeMails);
-            return Map.of( "codes", codes);
+            return Map.of("codes", codes);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
@@ -182,6 +178,21 @@ public class CreatorService {
             return Map.of("response", e.getMessage());
         }
         return stagesResponse(stages);
+    }
+
+    public Map<String, Object> getExperimentees(String username, String expName) {
+        List<Experimentee> expees;
+        try {
+            expees = creatorBusiness.getExperimentees(username, expName);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+        List<Map<String, Object>> ids = new ArrayList<>();
+        for (Experimentee expee : expees) {
+            ids.add(Map.of("email", expee.getExperimenteeEmail()
+                    , "accessCode", expee.getAccessCode().toString()));
+        }
+        return Map.of("experimentees", ids);
     }
 
     public Map<String, Object> getExperimentees(String username, int exp_id) {
@@ -223,7 +234,7 @@ public class CreatorService {
         for (GradingTask task : tasks) {
             ids.add(task.getGradingTaskId());
         }
-        return Map.of( "tasks", ids);
+        return Map.of("tasks", ids);
     }
 
     public Map<String, Object> getPersonalStages(String username, int exp_id, int taskId) {
@@ -253,7 +264,7 @@ public class CreatorService {
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
-        return Map.of( "graders", graders);
+        return Map.of("graders", graders);
     }
 
     public Map<String, Object> getTaskExperimentees(String username, int exp_id, int taskId) {
@@ -277,6 +288,6 @@ public class CreatorService {
         for (Stage stage : stages) {
             stagesMap.add(stage.getAsMap());
         }
-        return Map.of( "stages", stagesMap);
+        return Map.of("stages", stagesMap);
     }
 }
