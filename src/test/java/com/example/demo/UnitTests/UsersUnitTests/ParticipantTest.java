@@ -126,7 +126,7 @@ public class ParticipantTest {
     public void fillTaggingStageFailNotTagging() throws NotInReachException, NotExistException, ExpEndException, ParseException, FormatException {
         Map<String,Object> ans = buildParticipantTag();
         assertThrows(FormatException.class, () -> {
-            participant.fillInStage(Map.of("tagging", ans));
+            participant.fillInStage(Map.of("tag", ans));
         });
     }
 

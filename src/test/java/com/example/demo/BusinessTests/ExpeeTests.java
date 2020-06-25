@@ -111,8 +111,8 @@ public class ExpeeTests {
         assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "code");
 
         s = experimenteeBusiness.getNextStage(expee.getAccessCode());
-        assertEquals(s.getType(), "tagging");
-        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tagging");
+        assertEquals(s.getType(), "tag");
+        assertEquals(db.getExperimenteeByCode(expee.getAccessCode()).getParticipant().getCurrStage().getType(), "tag");
     }
 
     @Test
@@ -204,7 +204,7 @@ public class ExpeeTests {
         //fill tagging dont really answer this stage, sill got weird problem there
         int numofTags = Utils.fillInTagging(experimenteeBusiness, expee.getAccessCode());
 
-        assertEquals("tagging", expee.getResult(3).getStage().getType());
+        assertEquals("tag", expee.getResult(3).getStage().getType());
         assertEquals(numOfTagRes + numofTags, db.getNumberOfTagResults());
     }
 

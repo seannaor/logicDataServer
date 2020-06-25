@@ -158,7 +158,7 @@ public class ExperimenteeServiceTests {
         //filling code stage
         ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", Map.of("code", "return -1")));
         assertEquals(((CodeResult) expee.getParticipant().getResult(2)).getUserCode(), "return -1");
-        assertEquals("tagging", ans.get("type"));
+        assertEquals("tag", ans.get("type"));
         //filling tagging
         ans = experimenteeService.fillInStage(expee.getAccessCode().toString(), Map.of("data", buildParticipantTag()));
         assertEquals(((TaggingResult) expee.getParticipant().getResult(3)).getTags().size(), 3);
