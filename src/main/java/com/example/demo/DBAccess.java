@@ -31,6 +31,8 @@ public class DBAccess {
     @Autowired
     PermissionRep permissionRep;
     @Autowired
+    TaggingStageRep taggingStageRep;
+    @Autowired
     StageRep stageRep;
     @Autowired
     QuestionRep questionRep;
@@ -66,6 +68,7 @@ public class DBAccess {
                 graderToGradingTaskRep,
                 gradingTaskRep,
                 managementUserToExperimentRep,
+                taggingStageRep,
                 stageRep,
                 experimentRep,
                 permissionRep,
