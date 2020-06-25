@@ -115,9 +115,12 @@ public class CreatorServiceTests {
 
     @Test
     public void addStageToExperimentPositiveTest() {
-        JSONObject stage = new JSONObject();
-        stage.put("type", "info");
-        stage.put("info", "some information and stuff");
+        Map<String, Object> stage = Map.of(
+                "type", "info",
+                "stage", Map.of(
+                        "text", "some information and stuff"
+                )
+        );
         int stagesBefore = experiment.getStages().size();
         Map<String, Object> ansRight = creatorService.addStageToExperiment(
                 manager.getBguUsername(), experiment.getExperimentId(), stage);
@@ -375,8 +378,8 @@ public class CreatorServiceTests {
 
         List<Integer> experiments = (List<Integer>) ansRight.get("experiments");
         List<Experiment> currentExps = creatorBusiness.getExperiments(manager.getBguUsername());
-        List<Integer> currentExpsId = new ArrayList<>();
-        currentExps.forEach(exp -> currentExpsId.add(exp.getExperimentId()));
+        List<Map<String, Object>> currentExpsId = new ArrayList<>();
+        currentExps.forEach(exp -> currentExpsId.add(exp.getAsMap()));
         assertEquals(experiments, currentExpsId);
     }
 

@@ -122,7 +122,6 @@ public class ExperimenteeServiceTests {
         assertNotEquals("OK", ansWrong2.get("response"));
         experimenteeService.getNextStage(expee.getAccessCode().toString());
         Map<String, Object> ansRight1 = experimenteeService.getStageAt(expee.getAccessCode().toString(), 1);
-        assertEquals("OK", ansRight1.get("response"));
         List<JSONObject> questionsOfStage = ((List<JSONObject>) ((Map<String, Object>) ansRight1.get("stage")).get("questions"));
         assertEquals(questionsOfStage.size(), ((QuestionnaireStage) experiment.getStage(1)).getQuestions().size());
     }

@@ -135,7 +135,6 @@ public class GraderServiceTests {
     @Test
     public void getStageTest() throws NotExistException {
         Map<String, Object> ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 0);
-        assertEquals("OK", ansRight.get("response"));
         assertEquals(((Map<String, Object>) ansRight.get("stage")).get("text"), ((InfoStage) experiment.getStage(0)).getInfo());
         //did not reach stage 1 yet
         ansRight = graderService.getStage(graderCode.toString(), expee.getParticipant().getParticipantId(), 1);
