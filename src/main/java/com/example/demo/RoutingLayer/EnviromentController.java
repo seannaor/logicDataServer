@@ -55,7 +55,7 @@ public class EnviromentController {
     }
 
     @PostMapping("/runCode")
-    public Map<String, Object> runCode(@RequestBody String code, @RequestBody String language) {
+    public Object runCode(@RequestBody String code, @RequestBody String language) {
         return expee.runCode(tokenUrl,judge0Key,code,language);
     }
 

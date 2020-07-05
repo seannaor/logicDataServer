@@ -57,7 +57,6 @@ public class EnvRouterTest {
 
     @Test
     public void test3()  {
-        String res = (String) env.runCode("print('hello')","Python (3.8.1)").get("response");
-        System.out.println(res);
+        System.out.println(env.runCode("print('hello')","Python (3.8.1)"));
     }
 }

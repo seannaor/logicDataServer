@@ -112,10 +112,9 @@ public class ExperimenteeService {
         }
     }
 
-    public Map<String, Object> runCode(String url, String judge0Key,String code, String language) {
+    public Object runCode(String url, String judge0Key,String code, String language) {
         try{
-            String response = experimenteeBusiness.runCode(url,judge0Key,code,language);
-            return Map.of("response",response);
+           return experimenteeBusiness.runCode(url,judge0Key,code,language);
         } catch (Exception e) {
             return Map.of("response", e.getMessage());
         }
