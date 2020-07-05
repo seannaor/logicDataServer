@@ -1,16 +1,21 @@
 package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.ExperimenteeService;
-import org.asynchttpclient.*;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpHeaders;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 
 @RestController
@@ -21,13 +26,8 @@ public class EnviromentController {
     private final RestTemplate restTemplate;
     private final String tokenUrl = "https://judge0.p.rapidapi.com/";
     private final String judge0Key = "460509d2cemsh25d3565f9399f0bp1004c7jsne3f4ac235341";
-    private HttpHeaders headers;
-    AsyncHttpClient client = Dsl.asyncHttpClient();
-    DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config();
-//    = new HttpHeaders({
-//        "X-RapidAPI-Host": "judge0.p.rapidapi.com",
-//                "X-RapidAPI-Key": judge0Key
-//    });
+//    header should be : Map.of( "X-RapidAPI-Host", "judge0.p.rapidapi.com","X-RapidAPI-Key", judge0Key)
+
 
     @Autowired
     public EnviromentController(ExperimenteeService expee, RestTemplateBuilder restTemplateBuilder) {
@@ -54,31 +54,16 @@ public class EnviromentController {
         return expee.fillInStage(accessCode, stageInfo);
     }
 
-    @GetMapping("/getLanguages")
-    public String getLanguages() {
-        String url = tokenUrl + "languages";
-        Request request = Dsl.get(url).build();
-
-        ListenableFuture<Response> listenableFuture = client
-                .executeRequest(request);
-        listenableFuture.addListener(() -> {
-            try {
-                Response response = listenableFuture.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }, Executors.newCachedThreadPool());
-
-        try {
-            Response response = listenableFuture.get();
-            return response.getContentType() + '\n' + response.getResponseBody() + '\n' + response.getStatusText();
-        } catch (InterruptedException | ExecutionException ignore) {
-        }
-        return "Oops, something went wrong...";
-//        return Map.of("Error","Oops, something went wrong...");
+    @PostMapping("/runCode")
+    public Map<String, Object> runCode(@RequestBody String code, @RequestBody String language) {
+        return expee.runCode(tokenUrl,judge0Key,code,language);
     }
+
+    @GetMapping("/getLanguages")
+    public Map<String, Object> getLanguages() {
+        return expee.getLanguages(tokenUrl,judge0Key);
+    }
+
 
 //    @RequestMapping("/next_stage")
 //    public Map<String, Object> nextStage(@RequestParam String code) {

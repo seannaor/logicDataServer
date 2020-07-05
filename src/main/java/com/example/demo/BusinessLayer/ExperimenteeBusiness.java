@@ -6,6 +6,16 @@ import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.RequestBodyEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,4 +111,38 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
         return nextStage;
     }
 
+    public List<Map<String, Object>> getLanguages(String url, String judge0Key) throws UnirestException, JSONException {
+        GetRequest request = Unirest.get(url + "languages").header("X-RapidAPI-Key", judge0Key);
+        HttpResponse<JsonNode> response = request.asJson();
+        JSONArray arr = response.getBody().getArray();
+        return parseLanguages(arr);
+    }
+
+    private List<Map<String, Object>> parseLanguages(JSONArray arr) throws JSONException {
+        List<Map<String, Object>> languagesList = new LinkedList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject node = (JSONObject) arr.get(i);
+
+            languagesList.add(Map.of("name", node.get("name"), "id", node.get("id")));
+        }
+        return languagesList;
+    }
+
+    public String runCode(String url, String judge0Key, String code, String language) throws JSONException, UnirestException, NotExistException {
+        List<Map<String, Object>> languages = getLanguages(url, judge0Key);
+        for (Map<String, Object> lang : languages)
+            if (lang.get("name").equals(language)) {
+                int langId = (int) lang.get("id");
+                JSONObject body = new JSONObject();
+                body.put("source_code", code);
+                body.put( "language_id", langId);
+                body.put("redirect_stderr_to_stdout", true);
+                RequestBodyEntity request= Unirest.post(url + "submissions/?base64_encoded=false")
+                        .header("X-RapidAPI-Key", judge0Key).body(body);
+//                                Map.of("source_code", code, "language_id", langId, "redirect_stderr_to_stdout", true).toString());
+                HttpResponse<JsonNode> response = request.asJson();
+                return response.getBody().toString();
+            }
+        throw new NotExistException("language", language);
+    }
 }

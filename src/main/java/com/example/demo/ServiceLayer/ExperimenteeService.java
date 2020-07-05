@@ -102,4 +102,22 @@ public class ExperimenteeService {
             return Map.of("response", e.getMessage());
         }
     }
+
+    public Map<String, Object> getLanguages(String url, String judge0Key) {
+        try{
+            List<Map<String,Object>> languages = experimenteeBusiness.getLanguages(url,judge0Key);
+            return Map.of("languages",languages);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
+
+    public Map<String, Object> runCode(String url, String judge0Key,String code, String language) {
+        try{
+            String response = experimenteeBusiness.runCode(url,judge0Key,code,language);
+            return Map.of("response",response);
+        } catch (Exception e) {
+            return Map.of("response", e.getMessage());
+        }
+    }
 }
