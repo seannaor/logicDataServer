@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Sql({"/create_database.sql"})
+@Sql({"/create_tests_database.sql"})
 @SpringBootTest
 public class ManagerTests {
 

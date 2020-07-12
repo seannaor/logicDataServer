@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Sql({"/create_database.sql"})
+@Sql({"/create_tests_database.sql"})
 @SpringBootTest
 public class GraderServiceTests {
     private final GraderService graderService;
