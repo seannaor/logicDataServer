@@ -6,6 +6,15 @@ import com.example.demo.BusinessLayer.Entities.Results.Result;
 import com.example.demo.BusinessLayer.Entities.Stages.Stage;
 import com.example.demo.BusinessLayer.Exceptions.*;
 import com.example.demo.DBAccess;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.body.MultipartBody;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,4 +110,57 @@ public class ExperimenteeBusiness implements IExperimenteeBusiness {
         return nextStage;
     }
 
+    public List<Map<String, Object>> getLanguages(String url, String judge0Key) throws UnirestException, JSONException {
+        GetRequest request = Unirest.get(url + "languages")
+                .header("X-RapidAPI-Key", judge0Key)
+                .header("X-RapidAPI-Host", "judge0.p.rapidapi.com");
+        HttpResponse<JsonNode> response = request.asJson();
+        JSONArray arr = response.getBody().getArray();
+        return parseLanguages(arr);
+    }
+
+    private List<Map<String, Object>> parseLanguages(JSONArray arr) throws JSONException {
+        List<Map<String, Object>> languagesList = new LinkedList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject node = (JSONObject) arr.get(i);
+            languagesList.add(Map.of("name", node.get("name"), "id", node.get("id")));
+        }
+        return languagesList;
+    }
+
+    public Object runCode(String url, String judge0Key, String code, String language) throws JSONException, UnirestException, NotExistException, InterruptedException {
+        List<Map<String, Object>> languages = getLanguages(url, judge0Key);
+        int langId = -1;
+        for (Map<String, Object> lang : languages)
+            if (lang.get("name").equals(language))
+                langId = (int) lang.get("id");
+
+        if (langId == -1)
+            throw new NotExistException("language", language);
+
+        MultipartBody request = Unirest.post(url + "submissions/?base64_encoded=false")
+                .header("X-RapidAPI-Key", judge0Key)
+                .header("X-RapidAPI-Host", "judge0.p.rapidapi.com")
+                .field("source_code", code)
+                .field("language_id", langId)
+                .field("redirect_stderr_to_stdout", true);
+        HttpResponse<JsonNode> response = request.asJson();
+        String token = (String) response.getBody().getObject().get("token");
+
+        int status = -1;
+        for (int i = 0; i < 40; i++) {
+            GetRequest requestSubmissions = Unirest.get(url + "submissions/" + token + "?base64_encoded=false")
+                    .header("X-RapidAPI-Key", judge0Key)
+                    .header("X-RapidAPI-Host", "judge0.p.rapidapi.com");
+            HttpResponse<JsonNode> httpResponse = requestSubmissions.asJson();
+            JSONObject sta = (JSONObject) httpResponse.getBody().getObject().get("status");
+            status = (int) sta.get("id");
+            if (status == 6)
+                return "Compilation error";
+            else if (status == 3)
+                return httpResponse.getBody().getObject();
+            Thread.sleep(800);
+        }
+        throw new NotExistException("result to your code", "Oops..");
+    }
 }

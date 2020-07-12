@@ -1,9 +1,20 @@
 package com.example.demo.RoutingLayer;
 
 import com.example.demo.ServiceLayer.ExperimenteeService;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -12,10 +23,16 @@ import java.util.Map;
 public class EnviromentController {
 
     private ExperimenteeService expee;
+    private final RestTemplate restTemplate;
+    private final String tokenUrl = "https://judge0.p.rapidapi.com/";
+    private final String judge0Key = "460509d2cemsh25d3565f9399f0bp1004c7jsne3f4ac235341";
+//    header should be : Map.of( "X-RapidAPI-Host", "judge0.p.rapidapi.com","X-RapidAPI-Key", judge0Key)
+
 
     @Autowired
-    public EnviromentController(ExperimenteeService expee) {
+    public EnviromentController(ExperimenteeService expee, RestTemplateBuilder restTemplateBuilder) {
         this.expee = expee;
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     @PostMapping("/login")
@@ -36,6 +53,17 @@ public class EnviromentController {
         System.out.println("/submitStage " + accessCode + " data " + stageInfo);
         return expee.fillInStage(accessCode, stageInfo);
     }
+
+    @PostMapping("/runCode")
+    public Object runCode(@RequestBody String code, @RequestBody String language) {
+        return expee.runCode(tokenUrl,judge0Key,code,language);
+    }
+
+    @GetMapping("/getLanguages")
+    public Map<String, Object> getLanguages() {
+        return expee.getLanguages(tokenUrl,judge0Key);
+    }
+
 
 //    @RequestMapping("/next_stage")
 //    public Map<String, Object> nextStage(@RequestParam String code) {
