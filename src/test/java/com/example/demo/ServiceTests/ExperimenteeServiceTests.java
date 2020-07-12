@@ -30,7 +30,7 @@ import java.util.UUID;
 import static com.example.demo.Utils.buildParticipantTag;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Sql({"/create_database.sql"})
+@Sql({"/create_tests_database.sql"})
 @SpringBootTest
 public class ExperimenteeServiceTests {
     private final ExperimenteeService experimenteeService;

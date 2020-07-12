@@ -26,7 +26,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 
 
-@Sql({"/create_database.sql"})
+@Sql({"/create_tests_database.sql"})
 @SpringBootTest
 class PersistenceTest {
     @Autowired
