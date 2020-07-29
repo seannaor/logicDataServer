@@ -10,6 +10,7 @@ import com.example.demo.BusinessLayer.Exceptions.ExistException;
 import com.example.demo.DataAccessLayer.Reps.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -100,6 +98,27 @@ class PersistenceTest {
         };
         for (JpaRepository rep : reps)
             rep.deleteAll();
+    }
+
+    @Test
+    void getExperimenteesTagsByExperimentQueryTest () {
+        addExperiments();
+        CodeStage codeStage = new CodeStage("welcome", "", new ArrayList<>(), "JAVA");
+        codeStage.setExperiment(experimentRep.findAll().get(0));
+        stageRep.save(codeStage);
+        addRequirementsToStage(codeStage);
+        Participant p1 = createExpeeAndParticipant();
+        CodeResult codeResult = new CodeResult("System.out.println(\"hello world\");");
+        codeResult.setStageAndParticipant(codeStage, p1);
+        codeResultRep.save(codeResult);
+        TaggingStage taggingStage = new TaggingStage(codeStage);
+        taggingStage.setExperiment(experimentRep.findAll().get(0));
+        stageRep.save(taggingStage);
+        addRequirementTags(codeStage, p1);
+        List<Object[]> ans = experimentRep.getExperimenteesTagsByExperiment(experimentRep.findAll().get(0).getExperimentId());
+        Assert.assertEquals(ans.size(), 1);
+        Assert.assertEquals(((Experimentee)ans.get(0)[0]).getParticipant().getParticipantId(), p1.getParticipantId());
+        Assert.assertEquals(((TaggingResult)ans.get(0)[1]).getTags().size(), 2);
     }
 
     @Test
